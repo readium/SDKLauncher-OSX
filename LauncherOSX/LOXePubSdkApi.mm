@@ -61,19 +61,19 @@
 {
     NSAssert(_container != nil, @"openFile must be called before using the Api");
 
-    NSMutableArray *presenters = [[[NSMutableArray alloc] init] autorelease];
+    NSMutableArray *loxSpineItems = [[[NSMutableArray alloc] init] autorelease];
 
     auto packages = _container->Packages();
 
     for (auto package = packages.begin(); package != packages.end(); ++package) {
         const ePub3::SpineItem *spineItem = (*package)->FirstSpineItem();
         while (spineItem) {
-            [presenters addObject:[self createSpineItemWith:spineItem]];
+            [loxSpineItems addObject:[self createSpineItemWith:spineItem]];
             spineItem = spineItem->Next();
         }
     }
 
-    return presenters;
+    return loxSpineItems;
 }
 
 - (LOXSpineItem *)createSpineItemWith:(const ePub3::SpineItem *)spineItem
@@ -82,11 +82,11 @@
 
     NSString *idref = [[NSString alloc] initWithUTF8String:str];
 
-    LOXSpineItem *presenter = [LOXSpineItem spineItemWithIdref:idref];
+    LOXSpineItem *loxSpineItem = [LOXSpineItem spineItemWithIdref:idref];
 
     [idref release];
 
-    return presenter;
+    return loxSpineItem;
 }
 
 - (void)dealloc

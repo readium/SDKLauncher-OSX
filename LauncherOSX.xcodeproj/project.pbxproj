@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		850B1A1C16A6125100619C3C /* LOXUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A1916A6125100619C3C /* LOXUtil.m */; };
-		850B1A1D16A6125100619C3C /* LOXZipHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A1B16A6125100619C3C /* LOXZipHelper.m */; };
-		850B1A2316A6133700619C3C /* LOXSpineViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A2016A6133700619C3C /* LOXSpineViewController.mm */; };
-		850B1A2416A6133700619C3C /* LOXWebViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A2216A6133700619C3C /* LOXWebViewController.mm */; };
 		850B1A5916A61F9900619C3C /* libObjective-Zip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5816A61F9900619C3C /* libObjective-Zip.a */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
+		850B1A9016A631E800619C3C /* LOXUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.m */; };
+		850B1A9116A631E800619C3C /* LOXZipHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8F16A631E800619C3C /* LOXZipHelper.m */; };
+		850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9416A6320200619C3C /* LOXSpineViewController.mm */; };
+		850B1A9816A6320200619C3C /* LOXWebViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9616A6320200619C3C /* LOXWebViewController.mm */; };
 		855CFDB61696200B00AD311E /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 855CFDB51696200B00AD311E /* WebKit.framework */; };
 		855CFE45169B8FFE00AD311E /* LOXePubApi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE44169B8FFE00AD311E /* LOXePubApi.mm */; };
 		855CFE4B169B912300AD311E /* LOXePubSdkApi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE4A169B912300AD311E /* LOXePubSdkApi.mm */; };
@@ -33,16 +33,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		850B1A1816A6125100619C3C /* LOXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LOXUtil.h; path = LauncherOSX/LOXUtil.h; sourceTree = SOURCE_ROOT; };
-		850B1A1916A6125100619C3C /* LOXUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LOXUtil.m; path = LauncherOSX/LOXUtil.m; sourceTree = SOURCE_ROOT; };
-		850B1A1A16A6125100619C3C /* LOXZipHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LOXZipHelper.h; path = LauncherOSX/LOXZipHelper.h; sourceTree = SOURCE_ROOT; };
-		850B1A1B16A6125100619C3C /* LOXZipHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LOXZipHelper.m; path = LauncherOSX/LOXZipHelper.m; sourceTree = SOURCE_ROOT; };
-		850B1A1F16A6133700619C3C /* LOXSpineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LOXSpineViewController.h; path = LauncherOSX/LOXSpineViewController.h; sourceTree = SOURCE_ROOT; };
-		850B1A2016A6133700619C3C /* LOXSpineViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LOXSpineViewController.mm; path = LauncherOSX/LOXSpineViewController.mm; sourceTree = SOURCE_ROOT; };
-		850B1A2116A6133700619C3C /* LOXWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LOXWebViewController.h; path = LauncherOSX/LOXWebViewController.h; sourceTree = SOURCE_ROOT; };
-		850B1A2216A6133700619C3C /* LOXWebViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LOXWebViewController.mm; path = LauncherOSX/LOXWebViewController.mm; sourceTree = SOURCE_ROOT; };
 		850B1A5816A61F9900619C3C /* libObjective-Zip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libObjective-Zip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		850B1A5A16A61FB900619C3C /* ePub3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = ePub3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		850B1A8C16A631E800619C3C /* LOXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXUtil.h; sourceTree = "<group>"; };
+		850B1A8D16A631E800619C3C /* LOXUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXUtil.m; sourceTree = "<group>"; };
+		850B1A8E16A631E800619C3C /* LOXZipHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXZipHelper.h; sourceTree = "<group>"; };
+		850B1A8F16A631E800619C3C /* LOXZipHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXZipHelper.m; sourceTree = "<group>"; };
+		850B1A9316A6320200619C3C /* LOXSpineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpineViewController.h; sourceTree = "<group>"; };
+		850B1A9416A6320200619C3C /* LOXSpineViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXSpineViewController.mm; sourceTree = "<group>"; };
+		850B1A9516A6320200619C3C /* LOXWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXWebViewController.h; sourceTree = "<group>"; };
+		850B1A9616A6320200619C3C /* LOXWebViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXWebViewController.mm; sourceTree = "<group>"; };
 		855CFDB51696200B00AD311E /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		855CFE43169B8FFE00AD311E /* LOXePubApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXePubApi.h; sourceTree = "<group>"; };
 		855CFE44169B8FFE00AD311E /* LOXePubApi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXePubApi.mm; sourceTree = "<group>"; };
@@ -179,8 +179,8 @@
 				8597D62416824655000FAAAF /* LOXAppDelegate.mm */,
 				8597D62616824656000FAAAF /* MainMenu.xib */,
 				8597D61816824655000FAAAF /* Supporting Files */,
-				AD8C86BD6E7145860D67ACD7 /* ViewControllers */,
-				AD8C83380BCEDE372936A705 /* Utils */,
+				AD8C835D54F353C175EF63D8 /* Utils */,
+				AD8C872729A8092A25A2BAE4 /* ViewControllers */,
 			);
 			path = LauncherOSX;
 			sourceTree = "<group>";
@@ -197,15 +197,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		AD8C83380BCEDE372936A705 /* Utils */ = {
+		AD8C835D54F353C175EF63D8 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				850B1A1816A6125100619C3C /* LOXUtil.h */,
-				850B1A1916A6125100619C3C /* LOXUtil.m */,
-				850B1A1A16A6125100619C3C /* LOXZipHelper.h */,
-				850B1A1B16A6125100619C3C /* LOXZipHelper.m */,
+				850B1A8C16A631E800619C3C /* LOXUtil.h */,
+				850B1A8D16A631E800619C3C /* LOXUtil.m */,
+				850B1A8E16A631E800619C3C /* LOXZipHelper.h */,
+				850B1A8F16A631E800619C3C /* LOXZipHelper.m */,
 			);
-			path = Utils;
+			name = Utils;
 			sourceTree = "<group>";
 		};
 		AD8C84BC94B0A2B582CFFFD4 /* CocoaApi */ = {
@@ -219,15 +219,15 @@
 			name = CocoaApi;
 			sourceTree = "<group>";
 		};
-		AD8C86BD6E7145860D67ACD7 /* ViewControllers */ = {
+		AD8C872729A8092A25A2BAE4 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				850B1A1F16A6133700619C3C /* LOXSpineViewController.h */,
-				850B1A2016A6133700619C3C /* LOXSpineViewController.mm */,
-				850B1A2116A6133700619C3C /* LOXWebViewController.h */,
-				850B1A2216A6133700619C3C /* LOXWebViewController.mm */,
+				850B1A9316A6320200619C3C /* LOXSpineViewController.h */,
+				850B1A9416A6320200619C3C /* LOXSpineViewController.mm */,
+				850B1A9516A6320200619C3C /* LOXWebViewController.h */,
+				850B1A9616A6320200619C3C /* LOXWebViewController.mm */,
 			);
-			path = ViewControllers;
+			name = ViewControllers;
 			sourceTree = "<group>";
 		};
 		AD8C8C165CD8EBCC0E30AE2F /* SdkApi */ = {
@@ -314,10 +314,10 @@
 				855CFEEC169E2FE700AD311E /* LOXPackageParser.m in Sources */,
 				AD8C8D5755417C9A48FCB142 /* LOXContainerParser.m in Sources */,
 				AD8C8AAAEB9F47040E6F40A1 /* LOXSpineItem.m in Sources */,
-				850B1A1C16A6125100619C3C /* LOXUtil.m in Sources */,
-				850B1A1D16A6125100619C3C /* LOXZipHelper.m in Sources */,
-				850B1A2316A6133700619C3C /* LOXSpineViewController.mm in Sources */,
-				850B1A2416A6133700619C3C /* LOXWebViewController.mm in Sources */,
+				850B1A9016A631E800619C3C /* LOXUtil.m in Sources */,
+				850B1A9116A631E800619C3C /* LOXZipHelper.m in Sources */,
+				850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */,
+				850B1A9816A6320200619C3C /* LOXWebViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
