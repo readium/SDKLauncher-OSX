@@ -49,6 +49,11 @@ using namespace ePub3;
     self.spineViewController.selectionChangedLiscener = self;
 }
 
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
+{
+    return YES;
+}
+
 - (void)openDocument
 {
     NSString *path = [self selectFile];
