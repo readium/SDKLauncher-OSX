@@ -36,4 +36,7 @@
 
 - (void) clear;
 
+- (void)displayHtml:(NSString *)html withBaseUrlPath:(NSString *)baseUrlPath;
+
+
 @end

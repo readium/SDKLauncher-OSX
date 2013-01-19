@@ -28,9 +28,10 @@
 
 }
 
-- (void)displayHtml:(NSString *)html
+- (void)displayHtml:(NSString *)html withBaseUrlPath:(NSString *) baseUrlPath
 {
-    [[_webView mainFrame] loadHTMLString:html baseURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] bundlePath]]];
+    NSURL *baseUrl = [NSURL fileURLWithPath:baseUrlPath];
+    [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
 }
 
 -(void)displayUrlPath:(NSString *)urlPath

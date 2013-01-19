@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <script src="jquery-1.8.2.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+
+                var parentDocument = this;
+                this.viewportInfo = {
+                    numViewports : undefined,
+                    currentViewport : 0
+                };
+
+                this.getEpubContentDocument = function () {
+                    return $("#epubContentIframe")[0].contentDocument;
+                }
+
+                this.viewportWidth = function () {
+                    return document.width;
+                }
+
+                this.epubHtmlLeft = function () {
+                    var $epubHtml = $("html", this.getEpubContentDocument());
+                    return Number($epubHtml.css("margin-left").replace("px", ""));
+                }
+
+                this.getSyntheticLayoutWidths = function () {
+
+                    var viewportWidth = document.width;
+                    var columnWidth = Math.floor((viewportWidth * 0.75)/2);
+                    var gapWidth = Math.floor(viewportWidth - (columnWidth * 2))/2;
+                    return { 
+                        columnWidth : columnWidth,
+                        gapWidth : gapWidth
+                    }
+                }
+                this.calculateNumViewports = function () {
+
+                    var viewportWidth = document.width;
+                    var iframeWidth = $("html", this.getEpubContentDocument()).width();
+                    var numViewports = Math.ceil(iframeWidth / viewportWidth);
+                    return numViewports;
+                }
+
+                this.moveViewportRight = function () {
+
+                    var viewportWidth;
+                    var $epubHtml;
+                    var newEpubHtmlLeft;
+
+                    if (this.viewportInfo.currentViewport < this.viewportInfo.numViewports) {
+
+                        $epubHtml = $("html", this.getEpubContentDocument());
+                        newEpubHtmlLeft = this.epubHtmlLeft() - this.viewportWidth();
+                        $epubHtml.css("margin-left", newEpubHtmlLeft + "px");
+                        this.viewportInfo.currentViewport++;
+                    }
+                }
+
+                this.moveViewportLeft = function () {
+
+                    var viewportWidth;
+                    var $epubHtml;
+                    var newEpubHtmlLeft;
+
+                    if (this.viewportInfo.currentViewport > 0) {
+
+                        $epubHtml = $("html", this.getEpubContentDocument());
+                        newEpubHtmlLeft = this.epubHtmlLeft() + this.viewportWidth();
+                        $epubHtml.css("margin-left", newEpubHtmlLeft + "px");
+                        this.viewportInfo.currentViewport--;
+                    }
+                }
+
+                // When the iframe has been loaded, paginate the epub content document
+                $("#epubContentIframe").on("load", function (e) {
+
+                    var syntheticWidths;
+                    var epubContentCSSLink = document.createElement("link");
+                    epubContentCSSLink.href = "epubContentIframe.css"; 
+                    epubContentCSSLink.rel = "stylesheet"; 
+                    epubContentCSSLink.type = "text/css"; 
+                    e.srcElement.contentDocument.head.appendChild(epubContentCSSLink);
+
+                    syntheticWidths = parentDocument.getSyntheticLayoutWidths();
+                    $("html", parentDocument.getEpubContentDocument()).css("-webkit-column-width", syntheticWidths.columnWidth + "px");
+                    $("html", parentDocument.getEpubContentDocument()).css("-webkit-column-gap", syntheticWidths.columnGap + "px");
+
+                    parentDocument.viewportInfo.numViewports = parentDocument.calculateNumViewports();
+                });
+            });
+
+        </script>
+        <link rel="stylesheet" type="text/css" href="reader.css"></link>
+    </head>
+    <body>
+        <iframe scrolling="no" src="${CHAPTER}" id="epubContentIframe"></iframe>
+    </body>
+</html>

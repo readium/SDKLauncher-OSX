@@ -28,6 +28,8 @@
 		8597D62216824655000FAAAF /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 8597D62016824655000FAAAF /* Credits.rtf */; };
 		8597D62516824655000FAAAF /* LOXAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8597D62416824655000FAAAF /* LOXAppDelegate.mm */; };
 		8597D62816824656000FAAAF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8597D62616824656000FAAAF /* MainMenu.xib */; };
+		85A445F016AA140500D44B94 /* Scripts in Resources */ = {isa = PBXBuildFile; fileRef = AD8C8A485ADB3654ADA78118 /* Scripts */; };
+		AD8C8209025531709C1E6500 /* LOXScriptInjector.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C89ED0BA9060B6258F820 /* LOXScriptInjector.m */; };
 		AD8C8AAAEB9F47040E6F40A1 /* LOXSpineItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C806A657AFBE16755E89D /* LOXSpineItem.m */; };
 		AD8C8D5755417C9A48FCB142 /* LOXContainerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C83FAEEFC15D05F00ABAC /* LOXContainerParser.m */; };
 /* End PBXBuildFile section */
@@ -76,6 +78,9 @@
 		AD8C806A657AFBE16755E89D /* LOXSpineItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXSpineItem.m; sourceTree = "<group>"; };
 		AD8C83FAEEFC15D05F00ABAC /* LOXContainerParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXContainerParser.m; sourceTree = "<group>"; };
 		AD8C8424D0D4956CC7F32F4B /* LOXContainerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXContainerParser.h; sourceTree = "<group>"; };
+		AD8C85A9715FB6D3FCFDD25F /* LOXScriptInjector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXScriptInjector.h; sourceTree = "<group>"; };
+		AD8C89ED0BA9060B6258F820 /* LOXScriptInjector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXScriptInjector.m; sourceTree = "<group>"; };
+		AD8C8A485ADB3654ADA78118 /* Scripts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +144,7 @@
 				8597D61716824655000FAAAF /* LauncherOSX */,
 				8597D61016824655000FAAAF /* Frameworks */,
 				8597D60E16824655000FAAAF /* Products */,
+				AD8C8A485ADB3654ADA78118 /* Scripts */,
 			);
 			sourceTree = "<group>";
 		};
@@ -204,6 +210,8 @@
 				850B1A8D16A631E800619C3C /* LOXUtil.m */,
 				850B1A8E16A631E800619C3C /* LOXZipHelper.h */,
 				850B1A8F16A631E800619C3C /* LOXZipHelper.m */,
+				AD8C89ED0BA9060B6258F820 /* LOXScriptInjector.m */,
+				AD8C85A9715FB6D3FCFDD25F /* LOXScriptInjector.h */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -293,6 +301,7 @@
 				8597D61C16824655000FAAAF /* InfoPlist.strings in Resources */,
 				8597D62216824655000FAAAF /* Credits.rtf in Resources */,
 				8597D62816824656000FAAAF /* MainMenu.xib in Resources */,
+				85A445F016AA140500D44B94 /* Scripts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +327,7 @@
 				850B1A9116A631E800619C3C /* LOXZipHelper.m in Sources */,
 				850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */,
 				850B1A9816A6320200619C3C /* LOXWebViewController.mm in Sources */,
+				AD8C8209025531709C1E6500 /* LOXScriptInjector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

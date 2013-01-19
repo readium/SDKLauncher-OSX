@@ -24,6 +24,7 @@
 
 #include "container.h"
 #import "LOXSpineItem.h"
+#import "LOXScriptInjector.h"
 
 
 using namespace ePub3;
@@ -34,12 +35,28 @@ using namespace ePub3;
 - (void) initApiOfType:(ePubApiType)apiType;
 - (void) openDocument;
 - (void) reportError:(NSString *) error;
+
+
+
 @end
+
 
 @implementation LOXAppDelegate
 
+-(id)init
+{
+    self = [super init];
+    if(self){
+
+        _scriptInjector = [[LOXScriptInjector alloc] init];
+    }
+
+    return self;
+}
+
 - (void)dealloc
 {
+    [_scriptInjector release];
     [_epubApi release];
     [super dealloc];
 }
@@ -154,8 +171,17 @@ using namespace ePub3;
 {
     if (self.currentSpineItem)
     {
+        //use path directly
         NSString * path = [_epubApi getGetPathToSpineItem:self.currentSpineItem];
-        [self.webViewController displayUrlPath:path];
+//        [self.webViewController displayUrlPath:path];
+
+        //read html content and use it
+//        NSString * html = [NSString stringWithContentsOfFile: path encoding:NSUTF8StringEncoding error:nil];
+//        [self.webViewController displayHtml:html withBaseUrlPath:[path stringByDeletingLastPathComponent]];
+
+        NSString *html = [_scriptInjector injectHtmlFile:path];
+        [self.webViewController displayHtml:html withBaseUrlPath: _scriptInjector.baseUrlPath];
+
     }
     else
     {
