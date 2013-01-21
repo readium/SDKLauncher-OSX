@@ -39,11 +39,18 @@
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet LOXSpineViewController *spineViewController;
 @property (assign) IBOutlet LOXWebViewController *webViewController;
+@property (assign) IBOutlet NSButton *prevPageButton;
+@property (assign) IBOutlet NSButton *nextPageButton;
+
+
 
 @property (assign) LOXSpineItem* currentSpineItem;
 
 
 - (IBAction)openDocumentWithCocoaApi:(id)sender;
 - (IBAction)openDocumentWithSdkApi:(id)sender;
+
+- (IBAction)openNextPage:(id)sender;
+- (IBAction)openPrevPage:(id)sender;
 
 @end
