@@ -80,7 +80,7 @@
 {
     auto str = spineItem->Idref().c_str();
 
-    NSString *idref = [[NSString alloc] initWithUTF8String:str];
+    NSString *idref =  [NSString stringWithUTF8String:str];
 
     LOXSpineItem *loxSpineItem = [LOXSpineItem spineItemWithIdref:idref];
 

@@ -46,17 +46,17 @@
 
 - (void)openFile:(NSString *)file
 {
-    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overwritten" userInfo:nil];
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }
 
 - (NSArray *)getSpineItems
 {
-    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overwritten" userInfo:nil];
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }
 
 - (NSString *)getGetPathToSpineItem:(LOXSpineItem*)spineItem
 {
-    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overwritten" userInfo:nil];
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }
 
 
