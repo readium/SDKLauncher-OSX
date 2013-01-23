@@ -22,7 +22,8 @@
 #import <Foundation/Foundation.h>
 
 @class LOXManifestItem;
-@class LOXSpineItem;
+@class LOXSpineItemCocoa;
+
 
 @interface LOXPackage : NSObject {
 
@@ -37,11 +38,11 @@
 
 - (NSString *)getItemPathForIdref:(NSString *)idRef;
 
-- (void)addSpineItem:(LOXSpineItem *)spineItem;
+- (void)addSpineItem:(LOXSpineItemCocoa *)spineItem;
 
-- (NSArray *)spine;
+- (NSArray *)getSpineItems;
 
-- (NSString *)getHrefForItem:(LOXSpineItem *)spineItem;
+- (NSString *)getHrefForItem:(LOXSpineItemCocoa *)spineItem;
 
 
 @end

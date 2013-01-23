@@ -1,5 +1,5 @@
 //
-//  LOXZipHelper.m
+//  LOXUtil.m
 //  LauncherOSX
 //
 //  Created by Boris Schneiderman.
@@ -19,43 +19,16 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "LOXZipHelper.h"
-#import "ZipFile.h"
-#import "ZipReadStream.h"
-#import "FileInZipInfo.h"
+#import "LOXUtil.h"
 
-@interface LOXZipHelper ()
-+ (void)ensureDirectoryForFile:(NSString *)filePath;
+@implementation LOXUtil
 
-@end
-
-@implementation LOXZipHelper
-
-
-+ (void)unzipFile:(NSString *)fileName toFolder:(NSString *)destinationFolder
++ (NSString *)GetUUID
 {
-    ZipFile *unzipFile = [[ZipFile alloc] initWithFileName:fileName mode:ZipFileModeUnzip];
-    [unzipFile goToFirstFileInZip];
-
-    for (int i = 0; i < [unzipFile numFilesInZip]; i++) {
-        FileInZipInfo *info = [unzipFile getCurrentFileInZipInfo];
-
-        ZipReadStream *read = [unzipFile readCurrentFileInZip];
-        NSMutableData *data = [[NSMutableData alloc] initWithLength:info.length];
-        [read readDataWithBuffer:data];
-        NSString* fullPath = [NSString stringWithFormat:@"%@/%@", destinationFolder, info.name];
-        [LOXZipHelper ensureDirectoryForFile:fullPath];
-        [data writeToFile:fullPath atomically:NO];
-        [data release];
-        [read finishedReading];
-
-        [unzipFile goToNextFileInZip];
-
-    }
-
-    [unzipFile close];
-    [unzipFile release];
-
+    CFUUIDRef theUUID = CFUUIDCreate(NULL);
+    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+    CFRelease(theUUID);
+    return [(NSString *) string autorelease];
 }
 
 + (void)ensureDirectoryForFile:(NSString*)filePath

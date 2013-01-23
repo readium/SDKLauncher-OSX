@@ -26,7 +26,8 @@
 #import "LOXWebViewController.h"
 
 @class LOXePubApi;
-@class LOXSpineItem;
+@protocol LOXSpineItem;
+
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate, LOXSpineViewControllerDelegate> {
 @private
@@ -37,7 +38,7 @@
 @property (assign) IBOutlet LOXSpineViewController *spineViewController;
 @property (assign) IBOutlet LOXWebViewController *webViewController;
 
-@property (assign) LOXSpineItem* currentSpineItem;
+@property (assign) id<LOXSpineItem> currentSpineItem;
 
 
 - (IBAction)openDocumentWithCocoaApi:(id)sender;

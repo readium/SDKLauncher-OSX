@@ -22,7 +22,8 @@
 #import "LOXePubApi.h"
 #import "LOXePubSdkApi.h"
 #import "LOXePubCocoaApi.h"
-#import "LOXSpineItem.h"
+#import "LOXSpineItemSdk.h"
+
 
 @implementation LOXePubApi
 
@@ -54,7 +55,7 @@
     @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }
 
-- (NSString *)getGetPathToSpineItem:(LOXSpineItem*)spineItem
+- (NSString *)getPathToSpineItem:(id<LOXSpineItem>)spineItem
 {
     @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }

@@ -1,7 +1,3 @@
-//
-//  LOXUtil.m
-//  LauncherOSX
-//
 //  Created by Boris Schneiderman.
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
@@ -19,16 +15,28 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "LOXUtil.h"
 
-@implementation LOXUtil
 
-+ (NSString *)GetUUID
-{
-    CFUUIDRef theUUID = CFUUIDCreate(NULL);
-    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-    CFRelease(theUUID);
-    return [(NSString *) string autorelease];
+#import <Foundation/Foundation.h>
+#import "LOXSpineItem.h"
+
+
+namespace ePub3 {
+    class SpineItem;
 }
+
+@interface LOXSpineItemSdk : NSObject<LOXSpineItem> {
+
+@private
+    const ePub3::SpineItem * _sdkSpineItem;
+    NSString* _idref;
+}
+
+@property(nonatomic, readonly) NSString *idref;
+
+- (const ePub3::SpineItem *) sdkSpineItem;
+
+- (id)initWithSdkSpineItem:(const ePub3::SpineItem const *)sdkSpineItem;
+
 
 @end

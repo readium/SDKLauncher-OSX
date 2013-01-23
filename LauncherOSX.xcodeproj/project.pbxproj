@@ -9,36 +9,37 @@
 /* Begin PBXBuildFile section */
 		850B1A5916A61F9900619C3C /* libObjective-Zip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5816A61F9900619C3C /* libObjective-Zip.a */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
-		850B1A9016A631E800619C3C /* LOXUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.m */; };
-		850B1A9116A631E800619C3C /* LOXZipHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8F16A631E800619C3C /* LOXZipHelper.m */; };
+		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
+		850B1A9116A631E800619C3C /* LOXZipHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8F16A631E800619C3C /* LOXZipHelper.mm */; };
 		850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9416A6320200619C3C /* LOXSpineViewController.mm */; };
 		850B1A9816A6320200619C3C /* LOXWebViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9616A6320200619C3C /* LOXWebViewController.mm */; };
 		855CFDB61696200B00AD311E /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 855CFDB51696200B00AD311E /* WebKit.framework */; };
 		855CFE45169B8FFE00AD311E /* LOXePubApi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE44169B8FFE00AD311E /* LOXePubApi.mm */; };
 		855CFE4B169B912300AD311E /* LOXePubSdkApi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE4A169B912300AD311E /* LOXePubSdkApi.mm */; };
 		855CFE4E169B915400AD311E /* LOXePubCocoaApi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE4D169B915300AD311E /* LOXePubCocoaApi.mm */; };
-		855CFE52169CA95A00AD311E /* LOXPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE51169CA95A00AD311E /* LOXPackage.m */; };
-		855CFE55169CAE6400AD311E /* LOXManifestItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE54169CAE6400AD311E /* LOXManifestItem.m */; };
-		855CFE91169CD64E00AD311E /* LOXeBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE90169CD64D00AD311E /* LOXeBook.m */; };
+		855CFE52169CA95A00AD311E /* LOXPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE51169CA95A00AD311E /* LOXPackage.mm */; };
+		855CFE55169CAE6400AD311E /* LOXManifestItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE54169CAE6400AD311E /* LOXManifestItem.mm */; };
+		855CFE91169CD64E00AD311E /* LOXContainer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE90169CD64D00AD311E /* LOXContainer.mm */; };
 		855CFEE8169DFA3E00AD311E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 855CFEE7169DFA3D00AD311E /* libz.dylib */; };
-		855CFEEC169E2FE700AD311E /* LOXPackageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 855CFEEB169E2FE700AD311E /* LOXPackageParser.m */; };
+		855CFEEC169E2FE700AD311E /* LOXPackageParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CFEEB169E2FE700AD311E /* LOXPackageParser.mm */; };
 		8597D61216824655000FAAAF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8597D61116824655000FAAAF /* Cocoa.framework */; };
 		8597D61C16824655000FAAAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8597D61A16824655000FAAAF /* InfoPlist.strings */; };
 		8597D61E16824655000FAAAF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8597D61D16824655000FAAAF /* main.m */; };
 		8597D62216824655000FAAAF /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 8597D62016824655000FAAAF /* Credits.rtf */; };
 		8597D62516824655000FAAAF /* LOXAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8597D62416824655000FAAAF /* LOXAppDelegate.mm */; };
 		8597D62816824656000FAAAF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8597D62616824656000FAAAF /* MainMenu.xib */; };
-		AD8C8AAAEB9F47040E6F40A1 /* LOXSpineItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C806A657AFBE16755E89D /* LOXSpineItem.m */; };
-		AD8C8D5755417C9A48FCB142 /* LOXContainerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C83FAEEFC15D05F00ABAC /* LOXContainerParser.m */; };
+		AD8C89C324864BCDB203D348 /* LOXSpineItemCocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C829F5C167F51758AAA17 /* LOXSpineItemCocoa.mm */; };
+		AD8C8AAAEB9F47040E6F40A1 /* LOXSpineItemSdk.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C806A657AFBE16755E89D /* LOXSpineItemSdk.mm */; };
+		AD8C8D5755417C9A48FCB142 /* LOXContainerParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C83FAEEFC15D05F00ABAC /* LOXContainerParser.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		850B1A5816A61F9900619C3C /* libObjective-Zip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libObjective-Zip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		850B1A5A16A61FB900619C3C /* ePub3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = ePub3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		850B1A8C16A631E800619C3C /* LOXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXUtil.h; sourceTree = "<group>"; };
-		850B1A8D16A631E800619C3C /* LOXUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXUtil.m; sourceTree = "<group>"; };
+		850B1A8D16A631E800619C3C /* LOXUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXUtil.mm; sourceTree = "<group>"; };
 		850B1A8E16A631E800619C3C /* LOXZipHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXZipHelper.h; sourceTree = "<group>"; };
-		850B1A8F16A631E800619C3C /* LOXZipHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXZipHelper.m; sourceTree = "<group>"; };
+		850B1A8F16A631E800619C3C /* LOXZipHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXZipHelper.mm; sourceTree = "<group>"; };
 		850B1A9316A6320200619C3C /* LOXSpineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpineViewController.h; sourceTree = "<group>"; };
 		850B1A9416A6320200619C3C /* LOXSpineViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXSpineViewController.mm; sourceTree = "<group>"; };
 		850B1A9516A6320200619C3C /* LOXWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXWebViewController.h; sourceTree = "<group>"; };
@@ -51,14 +52,14 @@
 		855CFE4C169B915300AD311E /* LOXePubCocoaApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXePubCocoaApi.h; sourceTree = "<group>"; };
 		855CFE4D169B915300AD311E /* LOXePubCocoaApi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXePubCocoaApi.mm; sourceTree = "<group>"; };
 		855CFE50169CA95A00AD311E /* LOXPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXPackage.h; sourceTree = "<group>"; };
-		855CFE51169CA95A00AD311E /* LOXPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXPackage.m; sourceTree = "<group>"; };
+		855CFE51169CA95A00AD311E /* LOXPackage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXPackage.mm; sourceTree = "<group>"; };
 		855CFE53169CAE6300AD311E /* LOXManifestItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXManifestItem.h; sourceTree = "<group>"; };
-		855CFE54169CAE6400AD311E /* LOXManifestItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXManifestItem.m; sourceTree = "<group>"; };
-		855CFE8F169CD64D00AD311E /* LOXeBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXeBook.h; sourceTree = "<group>"; };
-		855CFE90169CD64D00AD311E /* LOXeBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXeBook.m; sourceTree = "<group>"; };
+		855CFE54169CAE6400AD311E /* LOXManifestItem.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXManifestItem.mm; sourceTree = "<group>"; };
+		855CFE8F169CD64D00AD311E /* LOXContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXContainer.h; sourceTree = "<group>"; };
+		855CFE90169CD64D00AD311E /* LOXContainer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXContainer.mm; sourceTree = "<group>"; };
 		855CFEE7169DFA3D00AD311E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		855CFEEA169E2FE700AD311E /* LOXPackageParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXPackageParser.h; sourceTree = "<group>"; };
-		855CFEEB169E2FE700AD311E /* LOXPackageParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXPackageParser.m; sourceTree = "<group>"; };
+		855CFEEB169E2FE700AD311E /* LOXPackageParser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXPackageParser.mm; sourceTree = "<group>"; };
 		8597D60D16824655000FAAAF /* LauncherOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LauncherOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8597D61116824655000FAAAF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8597D61416824655000FAAAF /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -72,10 +73,13 @@
 		8597D62316824655000FAAAF /* LOXAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LOXAppDelegate.h; sourceTree = "<group>"; };
 		8597D62416824655000FAAAF /* LOXAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXAppDelegate.mm; sourceTree = "<group>"; };
 		8597D62716824656000FAAAF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		AD8C802E665A730551CBEDB3 /* LOXSpineItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpineItem.h; sourceTree = "<group>"; };
-		AD8C806A657AFBE16755E89D /* LOXSpineItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXSpineItem.m; sourceTree = "<group>"; };
-		AD8C83FAEEFC15D05F00ABAC /* LOXContainerParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXContainerParser.m; sourceTree = "<group>"; };
+		AD8C802E665A730551CBEDB3 /* LOXSpineItemSdk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpineItemSdk.h; sourceTree = "<group>"; };
+		AD8C806A657AFBE16755E89D /* LOXSpineItemSdk.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXSpineItemSdk.mm; sourceTree = "<group>"; };
+		AD8C81CBD414816BDCB4CC8A /* LOXSpineItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpineItem.h; sourceTree = "<group>"; };
+		AD8C829F5C167F51758AAA17 /* LOXSpineItemCocoa.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXSpineItemCocoa.mm; sourceTree = "<group>"; };
+		AD8C83FAEEFC15D05F00ABAC /* LOXContainerParser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXContainerParser.mm; sourceTree = "<group>"; };
 		AD8C8424D0D4956CC7F32F4B /* LOXContainerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXContainerParser.h; sourceTree = "<group>"; };
+		AD8C88A604DBA0AB6CC2B4B9 /* LOXSpineItemCocoa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpineItemCocoa.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,12 +112,7 @@
 		855CFE4F169CA90600AD311E /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				855CFE50169CA95A00AD311E /* LOXPackage.h */,
-				855CFE51169CA95A00AD311E /* LOXPackage.m */,
-				855CFE53169CAE6300AD311E /* LOXManifestItem.h */,
-				855CFE54169CAE6400AD311E /* LOXManifestItem.m */,
-				AD8C806A657AFBE16755E89D /* LOXSpineItem.m */,
-				AD8C802E665A730551CBEDB3 /* LOXSpineItem.h */,
+				AD8C81CBD414816BDCB4CC8A /* LOXSpineItem.h */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -122,8 +121,8 @@
 			isa = PBXGroup;
 			children = (
 				855CFEEA169E2FE700AD311E /* LOXPackageParser.h */,
-				855CFEEB169E2FE700AD311E /* LOXPackageParser.m */,
-				AD8C83FAEEFC15D05F00ABAC /* LOXContainerParser.m */,
+				855CFEEB169E2FE700AD311E /* LOXPackageParser.mm */,
+				AD8C83FAEEFC15D05F00ABAC /* LOXContainerParser.mm */,
 				AD8C8424D0D4956CC7F32F4B /* LOXContainerParser.h */,
 			);
 			name = Parsers;
@@ -201,9 +200,9 @@
 			isa = PBXGroup;
 			children = (
 				850B1A8C16A631E800619C3C /* LOXUtil.h */,
-				850B1A8D16A631E800619C3C /* LOXUtil.m */,
+				850B1A8D16A631E800619C3C /* LOXUtil.mm */,
 				850B1A8E16A631E800619C3C /* LOXZipHelper.h */,
-				850B1A8F16A631E800619C3C /* LOXZipHelper.m */,
+				850B1A8F16A631E800619C3C /* LOXZipHelper.mm */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -213,8 +212,7 @@
 			children = (
 				855CFE4C169B915300AD311E /* LOXePubCocoaApi.h */,
 				855CFE4D169B915300AD311E /* LOXePubCocoaApi.mm */,
-				855CFE8F169CD64D00AD311E /* LOXeBook.h */,
-				855CFE90169CD64D00AD311E /* LOXeBook.m */,
+				AD8C8F390599306AF2F1D12E /* Model */,
 			);
 			name = CocoaApi;
 			sourceTree = "<group>";
@@ -235,8 +233,33 @@
 			children = (
 				855CFE49169B912300AD311E /* LOXePubSdkApi.h */,
 				855CFE4A169B912300AD311E /* LOXePubSdkApi.mm */,
+				AD8C8E88A9DE4D3134B34572 /* Model */,
 			);
 			name = SdkApi;
+			sourceTree = "<group>";
+		};
+		AD8C8E88A9DE4D3134B34572 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				AD8C802E665A730551CBEDB3 /* LOXSpineItemSdk.h */,
+				AD8C806A657AFBE16755E89D /* LOXSpineItemSdk.mm */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		AD8C8F390599306AF2F1D12E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				855CFE8F169CD64D00AD311E /* LOXContainer.h */,
+				855CFE90169CD64D00AD311E /* LOXContainer.mm */,
+				855CFE53169CAE6300AD311E /* LOXManifestItem.h */,
+				855CFE54169CAE6400AD311E /* LOXManifestItem.mm */,
+				855CFE50169CA95A00AD311E /* LOXPackage.h */,
+				855CFE51169CA95A00AD311E /* LOXPackage.mm */,
+				AD8C829F5C167F51758AAA17 /* LOXSpineItemCocoa.mm */,
+				AD8C88A604DBA0AB6CC2B4B9 /* LOXSpineItemCocoa.h */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -308,16 +331,17 @@
 				855CFE45169B8FFE00AD311E /* LOXePubApi.mm in Sources */,
 				855CFE4B169B912300AD311E /* LOXePubSdkApi.mm in Sources */,
 				855CFE4E169B915400AD311E /* LOXePubCocoaApi.mm in Sources */,
-				855CFE52169CA95A00AD311E /* LOXPackage.m in Sources */,
-				855CFE55169CAE6400AD311E /* LOXManifestItem.m in Sources */,
-				855CFE91169CD64E00AD311E /* LOXeBook.m in Sources */,
-				855CFEEC169E2FE700AD311E /* LOXPackageParser.m in Sources */,
-				AD8C8D5755417C9A48FCB142 /* LOXContainerParser.m in Sources */,
-				AD8C8AAAEB9F47040E6F40A1 /* LOXSpineItem.m in Sources */,
-				850B1A9016A631E800619C3C /* LOXUtil.m in Sources */,
-				850B1A9116A631E800619C3C /* LOXZipHelper.m in Sources */,
+				855CFE52169CA95A00AD311E /* LOXPackage.mm in Sources */,
+				855CFE55169CAE6400AD311E /* LOXManifestItem.mm in Sources */,
+				855CFE91169CD64E00AD311E /* LOXContainer.mm in Sources */,
+				855CFEEC169E2FE700AD311E /* LOXPackageParser.mm in Sources */,
+				AD8C8D5755417C9A48FCB142 /* LOXContainerParser.mm in Sources */,
+				AD8C8AAAEB9F47040E6F40A1 /* LOXSpineItemSdk.mm in Sources */,
+				850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */,
+				850B1A9116A631E800619C3C /* LOXZipHelper.mm in Sources */,
 				850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */,
 				850B1A9816A6320200619C3C /* LOXWebViewController.mm in Sources */,
+				AD8C89C324864BCDB203D348 /* LOXSpineItemCocoa.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,11 +439,6 @@
 					"Objective-Zip/**",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../../../Library/Developer/Xcode/DerivedData/ePub3-byaiqywcvttpmifysmkntldebyfg/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../Library/Developer/Xcode/DerivedData/LauncherOSX-abvkivrtyrpjkjdrccdtasetoxem/Build/Products/Debug\"",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -437,11 +456,6 @@
 					"Objective-Zip/**",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../../../Library/Developer/Xcode/DerivedData/ePub3-byaiqywcvttpmifysmkntldebyfg/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../Library/Developer/Xcode/DerivedData/LauncherOSX-abvkivrtyrpjkjdrccdtasetoxem/Build/Products/Debug\"",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

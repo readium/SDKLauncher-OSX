@@ -1,5 +1,5 @@
 //
-//  LOXeBook.h
+//  LOXContainer.h
 //  LauncherOSX
 //
 //  Created by Boris Schneiderman.
@@ -24,23 +24,16 @@
 
 @class ZipFile;
 @class LOXPackage;
-@class LOXSpineItem;
+@class LOXSpineItemSdk;
 
-@interface LOXeBook : NSObject
+@interface LOXContainer : NSObject   {
+@private
+    NSMutableArray *_packages;
+}
 
-+ (id)eBookWithFile:(NSString *)fileName;
+- (void)addPackage:(LOXPackage *)package;
 
-- (id)initWithFile:(NSString *)fileName;
+- (NSArray *) getPackages;
 
-
-
-@property(readonly, nonatomic, retain) NSString *fileName;
-
-- (NSArray *)getSpineItems;
-
-- (NSString *)getPathToSpineItem:(LOXSpineItem *)spineItem;
-
-
-@property(readonly, nonatomic, retain) NSString *bookUUID;
 
 @end

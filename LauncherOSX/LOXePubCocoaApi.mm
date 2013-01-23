@@ -20,10 +20,22 @@
 //
 
 #import "LOXePubCocoaApi.h"
-#import "LOXeBook.h"
+#import "LOXContainer.h"
+#import "LOXUtil.h"
+#import "LOXZipHelper.h"
+#import "LOXContainerParser.h"
+#import "LOXPackageParser.h"
+#import "LOXPackage.h"
+#import "LOXSpineItemCocoa.h"
 
 @interface LOXePubCocoaApi ()
-- (void)releaseBook;
+
+- (NSString *)createTmpDirectoryForUUID:(NSString *)uuid;
+
+- (void)cleanup;
+
+- (NSString *)absolutePathForFile:(NSString *)fileName;
+
 
 @end
 
@@ -41,33 +53,111 @@
 
 - (void)openFile:(NSString *)file
 {
-    [self releaseBook];
+    [self cleanup];
 
-    _ebook = [[LOXeBook eBookWithFile:file] retain];
+    _bookUUID = [[LOXUtil GetUUID] retain];
+    _tempRootFolder = [[self createTmpDirectoryForUUID:_bookUUID] retain];
+
+    [LOXZipHelper unzipFile:file toFolder:_tempRootFolder];
+
+    _container = [[self parseContainer] retain];
 }
 
-- (void)releaseBook
+- (NSString *)createTmpDirectoryForUUID:(NSString *) uuid
 {
-    if (_ebook) {
-        [_ebook release];
-        _ebook = nil;
+    NSString *tempFolder = [NSTemporaryDirectory() stringByAppendingPathComponent:uuid];
+
+    BOOL isDir;
+
+    if ([[NSFileManager defaultManager] fileExistsAtPath:tempFolder isDirectory:&isDir]) {
+        [[NSFileManager defaultManager] removeItemAtPath:tempFolder error:nil];
     }
+
+    [[NSFileManager defaultManager] createDirectoryAtPath:tempFolder
+                              withIntermediateDirectories:NO attributes:nil error:nil];
+
+    return tempFolder;
 }
+
+- (void)cleanup
+{
+    [_container release];
+    _container = nil;
+    [_bookUUID release];
+    _bookUUID = nil;
+    [_tempRootFolder release];
+    _tempRootFolder = nil;
+}
+
 
 - (void)dealloc
 {
-    [self releaseBook];
+    [self cleanup];
     [super dealloc];
 }
 
 - (NSArray *)getSpineItems
 {
-    return [_ebook getSpineItems];
+    NSMutableArray * spineItems = [NSMutableArray array];
+
+    for (LOXPackage * package in [_container getPackages]){
+        [spineItems addObjectsFromArray:[package getSpineItems]];
+    }
+
+    return spineItems;
 }
 
-- (NSString*)getGetPathToSpineItem:(LOXSpineItem *) spineItem
+- (NSString*)getPathToSpineItem:(id<LOXSpineItem>) spineItem
 {
-    return [_ebook getPathToSpineItem:spineItem];
+    LOXSpineItemCocoa * spineItemCocoa = (LOXSpineItemCocoa *)spineItem;
+
+    NSString * href = [spineItemCocoa getHref];
+
+    NSString *dir = [spineItemCocoa.package.path stringByDeletingLastPathComponent];
+
+    return [NSString stringWithFormat:@"%@/%@", dir, href];
+
 }
+
+- (NSString *)absolutePathForFile:(NSString *)fileName
+{
+    return [NSString stringWithFormat:@"%@/%@", _tempRootFolder, fileName];
+}
+
+-(LOXContainer *)parseContainer
+{
+    LOXContainer* container = [[[LOXContainer alloc] init] autorelease];
+
+    LOXContainerParser * parser = [[[LOXContainerParser alloc] init] autorelease];
+
+    NSString *path = [self absolutePathForFile:@"META-INF/container.xml"];
+
+    NSData *data = [NSData dataWithContentsOfFile:path];
+
+    NSArray *rootFiles = [parser parseData:data];
+
+    for (NSString * rootFile in rootFiles){
+        [container addPackage:[self parsePackage:rootFile]];
+    }
+
+    return container;
+}
+
+- (LOXPackage *)parsePackage:(NSString*) localPackagePath
+{
+    NSString *packagePath = [self absolutePathForFile:localPackagePath];
+
+    NSData *data = [NSData dataWithContentsOfFile:packagePath];
+
+    LOXPackageParser *parser = [[[LOXPackageParser alloc] init] autorelease];
+
+    [parser parseData:data];
+
+    LOXPackage * package = [parser package];
+    package.path = packagePath;
+
+    return package;
+}
+
 
 @end

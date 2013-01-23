@@ -1,7 +1,3 @@
-//
-//  LOXSpineViewController.h
-//  LauncherOSX
-//
 //  Created by Boris Schneiderman.
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
@@ -19,29 +15,37 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import <Foundation/Foundation.h>
-
-@class LOXSpineViewController;
-@protocol LOXSpineItem;
+#import "spine.h"
+#import "LOXSpineItemSdk.h"
 
 
-@protocol LOXSpineViewControllerDelegate
-- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(id<LOXSpineItem>)spineItem;
-@end
+@implementation LOXSpineItemSdk
 
-@interface LOXSpineViewController : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
-@private
-    IBOutlet NSTableView *_tableView;
-    NSMutableArray *_spineItems;
+@synthesize idref = _idref;
+
+- (const ePub3::SpineItem *)sdkSpineItem
+{
+    return _sdkSpineItem;
 }
 
-@property (assign, nonatomic) id<LOXSpineViewControllerDelegate> selectionChangedLiscener;
+- (id)initWithSdkSpineItem:(const ePub3::SpineItem *)sdkSpineItem
+{
+    self = [super init];
+    if(self) {
+        auto str = sdkSpineItem->Idref().c_str();
 
-- (void)addSpineItem:(NSString *)spineItem;
+        _idref = [[NSString stringWithUTF8String:str] retain];
+        _sdkSpineItem = sdkSpineItem;
+    }
 
-- (void)clear;
+    return self;
 
-- (void)selectSpineIndex:(NSUInteger)index;
+}
 
+- (void)dealloc
+{
+    [_idref release];
+    [super dealloc];
+}
 
 @end

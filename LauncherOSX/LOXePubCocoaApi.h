@@ -21,12 +21,14 @@
 
 #import "LOXePubApi.h"
 
-@class LOXeBook;
+@class LOXContainer;
 
 @interface LOXePubCocoaApi : LOXePubApi {
 @private
 
-    LOXeBook *_ebook;
+    LOXContainer *_container;
+    NSString *_bookUUID;
+    NSString *_tempRootFolder;
 }
 
 @end

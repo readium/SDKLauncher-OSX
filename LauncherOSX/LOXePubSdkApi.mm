@@ -22,13 +22,14 @@
 #import "LOXePubSdkApi.h"
 
 #include "container.h"
-#import "LOXSpineItem.h"
+#import "LOXSpineItemSdk.h"
 
 @interface LOXePubSdkApi ()
 
 - (void)releaseContainer;
 
-- (LOXSpineItem *)createSpineItemWith:(const ePub3::SpineItem *)spineItem;
+- (void)readPackages;
+
 
 @end
 
@@ -46,6 +47,7 @@
     if(self){
         
         _apiType = kePubSdkApi;
+        _spineItems = [[NSMutableArray array] retain];
     }
 
     return self;
@@ -55,52 +57,59 @@
 {
     [self releaseContainer];
     _container = new ePub3::Container([file UTF8String]);
+
+    [self readPackages];
 }
 
-- (NSArray *)getSpineItems
+- (void)readPackages
 {
-    NSAssert(_container != nil, @"openFile must be called before using the Api");
-
-    NSMutableArray *loxSpineItems = [[[NSMutableArray alloc] init] autorelease];
+    [_spineItems removeAllObjects];
 
     auto packages = _container->Packages();
 
     for (auto package = packages.begin(); package != packages.end(); ++package) {
         const ePub3::SpineItem *spineItem = (*package)->FirstSpineItem();
         while (spineItem) {
-            [loxSpineItems addObject:[self createSpineItemWith:spineItem]];
+            LOXSpineItemSdk *loxSpineItem = [[[LOXSpineItemSdk alloc] initWithSdkSpineItem:spineItem] autorelease];
+            [_spineItems addObject:loxSpineItem];
             spineItem = spineItem->Next();
         }
     }
-
-    return loxSpineItems;
 }
 
-- (LOXSpineItem *)createSpineItemWith:(const ePub3::SpineItem *)spineItem
+- (NSArray *)getSpineItems
 {
-    auto str = spineItem->Idref().c_str();
-
-    NSString *idref =  [NSString stringWithUTF8String:str];
-
-    LOXSpineItem *loxSpineItem = [LOXSpineItem spineItemWithIdref:idref];
-
-    [idref release];
-
-    return loxSpineItem;
+    return _spineItems;
 }
 
 - (void)dealloc
 {
     [self releaseContainer];
+    [_spineItems release];
     [super dealloc];
 }
 
 - (void)releaseContainer
 {
-    if (_container != nil) {
+    if (_container != NULL) {
         delete _container;
-        _container = nil;
+        _container = NULL;
     }
+}
+
+
+- (NSString*)getPathToSpineItem:(id<LOXSpineItem>) spineItem
+{
+    LOXSpineItemSdk *spineItemSdk = (LOXSpineItemSdk *)spineItem;
+
+    const ePub3::ManifestItem *manifestItem = [spineItemSdk sdkSpineItem]->ManifestItem();
+    auto reader = manifestItem->Reader();
+
+//    reader->read(<#(void *)p#>, <#(size_t)len#>)
+
+//  Reader  reader->read(<#(void *)p#>, <#(size_t)len#>)
+
+    return @"";
 }
 
 @end

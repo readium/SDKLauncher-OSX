@@ -23,7 +23,8 @@
 
 #import "LOXPackage.h"
 #import "LOXManifestItem.h"
-#import "LOXSpineItem.h"
+#import "LOXSpineItemCocoa.h"
+
 
 @interface LOXPackage ()
 
@@ -56,12 +57,12 @@
     [_manifestDictionary setObject:manifestItem forKey:manifestItem.id];
 }
 
-- (NSArray *)spine
+- (NSArray *)getSpineItems
 {
     return _spine;
 }
 
-- (NSString *)getHrefForItem:(LOXSpineItem *)spineItem
+- (NSString *)getHrefForItem:(LOXSpineItemCocoa *)spineItem
 {
     LOXManifestItem * manifestItem = [_manifestDictionary objectForKey:spineItem.idref];
 
@@ -87,7 +88,7 @@
     @throw myException;
 }
 
-- (void)addSpineItem:(LOXSpineItem *)spineItem
+- (void)addSpineItem:(LOXSpineItemCocoa *)spineItem
 {
     [_spine addObject:spineItem];
 }

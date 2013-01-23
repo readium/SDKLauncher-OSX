@@ -23,7 +23,6 @@
 #import "LOXePubApi.h"
 
 #include "container.h"
-#import "LOXSpineItem.h"
 
 
 using namespace ePub3;
@@ -125,7 +124,7 @@ using namespace ePub3;
 }
 
 
-- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem *)spineItem
+- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(id <LOXSpineItem>)spineItem
 {
     self.currentSpineItem = spineItem;
     [self updateWebView];
@@ -154,7 +153,7 @@ using namespace ePub3;
 {
     if (self.currentSpineItem)
     {
-        NSString * path = [_epubApi getGetPathToSpineItem:self.currentSpineItem];
+        NSString * path = [_epubApi getPathToSpineItem:self.currentSpineItem];
         [self.webViewController displayUrlPath:path];
     }
     else

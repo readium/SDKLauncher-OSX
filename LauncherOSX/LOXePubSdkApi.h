@@ -30,6 +30,8 @@ namespace ePub3 {
 @private
     ePub3::Container *_container;
 
+    NSMutableArray *_spineItems;
+
 }
 
 +(void)initialize;
