@@ -19,6 +19,7 @@
 
 #import <Foundation/Foundation.h>
 #import "LOXSpineItem.h"
+#import "spine.h"
 
 
 namespace ePub3 {
@@ -30,13 +31,16 @@ namespace ePub3 {
 @private
     const ePub3::SpineItem * _sdkSpineItem;
     NSString* _idref;
+
+    NSString* _packageStorrageId;
 }
 
 @property(nonatomic, readonly) NSString *idref;
+@property(nonatomic, readonly) NSString *packageStorageId;
 
 - (const ePub3::SpineItem *) sdkSpineItem;
 
-- (id)initWithSdkSpineItem:(const ePub3::SpineItem const *)sdkSpineItem;
+- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItem const *)sdkSpineItem;
 
 
 @end

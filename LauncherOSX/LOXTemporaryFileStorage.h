@@ -11,14 +11,16 @@
 @interface LOXTemporaryFileStorage : NSObject{
 
 @private
-    NSString *_rootFolder;
+    NSString *_rootDirectory;
+    NSString *_uuid;
 
 }
 - (NSString *)absolutePathForFile:(NSString *)fileName;
 
+@property(nonatomic, readonly) NSString *uuid;
 @property(nonatomic, readonly) NSString *rootDirectory;
 
-- (id)initWithBasePath:(NSString *)basePath;
+-(id)initWithUUID:(NSString *)uuid forBasePath:(NSString *)basePath;
 
 - (bool)isResoursFoundAtPath:(NSString *)fullPath;
 

@@ -26,19 +26,23 @@
 
 #import "LOXSpineItemSdk.h"
 #import "LOXTemporaryFileStorage.h"
+#import "LOXUtil.h"
 
 @interface LOXePubSdkApi ()
 
 - (void)cleanup;
 
-- (void)saveContentOfReader:(ePub3::ArchiveReader const *)reader toPath:(NSString *)path;
+- (LOXTemporaryFileStorage *)findStorageWithId:(NSString *)storageId;
+
+- (void)saveContentOfReader:(ePub3::ArchiveReader const *)reader toPath:(NSString *)path inStorrage:(LOXTemporaryFileStorage *)storage;
+
 
 - (void)readPackages;
-
 
 @end
 
 @implementation LOXePubSdkApi
+
 
 
 +(void)initialize
@@ -53,6 +57,7 @@
         
         _apiType = kePubSdkApi;
         _spineItems = [[NSMutableArray array] retain];
+        _packageStorages = [[NSMutableArray array] retain];
     }
 
     return self;
@@ -72,13 +77,23 @@
     auto packages = _container->Packages();
 
     for (auto package = packages.begin(); package != packages.end(); ++package) {
+
+        LOXTemporaryFileStorage *storage = [self createStorageForPackage: *package];
+        [_packageStorages addObject:storage];
+
         const ePub3::SpineItem *spineItem = (*package)->FirstSpineItem();
         while (spineItem) {
-            LOXSpineItemSdk *loxSpineItem = [[[LOXSpineItemSdk alloc] initWithSdkSpineItem:spineItem] autorelease];
+            LOXSpineItemSdk *loxSpineItem = [[[LOXSpineItemSdk alloc] initWithStorageId:storage.uuid forSdkSpineItem:spineItem] autorelease];
             [_spineItems addObject:loxSpineItem];
             spineItem = spineItem->Next();
         }
     }
+}
+
+- (LOXTemporaryFileStorage *)createStorageForPackage:(const ePub3::Package*)package
+{
+    NSString *packageBasePath = [NSString stringWithUTF8String:package->BasePath().c_str()];
+    return [[[LOXTemporaryFileStorage alloc] initWithUUID:[LOXUtil uuid] forBasePath:packageBasePath] autorelease];
 }
 
 - (NSArray *)getSpineItems
@@ -90,13 +105,14 @@
 {
     [self cleanup];
 
-    [_tmpStorage release];
     [_spineItems release];
+    [_packageStorages release];
     [super dealloc];
 }
 
 - (void)cleanup
 {
+    [_packageStorages removeAllObjects];
     [_spineItems removeAllObjects];
 
     if (_container != NULL) {
@@ -113,30 +129,61 @@
     auto manifestItem = [spineItemSdk sdkSpineItem]->ManifestItem();
     _package = manifestItem->Package();
 
-    [_tmpStorage release];
-
-    NSString *packageBasePath = [NSString stringWithUTF8String:_package->BasePath().c_str()];
-    _tmpStorage = [[LOXTemporaryFileStorage alloc] initWithBasePath:packageBasePath];
+    LOXTemporaryFileStorage *storage = [self findStorageWithId:spineItemSdk.packageStorageId];
 
 
     NSString *href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
 
-    NSString *fullPath = [_tmpStorage absolutePathForFile:href];
+
+    if (!storage) {
+        NSLog(@"Package storrage with id %@ not found", spineItemSdk.packageStorageId);
+        return href;
+    }
+
+    NSString *fullPath = [storage absolutePathForFile:href];
 
     return fullPath;
 }
 
+-(LOXTemporaryFileStorage *)findStorageWithId:(NSString *)storageId
+{
+    for(LOXTemporaryFileStorage * storage in _packageStorages)   {
+        if([storage.uuid isEqualToString:storageId]) {
+            return storage;
+        }
+    } 
+    
+    return nil;
+}
+
+-(LOXTemporaryFileStorage *)findStorrageForPath:(NSString *) path
+{
+    for(LOXTemporaryFileStorage * storage in _packageStorages)   {
+        if([path rangeOfString:storage.uuid].location != NSNotFound ) {
+            return storage;
+        }
+    }
+
+    return nil;
+}
+
 -(void)prepareResourceWithPath:(NSString *)path
 {
-    if (![_tmpStorage isLocalResourcePath:path]) {
+    LOXTemporaryFileStorage *storage = [self findStorrageForPath:path];
+
+    if(!storage) {
+        return;
+    }
+    
+    if (![storage isLocalResourcePath:path]) {
         return;
     }
 
-    if([_tmpStorage isResoursFoundAtPath:path]) {
+    if([storage isResoursFoundAtPath:path]) {
         return;
     }
 
-    NSString * relativePath = [_tmpStorage relativePathFromFullPath:path];
+    NSString * relativePath = [storage relativePathFromFullPath:path];
 
     std::string str([relativePath UTF8String]);
     auto reader = _package->ReaderForRelativePath(str);
@@ -146,10 +193,10 @@
         return;
     }
 
-    [self saveContentOfReader:reader toPath: path];
+    [self saveContentOfReader:reader toPath: path inStorrage:storage];
 }
 
-- (void)saveContentOfReader:(const ePub3::ArchiveReader *)reader toPath:(NSString *)path
+- (void)saveContentOfReader:(const ePub3::ArchiveReader *)reader toPath:(NSString *)path inStorrage:(LOXTemporaryFileStorage *)storage
 {
     char buffer[1024];
 
@@ -162,7 +209,7 @@
         readBytes = reader->read(buffer, 1024);
     }
 
-    [_tmpStorage saveData:data  toPaht:path];
+    [storage saveData:data  toPaht:path];
 }
 
 @end

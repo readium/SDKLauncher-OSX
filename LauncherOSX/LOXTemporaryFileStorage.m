@@ -18,20 +18,22 @@
 
 @implementation LOXTemporaryFileStorage
 
-@synthesize rootDirectory = _rootFolder;
+@synthesize uuid = _uuid;
+@synthesize rootDirectory = _rootDirectory;
 
--(id)initWithBasePath:(NSString *)basePath
+-(id)initWithUUID:(NSString *)uuid forBasePath:(NSString *)basePath
 {
     self = [super init];
 
     if(self) {
 
-        NSString* uuid = [LOXUtil uuid];
+        _uuid = uuid;
+        [_uuid retain];
 
         NSString *subdir;
 
         if(basePath && basePath.length > 0 && ![basePath isEqualToString:@"/"]) {
-            subdir = [uuid stringByAppendingPathComponent:basePath];
+            subdir = [_uuid stringByAppendingPathComponent:basePath];
         }
         else {
             subdir = uuid;
@@ -41,9 +43,9 @@
             subdir = [subdir substringToIndex:subdir.length - 1];
         }
 
-        _rootFolder = [[NSTemporaryDirectory() stringByAppendingPathComponent:subdir] retain];
+        _rootDirectory = [[NSTemporaryDirectory() stringByAppendingPathComponent:subdir] retain];
 
-        [self createCleanDirectory:_rootFolder];
+        [self createCleanDirectory:_rootDirectory];
 
     }
 
@@ -63,13 +65,13 @@
 
 -(bool)isLocalResourcePath:(NSString*)path
 {
-    return [path hasPrefix:_rootFolder];
+    return [path hasPrefix:_rootDirectory];
 }
 
 -(NSString *)relativePathFromFullPath:(NSString*)fullPath
 {
-    if ([fullPath hasPrefix:_rootFolder]) {
-        return [fullPath substringFromIndex:_rootFolder.length + 1];
+    if ([fullPath hasPrefix:_rootDirectory]) {
+        return [fullPath substringFromIndex:_rootDirectory.length + 1];
     }
 
     return fullPath;
@@ -106,13 +108,13 @@
 
 - (NSString *)absolutePathForFile:(NSString *)fileName
 {
-    return [NSString stringWithFormat:@"%@/%@", _rootFolder, fileName];
+    return [NSString stringWithFormat:@"%@/%@", _rootDirectory, fileName];
 }
 
 - (void)dealloc
 {
-    [_rootFolder release];
-    _rootFolder = nil;
+    [_rootDirectory release];
+    [_uuid release];
 
     [super dealloc];
 }

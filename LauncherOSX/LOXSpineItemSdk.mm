@@ -22,18 +22,21 @@
 @implementation LOXSpineItemSdk
 
 @synthesize idref = _idref;
+@synthesize packageStorageId = _packageStorrageId;
 
 - (const ePub3::SpineItem *)sdkSpineItem
 {
     return _sdkSpineItem;
 }
 
-- (id)initWithSdkSpineItem:(const ePub3::SpineItem *)sdkSpineItem
+- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(const ePub3::SpineItem *)sdkSpineItem
 {
     self = [super init];
     if(self) {
         auto str = sdkSpineItem->Idref().c_str();
 
+        _packageStorrageId = storageId;
+        [_packageStorrageId retain];
         _idref = [[NSString stringWithUTF8String:str] retain];
         _sdkSpineItem = sdkSpineItem;
     }
@@ -44,6 +47,7 @@
 
 - (void)dealloc
 {
+    [_packageStorrageId release];
     [_idref release];
     [super dealloc];
 }

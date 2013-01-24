@@ -36,9 +36,11 @@ namespace ePub3 {
     const ePub3::Package *_package;
 
     NSMutableArray *_spineItems;
-    LOXTemporaryFileStorage *_tmpStorage;
-
+    NSMutableArray *_packageStorages;
 }
+
+@property(nonatomic, retain) NSMutableArray *packageStorages;
+
 
 +(void)initialize;
 
