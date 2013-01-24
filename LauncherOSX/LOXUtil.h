@@ -23,7 +23,7 @@
 
 @interface LOXUtil : NSObject
 
-+ (NSString *)GetUUID;
++ (NSString *)uuid;
 + (void)ensureDirectoryForFile:(NSString*)filePath;
 
 @end

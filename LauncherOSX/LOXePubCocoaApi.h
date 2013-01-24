@@ -22,13 +22,14 @@
 #import "LOXePubApi.h"
 
 @class LOXContainer;
+@class LOXTemporaryFileStorage;
 
 @interface LOXePubCocoaApi : LOXePubApi {
 @private
 
     LOXContainer *_container;
-    NSString *_bookUUID;
-    NSString *_tempRootFolder;
+    LOXTemporaryFileStorage * _tmpDir;
+
 }
 
 @end

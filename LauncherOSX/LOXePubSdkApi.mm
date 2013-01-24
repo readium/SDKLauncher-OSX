@@ -22,11 +22,16 @@
 #import "LOXePubSdkApi.h"
 
 #include "container.h"
+#include "package.h"
+
 #import "LOXSpineItemSdk.h"
+#import "LOXTemporaryFileStorage.h"
 
 @interface LOXePubSdkApi ()
 
-- (void)releaseContainer;
+- (void)cleanup;
+
+- (void)saveContentOfReader:(ePub3::ArchiveReader const *)reader toPath:(NSString *)path;
 
 - (void)readPackages;
 
@@ -55,16 +60,15 @@
 
 - (void)openFile:(NSString *)file
 {
-    [self releaseContainer];
-    _container = new ePub3::Container([file UTF8String]);
+    [self cleanup];
+
+     _container = new ePub3::Container([file UTF8String]);
 
     [self readPackages];
 }
 
 - (void)readPackages
 {
-    [_spineItems removeAllObjects];
-
     auto packages = _container->Packages();
 
     for (auto package = packages.begin(); package != packages.end(); ++package) {
@@ -84,13 +88,17 @@
 
 - (void)dealloc
 {
-    [self releaseContainer];
+    [self cleanup];
+
+    [_tmpStorage release];
     [_spineItems release];
     [super dealloc];
 }
 
-- (void)releaseContainer
+- (void)cleanup
 {
+    [_spineItems removeAllObjects];
+
     if (_container != NULL) {
         delete _container;
         _container = NULL;
@@ -102,14 +110,59 @@
 {
     LOXSpineItemSdk *spineItemSdk = (LOXSpineItemSdk *)spineItem;
 
-    const ePub3::ManifestItem *manifestItem = [spineItemSdk sdkSpineItem]->ManifestItem();
-    auto reader = manifestItem->Reader();
+    auto manifestItem = [spineItemSdk sdkSpineItem]->ManifestItem();
+    _package = manifestItem->Package();
 
-//    reader->read(<#(void *)p#>, <#(size_t)len#>)
+    [_tmpStorage release];
 
-//  Reader  reader->read(<#(void *)p#>, <#(size_t)len#>)
+    NSString *packageBasePath = [NSString stringWithUTF8String:_package->BasePath().c_str()];
+    _tmpStorage = [[LOXTemporaryFileStorage alloc] initWithBasePath:packageBasePath];
 
-    return @"";
+
+    NSString *href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
+
+    NSString *fullPath = [_tmpStorage absolutePathForFile:href];
+
+    return fullPath;
+}
+
+-(void)prepareResourceWithPath:(NSString *)path
+{
+    if (![_tmpStorage isLocalResourcePath:path]) {
+        return;
+    }
+
+    if([_tmpStorage isResoursFoundAtPath:path]) {
+        return;
+    }
+
+    NSString * relativePath = [_tmpStorage relativePathFromFullPath:path];
+
+    std::string str([relativePath UTF8String]);
+    auto reader = _package->ReaderForRelativePath(str);
+
+    if(reader == NULL){
+        NSLog(@"No archive found for path %@", relativePath);
+        return;
+    }
+
+    [self saveContentOfReader:reader toPath: path];
+}
+
+- (void)saveContentOfReader:(const ePub3::ArchiveReader *)reader toPath:(NSString *)path
+{
+    char buffer[1024];
+
+    NSMutableData * data = [NSMutableData data];
+
+    ssize_t readBytes = reader->read(buffer, 1024);
+
+    while (readBytes > 0) {
+        [data appendBytes:buffer length:(NSUInteger) readBytes];
+        readBytes = reader->read(buffer, 1024);
+    }
+
+    [_tmpStorage saveData:data  toPaht:path];
 }
 
 @end

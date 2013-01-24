@@ -173,7 +173,8 @@ using namespace ePub3;
         }
      }
 
-     _epubApi = [[LOXePubApi ePubApiOfType:apiType] retain];
+    _epubApi = [[LOXePubApi ePubApiOfType:apiType] retain];
+    self.webViewController.epubApi = _epubApi;
 }
 
 

@@ -23,7 +23,7 @@
 
 @implementation LOXUtil
 
-+ (NSString *)GetUUID
++ (NSString *)uuid
 {
     CFUUIDRef theUUID = CFUUIDCreate(NULL);
     CFStringRef string = CFUUIDCreateString(NULL, theUUID);

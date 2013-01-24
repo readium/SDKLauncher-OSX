@@ -25,6 +25,10 @@
 #import "LOXSpineItemSdk.h"
 
 
+@interface LOXePubApi ()
+
+@end
+
 @implementation LOXePubApi
 
 @synthesize apiType = _apiType;
@@ -44,7 +48,6 @@
 
 }
 
-
 - (void)openFile:(NSString *)file
 {
     @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
@@ -56,6 +59,11 @@
 }
 
 - (NSString *)getPathToSpineItem:(id<LOXSpineItem>)spineItem
+{
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
+}
+
+-(void)prepareResourceWithPath:(NSString *)path
 {
     @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }

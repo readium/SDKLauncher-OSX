@@ -48,6 +48,7 @@ typedef enum ePubApiType ePubApiType;
 
 - (NSString*)getPathToSpineItem:(id<LOXSpineItem>) spineItem;
 
+-(void)prepareResourceWithPath:(NSString *)path;
 
 
 @end

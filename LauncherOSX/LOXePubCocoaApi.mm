@@ -21,21 +21,16 @@
 
 #import "LOXePubCocoaApi.h"
 #import "LOXContainer.h"
-#import "LOXUtil.h"
 #import "LOXZipHelper.h"
 #import "LOXContainerParser.h"
 #import "LOXPackageParser.h"
+#import "LOXTemporaryFileStorage.h"
 #import "LOXPackage.h"
 #import "LOXSpineItemCocoa.h"
 
 @interface LOXePubCocoaApi ()
 
-- (NSString *)createTmpDirectoryForUUID:(NSString *)uuid;
-
 - (void)cleanup;
-
-- (NSString *)absolutePathForFile:(NSString *)fileName;
-
 
 @end
 
@@ -55,38 +50,19 @@
 {
     [self cleanup];
 
-    _bookUUID = [[LOXUtil GetUUID] retain];
-    _tempRootFolder = [[self createTmpDirectoryForUUID:_bookUUID] retain];
+    _tmpDir = [[LOXTemporaryFileStorage alloc] init];
 
-    [LOXZipHelper unzipFile:file toFolder:_tempRootFolder];
+    [LOXZipHelper unzipFile:file toFolder: _tmpDir.rootDirectory];
 
     _container = [[self parseContainer] retain];
 }
 
-- (NSString *)createTmpDirectoryForUUID:(NSString *) uuid
-{
-    NSString *tempFolder = [NSTemporaryDirectory() stringByAppendingPathComponent:uuid];
-
-    BOOL isDir;
-
-    if ([[NSFileManager defaultManager] fileExistsAtPath:tempFolder isDirectory:&isDir]) {
-        [[NSFileManager defaultManager] removeItemAtPath:tempFolder error:nil];
-    }
-
-    [[NSFileManager defaultManager] createDirectoryAtPath:tempFolder
-                              withIntermediateDirectories:NO attributes:nil error:nil];
-
-    return tempFolder;
-}
 
 - (void)cleanup
 {
+    [_tmpDir release];
     [_container release];
     _container = nil;
-    [_bookUUID release];
-    _bookUUID = nil;
-    [_tempRootFolder release];
-    _tempRootFolder = nil;
 }
 
 
@@ -119,10 +95,6 @@
 
 }
 
-- (NSString *)absolutePathForFile:(NSString *)fileName
-{
-    return [NSString stringWithFormat:@"%@/%@", _tempRootFolder, fileName];
-}
 
 -(LOXContainer *)parseContainer
 {
@@ -130,7 +102,7 @@
 
     LOXContainerParser * parser = [[[LOXContainerParser alloc] init] autorelease];
 
-    NSString *path = [self absolutePathForFile:@"META-INF/container.xml"];
+    NSString *path = [_tmpDir absolutePathForFile:@"META-INF/container.xml"];
 
     NSData *data = [NSData dataWithContentsOfFile:path];
 
@@ -145,7 +117,7 @@
 
 - (LOXPackage *)parsePackage:(NSString*) localPackagePath
 {
-    NSString *packagePath = [self absolutePathForFile:localPackagePath];
+    NSString *packagePath = [_tmpDir absolutePathForFile:localPackagePath];
 
     NSData *data = [NSData dataWithContentsOfFile:packagePath];
 
@@ -157,6 +129,11 @@
     package.path = packagePath;
 
     return package;
+}
+
+-(void)prepareResourceWithPath:(NSString *)path
+{
+    //because we unpack everything - all resources already stored
 }
 
 

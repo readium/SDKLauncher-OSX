@@ -21,6 +21,10 @@
 
 #import <Foundation/Foundation.h>
 #import <WebKit/WebKit.h>
+#import <WebKit/WebResourceLoadDelegate.h>
+
+@class LOXePubApi;
+
 
 @interface LOXWebViewController : NSObject {
 
@@ -35,5 +39,7 @@
 - (void)displayUrlPath:(NSString *)urlPath;
 
 - (void) clear;
+
+@property(nonatomic, retain) LOXePubApi *epubApi;
 
 @end
