@@ -21,12 +21,15 @@
 
 #import "LOXePubApi.h"
 
-@class LOXeBook;
+@class LOXContainer;
+@class LOXTemporaryFileStorage;
 
 @interface LOXePubCocoaApi : LOXePubApi {
 @private
 
-    LOXeBook *_ebook;
+    LOXContainer *_container;
+    LOXTemporaryFileStorage * _tmpDir;
+
 }
 
 @end

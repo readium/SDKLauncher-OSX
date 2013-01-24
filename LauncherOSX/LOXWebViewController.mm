@@ -20,13 +20,11 @@
 //
 
 #import "LOXWebViewController.h"
+#import "LOXePubApi.h"
 
 @implementation LOXWebViewController
 
-- (void)displayUrl:(NSString *)url
-{
 
-}
 
 - (void)displayHtml:(NSString *)html withBaseUrlPath:(NSString *) baseUrlPath
 {
@@ -44,6 +42,21 @@
 - (void)clear
 {
     [[_webView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"about:blank"]]];
+}
+
+
+- (NSURLRequest *)webView:(WebView *)sender
+                 resource:(id)identifier
+          willSendRequest:(NSURLRequest *)request
+         redirectResponse:(NSURLResponse *)redirectResponse
+           fromDataSource:(WebDataSource *)dataSource
+{
+
+    NSString *path = request.URL.path;
+
+    [self.epubApi prepareResourceWithPath: path];
+
+    return request;
 }
 
 

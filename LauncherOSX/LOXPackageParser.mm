@@ -22,7 +22,8 @@
 #import "LOXPackageParser.h"
 #import "LOXPackage.h"
 #import "LOXManifestItem.h"
-#import "LOXSpineItem.h"
+#import "LOXSpineItemSdk.h"
+#import "LOXSpineItemCocoa.h"
 
 @interface LOXPackageParser ()
 - (void)clearPackage;
@@ -35,7 +36,7 @@
 @implementation LOXPackageParser
 
 
-- (LOXPackage *)parseData:(NSData *)data
+- (void)parseData:(NSData *)data
 {
     [self clearPackage];
 
@@ -43,17 +44,18 @@
 
     [parser setDelegate:self];
     [parser parse];
+}
 
+-(LOXPackage *)package
+{
     return _package;
-
 }
 
 - (void)clearPackage
 {
-    if (_package) {
-        [_package release];
-        _package = nil;
-    }
+    [_package release];
+    _package = nil;
+
 }
 
 - (void)dealloc
@@ -95,7 +97,9 @@ didStartElement:(NSString *)elementName
         NSString *idref = [attributeDict objectForKey:@"idref"];
 
         if (idref) {
-            [_package addSpineItem:[LOXSpineItem spineItemWithIdref:idref]];
+
+            LOXSpineItemCocoa *spineItem = [[[LOXSpineItemCocoa alloc] initWithIdref:idref forPackage:_package] autorelease];
+            [_package addSpineItem:spineItem];
         }
         else {
             NSAssert(NO, @"idref mast exist");
@@ -130,7 +134,7 @@ didStartElement:(NSString *)elementName
         return;
     }
 
-    if ([elementName isEqual:@"spine"]) {
+    if ([elementName isEqual:@"getSpineItems"]) {
         _isSpine = NO;
         return;
     }

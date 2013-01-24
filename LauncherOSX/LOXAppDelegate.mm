@@ -160,7 +160,7 @@ using namespace ePub3;
 }
 
 
-- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem *)spineItem
+- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(id <LOXSpineItem>)spineItem
 {
     self.currentSpineItem = spineItem;
     [self updateWebView];
@@ -190,17 +190,9 @@ using namespace ePub3;
 {
     if (self.currentSpineItem)
     {
-        //use path directly
-        NSString * path = [_epubApi getGetPathToSpineItem:self.currentSpineItem];
-//        [self.webViewController displayUrlPath:path];
 
-        //read html content and use it
-//        NSString * html = [NSString stringWithContentsOfFile: path encoding:NSUTF8StringEncoding error:nil];
-//        [self.webViewController displayHtml:html withBaseUrlPath:[path stringByDeletingLastPathComponent]];
-
-        NSString *html = [_scriptInjector injectHtmlFile:path];
-        [self.webViewController displayHtml:html withBaseUrlPath: _scriptInjector.baseUrlPath];
-
+        NSString * path = [_epubApi getPathToSpineItem:self.currentSpineItem];
+        [self.webViewController displayUrlPath:path];
     }
     else
     {
@@ -219,7 +211,8 @@ using namespace ePub3;
         }
      }
 
-     _epubApi = [[LOXePubApi ePubApiOfType:apiType] retain];
+    _epubApi = [[LOXePubApi ePubApiOfType:apiType] retain];
+    self.webViewController.epubApi = _epubApi;
 }
 
 

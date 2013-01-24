@@ -26,14 +26,14 @@
 #import "LOXWebViewController.h"
 
 @class LOXePubApi;
-@class LOXSpineItem;
+@protocol LOXSpineItem;
 @class LOXScriptInjector;
+
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate, LOXSpineViewControllerDelegate> {
 @private
     LOXePubApi *_epubApi;
-
-    LOXScriptInjector* _scriptInjector;
+    LOXScriptInjector *_scriptInjector;
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -43,14 +43,10 @@
 @property (assign) IBOutlet NSButton *nextPageButton;
 
 
-
-@property (assign) LOXSpineItem* currentSpineItem;
+@property (assign) id<LOXSpineItem> currentSpineItem;
 
 
 - (IBAction)openDocumentWithCocoaApi:(id)sender;
 - (IBAction)openDocumentWithSdkApi:(id)sender;
-
-- (IBAction)openNextPage:(id)sender;
-- (IBAction)openPrevPage:(id)sender;
 
 @end
