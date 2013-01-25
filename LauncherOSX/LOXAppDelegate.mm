@@ -191,8 +191,11 @@ using namespace ePub3;
     if (self.currentSpineItem)
     {
 
-        NSString * path = [_epubApi getPathToSpineItem:self.currentSpineItem];
-        [self.webViewController displayUrlPath:path];
+        NSString *path = [_epubApi getPathToSpineItem:self.currentSpineItem];
+
+        NSString *html =  [_scriptInjector injectHtmlFile:path];
+
+        [self.webViewController displayHtml:html withBaseUrlPath:_scriptInjector.baseUrlPath];
     }
     else
     {

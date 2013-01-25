@@ -911,6 +911,14 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
+						<string key="label">resourceLoadDelegate</string>
+						<reference key="source" ref="705941750"/>
+						<reference key="destination" ref="901247368"/>
+					</object>
+					<int key="connectionID">841</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
 						<string key="label">_webView</string>
 						<reference key="source" ref="901247368"/>
 						<reference key="destination" ref="705941750"/>
@@ -1806,7 +1814,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">840</int>
+			<int key="maxID">841</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1816,8 +1824,6 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="openDocumentWithCocoaApi:">id</string>
 						<string key="openDocumentWithSdkApi:">id</string>
-						<string key="openNextPage:">id</string>
-						<string key="openPrevPage:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="openDocumentWithCocoaApi:">
@@ -1826,14 +1832,6 @@
 						</object>
 						<object class="IBActionInfo" key="openDocumentWithSdkApi:">
 							<string key="name">openDocumentWithSdkApi:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="openNextPage:">
-							<string key="name">openNextPage:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="openPrevPage:">
-							<string key="name">openPrevPage:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>

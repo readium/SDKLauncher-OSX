@@ -27,6 +27,7 @@
 #import "LOXTemporaryFileStorage.h"
 #import "LOXPackage.h"
 #import "LOXSpineItemCocoa.h"
+#import "LOXUtil.h"
 
 @interface LOXePubCocoaApi ()
 
@@ -50,7 +51,7 @@
 {
     [self cleanup];
 
-    _tmpDir = [[LOXTemporaryFileStorage alloc] init];
+    _tmpDir = [[LOXTemporaryFileStorage alloc] initWithUUID:[LOXUtil uuid] forBasePath:@"/"];
 
     [LOXZipHelper unzipFile:file toFolder: _tmpDir.rootDirectory];
 
