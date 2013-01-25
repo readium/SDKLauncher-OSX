@@ -193,7 +193,7 @@
 							<array class="NSMutableArray" key="NSMenuItems">
 								<object class="NSMenuItem" id="332956679">
 									<reference key="NSMenu" ref="720053764"/>
-									<string key="NSTitle">Open With ePob SDK...</string>
+									<string key="NSTitle">Open With ePub SDK...</string>
 									<string key="NSKeyEquiv">O</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
