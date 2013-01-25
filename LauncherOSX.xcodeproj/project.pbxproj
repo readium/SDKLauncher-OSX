@@ -440,7 +440,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LauncherOSX/LauncherOSX-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					"readium-sdk/ePub3/ePub/**",
+					"readium-sdk/ePub3/**",
 					"${SDKROOT}/usr/include/libxml2",
 					"Objective-Zip/**",
 				);
@@ -457,7 +457,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LauncherOSX/LauncherOSX-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					"readium-sdk/ePub3/ePub/**",
+					"readium-sdk/ePub3/**",
 					"${SDKROOT}/usr/include/libxml2",
 					"Objective-Zip/**",
 				);
