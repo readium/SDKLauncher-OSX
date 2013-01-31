@@ -854,22 +854,6 @@
 					<int key="connectionID">739</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">openPrevPage:</string>
-						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="288884514"/>
-					</object>
-					<int key="connectionID">836</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">openNextPage:</string>
-						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="838258766"/>
-					</object>
-					<int key="connectionID">838</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">nextPageButton</string>
 						<reference key="source" ref="976324537"/>
@@ -924,6 +908,38 @@
 						<reference key="destination" ref="705941750"/>
 					</object>
 					<int key="connectionID">607</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">nextPageButton</string>
+						<reference key="source" ref="901247368"/>
+						<reference key="destination" ref="838258766"/>
+					</object>
+					<int key="connectionID">842</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">prevPageButton</string>
+						<reference key="source" ref="901247368"/>
+						<reference key="destination" ref="288884514"/>
+					</object>
+					<int key="connectionID">843</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">onNextPageClick:</string>
+						<reference key="source" ref="901247368"/>
+						<reference key="destination" ref="838258766"/>
+					</object>
+					<int key="connectionID">844</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">onPrevPageClick:</string>
+						<reference key="source" ref="901247368"/>
+						<reference key="destination" ref="288884514"/>
+					</object>
+					<int key="connectionID">845</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1814,7 +1830,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">841</int>
+			<int key="maxID">845</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1836,21 +1852,11 @@
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="nextPageButton">NSButton</string>
-						<string key="prevPageButton">NSButton</string>
 						<string key="spineViewController">LOXSpineViewController</string>
 						<string key="webViewController">LOXWebViewController</string>
 						<string key="window">NSWindow</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="nextPageButton">
-							<string key="name">nextPageButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="prevPageButton">
-							<string key="name">prevPageButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="spineViewController">
 							<string key="name">spineViewController</string>
 							<string key="candidateClassName">LOXSpineViewController</string>
@@ -1891,17 +1897,39 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">LOXWebViewController</string>
 					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">_webView</string>
-						<string key="NS.object.0">WebView</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">_webView</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="onNextPageClick:">id</string>
+						<string key="onPrevPageClick:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="onNextPageClick:">
+							<string key="name">onNextPageClick:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="onPrevPageClick:">
+							<string key="name">onPrevPageClick:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="_webView">WebView</string>
+						<string key="nextPageButton">NSButton</string>
+						<string key="prevPageButton">NSButton</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="_webView">
 							<string key="name">_webView</string>
 							<string key="candidateClassName">WebView</string>
 						</object>
-					</object>
+						<object class="IBToOneOutletInfo" key="nextPageButton">
+							<string key="name">nextPageButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="prevPageButton">
+							<string key="name">prevPageButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/LOXWebViewController.h</string>

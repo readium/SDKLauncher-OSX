@@ -5,95 +5,141 @@
 
             $(document).ready(function () {
 
-                var parentDocument = this;
-                this.viewportInfo = {
-                    numViewports : undefined,
-                    currentViewport : 0
+                var _this = this;
+
+                this.lastKeyholeSize = {
+                    width: undefined,
+                    height: undefined
                 };
+                
+                this.pagination = {
+                    visibleColumnCount : 1,
+                    columnGap : 20,
+                    pageCount : undefined,
+                    currentPage : 0,
+                    columnWidth : undefined
+                };
+
 
                 this.getEpubContentDocument = function () {
                     return $("#epubContentIframe")[0].contentDocument;
-                }
+                };
 
-                this.viewportWidth = function () {
-                    return document.width;
-                }
 
-                this.epubHtmlLeft = function () {
+                this.moveNextPage = function () {
+
+                    console.log("OnNextPage()");
+
+                    if(this.pagination.currentPage < this.pagination.pageCount - 1) {
+                        this.pagination.currentPage++;
+                        this.displayCurrentPage();
+                    }
+                };
+
+                this.movePrevPage = function () {
+
+                    console.log("OnPrevPage()");
+
+                    if(this.pagination.currentPage > 0) {
+                        this.pagination.currentPage--;
+                        this.displayCurrentPage();
+                    }
+
+                };
+
+                this.displayCurrentPage = function() {
+
+                    if(this.pagination.currentPage < 0 || this.pagination.currentPage >= this.pagination.pageCount) {
+                        return;
+                    }
+
+                    var shift = this.pagination.currentPage * (_this.lastKeyholeSize.width + this.pagination.columnGap);
+
                     var $epubHtml = $("html", this.getEpubContentDocument());
-                    return Number($epubHtml.css("margin-left").replace("px", ""));
-                }
+                    $epubHtml.css("left", -shift + "px");
+                };
 
-                this.getSyntheticLayoutWidths = function () {
+                this.updateKeyholeSize = function() {
 
-                    var viewportWidth = document.width;
-                    var columnWidth = Math.floor((viewportWidth * 0.75)/2);
-                    var gapWidth = Math.floor(viewportWidth - (columnWidth * 2))/2;
-                    return { 
-                        columnWidth : columnWidth,
-                        gapWidth : gapWidth
+                    var newWidth = $("#key-hole").width();
+                    var newHeight = $("#key-hole").height();
+
+                    if(_this.lastKeyholeSize.width !== newWidth || _this.lastKeyholeSize.height !== newHeight){
+
+                        _this.lastKeyholeSize.width = newWidth;
+                        _this.lastKeyholeSize.height = newHeight;
+                        return true;
                     }
-                }
-                this.calculateNumViewports = function () {
 
-                    var viewportWidth = document.width;
-                    var iframeWidth = $("html", this.getEpubContentDocument()).width();
-                    var numViewports = Math.ceil(iframeWidth / viewportWidth);
-                    return numViewports;
-                }
+                    return false;
 
-                this.moveViewportRight = function () {
+                };
 
-                    var viewportWidth;
-                    var $epubHtml;
-                    var newEpubHtmlLeft;
+                this.updatePagination = function(){
 
-                    if (this.viewportInfo.currentViewport < this.viewportInfo.numViewports) {
+                    _this.pagination.columnWidth = (_this.lastKeyholeSize.width - _this.pagination.columnGap * (_this.pagination.visibleColumnCount  -1)) / this.pagination.visibleColumnCount;
 
-                        $epubHtml = $("html", this.getEpubContentDocument());
-                        newEpubHtmlLeft = this.epubHtmlLeft() - this.viewportWidth();
-                        $epubHtml.css("margin-left", newEpubHtmlLeft + "px");
-                        this.viewportInfo.currentViewport++;
-                    }
-                }
+                    var contentDoc = _this.getEpubContentDocument();
+                    $("html", contentDoc).css("width", _this.lastKeyholeSize.width);
+                    $("html", contentDoc).css("-webkit-column-width", _this.pagination.columnWidth + "px");
 
-                this.moveViewportLeft = function () {
+                    _this.displayCurrentPage();
 
-                    var viewportWidth;
-                    var $epubHtml;
-                    var newEpubHtmlLeft;
+                    //TODO it takes time for layout engine to arrange columns we waite
+                    //it would be better to react on layout column reflow finished event
+                    setTimeout(function(){
+                        console.log("Set num of viewports");
+                        var columnizedContentWidth = $("html", contentDoc)[0].scrollWidth;
+                        $("#epubContentIframe").css("width", columnizedContentWidth);
+                        _this.pagination.pageCount = Math.round(columnizedContentWidth / _this.lastKeyholeSize.width);
 
-                    if (this.viewportInfo.currentViewport > 0) {
+                        if(_this.pagination.currentPage >= _this.pagination.pageCount) {
+                            _this.pagination.currentPage = _this.pagination.pageCount - 1;
+                        }
 
-                        $epubHtml = $("html", this.getEpubContentDocument());
-                        newEpubHtmlLeft = this.epubHtmlLeft() + this.viewportWidth();
-                        $epubHtml.css("margin-left", newEpubHtmlLeft + "px");
-                        this.viewportInfo.currentViewport--;
-                    }
-                }
+                        _this.displayCurrentPage();
+                    }, 100);
+
+                };
 
                 // When the iframe has been loaded, paginate the epub content document
                 $("#epubContentIframe").on("load", function (e) {
 
-                    var syntheticWidths;
-                    var epubContentCSSLink = document.createElement("link");
-                    epubContentCSSLink.href = "epubContentIframe.css"; 
-                    epubContentCSSLink.rel = "stylesheet"; 
-                    epubContentCSSLink.type = "text/css"; 
-                    e.srcElement.contentDocument.head.appendChild(epubContentCSSLink);
+                    var $epubHtml = $("html", _this.getEpubContentDocument());
 
-                    syntheticWidths = parentDocument.getSyntheticLayoutWidths();
-                    $("html", parentDocument.getEpubContentDocument()).css("-webkit-column-width", syntheticWidths.columnWidth + "px");
-                    $("html", parentDocument.getEpubContentDocument()).css("-webkit-column-gap", syntheticWidths.columnGap + "px");
+                    $epubHtml.css("height", "100%");
+                    $epubHtml.css("position", "absolute");
+                    $epubHtml.css("-webkit-column-axis", "horizontal");
+                    $epubHtml.css("-webkit-column-gap", _this.pagination.columnGap + "px");
 
-                    parentDocument.viewportInfo.numViewports = parentDocument.calculateNumViewports();
+/////////
+//Columns Debugging
+//                    $epubHtml.css("-webkit-column-rule-color", "red");
+//                    $epubHtml.css("-webkit-column-rule-style", "dashed");
+//                    $epubHtml.css("background-color", '#b0c4de');
+/////////
+
+                    _this.pagination.currentPage = 0;
+                    _this.updateKeyholeSize();
+                    _this.updatePagination();
+
+                });
+
+                $(window).resize(function(e){
+
+                   if(_this.updateKeyholeSize()) {
+
+                       _this.updatePagination();
+                   }
                 });
             });
 
         </script>
-        <link rel="stylesheet" type="text/css" href="reader.css"></link>
+        <link rel="stylesheet" type="text/css" href="reader.css" />
     </head>
     <body>
-        <iframe scrolling="no" src="${CHAPTER}" id="epubContentIframe"></iframe>
+        <div id="key-hole" class="clearfix">
+            <iframe scrolling="no" src="${CHAPTER}" id="epubContentIframe"></iframe>
+        </div>
     </body>
 </html>

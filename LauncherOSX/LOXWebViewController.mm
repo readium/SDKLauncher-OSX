@@ -25,12 +25,27 @@
 @implementation LOXWebViewController
 
 
-
 - (void)displayHtml:(NSString *)html withBaseUrlPath:(NSString *) baseUrlPath
 {
     NSURL *baseUrl = [NSURL fileURLWithPath:baseUrlPath];
     [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
 }
+
+
+- (IBAction)onPrevPageClick:(id)sender
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript:@"document.movePrevPage()"];
+}
+
+
+- (IBAction)onNextPageClick:(id)sender
+{
+//    [win callWebScriptMethod:@"document.moveViewportRight" withArguments:nil];
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript:@"document.moveNextPage()"];
+}
+
 
 -(void)displayUrlPath:(NSString *)urlPath
 {
@@ -43,6 +58,7 @@
 {
     [[_webView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"about:blank"]]];
 }
+
 
 
 - (NSURLRequest *)webView:(WebView *)sender

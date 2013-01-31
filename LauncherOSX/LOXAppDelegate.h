@@ -39,8 +39,6 @@
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet LOXSpineViewController *spineViewController;
 @property (assign) IBOutlet LOXWebViewController *webViewController;
-@property (assign) IBOutlet NSButton *prevPageButton;
-@property (assign) IBOutlet NSButton *nextPageButton;
 
 
 @property (assign) id<LOXSpineItem> currentSpineItem;

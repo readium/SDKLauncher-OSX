@@ -35,7 +35,6 @@ using namespace ePub3;
 - (void) initApiOfType:(ePubApiType)apiType;
 - (void) openDocument;
 - (void) reportError:(NSString *) error;
-- (void) updateUI;
 
 
 @end
@@ -64,7 +63,6 @@ using namespace ePub3;
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     self.spineViewController.selectionChangedLiscener = self;
-    [self updateUI];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
@@ -103,12 +101,6 @@ using namespace ePub3;
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
     [alert setMessageText:error];
     [alert runModal];
-}
-
-- (void)updateUI
-{
-    [self.prevPageButton setEnabled: self.currentSpineItem != nil];
-    [self.nextPageButton setEnabled: self.currentSpineItem != nil];
 }
 
 
@@ -164,7 +156,6 @@ using namespace ePub3;
 {
     self.currentSpineItem = spineItem;
     [self updateWebView];
-    [self updateUI];
 }
 
 - (NSString *)selectFile

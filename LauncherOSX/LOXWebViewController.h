@@ -38,7 +38,14 @@
 
 @property(nonatomic, retain) LOXePubApi *epubApi;
 
+@property (assign) IBOutlet NSButton *prevPageButton;
+@property (assign) IBOutlet NSButton *nextPageButton;
+
+
 - (void)displayHtml:(NSString *)html withBaseUrlPath:(NSString *)baseUrlPath;
+
+- (IBAction)onPrevPageClick:(id)sender;
+- (IBAction)onNextPageClick:(id)sender;
 
 
 @end
