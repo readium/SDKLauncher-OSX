@@ -26,6 +26,15 @@
                 };
 
 
+                this.openPage = function(pageIndex) {
+
+                    if(pageIndex >= 0 && pageIndex < this.pagination.pageCount) {
+                        this.pagination.currentPage = pageIndex;
+                        this.displayCurrentPage();
+                    }
+                };
+
+
                 this.moveNextPage = function () {
 
                     console.log("OnNextPage()");
@@ -50,6 +59,8 @@
                 this.displayCurrentPage = function() {
 
                     if(this.pagination.currentPage < 0 || this.pagination.currentPage >= this.pagination.pageCount) {
+
+                        LauncherUI.onOpenPageIndexOfPages(0, 0);
                         return;
                     }
 
@@ -57,6 +68,8 @@
 
                     var $epubHtml = $("html", this.getEpubContentDocument());
                     $epubHtml.css("left", -shift + "px");
+
+                    LauncherUI.onOpenPageIndexOfPages(this.pagination.currentPage, this.pagination.pageCount);
                 };
 
                 this.updateKeyholeSize = function() {
