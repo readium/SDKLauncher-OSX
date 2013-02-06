@@ -459,6 +459,7 @@
 					"readium-sdk/ePub3/**",
 					"${SDKROOT}/usr/include/libxml2",
 					"Objective-Zip/**",
+					"${SCRROOT}/readium-sdk/ePub3/ThirdParty",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -476,6 +477,7 @@
 					"readium-sdk/ePub3/**",
 					"${SDKROOT}/usr/include/libxml2",
 					"Objective-Zip/**",
+					"${SCRROOT}/readium-sdk/ePub3/ThirdParty",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
