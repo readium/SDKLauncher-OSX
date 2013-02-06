@@ -27,16 +27,19 @@
 
 @class LOXePubApi;
 @protocol LOXSpineItem;
+@class LOXScriptInjector;
 
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate, LOXSpineViewControllerDelegate> {
 @private
     LOXePubApi *_epubApi;
+    LOXScriptInjector *_scriptInjector;
 }
 
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet LOXSpineViewController *spineViewController;
 @property (assign) IBOutlet LOXWebViewController *webViewController;
+
 
 @property (assign) id<LOXSpineItem> currentSpineItem;
 

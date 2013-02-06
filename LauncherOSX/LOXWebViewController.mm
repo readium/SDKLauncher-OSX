@@ -21,18 +21,43 @@
 
 #import "LOXWebViewController.h"
 #import "LOXePubApi.h"
+#import "LOXPageNumberTextController.h"
+
+
+@interface LOXWebViewController ()
+- (void)updateUI;
+
+@end
 
 @implementation LOXWebViewController
 
-- (void)displayUrl:(NSString *)url
-{
 
+- (void)displayHtml:(NSString *)html withBaseUrlPath:(NSString *) baseUrlPath
+{
+    NSURL *baseUrl = [NSURL fileURLWithPath:baseUrlPath];
+    [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
 }
 
-- (void)displayHtml:(NSString *)html
+
+- (IBAction)onPrevPageClick:(id)sender
 {
-    [[_webView mainFrame] loadHTMLString:html baseURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] bundlePath]]];
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript:@"document.movePrevPage()"];
 }
+
+
+- (IBAction)onNextPageClick:(id)sender
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript:@"document.moveNextPage()"];
+}
+
+- (void)openPageIndex:(int)pageIx
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript:[NSString stringWithFormat:@"document.openPage(%d)", pageIx]];
+}
+
 
 -(void)displayUrlPath:(NSString *)urlPath
 {
@@ -45,6 +70,7 @@
 {
     [[_webView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"about:blank"]]];
 }
+
 
 
 - (NSURLRequest *)webView:(WebView *)sender
@@ -61,5 +87,47 @@
     return request;
 }
 
+//this allows JavaScript to call the -logJavaScriptString: method
++ (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
+{
+    if(sel == @selector(onOpenPageIndex:ofPages:))
+        return NO;
+    return YES;
+}
+
+//this returns a nice name for the method in the JavaScript environment
++(NSString*)webScriptNameForSelector:(SEL)sel
+{
+    if(sel == @selector(onOpenPageIndex:ofPages:))
+        return @"onOpenPageIndexOfPages";
+    return nil;
+}
+
+
+//this is called as soon as the script environment is ready in the webview
+- (void)webView:(WebView *)sender didClearWindowObject:(WebScriptObject *)windowScriptObject forFrame:(WebFrame *)frame
+{
+    //add the controller to the script environment
+    //the "Cocoa" object will now be available to JavaScript
+    [windowScriptObject setValue:self forKey:@"LauncherUI"];
+}
+
+//this is a simple log command
+- (void)onOpenPageIndex:(int)index ofPages:(int)count
+{
+    [self.pageNumController setPageIndex:index ofPages:count];
+    [self updateUI];
+}
+
+- (void)controlTextDidChange:(NSNotification *)notification {
+    NSTextField *textField = [notification object];
+    NSLog(@"controlTextDidChange: stringValue == %@", [textField stringValue]);
+}
+
+- (void)updateUI
+{
+    [self.prevPageButton setEnabled:self.pageNumController.pageCount > 0 && self.pageNumController.pageIx > 0];
+    [self.nextPageButton setEnabled:self.pageNumController.pageCount > 0 && self.pageNumController.pageIx < self.pageNumController.pageCount - 1];
+}
 
 @end
