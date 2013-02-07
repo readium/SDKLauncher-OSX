@@ -24,6 +24,7 @@
 
 #include "container.h"
 #import "LOXSpineItem.h"
+#import "LOXScriptInjector.h"
 
 
 using namespace ePub3;
@@ -34,12 +35,27 @@ using namespace ePub3;
 - (void) initApiOfType:(ePubApiType)apiType;
 - (void) openDocument;
 - (void) reportError:(NSString *) error;
+
+
 @end
+
 
 @implementation LOXAppDelegate
 
+-(id)init
+{
+    self = [super init];
+    if(self){
+
+        _scriptInjector = [[LOXScriptInjector alloc] init];
+    }
+
+    return self;
+}
+
 - (void)dealloc
 {
+    [_scriptInjector release];
     [_epubApi release];
     [super dealloc];
 }
@@ -106,6 +122,17 @@ using namespace ePub3;
     }
 }
 
+- (IBAction)openNextPage:(id)sender
+{
+
+}
+
+- (IBAction)openPrevPage:(id)sender
+{
+
+}
+
+
 - (void)openDocumentWithCocoaApi:(id)sender
 {
     try {
@@ -125,7 +152,7 @@ using namespace ePub3;
 }
 
 
-- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem *)spineItem
+- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(id <LOXSpineItem>)spineItem
 {
     self.currentSpineItem = spineItem;
     [self updateWebView];
@@ -154,8 +181,12 @@ using namespace ePub3;
 {
     if (self.currentSpineItem)
     {
-        NSString * path = [_epubApi getGetPathToSpineItem:self.currentSpineItem];
-        [self.webViewController displayUrlPath:path];
+
+        NSString *path = [_epubApi getPathToSpineItem:self.currentSpineItem];
+
+        NSString *html =  [_scriptInjector injectHtmlFile:path];
+
+        [self.webViewController displayHtml:html withBaseUrlPath:_scriptInjector.baseUrlPath];
     }
     else
     {
@@ -174,7 +205,8 @@ using namespace ePub3;
         }
      }
 
-     _epubApi = [[LOXePubApi ePubApiOfType:apiType] retain];
+    _epubApi = [[LOXePubApi ePubApiOfType:apiType] retain];
+    self.webViewController.epubApi = _epubApi;
 }
 
 

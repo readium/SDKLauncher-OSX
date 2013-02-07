@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Build file for the Launcher OSX -->
+<project name="org.readium.LauncherOSX" default="build.all" basedir=".">
+
+	<property name="version" value="1.0.1"/>
+	<property name="xcworkspace" value="LauncherOSX.xcworkspace"/>
+	<property name="build.dir" value="/Users/rkwright/Documents/github/SDKLauncher-OSX"/>
+	<property name="scheme" value="LauncherOSX"/>
+	<property environment="env"/>
+  <echo message="Number of Processors = ${env.NUMBER_OF_PROCESSORS}"/>
+  <echo message="ANT_HOME is set to = ${env.ANT_HOME}"/>
+
+	
+	<!-- this builds LauncherOSX -->
+	<target name ="build.all" depends="init" description="Invoke xcodebuild to do a full build" >
+         <exec executable="xcodebuild" spawn="false">
+    		<arg value="-workspace" />
+    		<arg value="${xcworkspace}" />
+    		<arg value="-scheme" />
+    		<arg value="${scheme}" />
+		 </exec>
+    </target>
+
+	<target name="init" >
+	</target>
+	
+	<target name="clean" depends="init" description="Clean the workspace">
+         <exec executable="xcodebuild" spawn="false" dir="${build.dir}">
+    		<arg value="-workspace" />
+    		<arg value="${xcworkspace}" />
+    		<arg value="-scheme" />
+    		<arg value="${scheme}" />
+    		<arg value="clean" />
+		 </exec>
+		 <echo> Cleaned ${xcworkspace} ! </echo>
+		 <echo> Jenkins build workspace ${env.WORKSPACE} ! </echo>
+		 <echo> Jenkins build number ${env.BUILD_NUMBER} ! </echo>
+		 <echo> Jenkins build URL ${env.BUILD_URL} ! </echo>
+  		 <echo> HOSTNAME is set to ${env.HOSTNAME} </echo>
+
+	</target>
+
+</project>

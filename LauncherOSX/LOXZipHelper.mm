@@ -23,9 +23,10 @@
 #import "ZipFile.h"
 #import "ZipReadStream.h"
 #import "FileInZipInfo.h"
+#import "LOXUtil.h"
 
 @interface LOXZipHelper ()
-+ (void)ensureDirectoryForFile:(NSString *)filePath;
+
 
 @end
 
@@ -44,7 +45,7 @@
         NSMutableData *data = [[NSMutableData alloc] initWithLength:info.length];
         [read readDataWithBuffer:data];
         NSString* fullPath = [NSString stringWithFormat:@"%@/%@", destinationFolder, info.name];
-        [LOXZipHelper ensureDirectoryForFile:fullPath];
+        [LOXUtil ensureDirectoryForFile:fullPath];
         [data writeToFile:fullPath atomically:NO];
         [data release];
         [read finishedReading];
@@ -58,18 +59,5 @@
 
 }
 
-+ (void)ensureDirectoryForFile:(NSString*)filePath
-{
-    NSString * dirPath = [filePath stringByDeletingLastPathComponent];
-
-    NSError * error = nil;
-    [[NSFileManager defaultManager] createDirectoryAtPath:dirPath
-                              withIntermediateDirectories:YES
-                                               attributes:nil
-                                                    error:&error];
-    if (error != nil) {
-        NSLog(@"error creating directory: %@", error);
-    }
-}
 
 @end

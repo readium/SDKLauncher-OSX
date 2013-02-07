@@ -29,7 +29,8 @@ enum ePubApiType {
 
 typedef enum ePubApiType ePubApiType;
 
-@class LOXSpineItem;
+@class LOXSpineItemSdk;
+@protocol LOXSpineItem;
 
 @interface LOXePubApi : NSObject {
 @protected
@@ -45,8 +46,9 @@ typedef enum ePubApiType ePubApiType;
 
 - (NSArray *)getSpineItems;
 
-- (NSString*)getGetPathToSpineItem:(LOXSpineItem *) spineItem;
+- (NSString*)getPathToSpineItem:(id<LOXSpineItem>) spineItem;
 
+-(void)prepareResourceWithPath:(NSString *)path;
 
 
 @end

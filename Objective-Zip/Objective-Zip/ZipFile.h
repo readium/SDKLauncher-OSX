@@ -59,7 +59,7 @@ typedef enum {
 	ZipFileMode _mode;
 
 @private
-	zipFile _zipFile;
+	ZipFile* _zipFile;
 	unzFile _unzFile;
 }
 

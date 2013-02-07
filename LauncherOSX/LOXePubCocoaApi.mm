@@ -20,10 +20,18 @@
 //
 
 #import "LOXePubCocoaApi.h"
-#import "LOXeBook.h"
+#import "LOXContainer.h"
+#import "LOXZipHelper.h"
+#import "LOXContainerParser.h"
+#import "LOXPackageParser.h"
+#import "LOXTemporaryFileStorage.h"
+#import "LOXPackage.h"
+#import "LOXSpineItemCocoa.h"
+#import "LOXUtil.h"
 
 @interface LOXePubCocoaApi ()
-- (void)releaseBook;
+
+- (void)cleanup;
 
 @end
 
@@ -41,33 +49,93 @@
 
 - (void)openFile:(NSString *)file
 {
-    [self releaseBook];
+    [self cleanup];
 
-    _ebook = [[LOXeBook eBookWithFile:file] retain];
+    _tmpDir = [[LOXTemporaryFileStorage alloc] initWithUUID:[LOXUtil uuid] forBasePath:@"/"];
+
+    [LOXZipHelper unzipFile:file toFolder: _tmpDir.rootDirectory];
+
+    _container = [[self parseContainer] retain];
 }
 
-- (void)releaseBook
+
+- (void)cleanup
 {
-    if (_ebook) {
-        [_ebook release];
-        _ebook = nil;
-    }
+    [_tmpDir release];
+    [_container release];
+    _container = nil;
 }
+
 
 - (void)dealloc
 {
-    [self releaseBook];
+    [self cleanup];
     [super dealloc];
 }
 
 - (NSArray *)getSpineItems
 {
-    return [_ebook getSpineItems];
+    NSMutableArray * spineItems = [NSMutableArray array];
+
+    for (LOXPackage * package in [_container getPackages]){
+        [spineItems addObjectsFromArray:[package getSpineItems]];
+    }
+
+    return spineItems;
 }
 
-- (NSString*)getGetPathToSpineItem:(LOXSpineItem *) spineItem
+- (NSString*)getPathToSpineItem:(id<LOXSpineItem>) spineItem
 {
-    return [_ebook getPathToSpineItem:spineItem];
+    LOXSpineItemCocoa * spineItemCocoa = (LOXSpineItemCocoa *)spineItem;
+
+    NSString * href = [spineItemCocoa getHref];
+
+    NSString *dir = [spineItemCocoa.package.path stringByDeletingLastPathComponent];
+
+    return [NSString stringWithFormat:@"%@/%@", dir, href];
+
 }
+
+
+-(LOXContainer *)parseContainer
+{
+    LOXContainer* container = [[[LOXContainer alloc] init] autorelease];
+
+    LOXContainerParser * parser = [[[LOXContainerParser alloc] init] autorelease];
+
+    NSString *path = [_tmpDir absolutePathForFile:@"META-INF/container.xml"];
+
+    NSData *data = [NSData dataWithContentsOfFile:path];
+
+    NSArray *rootFiles = [parser parseData:data];
+
+    for (NSString * rootFile in rootFiles){
+        [container addPackage:[self parsePackage:rootFile]];
+    }
+
+    return container;
+}
+
+- (LOXPackage *)parsePackage:(NSString*) localPackagePath
+{
+    NSString *packagePath = [_tmpDir absolutePathForFile:localPackagePath];
+
+    NSData *data = [NSData dataWithContentsOfFile:packagePath];
+
+    LOXPackageParser *parser = [[[LOXPackageParser alloc] init] autorelease];
+
+    [parser parseData:data];
+
+    LOXPackage * package = [parser package];
+    package.path = packagePath;
+
+    return package;
+}
+
+-(void)prepareResourceWithPath:(NSString *)path
+{
+    //because we unpack everything - all resources already stored
+}
+
 
 @end

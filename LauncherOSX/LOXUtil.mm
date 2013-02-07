@@ -1,5 +1,5 @@
 //
-//  LOXUtil.h
+//  LOXUtil.m
 //  LauncherOSX
 //
 //  Created by Boris Schneiderman.
@@ -19,11 +19,30 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import <Foundation/Foundation.h>
+#import "LOXUtil.h"
 
-@interface LOXUtil : NSObject
+@implementation LOXUtil
 
-+ (NSString *)uuid;
-+ (void)ensureDirectoryForFile:(NSString*)filePath;
++ (NSString *)uuid
+{
+    CFUUIDRef theUUID = CFUUIDCreate(NULL);
+    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+    CFRelease(theUUID);
+    return [(NSString *) string autorelease];
+}
+
++ (void)ensureDirectoryForFile:(NSString*)filePath
+{
+    NSString * dirPath = [filePath stringByDeletingLastPathComponent];
+
+    NSError * error = nil;
+    [[NSFileManager defaultManager] createDirectoryAtPath:dirPath
+                              withIntermediateDirectories:YES
+                                               attributes:nil
+                                                    error:&error];
+    if (error != nil) {
+        NSLog(@"error creating directory: %@", error);
+    }
+}
 
 @end

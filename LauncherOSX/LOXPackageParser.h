@@ -31,7 +31,9 @@
 }
 
 
-- (LOXPackage *)parseData:(NSData *)data;
+- (void)parseData:(NSData *)data;
+
+- (LOXPackage *)package;
 
 
 @end

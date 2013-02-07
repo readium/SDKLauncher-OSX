@@ -1,3 +1,7 @@
+//
+//  LOXContainer.m
+//  LauncherOSX
+//
 //  Created by Boris Schneiderman.
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
@@ -15,22 +19,48 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#import "LOXContainer.h"
+#import "LOXUtil.h"
+#import "LOXZipHelper.h"
+#import "LOXPackageParser.h"
+#import "LOXPackage.h"
+#import "LOXContainerParser.h"
+#import "LOXSpineItemSdk.h"
 
-#import "LOXSpineItem.h"
+@interface LOXContainer ()
+
+@end
 
 
-@implementation LOXSpineItem {
+@implementation LOXContainer
 
-}
 
-+ (id)spineItemWithIdref:(NSString *)idref
+- (id)init
 {
-    LOXSpineItem* spineItem = [[[LOXSpineItem alloc] init] autorelease];
+    self = [super init];
+    if (self) {
+        _packages = [[NSMutableArray array] retain];
+    }
 
-    spineItem.idref = idref;
-
-    return spineItem;
+    return self;
 }
+
+- (void)dealloc
+{
+    [_packages release];
+    [super dealloc];
+}
+
+-(void) addPackage:(LOXPackage *) package
+{
+    [_packages addObject:package];
+}
+
+- (NSArray *)getPackages
+{
+    return _packages;
+}
+
 
 
 @end

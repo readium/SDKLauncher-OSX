@@ -21,18 +21,30 @@
 
 #import "LOXePubApi.h"
 
+
+@class LOXTemporaryFileStorage;
+
 namespace ePub3 {
     class Container;
+    class Package;
 }
 
 @interface LOXePubSdkApi : LOXePubApi {
 
 @private
     ePub3::Container *_container;
+    const ePub3::Package *_package;
 
+    NSMutableArray *_spineItems;
+    NSMutableArray *_packageStorages;
 }
 
+@property(nonatomic, retain) NSMutableArray *packageStorages;
+
+
 +(void)initialize;
+
+- (void)prepareResourceWithPath:(NSString *)path;
 
 
 @end

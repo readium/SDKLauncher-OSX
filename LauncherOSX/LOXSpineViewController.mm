@@ -23,6 +23,7 @@
 #import "LOXSpineItem.h"
 
 
+
 @interface LOXSpineViewController ()
 
 @end
@@ -46,7 +47,7 @@
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    LOXSpineItem *item = [_spineItems objectAtIndex:(NSUInteger) row];
+    id<LOXSpineItem> item = [_spineItems objectAtIndex:(NSUInteger) row];
 
     NSString* propIdentifier = [tableColumn identifier];
     return [item valueForKey:propIdentifier];
@@ -57,7 +58,7 @@
     NSTableView *tableView = notification.object;
     NSInteger row = [tableView selectedRow];
 
-    LOXSpineItem *selectedItem = row == -1 ? nil : [_spineItems objectAtIndex:(NSUInteger) row];
+    id<LOXSpineItem> selectedItem = row == -1 ? nil : [_spineItems objectAtIndex:(NSUInteger) row];
 
     [self.selectionChangedLiscener spineView:self selectionChangedTo:selectedItem];
 }

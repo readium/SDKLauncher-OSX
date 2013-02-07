@@ -21,6 +21,11 @@
 
 #import <Foundation/Foundation.h>
 #import <WebKit/WebKit.h>
+#import <WebKit/WebResourceLoadDelegate.h>
+
+@class LOXePubApi;
+@class LOXPageNumberTextController;
+
 
 @interface LOXWebViewController : NSObject {
 
@@ -28,12 +33,26 @@
     IBOutlet WebView *_webView;
 }
 
-- (void)displayUrl:(NSString *)url;
-
-- (void)displayHtml:(NSString *)html;
-
 - (void)displayUrlPath:(NSString *)urlPath;
 
 - (void) clear;
+
+@property(nonatomic, retain) LOXePubApi *epubApi;
+
+@property (assign) IBOutlet NSButton *prevPageButton;
+@property (assign) IBOutlet NSButton *nextPageButton;
+
+@property (assign) IBOutlet LOXPageNumberTextController *pageNumController;
+
+
+- (void)displayHtml:(NSString *)html withBaseUrlPath:(NSString *)baseUrlPath;
+
+- (IBAction)onPrevPageClick:(id)sender;
+- (IBAction)onNextPageClick:(id)sender;
+
+- (void)openPageIndex:(int)pageIx;
+
+
+- (void)onOpenPageIndex:(int)index ofPages:(int)count;
 
 @end

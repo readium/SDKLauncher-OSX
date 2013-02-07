@@ -22,10 +22,11 @@
 #import <Foundation/Foundation.h>
 
 @class LOXSpineViewController;
-@class LOXSpineItem;
+@protocol LOXSpineItem;
+
 
 @protocol LOXSpineViewControllerDelegate
-- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem*)spineItem;
+- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(id<LOXSpineItem>)spineItem;
 @end
 
 @interface LOXSpineViewController : NSObject <NSTableViewDataSource, NSTableViewDelegate> {

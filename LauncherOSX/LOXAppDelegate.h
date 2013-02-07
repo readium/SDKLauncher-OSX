@@ -26,18 +26,22 @@
 #import "LOXWebViewController.h"
 
 @class LOXePubApi;
-@class LOXSpineItem;
+@protocol LOXSpineItem;
+@class LOXScriptInjector;
+
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate, LOXSpineViewControllerDelegate> {
 @private
     LOXePubApi *_epubApi;
+    LOXScriptInjector *_scriptInjector;
 }
 
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet LOXSpineViewController *spineViewController;
 @property (assign) IBOutlet LOXWebViewController *webViewController;
 
-@property (assign) LOXSpineItem* currentSpineItem;
+
+@property (assign) id<LOXSpineItem> currentSpineItem;
 
 
 - (IBAction)openDocumentWithCocoaApi:(id)sender;
