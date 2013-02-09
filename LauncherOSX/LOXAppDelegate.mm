@@ -33,9 +33,11 @@ using namespace ePub3;
 - (NSString *)selectFile;
 - (void) updateWebView;
 - (void) initApiOfType:(ePubApiType)apiType;
-- (void) openDocument;
 - (void) reportError:(NSString *) error;
 
+- (void)openDocumentUsingApiOfType:(ePubApiType)apiType;
+
+- (bool) openDocumentWithPath:(NSString *) path usingApiOfType:(ePubApiType) apiType;
 
 @end
 
@@ -70,28 +72,62 @@ using namespace ePub3;
     return YES;
 }
 
-- (void)openDocument
+
+- (void) openDocumentUsingApiOfType:(ePubApiType)apiType
 {
-    NSString *path = [self selectFile];
+    NSString* path = [self selectFile];
 
     if (path == nil) {
         return;
     }
 
-    [self.spineViewController clear];
+    [self openDocumentWithPath:path usingApiOfType:apiType];
+}
 
-    [_epubApi openFile:path];
+- (bool) openDocumentWithPath:(NSString *) path usingApiOfType:(ePubApiType) apiType
+{
+    try {
 
-    NSArray *items = [_epubApi getSpineItems];
+        [self initApiOfType:apiType];
 
-    for (id item in items) {
-        [self.spineViewController addSpineItem:item];
+        [self.spineViewController clear];
+
+        [_epubApi openFile:path];
+
+        NSArray *items = [_epubApi getSpineItems];
+
+        for (id item in items) {
+            [self.spineViewController addSpineItem:item];
+        }
+
+        if(items.count > 0) {
+            [self.spineViewController selectSpineIndex:0];
+        }
+
+        [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:path]];
+
+        [self.window setTitle:[path lastPathComponent]];
+
+        return YES;
+    }
+    catch (NSException *e) {
+        [self reportError:[e reason]];
+    }
+    catch (std::exception& e) {
+        auto msg = e.what();
+        [self reportError:[NSString stringWithUTF8String:msg]];
+    }
+    catch (...) {
+        [self reportError:@"unknown exceprion"];
     }
 
-    if(items.count > 0) {
-        [self.spineViewController selectSpineIndex:0];
-    }
+    return NO;
 
+}
+
+- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
+{
+    return [self openDocumentWithPath:filename usingApiOfType:kePubSdkApi];
 }
 
 - (void)reportError:(NSString *)error
@@ -106,49 +142,13 @@ using namespace ePub3;
 
 - (void)openDocumentWithSdkApi:(id)sender
 {
-    try {
-        [self initApiOfType:kePubSdkApi];
-        [self openDocument];
-    }
-    catch (NSException *e) {
-        [self reportError:[e reason]];
-    }
-    catch (std::exception& e) {
-        auto msg = e.what();
-        [self reportError:[NSString stringWithUTF8String:msg]];
-    }
-    catch (...) {
-        [self reportError:@"unknown exceprion"];
-    }
-}
-
-- (IBAction)openNextPage:(id)sender
-{
-
-}
-
-- (IBAction)openPrevPage:(id)sender
-{
-
+    [self openDocumentUsingApiOfType:kePubSdkApi];
 }
 
 
 - (void)openDocumentWithCocoaApi:(id)sender
 {
-    try {
-        [self initApiOfType:kePubCocoaApi];
-        [self openDocument];
-    }
-    catch (NSException *e) {
-        [self reportError:[e reason]];
-    }
-    catch (std::exception& e) {
-        auto msg = e.what();
-        [self reportError:[NSString stringWithUTF8String:msg]];
-    }
-    catch (...) {
-        [self reportError:@"unknown exceprion"];
-    }
+    [self openDocumentUsingApiOfType:kePubCocoaApi];
 }
 
 

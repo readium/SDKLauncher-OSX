@@ -198,8 +198,8 @@
 							<array class="NSMutableArray" key="NSMenuItems">
 								<object class="NSMenuItem" id="332956679">
 									<reference key="NSMenu" ref="720053764"/>
-									<string key="NSTitle">Open With ePub SDK...</string>
-									<string key="NSKeyEquiv">O</string>
+									<string key="NSTitle">Open Book...</string>
+									<string key="NSKeyEquiv">o</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="35465992"/>
@@ -207,8 +207,9 @@
 								</object>
 								<object class="NSMenuItem" id="722745758">
 									<reference key="NSMenu" ref="720053764"/>
-									<string key="NSTitle">Open With Cocoa…</string>
-									<string key="NSKeyEquiv">o</string>
+									<bool key="NSIsHidden">YES</bool>
+									<string key="NSTitle">Open Book with Cocoa…</string>
+									<string key="NSKeyEquiv">O</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="35465992"/>
