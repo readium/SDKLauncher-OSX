@@ -22,6 +22,7 @@
 #import "LOXWebViewController.h"
 #import "LOXePubApi.h"
 #import "LOXPageNumberTextController.h"
+#import "LOXBookmarksController.h"
 
 
 @interface LOXWebViewController ()

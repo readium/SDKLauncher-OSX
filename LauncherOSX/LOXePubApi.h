@@ -50,5 +50,8 @@ typedef enum ePubApiType ePubApiType;
 
 -(void)prepareResourceWithPath:(NSString *)path;
 
+- (NSString *)getPackageID;
 
+
+- (NSString *)getPackageTitle;
 @end

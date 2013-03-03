@@ -25,6 +25,7 @@
 
 @class LOXePubApi;
 @class LOXPageNumberTextController;
+@class LOXBookmarksController;
 
 
 @interface LOXWebViewController : NSObject {

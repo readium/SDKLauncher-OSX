@@ -145,6 +145,24 @@
     return fullPath;
 }
 
+-(NSString*)getPackageID
+{
+    if (!_package) {
+        return @"";
+    }
+
+    return [NSString stringWithUTF8String:_package->PackageID().c_str()];
+}
+
+-(NSString *)getPackageTitle
+{
+    if(!_package) {
+        return @"";
+    }
+
+    return [NSString stringWithUTF8String:_package->Title().c_str()];
+}
+
 -(LOXTemporaryFileStorage *)findStorageWithId:(NSString *)storageId
 {
     for(LOXTemporaryFileStorage * storage in _packageStorages)   {

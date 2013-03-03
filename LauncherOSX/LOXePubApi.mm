@@ -68,5 +68,14 @@
     @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }
 
+-(NSString*)getPackageID
+{
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
+}
 
+
+- (NSString *)getPackageTitle
+{
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
+}
 @end
