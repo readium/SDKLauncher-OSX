@@ -37,6 +37,8 @@
 
 @property (assign, nonatomic) id<LOXSpineViewControllerDelegate> selectionChangedLiscener;
 
+- (void)selectSpieItem:(id <LOXSpineItem>)spineItem;
+
 - (void)addSpineItem:(NSString *)spineItem;
 
 - (void)clear;

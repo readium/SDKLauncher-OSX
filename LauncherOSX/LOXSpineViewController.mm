@@ -63,6 +63,17 @@
     [self.selectionChangedLiscener spineView:self selectionChangedTo:selectedItem];
 }
 
+- (void)selectSpieItem: (id<LOXSpineItem>) spineItem
+{
+    for (NSUInteger i = 0; i < _spineItems.count; i++){
+        if ([_spineItems objectAtIndex:i] == spineItem) {
+            NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:i];
+            [_tableView selectRowIndexes:indexSet byExtendingSelection:NO];
+            break;
+        }
+    }
+}
+
 - (void)addSpineItem:(NSString *)spineItem
 {
     [_spineItems addObject:spineItem];

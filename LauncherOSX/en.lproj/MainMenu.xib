@@ -310,6 +310,39 @@
 							</array>
 						</object>
 					</object>
+					<object class="NSMenuItem" id="723666290">
+						<reference key="NSMenu" ref="649796088"/>
+						<string key="NSTitle">Bookmarks</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="35465992"/>
+						<reference key="NSMixedImage" ref="502551668"/>
+						<string key="NSAction">submenuAction:</string>
+						<object class="NSMenu" key="NSSubmenu" id="871451918">
+							<string key="NSTitle">Bookmarks</string>
+							<array class="NSMutableArray" key="NSMenuItems">
+								<object class="NSMenuItem" id="944780327">
+									<reference key="NSMenu" ref="871451918"/>
+									<string key="NSTitle">Add Bookmark...</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
+								<object class="NSMenuItem" id="415192024">
+									<reference key="NSMenu" ref="871451918"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<bool key="NSIsSeparator">YES</bool>
+									<string key="NSTitle"/>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
+							</array>
+							<bool key="NSNoAutoenable">YES</bool>
+						</object>
+					</object>
 					<object class="NSMenuItem" id="713487014">
 						<reference key="NSMenu" ref="649796088"/>
 						<string key="NSTitle">Window</string>
@@ -386,7 +419,6 @@
 							<string key="NSFrame">{{714, 8}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="921443378">
@@ -735,7 +767,7 @@
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="943940271"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1280, 778}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -753,6 +785,12 @@
 			</object>
 			<object class="NSCustomObject" id="1058085330">
 				<string key="NSClassName">LOXPageNumberTextController</string>
+			</object>
+			<object class="NSCustomObject" id="474714891">
+				<string key="NSClassName">LOXBookmarksController</string>
+			</object>
+			<object class="NSCustomObject" id="278416864">
+				<string key="NSClassName">LOXBookmarkEditController</string>
 			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -919,19 +957,11 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">nextPageButton</string>
+						<string key="label">bookmarksController</string>
 						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="838258766"/>
+						<reference key="destination" ref="474714891"/>
 					</object>
-					<int key="connectionID">839</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">prevPageButton</string>
-						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="288884514"/>
-					</object>
-					<int key="connectionID">840</int>
+					<int key="connectionID">960</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1023,6 +1053,14 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
+						<string key="label">appDelegate</string>
+						<reference key="source" ref="901247368"/>
+						<reference key="destination" ref="976324537"/>
+					</object>
+					<int key="connectionID">962</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="736543241"/>
 						<reference key="destination" ref="1058085330"/>
@@ -1052,6 +1090,54 @@
 						<reference key="destination" ref="901247368"/>
 					</object>
 					<int key="connectionID">925</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">bookmarksMenu</string>
+						<reference key="source" ref="474714891"/>
+						<reference key="destination" ref="871451918"/>
+					</object>
+					<int key="connectionID">939</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">mainController</string>
+						<reference key="source" ref="474714891"/>
+						<reference key="destination" ref="976324537"/>
+					</object>
+					<int key="connectionID">951</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">addBookmark:</string>
+						<reference key="source" ref="474714891"/>
+						<reference key="destination" ref="944780327"/>
+					</object>
+					<int key="connectionID">955</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">bookmarkEditController</string>
+						<reference key="source" ref="474714891"/>
+						<reference key="destination" ref="278416864"/>
+					</object>
+					<int key="connectionID">959</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">addBookmarkMenuItem</string>
+						<reference key="source" ref="474714891"/>
+						<reference key="destination" ref="944780327"/>
+					</object>
+					<int key="connectionID">961</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">bookmarksController</string>
+						<reference key="source" ref="278416864"/>
+						<reference key="destination" ref="474714891"/>
+					</object>
+					<int key="connectionID">958</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1087,6 +1173,7 @@
 							<reference ref="713487014"/>
 							<reference ref="694149608"/>
 							<reference ref="379814623"/>
+							<reference ref="723666290"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -1938,11 +2025,6 @@
 						<reference key="parent" ref="838258766"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">897</int>
-						<reference key="object" ref="312561057"/>
-						<reference key="parent" ref="439893737"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">910</int>
 						<reference key="object" ref="586797609"/>
 						<reference key="parent" ref="439893737"/>
@@ -1982,6 +2064,48 @@
 						<reference key="object" ref="647810958"/>
 						<reference key="parent" ref="439893737"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">931</int>
+						<reference key="object" ref="723666290"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="871451918"/>
+						</array>
+						<reference key="parent" ref="649796088"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">932</int>
+						<reference key="object" ref="871451918"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="944780327"/>
+							<reference ref="415192024"/>
+						</array>
+						<reference key="parent" ref="723666290"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">937</int>
+						<reference key="object" ref="474714891"/>
+						<reference key="parent" ref="0"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">952</int>
+						<reference key="object" ref="312561057"/>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">953</int>
+						<reference key="object" ref="944780327"/>
+						<reference key="parent" ref="871451918"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">954</int>
+						<reference key="object" ref="415192024"/>
+						<reference key="parent" ref="871451918"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">956</int>
+						<reference key="object" ref="278416864"/>
+						<reference key="parent" ref="0"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -2011,7 +2135,7 @@
 				<string key="371.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="371.IBWindowTemplateEditedContentRect">{{380, 496}, {480, 360}}</string>
 				<integer value="1" key="371.NSWindowTemplate.visibleAtLaunch"/>
-				<array class="NSMutableArray" key="372.IBNSViewMetadataConstraints">
+				<array key="372.IBNSViewMetadataConstraints">
 					<reference ref="550799483"/>
 					<reference ref="433045493"/>
 					<reference ref="95516097"/>
@@ -2109,7 +2233,6 @@
 				<string key="875.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="888.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="890.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="897.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="910.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="911.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="916.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2119,12 +2242,19 @@
 				<string key="927.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="928.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="929.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="931.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="932.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="937.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="952.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="953.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="954.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="956.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">929</int>
+			<int key="maxID">962</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2146,11 +2276,16 @@
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="bookmarksController">LOXBookmarksController</string>
 						<string key="spineViewController">LOXSpineViewController</string>
 						<string key="webViewController">LOXWebViewController</string>
 						<string key="window">NSWindow</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="bookmarksController">
+							<string key="name">bookmarksController</string>
+							<string key="candidateClassName">LOXBookmarksController</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="spineViewController">
 							<string key="name">spineViewController</string>
 							<string key="candidateClassName">LOXSpineViewController</string>
@@ -2167,6 +2302,100 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/LOXAppDelegate.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXBookmarkEditController</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="onCancel:">id</string>
+						<string key="onOK:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="onCancel:">
+							<string key="name">onCancel:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="onOK:">
+							<string key="name">onOK:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="bookmarksController">LOXBookmarksController</string>
+						<string key="cancelButton">NSButton</string>
+						<string key="nameText">NSTextField</string>
+						<string key="okButton">NSButton</string>
+						<string key="sheet">NSWindow</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="bookmarksController">
+							<string key="name">bookmarksController</string>
+							<string key="candidateClassName">LOXBookmarksController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="cancelButton">
+							<string key="name">cancelButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="nameText">
+							<string key="name">nameText</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="okButton">
+							<string key="name">okButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="sheet">
+							<string key="name">sheet</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXBookmarkEditController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXBookmarksController</string>
+					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">addBookmark:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">addBookmark:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">addBookmark:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="addBookmarkMenuItem">NSMenuItem</string>
+						<string key="bookmarkEditController">LOXBookmarkEditController</string>
+						<string key="bookmarksMenu">NSMenu</string>
+						<string key="mainController">LOXAppDelegate</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="addBookmarkMenuItem">
+							<string key="name">addBookmarkMenuItem</string>
+							<string key="candidateClassName">NSMenuItem</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="bookmarkEditController">
+							<string key="name">bookmarkEditController</string>
+							<string key="candidateClassName">LOXBookmarkEditController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="bookmarksMenu">
+							<string key="name">bookmarksMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="mainController">
+							<string key="name">mainController</string>
+							<string key="candidateClassName">LOXAppDelegate</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXBookmarksController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2234,6 +2463,7 @@
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="_webView">WebView</string>
+						<string key="appDelegate">LOXAppDelegate</string>
 						<string key="nextPageButton">NSButton</string>
 						<string key="pageNumController">LOXPageNumberTextController</string>
 						<string key="prevPageButton">NSButton</string>
@@ -2242,6 +2472,10 @@
 						<object class="IBToOneOutletInfo" key="_webView">
 							<string key="name">_webView</string>
 							<string key="candidateClassName">WebView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="appDelegate">
+							<string key="name">appDelegate</string>
+							<string key="candidateClassName">LOXAppDelegate</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="nextPageButton">
 							<string key="name">nextPageButton</string>

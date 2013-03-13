@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "manifest.h"
 #import "spine.h"
 #import "LOXSpineItemSdk.h"
 
@@ -23,6 +24,7 @@
 
 @synthesize idref = _idref;
 @synthesize packageStorageId = _packageStorrageId;
+@synthesize basePath = _basePath;
 
 - (const ePub3::SpineItem *)sdkSpineItem
 {
@@ -35,6 +37,9 @@
     if(self) {
         auto str = sdkSpineItem->Idref().c_str();
 
+        auto manifestItem = sdkSpineItem->ManifestItem();
+        _basePath = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
+        [_basePath retain];
         _packageStorrageId = storageId;
         [_packageStorrageId retain];
         _idref = [[NSString stringWithUTF8String:str] retain];
@@ -49,6 +54,7 @@
 {
     [_packageStorrageId release];
     [_idref release];
+    [_basePath release];
     [super dealloc];
 }
 

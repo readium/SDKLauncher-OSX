@@ -22,6 +22,8 @@
 #import "LOXWebViewController.h"
 #import "LOXePubApi.h"
 #import "LOXPageNumberTextController.h"
+#import "LOXBookmarksController.h"
+#import "LOXAppDelegate.h"
 
 
 @interface LOXWebViewController ()
@@ -29,7 +31,8 @@
 
 @end
 
-@implementation LOXWebViewController
+@implementation LOXWebViewController {
+}
 
 
 - (void)displayHtml:(NSString *)html withBaseUrlPath:(NSString *) baseUrlPath
@@ -56,6 +59,27 @@
 {
     WebScriptObject* script = [_webView windowScriptObject];
     [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.openPage(%d)", pageIx]];
+}
+
+-(NSString*) getCurrentPageCfi
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    NSString* cfi = [script evaluateWebScript: @"ReadiumSDK.reader.getFirstVisibleElementCfi()"];
+    return cfi;
+}
+
+-(int) getPageForElementCfi:(NSString*) cfi
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    NSString *callString = [NSString stringWithFormat:@"ReadiumSDK.reader.getPageForElementCfi(\"%@\")", cfi];
+    NSString* ret = [script evaluateWebScript:callString];
+
+    if ([ret isMemberOfClass:[WebUndefined class]]){
+        NSLog(@"cfi %@ not found", cfi);
+        return 0;
+    }
+
+    return [ret intValue];
 }
 
 
@@ -90,16 +114,27 @@
 //this allows JavaScript to call the -logJavaScriptString: method
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
 {
-    if(sel == @selector(onOpenPageIndex:ofPages:))
+    if(    sel == @selector(onOpenPageIndex:ofPages:)
+        || sel ==  @selector(onPaginationScriptingReady)) {
+
         return NO;
+    }
+
     return YES;
 }
 
 //this returns a nice name for the method in the JavaScript environment
 +(NSString*)webScriptNameForSelector:(SEL)sel
 {
-    if(sel == @selector(onOpenPageIndex:ofPages:))
+    if(sel == @selector(onOpenPageIndex:ofPages:)) {
+
         return @"onOpenPageIndexOfPages";
+    }
+    else if (sel == @selector(onPaginationScriptingReady)) {
+
+        return @"onPaginationScriptingReady";
+    }
+
     return nil;
 }
 
@@ -112,11 +147,15 @@
     [windowScriptObject setValue:self forKey:@"LauncherUI"];
 }
 
-//this is a simple log command
 - (void)onOpenPageIndex:(int)index ofPages:(int)count
 {
     [self.pageNumController setPageIndex:index ofPages:count];
     [self updateUI];
+}
+
+- (void)onPaginationScriptingReady
+{
+    [self.appDelegate onPaginationScriptingReady];
 }
 
 - (void)controlTextDidChange:(NSNotification *)notification {
@@ -129,5 +168,6 @@
     [self.prevPageButton setEnabled:self.pageNumController.pageCount > 0 && self.pageNumController.pageIx > 0];
     [self.nextPageButton setEnabled:self.pageNumController.pageCount > 0 && self.pageNumController.pageIx < self.pageNumController.pageCount - 1];
 }
+
 
 @end
