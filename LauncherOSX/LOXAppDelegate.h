@@ -28,17 +28,21 @@
 @class LOXePubApi;
 @protocol LOXSpineItem;
 @class LOXScriptInjector;
+@class LOXUserData;
+@class LOXBookmarksController;
+@class LOXBookmark;
+@class LOXBookmarkEditController;
 
 
-@interface LOXAppDelegate : NSObject <NSApplicationDelegate, LOXSpineViewControllerDelegate> {
-@private
-    LOXePubApi *_epubApi;
-    LOXScriptInjector *_scriptInjector;
-}
+@interface LOXAppDelegate : NSObject <NSApplicationDelegate, LOXSpineViewControllerDelegate>
 
+
+//ui
 @property (assign) IBOutlet NSWindow *window;
+
 @property (assign) IBOutlet LOXSpineViewController *spineViewController;
 @property (assign) IBOutlet LOXWebViewController *webViewController;
+@property (assign) IBOutlet LOXBookmarksController *bookmarksController;
 
 
 @property (assign) id<LOXSpineItem> currentSpineItem;
@@ -47,4 +51,10 @@
 - (IBAction)openDocumentWithCocoaApi:(id)sender;
 - (IBAction)openDocumentWithSdkApi:(id)sender;
 
+
+- (LOXBookmark*)createBookmark;
+
+- (void)openBookmark:(LOXBookmark *)bookmark;
+
+- (void)onPaginationScriptingReady;
 @end

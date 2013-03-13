@@ -16,26 +16,29 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 #import <Foundation/Foundation.h>
-#import "LOXSpineItem.h"
 
-@class LOXPackage;
-
-@interface LOXSpineItemCocoa : NSObject<LOXSpineItem>  {
-
-@private
-    NSString* _idref;
-    LOXPackage* _package;
-
-}
-
-@property(nonatomic, readonly) NSString *idref;
-@property(nonatomic, readonly) LOXPackage *package;
+@class LOXBook;
+@class LOXePubApi;
+@class LOXAppDelegate;
+@class LOXBookmarkEditController;
+@class LOXBookmark;
 
 
-- (id)initWithIdref:(NSString *)idref forPackage:(LOXPackage *)package;
+@interface LOXBookmarksController : NSObject
 
-- (NSString *)getHref;
+@property (assign) IBOutlet NSMenu *bookmarksMenu;
+@property (assign) IBOutlet LOXAppDelegate *mainController;
+@property (assign) IBOutlet NSMenuItem *addBookmarkMenuItem;
+@property (assign) IBOutlet LOXBookmarkEditController *bookmarkEditController;
 
+-(void) setBook:(LOXBook*) book;
+
+-(void)updateUI;
+
+- (IBAction)addBookmark:(id)sender;
+
+- (void) finishEditingBookmark:(LOXBookmark *)bookmark;
 
 @end

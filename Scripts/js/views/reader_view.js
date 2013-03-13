@@ -1,5 +1,22 @@
 
-/** @namespace LauncherUI */
+//  LauncherOSX
+//
+//  Created by Boris Schneiderman.
+//  Copyright (c) 2012-2013 The Readium Foundation.
+//
+//  The Readium SDK is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
@@ -16,8 +33,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         columnGap : 20,
         pageCount : undefined,
         currentPage : 0,
-        columnWidth : undefined
-
+        columnWidth : undefined,
+        pageOffset : 0
     },
 
     events: {
@@ -28,10 +45,13 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     initialize: function() {
 
+        this.navigation = new ReadiumSDK.Views.CfiNavigationLogic({paginationInfo: this.paginationInfo});
+
         this.$viewport = $("#viewport");
 
         //for code readability
         this.$iframe = this.$el;
+
 
         //event with namespace for clean unbinding
         $(window).on("resize.ReadiumSDK.readerView", _.bind(this.onViewportResize, this));
@@ -88,6 +108,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         this.applySwitches(epubContentDocument);
         this.registerTriggers(epubContentDocument);
 
+
     },
 
     render: function(){
@@ -100,9 +121,9 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             return;
         }
 
-        var shift = this.paginationInfo.currentPage * (this.lastViewPortSize.width + this.paginationInfo.columnGap);
+        this.paginationInfo.pageOffset = this.paginationInfo.currentPage * (this.lastViewPortSize.width + this.paginationInfo.columnGap);
 
-        this.$epubHtml.css("left", -shift + "px");
+        this.$epubHtml.css("left", -this.paginationInfo.pageOffset + "px");
 
         if(window.LauncherUI){
             window.LauncherUI.onOpenPageIndexOfPages(this.paginationInfo.currentPage, this.paginationInfo.pageCount);
@@ -197,6 +218,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             this.paginationInfo.currentPage = pageIndex;
             this.render();
         }
+
     },
 
     updatePagination: function() {
@@ -205,8 +227,9 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             return;
         }
 
+
         this.paginationInfo.columnWidth =
-            (this.lastViewPortSize.width - this.paginationInfo.columnGap * (this.paginationInfo.visibleColumnCount - 1)) / this.paginationInfo.visibleColumnCount;
+                (this.lastViewPortSize.width - this.paginationInfo.columnGap * (this.paginationInfo.visibleColumnCount - 1)) / this.paginationInfo.visibleColumnCount;
 
         this.$epubHtml.css("width", this.lastViewPortSize.width);
         this.$epubHtml.css("-webkit-column-width", this.paginationInfo.columnWidth + "px");
@@ -227,10 +250,27 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
                 self.paginationInfo.currentPage = self.paginationInfo.pageCount - 1;
             }
 
+            if(window.LauncherUI) {
+                window.LauncherUI.onPaginationScriptingReady();
+            }
+
             self.render();
+
 
         }, 100);
 
+    },
+
+    getFirstVisibleElementCfi: function(){
+
+        return this.navigation.getFirstVisibleElementCfi();
+    },
+
+    getPageForElementCfi: function(cfi) {
+
+        return this.navigation.getPageForElementCfi(cfi);
+
     }
+
 
 });

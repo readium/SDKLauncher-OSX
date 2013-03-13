@@ -23,6 +23,7 @@
 
 #include "container.h"
 #include "package.h"
+#include "cfi.h"
 
 #import "LOXSpineItemSdk.h"
 #import "LOXTemporaryFileStorage.h"
@@ -35,6 +36,8 @@
 - (LOXTemporaryFileStorage *)findStorageWithId:(NSString *)storageId;
 
 - (void)saveContentOfReader:(ePub3::ArchiveReader const *)reader toPath:(NSString *)path inStorrage:(LOXTemporaryFileStorage *)storage;
+
+- (NSString *)unwrapCfi:(NSString *)cfi;
 
 
 - (void)readPackages;
@@ -83,6 +86,7 @@
 
         const ePub3::SpineItem *spineItem = (*package)->FirstSpineItem();
         while (spineItem) {
+
             LOXSpineItemSdk *loxSpineItem = [[[LOXSpineItemSdk alloc] initWithStorageId:storage.uuid forSdkSpineItem:spineItem] autorelease];
             [_spineItems addObject:loxSpineItem];
             spineItem = spineItem->Next();
@@ -132,17 +136,32 @@
     LOXTemporaryFileStorage *storage = [self findStorageWithId:spineItemSdk.packageStorageId];
 
 
-    NSString *href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
-
-
     if (!storage) {
         NSLog(@"Package storrage with id %@ not found", spineItemSdk.packageStorageId);
-        return href;
+        return spineItem.basePath;
     }
 
-    NSString *fullPath = [storage absolutePathForFile:href];
+    NSString *fullPath = [storage absolutePathForFile: spineItem.basePath];
 
     return fullPath;
+}
+
+-(NSString*)getPackageID
+{
+    if (!_package) {
+        return @"";
+    }
+
+    return [NSString stringWithUTF8String:_package->PackageID().c_str()];
+}
+
+-(NSString *)getPackageTitle
+{
+    if(!_package) {
+        return @"";
+    }
+
+    return [NSString stringWithUTF8String:_package->Title().c_str()];
 }
 
 -(LOXTemporaryFileStorage *)findStorageWithId:(NSString *)storageId
@@ -210,6 +229,34 @@
     }
 
     [storage saveData:data  toPaht:path];
+}
+
+-(NSString*) getCfiForSpineItem:(id<LOXSpineItem>) spineItem
+{
+    ePub3::string cfi = _package->CFIForSpineItem([((LOXSpineItemSdk*)spineItem) sdkSpineItem]).String();
+    NSString * nsCfi = [NSString stringWithUTF8String: cfi.c_str()];
+    return [self unwrapCfi: nsCfi];
+}
+
+-(NSString *)unwrapCfi:(NSString *)cfi
+{
+    if ([cfi hasPrefix:@"epubcfi("] && [cfi hasSuffix:@")"]) {
+        NSRange r = NSMakeRange(8, [cfi length] - 9);
+        return [cfi substringWithRange:r];
+    }
+
+    return cfi;
+}
+
+- (id <LOXSpineItem>)findSpineItemWithIdref:(NSString *)idref
+{
+    for (id<LOXSpineItem> spineItem in _spineItems) {
+        if ([spineItem.idref isEqualToString:idref]) {
+            return spineItem;
+        }
+    }
+
+    return nil;
 }
 
 @end
