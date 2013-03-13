@@ -419,7 +419,6 @@
 							<string key="NSFrame">{{714, 8}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="921443378">
@@ -768,7 +767,7 @@
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="943940271"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1280, 778}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -1051,6 +1050,14 @@
 						<reference key="destination" ref="1058085330"/>
 					</object>
 					<int key="connectionID">865</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">appDelegate</string>
+						<reference key="source" ref="901247368"/>
+						<reference key="destination" ref="976324537"/>
+					</object>
+					<int key="connectionID">962</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2247,7 +2254,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">961</int>
+			<int key="maxID">962</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2456,6 +2463,7 @@
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="_webView">WebView</string>
+						<string key="appDelegate">LOXAppDelegate</string>
 						<string key="nextPageButton">NSButton</string>
 						<string key="pageNumController">LOXPageNumberTextController</string>
 						<string key="prevPageButton">NSButton</string>
@@ -2464,6 +2472,10 @@
 						<object class="IBToOneOutletInfo" key="_webView">
 							<string key="name">_webView</string>
 							<string key="candidateClassName">WebView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="appDelegate">
+							<string key="name">appDelegate</string>
+							<string key="candidateClassName">LOXAppDelegate</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="nextPageButton">
 							<string key="name">nextPageButton</string>

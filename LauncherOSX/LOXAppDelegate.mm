@@ -29,6 +29,7 @@
 #import "LOXBook.h"
 #import "LOXBookmarksController.h"
 #import "LOXBookmark.h"
+#import "LOXSpineItemSdk.h"
 
 
 using namespace ePub3;
@@ -41,6 +42,9 @@ using namespace ePub3;
 - (void)updateWebView;
 
 - (void)initApiOfType:(ePubApiType)apiType;
+
+- (void)openCurrentSpineItemContentCfi:(NSString *)cfi;
+
 
 - (void)reportError:(NSString *)error;
 
@@ -59,6 +63,7 @@ using namespace ePub3;
     LOXUserData *_userData;
     LOXBook*_currentBook;
 
+    LOXBookmark *_bookmarkWaitingForWebViewRendering;
 }
 
 
@@ -79,6 +84,7 @@ using namespace ePub3;
     [_scriptInjector release];
     [_epubApi release];
     [_userData release];
+    [_bookmarkWaitingForWebViewRendering release];
     [super dealloc];
 }
 
@@ -198,6 +204,7 @@ using namespace ePub3;
     [self updateWebView];
 }
 
+
 - (NSString *)selectFile
 {
     NSOpenPanel *dlg = [NSOpenPanel openPanel];
@@ -267,11 +274,47 @@ using namespace ePub3;
 
     bookmark.title = [NSString stringWithFormat:@"Bookmark #%li", n];
     bookmark.idref = _currentSpineItem.idref;
-    bookmark.spineItemCFI = @"";
-    bookmark.contentCFI = @"";
+    bookmark.basePath = _currentSpineItem.basePath;
+    bookmark.spineItemCFI = [_epubApi getCfiForSpineItem:_currentSpineItem];
+    bookmark.contentCFI = [self.webViewController getCurrentPageCfi];
 
     return bookmark;
 }
 
 
+- (void)openBookmark:(LOXBookmark *)bookmark
+{
+
+    id<LOXSpineItem> spineItem = [_epubApi findSpineItemWithIdref: bookmark.idref];
+
+    if(spineItem == nil) {
+        return;
+    }
+
+    if (_currentSpineItem == spineItem) {
+        [self openCurrentSpineItemContentCfi:bookmark.contentCFI];
+    }
+    else {
+        _bookmarkWaitingForWebViewRendering = bookmark;
+        [_bookmarkWaitingForWebViewRendering retain];
+        [self.spineViewController selectSpieItem:spineItem];
+    }
+}
+
+-(void)openCurrentSpineItemContentCfi:(NSString *) cfi
+{
+    int pageIx = [self.webViewController getPageForElementCfi:cfi];
+    [self.webViewController openPageIndex:pageIx];
+}
+
+- (void)onPaginationScriptingReady
+{
+    if (_bookmarkWaitingForWebViewRendering != nil ){
+
+        [self openCurrentSpineItemContentCfi:_bookmarkWaitingForWebViewRendering.contentCFI];
+
+        [_bookmarkWaitingForWebViewRendering release];
+        _bookmarkWaitingForWebViewRendering = nil;
+    }
+}
 @end

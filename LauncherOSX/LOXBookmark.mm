@@ -17,6 +17,8 @@
 @synthesize title;
 @synthesize spineItemCFI;
 @synthesize contentCFI;
+@synthesize basePath = _basePath;
+
 
 +(id) bookmarkFromDictionary:(NSDictionary *)dict
 {
@@ -32,6 +34,7 @@
 -(NSDictionary *) toDictionary
 {
     return @{@"idref"        : self.idref,
+             @"basePath"     : self.basePath,
              @"title"        : self.title,
              @"spineItemCFI" : self.spineItemCFI,
              @"contentCFI"   : self.contentCFI };
@@ -43,6 +46,7 @@
 
     if(self) {
         self.idref = @"";
+        self.basePath = @"";
         self.title = @"";
         self.spineItemCFI = @"";
         self.contentCFI = @"";
@@ -62,6 +66,7 @@
     [title release];
     [spineItemCFI release];
     [contentCFI release];
+    [_basePath release];
     [super dealloc];
 }
 

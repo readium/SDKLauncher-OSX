@@ -37,6 +37,7 @@ namespace ePub3 {
 
 @property(nonatomic, readonly) NSString *idref;
 @property(nonatomic, readonly) NSString *packageStorageId;
+@property(nonatomic, readonly) NSString *basePath;
 
 - (const ePub3::SpineItem *) sdkSpineItem;
 

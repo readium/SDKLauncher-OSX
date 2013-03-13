@@ -26,6 +26,7 @@
 @class LOXePubApi;
 @class LOXPageNumberTextController;
 @class LOXBookmarksController;
+@class LOXAppDelegate;
 
 
 @interface LOXWebViewController : NSObject {
@@ -44,6 +45,7 @@
 @property (assign) IBOutlet NSButton *nextPageButton;
 
 @property (assign) IBOutlet LOXPageNumberTextController *pageNumController;
+@property (assign) IBOutlet LOXAppDelegate *appDelegate;
 
 
 - (void)displayHtml:(NSString *)html withBaseUrlPath:(NSString *)baseUrlPath;
@@ -55,5 +57,13 @@
 
 
 - (void)onOpenPageIndex:(int)index ofPages:(int)count;
+
+- (void)onPaginationScriptingReady;
+
+
+- (NSString *)getCurrentPageCfi;
+
+- (int)getPageForElementCfi:(NSString *)cfi;
+
 
 @end

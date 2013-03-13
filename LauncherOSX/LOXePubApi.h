@@ -54,4 +54,8 @@ typedef enum ePubApiType ePubApiType;
 
 
 - (NSString *)getPackageTitle;
+
+- (NSString *)getCfiForSpineItem:(id <LOXSpineItem>)spineItem;
+
+- (id <LOXSpineItem>)findSpineItemWithIdref:(NSString *)string;
 @end

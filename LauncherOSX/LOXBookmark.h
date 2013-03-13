@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSString *spineItemCFI;
 @property (nonatomic, retain) NSString *contentCFI;
 @property (nonatomic, assign) LOXBook *book;
+@property(nonatomic, retain) NSString *basePath;
 
 + (id)bookmarkFromDictionary:(NSDictionary *)dict;
 

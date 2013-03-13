@@ -54,4 +54,7 @@
 
 - (LOXBookmark*)createBookmark;
 
+- (void)openBookmark:(LOXBookmark *)bookmark;
+
+- (void)onPaginationScriptingReady;
 @end
