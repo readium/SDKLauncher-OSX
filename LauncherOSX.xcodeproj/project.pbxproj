@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
 		850B1A5916A61F9900619C3C /* libObjective-Zip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5816A61F9900619C3C /* libObjective-Zip.a */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
 		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
@@ -70,6 +71,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		558E562716EF859800FCF273 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "readium-sdk/Platform/Apple/ePub3.xcodeproj"; sourceTree = "<group>"; };
 		850B1A5816A61F9900619C3C /* libObjective-Zip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libObjective-Zip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		850B1A5A16A61FB900619C3C /* ePub3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = ePub3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -156,6 +158,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		552FC46A16F39AD0000E73BA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				552FC46516F39AB5000E73BA /* icon.icns */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		558E562816EF859800FCF273 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -205,6 +215,7 @@
 		8597D60216824655000FAAAF = {
 			isa = PBXGroup;
 			children = (
+				552FC46A16F39AD0000E73BA /* Resources */,
 				558E562716EF859800FCF273 /* ePub3.xcodeproj */,
 				85F74E6416C32B0F00D29953 /* Scripts */,
 				850B1A5A16A61FB900619C3C /* ePub3.dylib */,
@@ -437,6 +448,7 @@
 				8597D62816824656000FAAAF /* MainMenu.xib in Resources */,
 				85F74E6516C32B0F00D29953 /* Scripts in Resources */,
 				856354F716DE7C3A009DA283 /* BookmarkDlg.xib in Resources */,
+				552FC46616F39AB5000E73BA /* icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
