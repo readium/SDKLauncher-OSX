@@ -63,7 +63,7 @@ using namespace ePub3;
     LOXUserData *_userData;
     LOXBook*_currentBook;
 
-    LOXBookmark *_bookmarkWaitingForWebViewRendering;
+    NSString *_contentCfiWaitingForWebViewRendering;
 }
 
 
@@ -84,7 +84,7 @@ using namespace ePub3;
     [_scriptInjector release];
     [_epubApi release];
     [_userData release];
-    [_bookmarkWaitingForWebViewRendering release];
+    [_contentCfiWaitingForWebViewRendering release];
     [super dealloc];
 }
 
@@ -295,8 +295,8 @@ using namespace ePub3;
         [self openCurrentSpineItemContentCfi:bookmark.contentCFI];
     }
     else {
-        _bookmarkWaitingForWebViewRendering = bookmark;
-        [_bookmarkWaitingForWebViewRendering retain];
+        _contentCfiWaitingForWebViewRendering = bookmark.contentCFI;
+        [_contentCfiWaitingForWebViewRendering retain];
         [self.spineViewController selectSpieItem:spineItem];
     }
 }
@@ -309,12 +309,12 @@ using namespace ePub3;
 
 - (void)onPaginationScriptingReady
 {
-    if (_bookmarkWaitingForWebViewRendering != nil ){
+    if (_contentCfiWaitingForWebViewRendering != nil ){
 
-        [self openCurrentSpineItemContentCfi:_bookmarkWaitingForWebViewRendering.contentCFI];
+        [self openCurrentSpineItemContentCfi: _contentCfiWaitingForWebViewRendering];
 
-        [_bookmarkWaitingForWebViewRendering release];
-        _bookmarkWaitingForWebViewRendering = nil;
+        [_contentCfiWaitingForWebViewRendering release];
+        _contentCfiWaitingForWebViewRendering = nil;
     }
 }
 @end

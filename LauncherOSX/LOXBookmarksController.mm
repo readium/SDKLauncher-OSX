@@ -127,7 +127,7 @@
     [self.addBookmarkMenuItem setEnabled: _book != nil ];
 
     //remove all bookmarks but leave 'add bookmark' and separator items
-    for(int i = [self.bookmarksMenu numberOfItems] - 1; i > 1; i--) {
+    for(NSInteger i = [self.bookmarksMenu numberOfItems] - 1; i > 1; i--) {
 
         [self.bookmarksMenu removeItemAtIndex:i];
     }

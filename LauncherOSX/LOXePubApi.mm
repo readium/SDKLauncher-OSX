@@ -79,7 +79,7 @@
     @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }
 
-- (NSString*) cfiForSpineItem:(id<LOXSpineItem>) spineItem
+-(NSString*) getCfiForSpineItem:(id<LOXSpineItem>) spineItem
 {
     @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }

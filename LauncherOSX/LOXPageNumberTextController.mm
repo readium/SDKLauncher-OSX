@@ -62,7 +62,7 @@
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification
 {
-    NSInteger page =  [self.pageNumberCtrl integerValue];
+    int page =  (int)[self.pageNumberCtrl integerValue];
 
     if(page > 0 && page <= _pageCount) {
 
