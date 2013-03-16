@@ -32,6 +32,7 @@
 @class LOXBookmarksController;
 @class LOXBookmark;
 @class LOXBookmarkEditController;
+@class LOXTocViewController;
 
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate, LOXSpineViewControllerDelegate>
@@ -43,6 +44,7 @@
 @property (assign) IBOutlet LOXSpineViewController *spineViewController;
 @property (assign) IBOutlet LOXWebViewController *webViewController;
 @property (assign) IBOutlet LOXBookmarksController *bookmarksController;
+@property (assign) IBOutlet LOXTocViewController *tocViewController;
 
 
 @property (assign) id<LOXSpineItem> currentSpineItem;

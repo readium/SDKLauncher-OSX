@@ -30,6 +30,8 @@
 #import "LOXBookmarksController.h"
 #import "LOXBookmark.h"
 #import "LOXSpineItemSdk.h"
+#import "LOXToc.h"
+#import "LOXTocViewController.h"
 
 
 using namespace ePub3;
@@ -120,6 +122,7 @@ using namespace ePub3;
 
         [_epubApi openFile:path];
 
+        //spine items
         NSArray *items = [_epubApi getSpineItems];
 
         for (id item in items) {
@@ -129,6 +132,9 @@ using namespace ePub3;
         if (items.count > 0) {
             [self.spineViewController selectSpineIndex:0];
         }
+
+        LOXToc *toc = [_epubApi getToc];
+        [self.tocViewController setToc:toc];
 
         _currentBook = [self getBookForPath:path];
         _currentBook.dateOpened = [NSDate date];
