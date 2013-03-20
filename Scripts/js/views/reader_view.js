@@ -270,7 +270,11 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         return this.navigation.getPageForElementCfi(cfi);
 
-    }
+    },
 
+    getPageForElementId: function(id) {
+
+        return this.navigation.getPageForElementId(id);
+    }
 
 });

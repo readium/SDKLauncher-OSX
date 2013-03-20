@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1080</int>
-		<string key="IBDocument.SystemVersion">12C60</string>
+		<string key="IBDocument.SystemVersion">12D78</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
-		<string key="IBDocument.AppKitVersion">1187.34</string>
-		<string key="IBDocument.HIToolboxVersion">625.00</string>
+		<string key="IBDocument.AppKitVersion">1187.37</string>
+		<string key="IBDocument.HIToolboxVersion">626.00</string>
 		<dictionary class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="com.apple.InterfaceBuilder.CocoaPlugin">3084</string>
 			<string key="com.apple.WebKitIBPlugin">2053</string>
@@ -627,7 +627,6 @@
 																		<int key="NSvFlags">-2147483392</int>
 																		<string key="NSFrame">{{1, 449}, {122, 15}}</string>
 																		<reference key="NSSuperview" ref="705476525"/>
-																		<reference key="NSNextKeyView" ref="847228729"/>
 																		<string key="NSReuseIdentifierKey">_NS:60</string>
 																		<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																		<int key="NSsFlags">1</int>
@@ -769,7 +768,7 @@
 																		<string key="NSFrame">{{1, 389}, {196, 15}}</string>
 																		<reference key="NSSuperview" ref="589722507"/>
 																		<reference key="NSWindow"/>
-																		<reference key="NSNextKeyView" ref="847228729"/>
+																		<reference key="NSNextKeyView"/>
 																		<string key="NSReuseIdentifierKey">_NS:60</string>
 																		<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																		<int key="NSsFlags">1</int>
@@ -939,7 +938,7 @@
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="943940271"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1058}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -1332,11 +1331,27 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="647721531"/>
+						<reference key="destination" ref="777553625"/>
+					</object>
+					<int key="connectionID">1135</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
 						<string key="label">_outlineView</string>
 						<reference key="source" ref="777553625"/>
 						<reference key="destination" ref="647721531"/>
 					</object>
 					<int key="connectionID">1132</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">_appDelegate</string>
+						<reference key="source" ref="777553625"/>
+						<reference key="destination" ref="976324537"/>
+					</object>
+					<int key="connectionID">1136</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2742,7 +2757,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1134</int>
+			<int key="maxID">1136</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2940,17 +2955,20 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">LOXTocViewController</string>
 					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">_outlineView</string>
-						<string key="NS.object.0">NSOutlineView</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">_outlineView</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="_appDelegate">LOXAppDelegate</string>
+						<string key="_outlineView">NSOutlineView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="_appDelegate">
+							<string key="name">_appDelegate</string>
+							<string key="candidateClassName">LOXAppDelegate</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="_outlineView">
 							<string key="name">_outlineView</string>
 							<string key="candidateClassName">NSOutlineView</string>
 						</object>
-					</object>
+					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/LOXTocViewController.h</string>

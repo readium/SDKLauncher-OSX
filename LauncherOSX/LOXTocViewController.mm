@@ -7,12 +7,20 @@
 
 #import "LOXTocViewController.h"
 #import "LOXToc.h"
+#import "LOXAppDelegate.h"
 
 
 @implementation LOXTocViewController {
 
     LOXToc* _toc;
 
+}
+
+-(void)awakeFromNib
+{
+    [_outlineView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleNone];
+    [_outlineView setTarget:self];
+    [_outlineView setAction:@selector(clickInView:)];
 }
 
 -(void) setToc:(LOXToc *)toc
@@ -72,5 +80,60 @@
     [super dealloc];
 }
 
+- (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+    if(item == nil) {
+        return nil;
+    }
+
+    LOXTocEntry * container = (LOXTocEntry *)item;
+
+    if(container.contentRef.length > 0){
+        NSTextFieldCell * cell = [[[NSTextFieldCell alloc] init] autorelease];
+        [cell setTextColor:[NSColor blueColor]];
+        [cell setBackgroundColor:[NSColor redColor]];
+        return cell;
+    }
+
+    return nil;
+
+}
+
+
+//Prevent cell editing
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+    return NO;
+}
+
+//Prevent call on selection changed
+- (BOOL)selectionShouldChangeInTableView:(NSTableView *)aTableView
+{
+    return NO;
+}
+//
+- (NSIndexSet *)tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes
+{
+    return nil;
+}
+
+-(void)clickInView:(NSTableView *)tableView
+{
+    NSInteger rowIndex = [_outlineView clickedRow];
+    NSInteger colIndex = [_outlineView clickedColumn];
+
+    NSLog(@"row:%d, col %d", (int)rowIndex, (int)colIndex);
+
+    if(rowIndex < 0) {
+        return;
+    }
+
+    LOXTocEntry * entry = (LOXTocEntry*)[_outlineView itemAtRow: rowIndex];
+    if(entry == nil || entry.contentRef.length == 0) {
+        return;
+    }
+
+    [_appDelegate openContentDocRef:entry.contentRef];
+}
 
 @end

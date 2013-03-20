@@ -254,6 +254,17 @@
     return cfi;
 }
 
+- (id <LOXSpineItem>)findSpineItemWithBasePath:(NSString *)href
+{
+    for (id<LOXSpineItem> spineItem in _spineItems) {
+        if ([spineItem.basePath isEqualToString:href]) {
+            return spineItem;
+        }
+    }
+
+    return nil;
+}
+
 - (id <LOXSpineItem>)findSpineItemWithIdref:(NSString *)idref
 {
     for (id<LOXSpineItem> spineItem in _spineItems) {

@@ -59,4 +59,7 @@
 - (void)openBookmark:(LOXBookmark *)bookmark;
 
 - (void)onPaginationScriptingReady;
+
+- (void)openContentDocRef:(NSString *)contentRef;
+
 @end

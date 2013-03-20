@@ -47,6 +47,8 @@ using namespace ePub3;
 
 - (void)openCurrentSpineItemContentCfi:(NSString *)cfi;
 
+- (void)openCurrentSpineItemElementId:(NSString *)elementId;
+
 
 - (void)reportError:(NSString *)error;
 
@@ -66,6 +68,7 @@ using namespace ePub3;
     LOXBook*_currentBook;
 
     NSString *_contentCfiWaitingForWebViewRendering;
+    NSString *_elementIdWaitingForWebViewRendering;
 }
 
 
@@ -87,6 +90,7 @@ using namespace ePub3;
     [_epubApi release];
     [_userData release];
     [_contentCfiWaitingForWebViewRendering release];
+    [_elementIdWaitingForWebViewRendering release];
     [super dealloc];
 }
 
@@ -310,7 +314,18 @@ using namespace ePub3;
 -(void)openCurrentSpineItemContentCfi:(NSString *) cfi
 {
     int pageIx = [self.webViewController getPageForElementCfi:cfi];
-    [self.webViewController openPageIndex:pageIx];
+    if(pageIx >= 0) {
+        [self.webViewController openPageIndex:pageIx];
+    }
+
+}
+
+-(void)openCurrentSpineItemElementId:(NSString*) elementId
+{
+    int pageIx = [self.webViewController getPageForElementId:elementId];
+    if(pageIx >= 0) {
+        [self.webViewController openPageIndex:pageIx];
+    }
 }
 
 - (void)onPaginationScriptingReady
@@ -322,5 +337,49 @@ using namespace ePub3;
         [_contentCfiWaitingForWebViewRendering release];
         _contentCfiWaitingForWebViewRendering = nil;
     }
+
+    if (_elementIdWaitingForWebViewRendering != nil) {
+
+        [self openCurrentSpineItemElementId:_elementIdWaitingForWebViewRendering];
+
+        [_elementIdWaitingForWebViewRendering release];
+        _elementIdWaitingForWebViewRendering = nil;
+    }
 }
+
+-(void)openContentDocRef:(NSString *)contentRef
+{
+    NSRange range =[contentRef rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
+
+    NSString *contentDocUrl = range.location != NSNotFound ? [contentRef substringWithRange: NSMakeRange(0, range.location)] : contentRef;
+
+    NSString *elementId = nil;
+    if(range.location != NSNotFound && range.location + 1 < contentRef.length) {
+        elementId = [contentRef substringFromIndex:range.location + 1];
+    }
+
+    id<LOXSpineItem> spineItem = [_epubApi findSpineItemWithBasePath: contentDocUrl];
+
+    if(spineItem == nil) {
+        return;
+    }
+
+    if (_currentSpineItem == spineItem) {
+        if(elementId != nil) {
+            [self openCurrentSpineItemElementId:elementId];
+        }
+    }
+    else {
+        if(elementId != nil) {
+            [_elementIdWaitingForWebViewRendering release];
+            _elementIdWaitingForWebViewRendering = elementId;
+            [_elementIdWaitingForWebViewRendering retain];
+
+        }
+
+        [self.spineViewController selectSpieItem:spineItem];
+    }
+
+}
+
 @end

@@ -8,13 +8,15 @@
 #import <Foundation/Foundation.h>
 
 @class LOXToc;
+@class LOXAppDelegate;
 
 
-@interface LOXTocViewController : NSObject <NSOutlineViewDataSource> {
+@interface LOXTocViewController : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate, NSTableViewDelegate> {
 
 @private
 
     IBOutlet NSOutlineView * _outlineView;
+    IBOutlet LOXAppDelegate* _appDelegate;
 }
 
 

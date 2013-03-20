@@ -263,6 +263,12 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
         var $element = $(result.textNode).parent();
 
+        return this.getPageForElement($element, cfiParts.x, cfiParts.y);
+    },
+
+    //x,y point on element
+    getPageForElement: function($element, x, y) {
+
         var pagination = this.options.paginationInfo;
 
         var elementOffset = $element.offset();
@@ -270,14 +276,35 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
         var page = Math.floor(elLeft / (pagination.columnWidth + pagination.columnGap));
 
-        var posInElement = elementOffset.top + cfiParts.y * $element.height() / 100
-        var posOverflow = posInElement - (this.$viewport.offset().top + this.$viewport.height());
+        var posInElement = elementOffset.top + y * $element.height() / 100;
 
-        if(posOverflow > 0) {
-            page += Math.ceil(posOverflow / this.$viewport.height())
+        var viewPortBottom = this.$viewport.offset().top + this.$viewport.height();
+
+        var overFlow;
+
+        if(posInElement < this.$viewport.offset().top ) {
+            overFlow = Math.abs(this.$viewport.offset().top - posInElement);
+            page = page - Math.ceil(overFlow / this.$viewport.height());
+        }
+        else if (posInElement > viewPortBottom) {
+            overFlow = Math.abs(posInElement - viewPortBottom);
+            page = page + Math.ceil(overFlow / this.$viewport.height());
         }
 
         return page;
+    },
+
+    getPageForElementId: function(id) {
+
+        var contentDoc = this.$el[0].contentDocument;
+
+
+        var $element = $("#" + id, contentDoc);
+        if($element.length == 0) {
+            return -1;
+        }
+
+        return this.getPageForElement($element, 0, 0);
     },
 
     splitCfi: function(cfi) {

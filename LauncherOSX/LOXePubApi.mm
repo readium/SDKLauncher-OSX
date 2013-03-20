@@ -85,7 +85,12 @@
     @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }
 
-- (id <LOXSpineItem>)findSpineItemWithIdref:(NSString *)string
+- (id <LOXSpineItem>)findSpineItemWithBasePath:(NSString *)href
+{
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
+}
+
+- (id <LOXSpineItem>)findSpineItemWithIdref:(NSString *)idref
 {
     @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }
