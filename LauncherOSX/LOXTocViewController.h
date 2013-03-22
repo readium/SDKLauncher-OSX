@@ -9,6 +9,7 @@
 
 @class LOXToc;
 @class LOXAppDelegate;
+@class LOXTocEntry;
 
 
 @interface LOXTocViewController : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate, NSTableViewDelegate> {
@@ -22,5 +23,6 @@
 
 - (void)setToc:(LOXToc *)toc;
 
+- (BOOL)isClickableItem:(LOXTocEntry *)item;
 
 @end

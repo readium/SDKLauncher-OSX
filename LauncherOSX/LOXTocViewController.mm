@@ -10,10 +10,27 @@
 #import "LOXAppDelegate.h"
 
 
+@interface LOXTocViewController ()
+- (BOOL)isClickableItem:(LOXTocEntry *)item;
+
+
+@end
+
 @implementation LOXTocViewController {
 
     LOXToc* _toc;
+    NSMutableArray *_cells;
 
+}
+
+-(id)init
+{
+    self = [super init];
+    if(self) {
+        _cells = [[NSMutableArray array] retain];
+    }
+
+    return self;
 }
 
 -(void)awakeFromNib
@@ -30,7 +47,9 @@
     _toc = toc;
     [_toc retain];
 
+    [_cells removeAllObjects];
     [_outlineView reloadData];
+
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
@@ -77,6 +96,7 @@
 - (void)dealloc
 {
     [_toc release];
+    [_cells release];
     [super dealloc];
 }
 
@@ -88,15 +108,23 @@
 
     LOXTocEntry * container = (LOXTocEntry *)item;
 
-    if(container.contentRef.length > 0){
+    if([self isClickableItem: container]){
         NSTextFieldCell * cell = [[[NSTextFieldCell alloc] init] autorelease];
         [cell setTextColor:[NSColor blueColor]];
         [cell setBackgroundColor:[NSColor redColor]];
+        cell.selectable = YES;
+
+        [_cells addObject:cell];
         return cell;
     }
 
     return nil;
 
+}
+
+-(BOOL)isClickableItem:(LOXTocEntry*) item
+{
+    return item.contentRef.length > 0;
 }
 
 
@@ -120,9 +148,6 @@
 -(void)clickInView:(NSTableView *)tableView
 {
     NSInteger rowIndex = [_outlineView clickedRow];
-    NSInteger colIndex = [_outlineView clickedColumn];
-
-    NSLog(@"row:%d, col %d", (int)rowIndex, (int)colIndex);
 
     if(rowIndex < 0) {
         return;
