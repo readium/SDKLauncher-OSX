@@ -18,6 +18,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+//noinspection JSUnusedGlobalSymbols
 ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     el: '#epubContentIframe',
@@ -67,7 +68,6 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     },
 
 
-
     onViewportResize: function() {
 
         if(this.updateViewportSize()) {
@@ -115,9 +115,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         if(this.paginationInfo.currentPage < 0 || this.paginationInfo.currentPage >= this.paginationInfo.pageCount) {
 
-            if(window.LauncherUI) {
-                window.LauncherUI.onOpenPageIndexOfPages(0, 0);
-            }
+            ReadiumSDK.HostAppFeedback.onOpenPageIndexOfPages(0, 0);
             return;
         }
 
@@ -125,9 +123,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         this.$epubHtml.css("left", -this.paginationInfo.pageOffset + "px");
 
-        if(window.LauncherUI){
-            window.LauncherUI.onOpenPageIndexOfPages(this.paginationInfo.currentPage, this.paginationInfo.pageCount);
-        }
+        ReadiumSDK.HostAppFeedback.onOpenPageIndexOfPages(this.paginationInfo.currentPage, this.paginationInfo.pageCount);
 
     },
 
@@ -250,9 +246,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
                 self.paginationInfo.currentPage = self.paginationInfo.pageCount - 1;
             }
 
-            if(window.LauncherUI) {
-                window.LauncherUI.onPaginationScriptingReady();
-            }
+            ReadiumSDK.HostAppFeedback.onPaginationScriptingReady();
 
             self.render();
 
