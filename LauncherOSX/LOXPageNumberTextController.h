@@ -1,3 +1,4 @@
+//  LauncherOSX
 //
 //  Created by Boris Schneiderman.
 //  Copyright (c) 2012-2013 The Readium Foundation.

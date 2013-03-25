@@ -4,7 +4,8 @@
 
 	<property name="version" value="1.0.1"/>
 	<property name="xcworkspace" value="LauncherOSX.xcworkspace"/>
-	<property name="build.dir" value="/Users/rkwright/Documents/github/SDKLauncher-OSX"/>
+	<property name="build.dir" value="${basedir}" /> 
+	
 	<property name="scheme" value="LauncherOSX"/>
 	<property environment="env"/>
   <echo message="Number of Processors = ${env.NUMBER_OF_PROCESSORS}"/>

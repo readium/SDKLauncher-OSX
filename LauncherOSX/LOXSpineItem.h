@@ -18,5 +18,5 @@
 
 @required
 @property(nonatomic, readonly, retain) NSString *idref;
-
+@property(nonatomic, readonly, retain) NSString *basePath;
 @end

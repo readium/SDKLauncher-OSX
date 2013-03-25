@@ -2,10 +2,10 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Objective-Zip/Objective-Zip.xcodeproj">
+      location = "group:readium-sdk/Platform/Apple/ePub3.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:readium-sdk/ePub3.xcodeproj">
+      location = "group:Objective-Zip/Objective-Zip.xcodeproj">
    </FileRef>
    <FileRef
       location = "container:LauncherOSX.xcodeproj">

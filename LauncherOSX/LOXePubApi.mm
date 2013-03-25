@@ -68,5 +68,24 @@
     @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
 }
 
+-(NSString*)getPackageID
+{
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
+}
 
+
+- (NSString *)getPackageTitle
+{
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
+}
+
+-(NSString*) getCfiForSpineItem:(id<LOXSpineItem>) spineItem
+{
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
+}
+
+- (id <LOXSpineItem>)findSpineItemWithIdref:(NSString *)string
+{
+    @throw [NSException exceptionWithName:@"Not Implemented" reason:@"Method must be overriden" userInfo:nil];
+}
 @end

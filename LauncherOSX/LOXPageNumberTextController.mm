@@ -1,3 +1,4 @@
+//  LauncherOSX
 //
 //  Created by Boris Schneiderman.
 //  Copyright (c) 2012-2013 The Readium Foundation.
@@ -61,7 +62,7 @@
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification
 {
-    int page =  [self.pageNumberCtrl integerValue];
+    int page =  (int)[self.pageNumberCtrl integerValue];
 
     if(page > 0 && page <= _pageCount) {
 

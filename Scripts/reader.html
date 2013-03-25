@@ -1,157 +1,27 @@
 <html>
     <head>
-        <script src="jquery-1.8.2.min.js" type="text/javascript"></script>
+        <script src="lib/jquery-1.8.2.min.js" type="text/javascript"></script>
+        <script src="lib/underscore.min.js" type="text/javascript"></script>
+        <script src="lib/backbone.min.js" type="text/javascript"></script>
+        <script src="js/readium_sdk.js" type="text/javascript"></script>
+        <script src="js/models/trigger.js" type="text/javascript"></script>
+        <script src="lib/epub_cfi.js" type="text/javascript"></script>
+        <script src="js/views/cfi_navigation_logic.js" type="text/javascript"></script>
+        <script src="js/views/reader_view.js" type="text/javascript"></script>
+
         <script type="text/javascript">
 
             $(document).ready(function () {
-
-                var _this = this;
-
-                this.lastKeyholeSize = {
-                    width: undefined,
-                    height: undefined
-                };
-                
-                this.pagination = {
-                    visibleColumnCount : 1,
-                    columnGap : 20,
-                    pageCount : undefined,
-                    currentPage : 0,
-                    columnWidth : undefined
-                };
-
-
-                this.getEpubContentDocument = function () {
-                    return $("#epubContentIframe")[0].contentDocument;
-                };
-
-
-                this.openPage = function(pageIndex) {
-
-                    if(pageIndex >= 0 && pageIndex < this.pagination.pageCount) {
-                        this.pagination.currentPage = pageIndex;
-                        this.displayCurrentPage();
-                    }
-                };
-
-
-                this.moveNextPage = function () {
-
-                    console.log("OnNextPage()");
-
-                    if(this.pagination.currentPage < this.pagination.pageCount - 1) {
-                        this.pagination.currentPage++;
-                        this.displayCurrentPage();
-                    }
-                };
-
-                this.movePrevPage = function () {
-
-                    console.log("OnPrevPage()");
-
-                    if(this.pagination.currentPage > 0) {
-                        this.pagination.currentPage--;
-                        this.displayCurrentPage();
-                    }
-
-                };
-
-                this.displayCurrentPage = function() {
-
-                    if(this.pagination.currentPage < 0 || this.pagination.currentPage >= this.pagination.pageCount) {
-
-                        LauncherUI.onOpenPageIndexOfPages(0, 0);
-                        return;
-                    }
-
-                    var shift = this.pagination.currentPage * (_this.lastKeyholeSize.width + this.pagination.columnGap);
-
-                    var $epubHtml = $("html", this.getEpubContentDocument());
-                    $epubHtml.css("left", -shift + "px");
-
-                    LauncherUI.onOpenPageIndexOfPages(this.pagination.currentPage, this.pagination.pageCount);
-                };
-
-                this.updateKeyholeSize = function() {
-
-                    var newWidth = $("#key-hole").width();
-                    var newHeight = $("#key-hole").height();
-
-                    if(_this.lastKeyholeSize.width !== newWidth || _this.lastKeyholeSize.height !== newHeight){
-
-                        _this.lastKeyholeSize.width = newWidth;
-                        _this.lastKeyholeSize.height = newHeight;
-                        return true;
-                    }
-
-                    return false;
-
-                };
-
-                this.updatePagination = function(){
-
-                    _this.pagination.columnWidth = (_this.lastKeyholeSize.width - _this.pagination.columnGap * (_this.pagination.visibleColumnCount  -1)) / this.pagination.visibleColumnCount;
-
-                    var contentDoc = _this.getEpubContentDocument();
-                    $("html", contentDoc).css("width", _this.lastKeyholeSize.width);
-                    $("html", contentDoc).css("-webkit-column-width", _this.pagination.columnWidth + "px");
-
-                    _this.displayCurrentPage();
-
-                    //TODO it takes time for layout engine to arrange columns we waite
-                    //it would be better to react on layout column reflow finished event
-                    setTimeout(function(){
-                        console.log("Set num of viewports");
-                        var columnizedContentWidth = $("html", contentDoc)[0].scrollWidth;
-                        $("#epubContentIframe").css("width", columnizedContentWidth);
-                        _this.pagination.pageCount = Math.round(columnizedContentWidth / _this.lastKeyholeSize.width);
-
-                        if(_this.pagination.currentPage >= _this.pagination.pageCount) {
-                            _this.pagination.currentPage = _this.pagination.pageCount - 1;
-                        }
-
-                        _this.displayCurrentPage();
-                    }, 100);
-
-                };
-
-                // When the iframe has been loaded, paginate the epub content document
-                $("#epubContentIframe").on("load", function (e) {
-
-                    var $epubHtml = $("html", _this.getEpubContentDocument());
-
-                    $epubHtml.css("height", "100%");
-                    $epubHtml.css("position", "absolute");
-                    $epubHtml.css("-webkit-column-axis", "horizontal");
-                    $epubHtml.css("-webkit-column-gap", _this.pagination.columnGap + "px");
-
-/////////
-//Columns Debugging
-//                    $epubHtml.css("-webkit-column-rule-color", "red");
-//                    $epubHtml.css("-webkit-column-rule-style", "dashed");
-//                    $epubHtml.css("background-color", '#b0c4de');
-/////////
-
-                    _this.pagination.currentPage = 0;
-                    _this.updateKeyholeSize();
-                    _this.updatePagination();
-
-                });
-
-                $(window).resize(function(e){
-
-                   if(_this.updateKeyholeSize()) {
-
-                       _this.updatePagination();
-                   }
-                });
+                "use strict";
+                ReadiumSDK.reader = new ReadiumSDK.Views.ReaderView();
             });
 
         </script>
+
         <link rel="stylesheet" type="text/css" href="reader.css" />
     </head>
     <body>
-        <div id="key-hole" class="clearfix">
+        <div id="viewport" class="clearfix">
             <iframe scrolling="no" src="${CHAPTER}" id="epubContentIframe"></iframe>
         </div>
     </body>
