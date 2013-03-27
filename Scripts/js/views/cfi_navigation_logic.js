@@ -101,7 +101,7 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
         var percent = 0;
         var height = $element.height();
         if(invisiblePart > 0 && height > 0) {
-             percent = Math.floor(invisiblePart * 100 / height);
+             percent = Math.ceil(invisiblePart * 100 / height);
         }
 
         if(cfi[0] == "!") {
@@ -130,6 +130,8 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
     //x,y point on element
     getPageForElement: function($element, x, y) {
 
+        var PERCENT_ROUNDING_TOLERANCE = 1;
+
         if($element[0].nodeType === Node.TEXT_NODE) { //text
             $element = $element.parent();
         }
@@ -147,11 +149,11 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
         var overFlow;
 
-        if(posInElement < viewportRect.top ) {
+        if(posInElement + PERCENT_ROUNDING_TOLERANCE < viewportRect.top ) {
             overFlow = Math.abs(viewportRect.top - posInElement);
             page = page - Math.ceil(overFlow / viewportRect.height);
         }
-        else if (posInElement > viewportRect.bottom()) {
+        else if (posInElement - PERCENT_ROUNDING_TOLERANCE > viewportRect.bottom()) {
             overFlow = Math.abs(posInElement - viewportRect.bottom());
             page = page + Math.ceil(overFlow / viewportRect.height);
         }
