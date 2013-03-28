@@ -43,6 +43,8 @@
 
 - (NSString *)unwrapCfi:(NSString *)cfi;
 
+- (NSString *)removeLeadingRelativeParentPath:(NSString *)path;
+
 - (void)copyTitleFromNavElement:(ePub3::NavigationElement *)element toEntry:(LOXTocEntry *)entry;
 
 
@@ -257,12 +259,26 @@
 - (id <LOXSpineItem>)findSpineItemWithBasePath:(NSString *)href
 {
     for (id<LOXSpineItem> spineItem in _spineItems) {
-        if ([spineItem.basePath isEqualToString:href]) {
+        if ([[self removeLeadingRelativeParentPath:spineItem.basePath] isEqualToString: [self removeLeadingRelativeParentPath:href]]) {
             return spineItem;
         }
     }
 
     return nil;
+}
+
+//path's can come from different files id different dpth and they may contain leading "../"
+//we have to remove it to compare path's
+-(NSString*) removeLeadingRelativeParentPath: (NSString*) path
+{
+    NSString* ret = [NSString stringWithString:[path lowercaseString]];
+    path;
+
+    while([ret hasPrefix:@"../"]) {
+        ret  = [ret substringFromIndex:3];
+    }
+
+    return ret;
 }
 
 - (id <LOXSpineItem>)findSpineItemWithIdref:(NSString *)idref

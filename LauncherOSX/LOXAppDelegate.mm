@@ -358,7 +358,7 @@ using namespace ePub3;
         elementId = [contentRef substringFromIndex:range.location + 1];
     }
 
-    id<LOXSpineItem> spineItem = [_epubApi findSpineItemWithBasePath: contentDocUrl];
+     id<LOXSpineItem> spineItem = [_epubApi findSpineItemWithBasePath: contentDocUrl];
 
     if(spineItem == nil) {
         return;

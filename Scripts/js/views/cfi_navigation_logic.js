@@ -40,10 +40,8 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
         var viewportRect = new ReadiumSDK.Helpers.Rect(0, 0, this.$viewport.width(), this.$viewport.height());
 
-        // REFACTORING CANDIDATE: The "audiError" check is a total hack to solve a problem for a particular epub. This
-        //   issue needs to be addressed.
         $elements = $("body", this.getRootElement()).find(":not(iframe)").filter(function () {
-            if ((this.nodeType === Node.TEXT_NODE || this.nodeName.toLowerCase() === 'img') && !$(this).parent().hasClass("audiError")) {
+            if (this.nodeType === Node.TEXT_NODE || this.nodeName.toLowerCase() === 'img') {
                 return true;
             } else {
                 return false;
