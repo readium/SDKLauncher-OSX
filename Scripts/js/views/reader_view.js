@@ -32,7 +32,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         visibleColumnCount : 1,
         columnGap : 20,
-        pageCount : undefined,
+        pageCount : 0,
         currentPage : 0,
         columnWidth : undefined,
         pageOffset : 0
@@ -115,7 +115,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         if(this.paginationInfo.currentPage < 0 || this.paginationInfo.currentPage >= this.paginationInfo.pageCount) {
 
-            ReadiumSDK.HostAppFeedback.onOpenPageIndexOfPages(0, 0);
+            this.trigger("PageChanged", 0, 0);
             return;
         }
 
@@ -123,7 +123,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         this.$epubHtml.css("left", -this.paginationInfo.pageOffset + "px");
 
-        ReadiumSDK.HostAppFeedback.onOpenPageIndexOfPages(this.paginationInfo.currentPage, this.paginationInfo.pageCount);
+        this.trigger("PageChanged", this.paginationInfo.currentPage, this.paginationInfo.pageCount);
 
     },
 
@@ -246,8 +246,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
                 self.paginationInfo.currentPage = self.paginationInfo.pageCount - 1;
             }
 
-            ReadiumSDK.HostAppFeedback.onPaginationScriptingReady();
-
+            self.trigger("PaginationReady");
             self.render();
 
 
