@@ -272,7 +272,6 @@
 -(NSString*) removeLeadingRelativeParentPath: (NSString*) path
 {
     NSString* ret = [NSString stringWithString:[path lowercaseString]];
-    path;
 
     while([ret hasPrefix:@"../"]) {
         ret  = [ret substringFromIndex:3];
@@ -328,29 +327,7 @@
 
             [self addNavElementChildrenFrom:navPoint toTocEntry:entry];
         }
-        else {
-            // children contained in subTable
-            auto navTable = dynamic_cast<ePub3::NavigationTable*>(*el);
-            if(navTable != nil) {
 
-                NSString *title = [NSString stringWithUTF8String: navTable->Title().c_str()];
-
-                if (title.length > 0) {
-                    LOXTocEntry *entry = [[[LOXTocEntry alloc] init] autorelease];
-                    [self copyTitleFromNavElement:navTable toEntry:entry];
-
-                    [parentEntry addChild:entry];
-
-                    [self addNavElementChildrenFrom:navTable toTocEntry:entry];
-                }
-                else if(parentEntry.children.count > 0) {
-
-                    [self addNavElementChildrenFrom:navTable toTocEntry:parentEntry.children.lastObject];
-
-                }
-            }
-
-        }
     }
 }
 
