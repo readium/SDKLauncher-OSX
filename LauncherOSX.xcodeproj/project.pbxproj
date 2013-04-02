@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
 		850B1A5916A61F9900619C3C /* libObjective-Zip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5816A61F9900619C3C /* libObjective-Zip.a */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
 		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
@@ -49,7 +50,33 @@
 		AD8C8DEDA920FC142B70BEFD /* LOXTemporaryFileStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C844D86553834F8FA6218 /* LOXTemporaryFileStorage.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		558E562D16EF859800FCF273 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 558E562716EF859800FCF273 /* ePub3.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ABA72C241655382E003125FF;
+			remoteInfo = ePub3;
+		};
+		558E562F16EF859800FCF273 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 558E562716EF859800FCF273 /* ePub3.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ABA4BAE016ADF5A600161B77;
+			remoteInfo = "ePub3-iOS";
+		};
+		558E563116EF859800FCF273 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 558E562716EF859800FCF273 /* ePub3.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AB61CE4A1694845700299BB1;
+			remoteInfo = UnitTests;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
+		558E562716EF859800FCF273 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "readium-sdk/Platform/Apple/ePub3.xcodeproj"; sourceTree = "<group>"; };
 		850B1A5816A61F9900619C3C /* libObjective-Zip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libObjective-Zip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		850B1A5A16A61FB900619C3C /* ePub3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = ePub3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		850B1A8C16A631E800619C3C /* LOXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXUtil.h; sourceTree = "<group>"; };
@@ -143,6 +170,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		552FC46A16F39AD0000E73BA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				552FC46516F39AB5000E73BA /* icon.icns */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		558E562816EF859800FCF273 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				558E562E16EF859800FCF273 /* ePub3.dylib */,
+				558E563016EF859800FCF273 /* libePub3-iOS.a */,
+				558E563216EF859800FCF273 /* UnitTests */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		855CFE48169B907700AD311E /* ePubApi */ = {
 			isa = PBXGroup;
 			children = (
@@ -182,6 +227,8 @@
 		8597D60216824655000FAAAF = {
 			isa = PBXGroup;
 			children = (
+				552FC46A16F39AD0000E73BA /* Resources */,
+				558E562716EF859800FCF273 /* ePub3.xcodeproj */,
 				85F74E6416C32B0F00D29953 /* Scripts */,
 				850B1A5A16A61FB900619C3C /* ePub3.dylib */,
 				850B1A5816A61F9900619C3C /* libObjective-Zip.a */,
@@ -382,12 +429,42 @@
 			mainGroup = 8597D60216824655000FAAAF;
 			productRefGroup = 8597D60E16824655000FAAAF /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 558E562816EF859800FCF273 /* Products */;
+					ProjectRef = 558E562716EF859800FCF273 /* ePub3.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8597D60C16824655000FAAAF /* LauncherOSX */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		558E562E16EF859800FCF273 /* ePub3.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = ePub3.dylib;
+			remoteRef = 558E562D16EF859800FCF273 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		558E563016EF859800FCF273 /* libePub3-iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libePub3-iOS.a";
+			remoteRef = 558E562F16EF859800FCF273 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		558E563216EF859800FCF273 /* UnitTests */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = UnitTests;
+			remoteRef = 558E563116EF859800FCF273 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		8597D60B16824655000FAAAF /* Resources */ = {
@@ -399,6 +476,7 @@
 				8597D62816824656000FAAAF /* MainMenu.xib in Resources */,
 				85F74E6516C32B0F00D29953 /* Scripts in Resources */,
 				856354F716DE7C3A009DA283 /* BookmarkDlg.xib in Resources */,
+				552FC46616F39AB5000E73BA /* icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
