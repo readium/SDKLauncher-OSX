@@ -47,7 +47,7 @@
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    id<LOXSpineItem> item = [_spineItems objectAtIndex:(NSUInteger) row];
+    NSObject<LOXSpineItem> *item = [_spineItems objectAtIndex:(NSUInteger) row];
 
     NSString* propIdentifier = [tableColumn identifier];
     return [item valueForKey:propIdentifier];

@@ -66,4 +66,5 @@
 - (int)getPageForElementCfi:(NSString *)cfi;
 
 
+- (int)getPageForElementId:(NSString *)elementId;
 @end

@@ -16,12 +16,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-ReadiumSDK = {
+ReadiumSDK.HostAppFeedback = function(reader) {
 
-    Models : {},
-    Views : {},
-    Collections: {},
-    Routers: {},
-    Helpers: {}
+    reader.on("PageChanged", function(pageIx, pageCount){
+
+        if(window.LauncherUI) {
+            window.LauncherUI.onOpenPageIndexOfPages(pageIx, pageCount);
+        }
+
+    }),
+
+    reader.on("PaginationReady", function() {
+        if(window.LauncherUI) {
+            window.LauncherUI.onPaginationScriptingReady();
+        }
+    });
 
 };

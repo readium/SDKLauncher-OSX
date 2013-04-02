@@ -39,7 +39,11 @@
 		85F74E6516C32B0F00D29953 /* Scripts in Resources */ = {isa = PBXBuildFile; fileRef = 85F74E6416C32B0F00D29953 /* Scripts */; };
 		AD8C8489BFE9EF51568CC65D /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD8C8579F49901F4DF1AEECE /* CoreData.framework */; };
 		AD8C849FFD6304CF64699DEE /* LOXUserData.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C872E53A29384FDF791AA /* LOXUserData.mm */; };
+		AD8C85526133078591378426 /* LOXTocEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C81E02D0CF0F064FB3CA4 /* LOXTocEntry.m */; };
+		AD8C8661AD73F6BC538B34AB /* LOXTocView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C821D3AEC654EFB843790 /* LOXTocView.m */; };
+		AD8C897615891975FBC84078 /* LOXToc.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C8302ECF5562D9C7CD000 /* LOXToc.mm */; };
 		AD8C89C324864BCDB203D348 /* LOXSpineItemCocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C829F5C167F51758AAA17 /* LOXSpineItemCocoa.mm */; };
+		AD8C89E6EDC52FCF3247DDE2 /* LOXTocViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C84A9A8317F4A33CF8E3F /* LOXTocViewController.mm */; };
 		AD8C8AAAEB9F47040E6F40A1 /* LOXSpineItemSdk.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C806A657AFBE16755E89D /* LOXSpineItemSdk.mm */; };
 		AD8C8D0C7929CFD9F068D423 /* LOXBookmarksController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C8D529AEBFEB697DDD1A6 /* LOXBookmarksController.mm */; };
 		AD8C8D5755417C9A48FCB142 /* LOXContainerParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C83FAEEFC15D05F00ABAC /* LOXContainerParser.mm */; };
@@ -128,15 +132,23 @@
 		AD8C802E665A730551CBEDB3 /* LOXSpineItemSdk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpineItemSdk.h; sourceTree = "<group>"; };
 		AD8C806A657AFBE16755E89D /* LOXSpineItemSdk.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXSpineItemSdk.mm; sourceTree = "<group>"; };
 		AD8C80D1982D46C86A4BEB37 /* LOXTemporaryFileStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTemporaryFileStorage.h; sourceTree = "<group>"; };
+		AD8C80DFC213AC00E000BD2C /* LOXTocView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTocView.h; sourceTree = "<group>"; };
 		AD8C81CBD414816BDCB4CC8A /* LOXSpineItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpineItem.h; sourceTree = "<group>"; };
+		AD8C81E02D0CF0F064FB3CA4 /* LOXTocEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXTocEntry.m; sourceTree = "<group>"; };
+		AD8C821D3AEC654EFB843790 /* LOXTocView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXTocView.m; sourceTree = "<group>"; };
 		AD8C829F5C167F51758AAA17 /* LOXSpineItemCocoa.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXSpineItemCocoa.mm; sourceTree = "<group>"; };
+		AD8C8302ECF5562D9C7CD000 /* LOXToc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXToc.mm; sourceTree = "<group>"; };
 		AD8C83FAEEFC15D05F00ABAC /* LOXContainerParser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXContainerParser.mm; sourceTree = "<group>"; };
 		AD8C8424D0D4956CC7F32F4B /* LOXContainerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXContainerParser.h; sourceTree = "<group>"; };
 		AD8C844D86553834F8FA6218 /* LOXTemporaryFileStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXTemporaryFileStorage.m; sourceTree = "<group>"; };
+		AD8C84A9A8317F4A33CF8E3F /* LOXTocViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXTocViewController.mm; sourceTree = "<group>"; };
 		AD8C8579F49901F4DF1AEECE /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		AD8C86BBB399B4D50BC24F17 /* LOXTocViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTocViewController.h; sourceTree = "<group>"; };
 		AD8C872E53A29384FDF791AA /* LOXUserData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXUserData.mm; sourceTree = "<group>"; };
 		AD8C88A604DBA0AB6CC2B4B9 /* LOXSpineItemCocoa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpineItemCocoa.h; sourceTree = "<group>"; };
+		AD8C8B15363D3965E1301402 /* LOXTocEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTocEntry.h; sourceTree = "<group>"; };
 		AD8C8C4D6B428F33A9378BF4 /* LOXUserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXUserData.h; sourceTree = "<group>"; };
+		AD8C8CCFB81B905B28C986AA /* LOXToc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXToc.h; sourceTree = "<group>"; };
 		AD8C8D529AEBFEB697DDD1A6 /* LOXBookmarksController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXBookmarksController.mm; sourceTree = "<group>"; };
 		AD8C8FBED8EFF09E6381C68F /* LOXBookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXBookmarksController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -269,6 +281,7 @@
 				8597D61816824655000FAAAF /* Supporting Files */,
 				AD8C835D54F353C175EF63D8 /* Utils */,
 				AD8C872729A8092A25A2BAE4 /* ViewControllers */,
+				AD8C845FB63B644105903B79 /* Views */,
 			);
 			path = LauncherOSX;
 			sourceTree = "<group>";
@@ -301,6 +314,15 @@
 			name = Utils;
 			sourceTree = "<group>";
 		};
+		AD8C845FB63B644105903B79 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AD8C821D3AEC654EFB843790 /* LOXTocView.m */,
+				AD8C80DFC213AC00E000BD2C /* LOXTocView.h */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		AD8C84BC94B0A2B582CFFFD4 /* CocoaApi */ = {
 			isa = PBXGroup;
 			children = (
@@ -324,6 +346,8 @@
 				AD8C8FBED8EFF09E6381C68F /* LOXBookmarksController.h */,
 				856354F816DEB3AE009DA283 /* LOXBookmarkEditController.h */,
 				856354F916DEB3AF009DA283 /* LOXBookmarkEditController.m */,
+				AD8C84A9A8317F4A33CF8E3F /* LOXTocViewController.mm */,
+				AD8C86BBB399B4D50BC24F17 /* LOXTocViewController.h */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -343,6 +367,10 @@
 			children = (
 				AD8C802E665A730551CBEDB3 /* LOXSpineItemSdk.h */,
 				AD8C806A657AFBE16755E89D /* LOXSpineItemSdk.mm */,
+				AD8C8302ECF5562D9C7CD000 /* LOXToc.mm */,
+				AD8C8CCFB81B905B28C986AA /* LOXToc.h */,
+				AD8C81E02D0CF0F064FB3CA4 /* LOXTocEntry.m */,
+				AD8C8B15363D3965E1301402 /* LOXTocEntry.h */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -484,6 +512,10 @@
 				AD8C849FFD6304CF64699DEE /* LOXUserData.mm in Sources */,
 				AD8C8D0C7929CFD9F068D423 /* LOXBookmarksController.mm in Sources */,
 				856354FA16DEB3AF009DA283 /* LOXBookmarkEditController.m in Sources */,
+				AD8C897615891975FBC84078 /* LOXToc.mm in Sources */,
+				AD8C85526133078591378426 /* LOXTocEntry.m in Sources */,
+				AD8C89E6EDC52FCF3247DDE2 /* LOXTocViewController.mm in Sources */,
+				AD8C8661AD73F6BC538B34AB /* LOXTocView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

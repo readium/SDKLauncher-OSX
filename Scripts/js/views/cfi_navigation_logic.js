@@ -32,132 +32,48 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
     },
 
-//    getVisibleElements: function(){
-//
-//        var list = [];
-//
-//        var viewPortOffset = this.$viewport.offset();
-//
-//        var viewportRect = {
-//            left: viewPortOffset.left,
-//            top: viewPortOffset.top,
-//            width: this.$viewport.width(),
-//            height: this.$viewport.height()
-//        };
-//
-//        var body = $("body", this.getRootElement())[0];
-//
-//        this.getVisibleChildren(body, viewportRect, list);
-//
-//        return list;
-//    },
-//
-//    getVisibleChildren: function(element, viewportRect, visibleChildren) {
-//
-//        var elementOffset = $(element).offset();
-//        var elementBottom = elementOffset.top + $(element).height();
-//
-//        //we passed viewport
-//        if(elementOffset.left > viewportRect.left + viewportRect.width) {
-//            return false;
-//        }
-//
-//        //is visible in viewport
-//        if(elementOffset.left >= viewportRect.left
-//            && elementOffset.top < viewportRect.top + viewportRect.width
-//            && elementBottom > viewportRect.top  ) {
-//
-//            if(!element.children) {
-//                var n = 9;
-//            }
-//
-//            //has children
-//            if(element.children && element.children.length > 0) {
-//
-//                for(var i = 0; i < element.children.length; i++) {
-//                    if( !this.getVisibleChildren(element.children[i], viewportRect, visibleChildren)) {
-//                        return false;
-//                    }
-//                }
-//            }
-//            else {
-//
-//                visibleChildren.push(element);
-//            }
-//
-//        }
-//
-//        //continue iteration
-//        return true;
-//    },
-//
-//    findVisibleTextNode: function() {
-//
-//        var visibleElements = this.getVisibleElements();
-//
-//        var textElem = undefined;
-//
-//        $(visibleElements).contents().each(function(){
-//
-//            if(this.nodeType === 3) {
-//
-//                textElem = this;
-//                return false;
-//            }
-//
-//        });
-//
-////        return $(textElem).parent();
-//        return $(textElem);
-//
-//    },
-
-    // TODO: Extend this to be correct for right-to-left pagination
-    findVisibleTextNode: function () {
+    //we look for text and images
+    findFirstVisibleElement: function () {
 
         var $elements;
         var $firstVisibleTextNode = null;
 
-        var viewportLeft = this.$viewport.offset().left;
-        var viewportRight = viewportLeft + this.$viewport.width();
+        var viewportRect = new ReadiumSDK.Helpers.Rect(0, 0, this.$viewport.width(), this.$viewport.height());
 
-        // Rationale: The intention here is to get a list of all the text nodes in the document, after which we'll
-        //   reduce this to the subset of text nodes that is visible on the page. We'll then select one text node
-        //   for which we can create a character offset CFI. This CFI will then refer to a "last position" in the
-        //   EPUB, which can be used if the reader re-opens the EPUB.
-        // REFACTORING CANDIDATE: The "audiError" check is a total hack to solve a problem for a particular epub. This
-        //   issue needs to be addressed.
-        $elements = $("body", this.getRootElement()).find(":not(iframe)").contents().filter(function () {
-            if (this.nodeType === 3 && !$(this).parent().hasClass("audiError")) {
+        $elements = $("body", this.getRootElement()).find(":not(iframe)").filter(function () {
+            if (this.nodeType === Node.TEXT_NODE || this.nodeName.toLowerCase() === 'img') {
                 return true;
             } else {
                 return false;
             }
         });
 
-
         // Find the first visible text node
         $.each($elements, function() {
 
-            var POSITION_ERROR_MARGIN = 5;
-            var $textNodeParent = $(this).parent();
-            var elementLeft = $textNodeParent.offset().left;
-            var elementRight = elementLeft + $textNodeParent.width();
-            var nodeText;
+            var $element;
 
-            // Correct for minor right and left position errors
-            elementLeft = Math.abs(elementLeft) < POSITION_ERROR_MARGIN ? 0 : elementLeft;
-            elementRight = Math.abs(elementRight - viewportRight) < POSITION_ERROR_MARGIN ? viewportRight : elementRight;
+            if(this.nodeType === Node.TEXT_NODE)  { //text node
+                // Heuristic to find a text node with actual text
+                var nodeText = this.nodeValue.replace(/\n/g, "");
+                nodeText = nodeText.replace(/ /g, "");
 
-            // Heuristic to find a text node with actual text
-            nodeText = this.nodeValue.replace(/\n/g, "");
-            nodeText = nodeText.replace(/ /g, "");
+                if(nodeText.length > 0) {
+                    $element = $(this).parent();
+                }
+                else {
+                    return true; //next element
+                }
+            }
+            else {
+                $element = $(this); //image
+            }
 
-            if (elementLeft <= viewportRight
-                && elementRight >= viewportLeft
-                && nodeText.length > 10) { // 10 is so the text node is actually a text node with writing
+            var elementRect = ReadiumSDK.Helpers.Rect.fromElement($element);
 
-                $firstVisibleTextNode = $(this);
+            if (viewportRect.isOverlap(elementRect, 5)) {
+
+                $firstVisibleTextNode = $element;
 
                 // Break the loop
                 return false;
@@ -169,83 +85,28 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
     getFirstVisibleElementCfi: function() {
 
-        var $visibleTextNode = this.findVisibleTextNode();
-        if(!$visibleTextNode) {
-            console.log("Could not generate CFI for non-text node as first visible element on page");
+        var $element = this.findFirstVisibleElement();
+
+        if(!$element) {
+            console.log("Could not generate CFI no visible element on page");
             return;
         }
 
-        //Temp ZZZ
-        var cfi = EPUBcfi.Generator.generateCharacterOffsetCFIComponent($visibleTextNode[0], 0);
+        var cfi = EPUBcfi.Generator.generateElementCFIComponent($element[0]);
 
-        //dosent work return NaN at the end of cfi
-//        var cfi = EPUBcfi.Generator.generateElementCFIComponent($visibleTextNode[0]);
-
-        var $parent = $visibleTextNode.parent();
-
-        var invisiblePart = this.$viewport.offset().top - $parent.offset().top;
+        var invisiblePart = -$element.offset().top;
 
         var percent = 0;
-        var height = $parent.height();
+        var height = $element.height();
         if(invisiblePart > 0 && height > 0) {
-             percent = Math.floor(invisiblePart * 100 / $parent.height());
+             percent = Math.ceil(invisiblePart * 100 / height);
         }
 
         if(cfi[0] == "!") {
             cfi = cfi.substring(1);
         }
 
-        return cfi.replace(":0", "@0:" + percent);
-
-
-//        if($visibleTextNode) {
-//            var characterOffset = this.findVisibleCharacterOffset($visibleTextNode);
-//            return EPUBcfi.Generator.generateCharacterOffsetCFIComponent($visibleTextNode[0], characterOffset);
-//        }
-
-
-    },
-
-
-
-    // Currently for left-to-right pagination only
-    findVisibleCharacterOffset : function($textNode) {
-
-        var $parentNode;
-        var elementTop;
-        var $document;
-        var documentTop;
-        var documentBottom;
-        var percentOfTextOffPage;
-        var characterOffset;
-
-        // Get parent
-        $parentNode = $textNode.parent();
-
-        // get document
-        $document = $(this.el);
-
-        // Find percentage of visible node on page
-        documentTop = $document.position().top;
-        documentBottom = documentTop + $document.height();
-
-        elementTop = $parentNode.offset().top;
-
-        // Element overlaps top
-        if (elementTop < documentTop) {
-
-            percentOfTextOffPage = Math.abs(elementTop - documentTop) / $parentNode.height();
-            var characterOffsetByPercent = Math.ceil(percentOfTextOffPage * $textNode[0].length);
-            characterOffset = Math.ceil(0.5 * ($textNode[0].length - characterOffsetByPercent)) + characterOffsetByPercent;
-        }
-        else if (elementTop >= documentTop && elementTop <= documentBottom) {
-            characterOffset = 1;
-        }
-        else if (elementTop < documentBottom) {
-            characterOffset = 1;
-        }
-
-        return characterOffset;
+        return cfi + "@0:" + percent;
     },
 
     getPageForElementCfi: function(cfi) {
@@ -253,31 +114,62 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
         var contentDoc = this.$el[0].contentDocument;
         var cfiParts = this.splitCfi(cfi);
 
-        var wrapedCfi = "epubcfi(" + cfiParts.cfi + ":0" + ")";
-        var result = EPUBcfi.Interpreter.getTextTerminusInfoWithPartialCFI(wrapedCfi, contentDoc);
+        var wrappedCfi = "epubcfi(" + cfiParts.cfi + ")";
+        var $element = EPUBcfi.Interpreter.getTargetElementWithPartialCFI(wrappedCfi, contentDoc);
 
-        if(!result || !result.textNode) {
+        if(!$element || $element.length == 0) {
             console.log("Can't find element for CFI: " + cfi);
             return;
         }
 
-        var $element = $(result.textNode).parent();
+        return this.getPageForElement($element, cfiParts.x, cfiParts.y);
+    },
+
+    //x,y point on element
+    getPageForElement: function($element, x, y) {
+
+        var PERCENT_ROUNDING_TOLERANCE = 1;
+
+        if($element[0].nodeType === Node.TEXT_NODE) { //text
+            $element = $element.parent();
+        }
 
         var pagination = this.options.paginationInfo;
 
-        var elementOffset = $element.offset();
-        var elLeft = elementOffset.left + pagination.pageOffset;
+        var elementRect = ReadiumSDK.Helpers.Rect.fromElement($element);
+        var viewportRect = new ReadiumSDK.Helpers.Rect(0, 0, this.$viewport.width(), this.$viewport.height());
+
+        var elLeft = elementRect.left + pagination.pageOffset;
 
         var page = Math.floor(elLeft / (pagination.columnWidth + pagination.columnGap));
 
-        var posInElement = elementOffset.top + cfiParts.y * $element.height() / 100
-        var posOverflow = posInElement - (this.$viewport.offset().top + this.$viewport.height());
+        var posInElement = Math.ceil(elementRect.top + y * elementRect.height / 100);
 
-        if(posOverflow > 0) {
-            page += Math.ceil(posOverflow / this.$viewport.height())
+        var overFlow;
+
+        if(posInElement + PERCENT_ROUNDING_TOLERANCE < viewportRect.top ) {
+            overFlow = Math.abs(viewportRect.top - posInElement);
+            page = page - Math.ceil(overFlow / viewportRect.height);
+        }
+        else if (posInElement - PERCENT_ROUNDING_TOLERANCE > viewportRect.bottom()) {
+            overFlow = Math.abs(posInElement - viewportRect.bottom());
+            page = page + Math.ceil(overFlow / viewportRect.height);
         }
 
         return page;
+    },
+
+    getPageForElementId: function(id) {
+
+        var contentDoc = this.$el[0].contentDocument;
+
+
+        var $element = $("#" + id, contentDoc);
+        if($element.length == 0) {
+            return -1;
+        }
+
+        return this.getPageForElement($element, 0, 0);
     },
 
     splitCfi: function(cfi) {
@@ -311,50 +203,5 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
         return ret;
     }
-
-//    getPageForElementCfi: function(cfi) {
-//
-//        var contentDoc = this.$el[0].contentDocument;
-//
-//        var result = EPUBcfi.Interpreter.getTextTerminusInfoWithPartialCFI(cfi, contentDoc);
-//
-//        if(!result || !result.textNode) {
-//            console.log("Can't find element for CFI: " + cfi);
-//            return;
-//        }
-//
-//        var pagination = this.options.paginationInfo;
-//        var elLeft = $(result.textNode).offset().left + pagination.pageOffset;
-//
-//        var page = Math.floor(elLeft / (pagination.columnWidth + pagination.columnGap));
-//
-//        return page;
-//    }
-
-//    getPageForElementCfi: function(cfi) {
-//
-//        var contentDoc = this.$el[0].contentDocument;
-//
-//        var tmpDiv = contentDoc.createElement("div");
-//        tmpDiv.setAttribute("id", "_tmp_mark");
-//
-//        var element = EPUBcfi.Interpreter.getTargetElement(cfi, contentDoc);
-//
-//        if(!element) {
-//            console.log("Can't find element for CFI: " + cfi);
-//            return;
-//        }
-//
-//        var injectedEl = EPUBcfi.Interpreter.injectElement(cfi, contentDoc, tmpDiv);
-//
-//        var pagination = this.options.paginationInfo;
-//        var elLeft = $(injectedEl).offset().left + pagination.pageOffset;
-//
-//        var page = Math.floor(elLeft / (pagination.columnWidth + pagination.columnGap));
-//
-//        return page;
-//    }
-
-
 
 });
