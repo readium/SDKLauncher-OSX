@@ -25,14 +25,13 @@
 #import "LOXSpineViewController.h"
 #import "LOXWebViewController.h"
 
-@class LOXePubApi;
-@protocol LOXSpineItem;
 @class LOXScriptInjector;
 @class LOXUserData;
 @class LOXBookmarksController;
 @class LOXBookmark;
 @class LOXBookmarkEditController;
 @class LOXTocViewController;
+@class LOXSpineItem;
 
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate, LOXSpineViewControllerDelegate>
@@ -47,12 +46,10 @@
 @property (assign) IBOutlet LOXTocViewController *tocViewController;
 
 
-@property (assign) id<LOXSpineItem> currentSpineItem;
+@property (assign) LOXSpineItem *currentSpineItem;
 
 
-- (IBAction)openDocumentWithCocoaApi:(id)sender;
-- (IBAction)openDocumentWithSdkApi:(id)sender;
-
+- (IBAction)openDocument:(id)sender;
 
 - (LOXBookmark*)createBookmark;
 

@@ -23,7 +23,7 @@
 #import <WebKit/WebKit.h>
 #import <WebKit/WebResourceLoadDelegate.h>
 
-@class LOXePubApi;
+@class LOXePubSdkApi;
 @class LOXPageNumberTextController;
 @class LOXBookmarksController;
 @class LOXAppDelegate;
@@ -39,7 +39,7 @@
 
 - (void) clear;
 
-@property(nonatomic, retain) LOXePubApi *epubApi;
+@property(nonatomic, retain) LOXePubSdkApi *epubApi;
 
 @property (assign) IBOutlet NSButton *prevPageButton;
 @property (assign) IBOutlet NSButton *nextPageButton;

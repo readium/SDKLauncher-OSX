@@ -20,7 +20,7 @@
 //
 
 #import "LOXWebViewController.h"
-#import "LOXePubApi.h"
+#import "LOXePubSdkApi.h"
 #import "LOXPageNumberTextController.h"
 #import "LOXBookmarksController.h"
 #import "LOXAppDelegate.h"

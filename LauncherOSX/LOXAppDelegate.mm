@@ -20,16 +20,15 @@
 //
 
 #import "LOXAppDelegate.h"
-#import "LOXePubApi.h"
+#import "LOXePubSdkApi.h"
 
 #include "container.h"
-#import "LOXSpineItem.h"
 #import "LOXScriptInjector.h"
 #import "LOXUserData.h"
 #import "LOXBook.h"
 #import "LOXBookmarksController.h"
 #import "LOXBookmark.h"
-#import "LOXSpineItemSdk.h"
+#import "LOXSpineItem.h"
 #import "LOXToc.h"
 #import "LOXTocViewController.h"
 
@@ -43,26 +42,20 @@ using namespace ePub3;
 
 - (void)updateWebView;
 
-- (void)initApiOfType:(ePubApiType)apiType;
-
 - (void)openCurrentSpineItemContentCfi:(NSString *)cfi;
 
 - (void)openCurrentSpineItemElementId:(NSString *)elementId;
 
-
 - (void)reportError:(NSString *)error;
 
-- (void)openDocumentUsingApiOfType:(ePubApiType)apiType;
-
-- (bool)openDocumentWithPath:(NSString *)path usingApiOfType:(ePubApiType)apiType;
-
+- (bool)openDocumentWithPath:(NSString *)path;
 
 @end
 
 
 @implementation LOXAppDelegate {
 @private
-    LOXePubApi *_epubApi;
+    LOXePubSdkApi *_epubApi;
     LOXScriptInjector *_scriptInjector;
     LOXUserData *_userData;
     LOXBook*_currentBook;
@@ -99,13 +92,19 @@ using namespace ePub3;
     self.spineViewController.selectionChangedLiscener = self;
 }
 
+-(void) awakeFromNib
+{
+    _epubApi = [[LOXePubSdkApi alloc] init];
+    self.webViewController.epubApi = _epubApi;
+}
+
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
 {
     return YES;
 }
 
 
-- (void)openDocumentUsingApiOfType:(ePubApiType)apiType
+- (IBAction)openDocument:(id)sender;
 {
     NSString *path = [self selectFile];
 
@@ -113,14 +112,12 @@ using namespace ePub3;
         return;
     }
 
-    [self openDocumentWithPath:path usingApiOfType:apiType];
+    [self openDocumentWithPath:path];
 }
 
-- (bool)openDocumentWithPath:(NSString *)path usingApiOfType:(ePubApiType)apiType
+- (bool)openDocumentWithPath:(NSString *)path
 {
     try {
-
-        [self initApiOfType:apiType];
 
         [self.spineViewController clear];
 
@@ -182,7 +179,7 @@ using namespace ePub3;
 
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
-    return [self openDocumentWithPath:filename usingApiOfType:kePubSdkApi];
+    return [self openDocumentWithPath:filename];
 }
 
 - (void)reportError:(NSString *)error
@@ -195,20 +192,7 @@ using namespace ePub3;
 }
 
 
-- (void)openDocumentWithSdkApi:(id)sender
-{
-    [self openDocumentUsingApiOfType:kePubSdkApi];
-}
-
-
-- (void)openDocumentWithCocoaApi:(id)sender
-{
-    [self openDocumentUsingApiOfType:kePubCocoaApi];
-}
-
-
-
-- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(id <LOXSpineItem>)spineItem
+- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem *)spineItem
 {
     self.currentSpineItem = spineItem;
     [self updateWebView];
@@ -249,21 +233,6 @@ using namespace ePub3;
     }
 }
 
-- (void)initApiOfType:(ePubApiType)apiType
-{
-    if (_epubApi) {
-        if (_epubApi.apiType == apiType) {
-            return;
-        }
-        else {
-            [_epubApi release];
-        }
-    }
-
-    _epubApi = [[LOXePubApi ePubApiOfType:apiType] retain];
-    self.webViewController.epubApi = _epubApi;
-}
-
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
     [_userData save];
@@ -295,7 +264,7 @@ using namespace ePub3;
 - (void)openBookmark:(LOXBookmark *)bookmark
 {
 
-    id<LOXSpineItem> spineItem = [_epubApi findSpineItemWithIdref: bookmark.idref];
+    LOXSpineItem *spineItem = [_epubApi findSpineItemWithIdref: bookmark.idref];
 
     if(spineItem == nil) {
         return;
@@ -358,7 +327,7 @@ using namespace ePub3;
         elementId = [contentRef substringFromIndex:range.location + 1];
     }
 
-     id<LOXSpineItem> spineItem = [_epubApi findSpineItemWithBasePath: contentDocUrl];
+    LOXSpineItem *spineItem = [_epubApi findSpineItemWithBasePath: contentDocUrl];
 
     if(spineItem == nil) {
         return;

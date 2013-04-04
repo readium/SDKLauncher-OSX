@@ -13,10 +13,34 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
 
-@protocol LOXSpineItem <NSObject>
 
-@required
-@property(nonatomic, readonly, retain) NSString *idref;
-@property(nonatomic, readonly, retain) NSString *basePath;
+
+#import <Foundation/Foundation.h>
+#import "spine.h"
+
+
+namespace ePub3 {
+    class SpineItem;
+}
+
+@interface LOXSpineItem : NSObject {
+
+@private
+    const ePub3::SpineItem * _sdkSpineItem;
+    NSString* _idref;
+
+    NSString* _packageStorrageId;
+}
+
+@property(nonatomic, readonly) NSString *idref;
+@property(nonatomic, readonly) NSString *packageStorageId;
+@property(nonatomic, readonly) NSString *basePath;
+
+- (const ePub3::SpineItem *) sdkSpineItem;
+
+- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItem const *)sdkSpineItem;
+
+
 @end

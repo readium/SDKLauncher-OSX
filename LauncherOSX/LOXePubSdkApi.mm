@@ -27,7 +27,7 @@
 #include "nav_table.h"
 #include "nav_point.h"
 
-#import "LOXSpineItemSdk.h"
+#import "LOXSpineItem.h"
 #import "LOXTemporaryFileStorage.h"
 #import "LOXUtil.h"
 #import "LOXToc.h"
@@ -64,9 +64,8 @@
 - (id)init
 {
     self = [super init];
+    
     if(self){
-        
-        _apiType = kePubSdkApi;
         _spineItems = [[NSMutableArray array] retain];
         _packageStorages = [[NSMutableArray array] retain];
     }
@@ -95,7 +94,7 @@
         const ePub3::SpineItem *spineItem = (*package)->FirstSpineItem();
         while (spineItem) {
 
-            LOXSpineItemSdk *loxSpineItem = [[[LOXSpineItemSdk alloc] initWithStorageId:storage.uuid forSdkSpineItem:spineItem] autorelease];
+            LOXSpineItem *loxSpineItem = [[[LOXSpineItem alloc] initWithStorageId:storage.uuid forSdkSpineItem:spineItem] autorelease];
             [_spineItems addObject:loxSpineItem];
             spineItem = spineItem->Next();
         }
@@ -134,18 +133,16 @@
 }
 
 
-- (NSString*)getPathToSpineItem:(id<LOXSpineItem>) spineItem
+- (NSString*)getPathToSpineItem:(LOXSpineItem *) spineItem
 {
-    LOXSpineItemSdk *spineItemSdk = (LOXSpineItemSdk *)spineItem;
-
-    auto manifestItem = [spineItemSdk sdkSpineItem]->ManifestItem();
+     auto manifestItem = [spineItem sdkSpineItem]->ManifestItem();
     _package = manifestItem->Package();
 
-    LOXTemporaryFileStorage *storage = [self findStorageWithId:spineItemSdk.packageStorageId];
+    LOXTemporaryFileStorage *storage = [self findStorageWithId:spineItem.packageStorageId];
 
 
     if (!storage) {
-        NSLog(@"Package storrage with id %@ not found", spineItemSdk.packageStorageId);
+        NSLog(@"Package storrage with id %@ not found", spineItem.packageStorageId);
         return spineItem.basePath;
     }
 
@@ -239,9 +236,9 @@
     [storage saveData:data  toPaht:path];
 }
 
--(NSString*) getCfiForSpineItem:(id<LOXSpineItem>) spineItem
+-(NSString*) getCfiForSpineItem:(LOXSpineItem *) spineItem
 {
-    ePub3::string cfi = _package->CFIForSpineItem([((LOXSpineItemSdk*)spineItem) sdkSpineItem]).String();
+    ePub3::string cfi = _package->CFIForSpineItem([spineItem sdkSpineItem]).String();
     NSString * nsCfi = [NSString stringWithUTF8String: cfi.c_str()];
     return [self unwrapCfi: nsCfi];
 }
@@ -256,9 +253,9 @@
     return cfi;
 }
 
-- (id <LOXSpineItem>)findSpineItemWithBasePath:(NSString *)href
+- (LOXSpineItem *)findSpineItemWithBasePath:(NSString *)href
 {
-    for (id<LOXSpineItem> spineItem in _spineItems) {
+    for (LOXSpineItem * spineItem in _spineItems) {
         if ([[self removeLeadingRelativeParentPath:spineItem.basePath] isEqualToString: [self removeLeadingRelativeParentPath:href]]) {
             return spineItem;
         }
@@ -280,9 +277,9 @@
     return ret;
 }
 
-- (id <LOXSpineItem>)findSpineItemWithIdref:(NSString *)idref
+- (LOXSpineItem *)findSpineItemWithIdref:(NSString *)idref
 {
-    for (id<LOXSpineItem> spineItem in _spineItems) {
+    for (LOXSpineItem * spineItem in _spineItems) {
         if ([spineItem.idref isEqualToString:idref]) {
             return spineItem;
         }

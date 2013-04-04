@@ -17,10 +17,10 @@
 
 #include "manifest.h"
 #import "spine.h"
-#import "LOXSpineItemSdk.h"
+#import "LOXSpineItem.h"
 
 
-@implementation LOXSpineItemSdk
+@implementation LOXSpineItem
 
 @synthesize idref = _idref;
 @synthesize packageStorageId = _packageStorrageId;
