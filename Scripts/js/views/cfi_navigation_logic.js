@@ -141,7 +141,7 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
         var elLeft = elementRect.left + pagination.pageOffset;
 
-        var page = Math.floor(elLeft / (pagination.columnWidth + pagination.columnGap));
+        var page = Math.floor(elLeft / ((pagination.columnWidth + pagination.columnGap) * pagination.visibleColumnCount));
 
         var posInElement = Math.ceil(elementRect.top + y * elementRect.height / 100);
 

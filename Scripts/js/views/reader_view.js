@@ -30,7 +30,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     paginationInfo : {
 
-        visibleColumnCount : 1,
+        visibleColumnCount : 2,
         columnGap : 20,
         pageCount : 0,
         currentPage : 0,
@@ -107,7 +107,6 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         this.applySwitches(epubContentDocument);
         this.registerTriggers(epubContentDocument);
-
 
     },
 
