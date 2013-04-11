@@ -21,6 +21,7 @@ ReadiumSDK = {
     Models : {},
     Views : {},
     Collections: {},
-    Routers: {}
+    Routers: {},
+    Helpers: {}
 
 };

@@ -24,10 +24,14 @@
 #include "container.h"
 #include "package.h"
 #include "cfi.h"
+#include "nav_table.h"
+#include "nav_point.h"
 
-#import "LOXSpineItemSdk.h"
+#import "LOXSpineItem.h"
 #import "LOXTemporaryFileStorage.h"
 #import "LOXUtil.h"
+#import "LOXToc.h"
+
 
 @interface LOXePubSdkApi ()
 
@@ -38,6 +42,10 @@
 - (void)saveContentOfReader:(ePub3::ArchiveReader const *)reader toPath:(NSString *)path inStorrage:(LOXTemporaryFileStorage *)storage;
 
 - (NSString *)unwrapCfi:(NSString *)cfi;
+
+- (NSString *)removeLeadingRelativeParentPath:(NSString *)path;
+
+- (void)copyTitleFromNavElement:(ePub3::NavigationElement *)element toEntry:(LOXTocEntry *)entry;
 
 
 - (void)readPackages;
@@ -56,9 +64,8 @@
 - (id)init
 {
     self = [super init];
+    
     if(self){
-        
-        _apiType = kePubSdkApi;
         _spineItems = [[NSMutableArray array] retain];
         _packageStorages = [[NSMutableArray array] retain];
     }
@@ -87,7 +94,7 @@
         const ePub3::SpineItem *spineItem = (*package)->FirstSpineItem();
         while (spineItem) {
 
-            LOXSpineItemSdk *loxSpineItem = [[[LOXSpineItemSdk alloc] initWithStorageId:storage.uuid forSdkSpineItem:spineItem] autorelease];
+            LOXSpineItem *loxSpineItem = [[[LOXSpineItem alloc] initWithStorageId:storage.uuid forSdkSpineItem:spineItem] autorelease];
             [_spineItems addObject:loxSpineItem];
             spineItem = spineItem->Next();
         }
@@ -126,18 +133,16 @@
 }
 
 
-- (NSString*)getPathToSpineItem:(id<LOXSpineItem>) spineItem
+- (NSString*)getPathToSpineItem:(LOXSpineItem *) spineItem
 {
-    LOXSpineItemSdk *spineItemSdk = (LOXSpineItemSdk *)spineItem;
-
-    auto manifestItem = [spineItemSdk sdkSpineItem]->ManifestItem();
+     auto manifestItem = [spineItem sdkSpineItem]->ManifestItem();
     _package = manifestItem->Package();
 
-    LOXTemporaryFileStorage *storage = [self findStorageWithId:spineItemSdk.packageStorageId];
+    LOXTemporaryFileStorage *storage = [self findStorageWithId:spineItem.packageStorageId];
 
 
     if (!storage) {
-        NSLog(@"Package storrage with id %@ not found", spineItemSdk.packageStorageId);
+        NSLog(@"Package storrage with id %@ not found", spineItem.packageStorageId);
         return spineItem.basePath;
     }
 
@@ -231,9 +236,9 @@
     [storage saveData:data  toPaht:path];
 }
 
--(NSString*) getCfiForSpineItem:(id<LOXSpineItem>) spineItem
+-(NSString*) getCfiForSpineItem:(LOXSpineItem *) spineItem
 {
-    ePub3::string cfi = _package->CFIForSpineItem([((LOXSpineItemSdk*)spineItem) sdkSpineItem]).String();
+    ePub3::string cfi = _package->CFIForSpineItem([spineItem sdkSpineItem]).String();
     NSString * nsCfi = [NSString stringWithUTF8String: cfi.c_str()];
     return [self unwrapCfi: nsCfi];
 }
@@ -248,9 +253,33 @@
     return cfi;
 }
 
-- (id <LOXSpineItem>)findSpineItemWithIdref:(NSString *)idref
+- (LOXSpineItem *)findSpineItemWithBasePath:(NSString *)href
 {
-    for (id<LOXSpineItem> spineItem in _spineItems) {
+    for (LOXSpineItem * spineItem in _spineItems) {
+        if ([[self removeLeadingRelativeParentPath:spineItem.basePath] isEqualToString: [self removeLeadingRelativeParentPath:href]]) {
+            return spineItem;
+        }
+    }
+
+    return nil;
+}
+
+//path's can come from different files id different dpth and they may contain leading "../"
+//we have to remove it to compare path's
+-(NSString*) removeLeadingRelativeParentPath: (NSString*) path
+{
+    NSString* ret = [NSString stringWithString:[path lowercaseString]];
+
+    while([ret hasPrefix:@"../"]) {
+        ret  = [ret substringFromIndex:3];
+    }
+
+    return ret;
+}
+
+- (LOXSpineItem *)findSpineItemWithIdref:(NSString *)idref
+{
+    for (LOXSpineItem * spineItem in _spineItems) {
         if ([spineItem.idref isEqualToString:idref]) {
             return spineItem;
         }
@@ -258,5 +287,53 @@
 
     return nil;
 }
+
+- (LOXToc*)getToc
+{
+    auto navTable = _package->NavigationTable("toc");
+
+    if(navTable == nil) {
+        return nil;
+    }
+
+    LOXToc *toc = [[[LOXToc alloc] init] autorelease];
+
+    toc.title = [NSString stringWithUTF8String:navTable->Title().c_str()];
+    if(toc.title.length == 0) {
+        toc.title = @"Table of content";
+    }
+
+    [self addNavElementChildrenFrom:navTable toTocEntry:toc];
+
+    return toc;
+}
+
+- (void)addNavElementChildrenFrom:(const ePub3::NavigationElement *)navElement toTocEntry:(LOXTocEntry *)parentEntry
+{
+    for (auto el = navElement->Children().begin(); el != navElement->Children().end(); el++) {
+
+        auto navPoint = dynamic_cast<ePub3::NavigationPoint*>(*el);
+
+        if(navPoint != nil) {
+
+            LOXTocEntry *entry = [[[LOXTocEntry alloc] init] autorelease];
+            [self copyTitleFromNavElement:navPoint toEntry:entry];
+            entry.contentRef = [NSString stringWithUTF8String:navPoint->Content().c_str()];
+
+            [parentEntry addChild:entry];
+
+            [self addNavElementChildrenFrom:navPoint toTocEntry:entry];
+        }
+
+    }
+}
+
+-(void)copyTitleFromNavElement:(ePub3::NavigationElement*)element toEntry:(LOXTocEntry *)entry
+{
+    NSString *title = [NSString stringWithUTF8String: element->Title().c_str()];
+    entry.title = [title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+}
+
 
 @end

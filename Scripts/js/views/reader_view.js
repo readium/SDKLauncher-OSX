@@ -18,6 +18,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+//noinspection JSUnusedGlobalSymbols
 ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     el: '#epubContentIframe',
@@ -31,7 +32,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         visibleColumnCount : 1,
         columnGap : 20,
-        pageCount : undefined,
+        pageCount : 0,
         currentPage : 0,
         columnWidth : undefined,
         pageOffset : 0
@@ -65,7 +66,6 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         //base remove
         Backbone.View.prototype.remove.call(this);
     },
-
 
 
     onViewportResize: function() {
@@ -115,9 +115,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         if(this.paginationInfo.currentPage < 0 || this.paginationInfo.currentPage >= this.paginationInfo.pageCount) {
 
-            if(window.LauncherUI) {
-                window.LauncherUI.onOpenPageIndexOfPages(0, 0);
-            }
+            this.trigger("PageChanged", 0, 0);
             return;
         }
 
@@ -125,9 +123,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         this.$epubHtml.css("left", -this.paginationInfo.pageOffset + "px");
 
-        if(window.LauncherUI){
-            window.LauncherUI.onOpenPageIndexOfPages(this.paginationInfo.currentPage, this.paginationInfo.pageCount);
-        }
+        this.trigger("PageChanged", this.paginationInfo.currentPage, this.paginationInfo.pageCount);
 
     },
 
@@ -250,10 +246,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
                 self.paginationInfo.currentPage = self.paginationInfo.pageCount - 1;
             }
 
-            if(window.LauncherUI) {
-                window.LauncherUI.onPaginationScriptingReady();
-            }
-
+            self.trigger("PaginationReady");
             self.render();
 
 
@@ -270,7 +263,11 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         return this.navigation.getPageForElementCfi(cfi);
 
-    }
+    },
 
+    getPageForElementId: function(id) {
+
+        return this.navigation.getPageForElementId(id);
+    }
 
 });

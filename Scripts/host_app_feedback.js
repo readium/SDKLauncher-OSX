@@ -16,26 +16,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#import <Foundation/Foundation.h>
-#import "LOXSpineItem.h"
+ReadiumSDK.HostAppFeedback = function(reader) {
 
-@class LOXPackage;
+    reader.on("PageChanged", function(pageIx, pageCount){
 
-@interface LOXSpineItemCocoa : NSObject<LOXSpineItem>  {
+        if(window.LauncherUI) {
+            window.LauncherUI.onOpenPageIndexOfPages(pageIx, pageCount);
+        }
 
-@private
-    NSString* _idref;
-    LOXPackage* _package;
+    }),
 
-}
+    reader.on("PaginationReady", function() {
+        if(window.LauncherUI) {
+            window.LauncherUI.onPaginationScriptingReady();
+        }
+    });
 
-@property(nonatomic, readonly) NSString *idref;
-@property(nonatomic, readonly) LOXPackage *package;
-
-
-- (id)initWithIdref:(NSString *)idref forPackage:(LOXPackage *)package;
-
-- (NSString *)getHref;
-
-
-@end
+};

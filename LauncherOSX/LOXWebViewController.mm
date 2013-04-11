@@ -20,7 +20,7 @@
 //
 
 #import "LOXWebViewController.h"
-#import "LOXePubApi.h"
+#import "LOXePubSdkApi.h"
 #import "LOXPageNumberTextController.h"
 #import "LOXBookmarksController.h"
 #import "LOXAppDelegate.h"
@@ -76,7 +76,7 @@
 
     if ([ret isMemberOfClass:[WebUndefined class]]){
         NSLog(@"cfi %@ not found", cfi);
-        return 0;
+        return -1;
     }
 
     return [ret intValue];
@@ -169,5 +169,19 @@
     [self.nextPageButton setEnabled:self.pageNumController.pageCount > 0 && self.pageNumController.pageIx < self.pageNumController.pageCount - 1];
 }
 
+
+- (int)getPageForElementId:(NSString *)elementId
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    NSString *callString = [NSString stringWithFormat:@"ReadiumSDK.reader.getPageForElementId(\"%@\")", elementId];
+    NSString* ret = [script evaluateWebScript:callString];
+
+    if ([ret isMemberOfClass:[WebUndefined class]]){
+        NSLog(@"element id %@ not found", elementId);
+        return -1;
+    }
+
+    return [ret intValue];
+}
 
 @end

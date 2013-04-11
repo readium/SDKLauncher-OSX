@@ -19,17 +19,19 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "LOXePubApi.h"
+
 
 
 @class LOXTemporaryFileStorage;
+@class LOXToc;
+@class LOXSpineItem;
 
 namespace ePub3 {
     class Container;
     class Package;
 }
 
-@interface LOXePubSdkApi : LOXePubApi {
+@interface LOXePubSdkApi : NSObject {
 
 @private
     ePub3::Container *_container;
@@ -45,6 +47,25 @@ namespace ePub3 {
 +(void)initialize;
 
 - (void)prepareResourceWithPath:(NSString *)path;
+
+- (void)openFile:(NSString *)file;
+
+- (NSArray *)getSpineItems;
+
+- (NSString*)getPathToSpineItem:(LOXSpineItem *) spineItem;
+
+- (NSString *)getPackageID;
+
+
+- (NSString *)getPackageTitle;
+
+- (NSString *)getCfiForSpineItem:(LOXSpineItem *)spineItem;
+
+- (LOXSpineItem *)findSpineItemWithBasePath:(NSString *)string;
+
+- (LOXSpineItem *)findSpineItemWithIdref:(NSString *)idref;
+
+- (LOXToc*)getToc;
 
 
 @end
