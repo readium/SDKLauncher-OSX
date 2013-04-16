@@ -118,7 +118,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             return;
         }
 
-        this.paginationInfo.pageOffset = this.paginationInfo.currentPage * (this.lastViewPortSize.width + this.paginationInfo.columnGap);
+        this.paginationInfo.pageOffset = (this.paginationInfo.columnWidth + this.paginationInfo.columnGap) * this.paginationInfo.visibleColumnCount * this.paginationInfo.currentPage;
 
         this.$epubHtml.css("left", -this.paginationInfo.pageOffset + "px");
 
@@ -222,9 +222,10 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             return;
         }
 
+        this.paginationInfo.columnWidth = (this.lastViewPortSize.width - this.paginationInfo.columnGap * (this.paginationInfo.visibleColumnCount - 1)) / this.paginationInfo.visibleColumnCount;
 
-        this.paginationInfo.columnWidth =
-                (this.lastViewPortSize.width - this.paginationInfo.columnGap * (this.paginationInfo.visibleColumnCount - 1)) / this.paginationInfo.visibleColumnCount;
+        //we do this because CSS will floor column with by itself if it is nor round number
+        this.paginationInfo.columnWidth = Math.floor(this.paginationInfo.columnWidth);
 
         this.$epubHtml.css("width", this.lastViewPortSize.width);
         this.$epubHtml.css("-webkit-column-width", this.paginationInfo.columnWidth + "px");
@@ -238,8 +239,12 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         setTimeout(function(){
 
             var columnizedContentWidth = self.$epubHtml[0].scrollWidth;
+            //we do this to prevent css from doing column optimization smarts.
             self.$iframe.css("width", columnizedContentWidth);
-            self.paginationInfo.pageCount =  Math.round(columnizedContentWidth / self.lastViewPortSize.width);
+
+            var columnCount = Math.round((columnizedContentWidth + self.paginationInfo.columnGap) / (self.paginationInfo.columnWidth + self.paginationInfo.columnGap));
+
+            self.paginationInfo.pageCount =  Math.ceil(columnCount / self.paginationInfo.visibleColumnCount);
 
             if(self.paginationInfo.currentPage >= self.paginationInfo.pageCount) {
                 self.paginationInfo.currentPage = self.paginationInfo.pageCount - 1;
