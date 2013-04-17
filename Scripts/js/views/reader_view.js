@@ -30,7 +30,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     paginationInfo : {
 
-        visibleColumnCount : 2,
+        visibleColumnCount : 1,
         columnGap : 20,
         pageCount : 0,
         currentPage : 0,
