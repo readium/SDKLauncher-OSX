@@ -37,15 +37,15 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
         var $elements;
         var $firstVisibleTextNode = null;
+        var percentOfElementHeight = 0;
 
-        var viewportRect = new ReadiumSDK.Helpers.Rect(0, 0, this.$viewport.width(), this.$viewport.height());
+        var pagination = this.options.paginationInfo;
+        var columnsLeftOfViewport = Math.round(pagination.pageOffset / (pagination.columnWidth + pagination.columnGap));
+
+        var visibleTop = columnsLeftOfViewport * this.$viewport.height();
 
         $elements = $("body", this.getRootElement()).find(":not(iframe)").contents().filter(function () {
-            if (this.nodeType === Node.TEXT_NODE || this.nodeName.toLowerCase() === 'img') {
-                return true;
-            } else {
-                return false;
-            }
+            return this.nodeType === Node.TEXT_NODE || this.nodeName.toLowerCase() === 'img';
         });
 
         // Find the first visible text node
@@ -71,42 +71,43 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
             var elementRect = ReadiumSDK.Helpers.Rect.fromElement($element);
 
-            if (viewportRect.isOverlap(elementRect, 5)) {
+            if (elementRect.bottom() > visibleTop) {
 
                 $firstVisibleTextNode = $element;
+
+                if(elementRect.top > visibleTop) {
+                    percentOfElementHeight = 0;
+                }
+                else {
+                    percentOfElementHeight = Math.ceil(((visibleTop - elementRect.top) / elementRect.height) * 100);
+                }
 
                 // Break the loop
                 return false;
             }
+
+            return true; //next element
         });
 
-        return $firstVisibleTextNode;
+        return {$element: $firstVisibleTextNode, percentY: percentOfElementHeight};
     },
 
     getFirstVisibleElementCfi: function() {
 
-        var $element = this.findFirstVisibleElement();
+        var foundElement = this.findFirstVisibleElement();
 
-        if(!$element) {
+        if(!foundElement.$element) {
             console.log("Could not generate CFI no visible element on page");
-            return;
+            return undefined;
         }
 
-        var cfi = EPUBcfi.Generator.generateElementCFIComponent($element[0]);
-
-        var invisiblePart = -$element.offset().top;
-
-        var percent = 0;
-        var height = $element.height();
-        if(invisiblePart > 0 && height > 0) {
-             percent = Math.ceil(invisiblePart * 100 / height);
-        }
+        var cfi = EPUBcfi.Generator.generateElementCFIComponent(foundElement.$element[0]);
 
         if(cfi[0] == "!") {
             cfi = cfi.substring(1);
         }
 
-        return cfi + "@0:" + percent;
+        return cfi + "@0:" + foundElement.percentY;
     },
 
     getPageForElementCfi: function(cfi) {
@@ -119,50 +120,26 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
 
         if(!$element || $element.length == 0) {
             console.log("Can't find element for CFI: " + cfi);
-            return;
+            return undefined;
         }
 
         return this.getPageForElement($element, cfiParts.x, cfiParts.y);
     },
 
-    //x,y point on element
     getPageForElement: function($element, x, y) {
 
-        var PERCENT_ROUNDING_TOLERANCE = 1;
-
-        if($element[0].nodeType === Node.TEXT_NODE) { //text
-            $element = $element.parent();
-        }
-
         var pagination = this.options.paginationInfo;
-
         var elementRect = ReadiumSDK.Helpers.Rect.fromElement($element);
-        var viewportRect = new ReadiumSDK.Helpers.Rect(0, 0, this.$viewport.width(), this.$viewport.height());
-
-        var elLeft = elementRect.left + pagination.pageOffset;
-
-        var page = Math.floor(elLeft / (pagination.columnWidth + pagination.columnGap));
-
         var posInElement = Math.ceil(elementRect.top + y * elementRect.height / 100);
 
-        var overFlow;
+        var column = Math.floor(posInElement / this.$viewport.height());
 
-        if(posInElement + PERCENT_ROUNDING_TOLERANCE < viewportRect.top ) {
-            overFlow = Math.abs(viewportRect.top - posInElement);
-            page = page - Math.ceil(overFlow / viewportRect.height);
-        }
-        else if (posInElement - PERCENT_ROUNDING_TOLERANCE > viewportRect.bottom()) {
-            overFlow = Math.abs(posInElement - viewportRect.bottom());
-            page = page + Math.ceil(overFlow / viewportRect.height);
-        }
-
-        return page;
+        return Math.floor(column / pagination.visibleColumnCount);
     },
 
     getPageForElementId: function(id) {
 
         var contentDoc = this.$el[0].contentDocument;
-
 
         var $element = $("#" + id, contentDoc);
         if($element.length == 0) {

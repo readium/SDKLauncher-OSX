@@ -24,13 +24,13 @@ ReadiumSDK.Helpers.Rect = function(left, top, width, height) {
     this.width = width;
     this.height = height;
 
-    this.right = function() {
+    this.right = function () {
         return this.left + this.width;
-    }
+    };
 
     this.bottom = function() {
         return this.top + this.height;
-    }
+    };
 
     this.isOverlap = function(rect, tolerance) {
 
@@ -38,21 +38,32 @@ ReadiumSDK.Helpers.Rect = function(left, top, width, height) {
             tolerance = 0;
         }
 
-        if ( rect.right() < this.left + tolerance
-          || rect.left > this.right() - tolerance
-          || rect.bottom() < this.top + tolerance
-          || rect.top > this.bottom() - tolerance) {
+        return !(rect.right() < this.left + tolerance
+            || rect.left > this.right() - tolerance
+            || rect.bottom() < this.top + tolerance
+            || rect.top > this.bottom() - tolerance);
 
-            return false;
-        }
 
-        return true;
     }
-}
+};
 
+
+//This method treats multicolumn view as one long column and finds the rectangle of the element in this "long" column
+//we are not using jQuery Offset() and width()/height() function because for multicolumn layout it produces rectangle as a bounding box of element that
+// reflows between columns this is inconstant and difficult to analyze .
 ReadiumSDK.Helpers.Rect.fromElement = function($element) {
 
-    var offset = $element.offset();
-    return new ReadiumSDK.Helpers.Rect(offset.left, offset.top, $element.width(), $element.height());
+    var e = $element[0];
 
-}
+    var offsetLeft = e.offsetLeft;
+    var offsetTop = e.offsetTop;
+    var offsetWidth = e.offsetWidth;
+    var offsetHeight = e.offsetHeight;
+
+    while(e = e.offsetParent) {
+        offsetLeft += e.offsetLeft;
+        offsetTop += e.offsetTop;
+    }
+
+    return new ReadiumSDK.Helpers.Rect(offsetLeft, offsetTop, offsetWidth, offsetHeight);
+};
