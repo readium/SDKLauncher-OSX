@@ -25,6 +25,7 @@
 @class LOXTemporaryFileStorage;
 @class LOXToc;
 @class LOXSpineItem;
+@class LOXSpine;
 
 namespace ePub3 {
     class Container;
@@ -37,7 +38,7 @@ namespace ePub3 {
     ePub3::Container *_container;
     const ePub3::Package *_package;
 
-    NSMutableArray *_spineItems;
+    LOXSpine *_spine;
     NSMutableArray *_packageStorages;
 }
 
@@ -50,7 +51,7 @@ namespace ePub3 {
 
 - (void)openFile:(NSString *)file;
 
-- (NSArray *)getSpineItems;
+- (LOXSpine *)spine;
 
 - (NSString*)getPathToSpineItem:(LOXSpineItem *) spineItem;
 

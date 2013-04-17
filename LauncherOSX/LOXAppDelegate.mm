@@ -31,6 +31,7 @@
 #import "LOXSpineItem.h"
 #import "LOXToc.h"
 #import "LOXTocViewController.h"
+#import "LOXSpine.h"
 
 
 using namespace ePub3;
@@ -119,18 +120,13 @@ using namespace ePub3;
 {
     try {
 
-        [self.spineViewController clear];
-
         [_epubApi openFile:path];
 
-        //spine items
-        NSArray *items = [_epubApi getSpineItems];
+        LOXSpine* spine = [_epubApi spine];
 
-        for (id item in items) {
-            [self.spineViewController addSpineItem:item];
-        }
+        [self.spineViewController setSpine:spine];
 
-        if (items.count > 0) {
+        if (spine.itemCount > 0) {
             [self.spineViewController selectSpineIndex:0];
         }
 
@@ -253,7 +249,7 @@ using namespace ePub3;
 
     bookmark.title = [NSString stringWithFormat:@"Bookmark #%li", n];
     bookmark.idref = _currentSpineItem.idref;
-    bookmark.basePath = _currentSpineItem.basePath;
+    bookmark.basePath = _currentSpineItem.href;
     bookmark.spineItemCFI = [_epubApi getCfiForSpineItem:_currentSpineItem];
     bookmark.contentCFI = [self.webViewController getCurrentPageCfi];
 

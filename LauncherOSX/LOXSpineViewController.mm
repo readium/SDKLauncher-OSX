@@ -21,6 +21,7 @@
 
 #import "LOXSpineViewController.h"
 #import "LOXSpineItem.h"
+#import "LOXSpine.h"
 
 
 @interface LOXSpineViewController ()
@@ -29,24 +30,15 @@
 
 @implementation LOXSpineViewController
 
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        _spineItems = [[NSMutableArray alloc] init];
-    }
-
-    return self;
-}
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
-    return [_spineItems count];
+    return [_spine itemCount];
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    LOXSpineItem *item = [_spineItems objectAtIndex:(NSUInteger) row];
+    LOXSpineItem *item = [[_spine items] objectAtIndex:(NSUInteger) row];
 
     NSString* propIdentifier = [tableColumn identifier];
     return [item valueForKey:propIdentifier];
@@ -57,15 +49,15 @@
     NSTableView *tableView = notification.object;
     NSInteger row = [tableView selectedRow];
 
-    LOXSpineItem * selectedItem = row == -1 ? nil : [_spineItems objectAtIndex:(NSUInteger) row];
+    LOXSpineItem * selectedItem = row == -1 ? nil : [[_spine items] objectAtIndex:(NSUInteger) row];
 
     [self.selectionChangedLiscener spineView:self selectionChangedTo:selectedItem];
 }
 
 - (void)selectSpieItem: (LOXSpineItem *) spineItem
 {
-    for (NSUInteger i = 0; i < _spineItems.count; i++){
-        if ([_spineItems objectAtIndex:i] == spineItem) {
+    for (NSUInteger i = 0; i < _spine.itemCount; i++){
+        if ([[_spine items] objectAtIndex:i] == spineItem) {
             NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:i];
             [_tableView selectRowIndexes:indexSet byExtendingSelection:NO];
             break;
@@ -73,15 +65,13 @@
     }
 }
 
-- (void)addSpineItem:(NSString *)spineItem
+- (void)setSpine:(LOXSpine *)spine
 {
-    [_spineItems addObject:spineItem];
-    [_tableView reloadData];
-}
+    [_spine release];
 
-- (void)clear
-{
-    [_spineItems removeAllObjects];
+    _spine = spine;
+    [_spine retain];
+
     [_tableView reloadData];
 }
 
@@ -93,8 +83,7 @@
 
 - (void)dealloc
 {
-    [self clear];
-    [_spineItems release];
+    [_spine release];
     [super dealloc];
 }
 

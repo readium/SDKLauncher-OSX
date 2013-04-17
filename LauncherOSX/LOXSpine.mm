@@ -16,31 +16,45 @@
 //
 
 
+#import "LOXSpine.h"
+#import "LOXSpineItem.h"
 
-#import <Foundation/Foundation.h>
-#import "spine.h"
 
+@implementation LOXSpine {
 
-namespace ePub3 {
-    class SpineItem;
+    NSMutableArray* _items;
+
 }
 
-@interface LOXSpineItem : NSObject {
+@synthesize items = _items;
 
-@private
-    const ePub3::SpineItem * _sdkSpineItem;
-    NSString* _idref;
+- (id)init
+{
+    if ((self = [super init])) {
+        _items = [[NSMutableArray alloc] init];
+    }
 
-    NSString* _packageStorrageId;
+    return self;
 }
 
-@property(nonatomic, readonly) NSString *idref;
-@property(nonatomic, readonly) NSString *packageStorageId;
-@property(nonatomic, readonly) NSString *href;
+- (void)dealloc {
+    [_items release];
+    [super dealloc];
+}
 
-- (const ePub3::SpineItem *) sdkSpineItem;
+- (void)addItem:(LOXSpineItem *)spineItem
+{
+    [_items addObject:spineItem];
+}
 
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItem const *)sdkSpineItem;
+- (void)clear
+{
+    [_items removeAllObjects];
+}
 
+-(NSInteger)itemCount
+{
+    return [_items count];
+}
 
 @end

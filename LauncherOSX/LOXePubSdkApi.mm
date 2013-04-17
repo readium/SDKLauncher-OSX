@@ -31,6 +31,7 @@
 #import "LOXTemporaryFileStorage.h"
 #import "LOXUtil.h"
 #import "LOXToc.h"
+#import "LOXSpine.h"
 
 
 @interface LOXePubSdkApi ()
@@ -66,7 +67,7 @@
     self = [super init];
     
     if(self){
-        _spineItems = [[NSMutableArray array] retain];
+        _spine = [[[LOXSpine alloc] init] retain];
         _packageStorages = [[NSMutableArray array] retain];
     }
 
@@ -95,7 +96,7 @@
         while (spineItem) {
 
             LOXSpineItem *loxSpineItem = [[[LOXSpineItem alloc] initWithStorageId:storage.uuid forSdkSpineItem:spineItem] autorelease];
-            [_spineItems addObject:loxSpineItem];
+            [_spine addItem: loxSpineItem];
             spineItem = spineItem->Next();
         }
     }
@@ -107,16 +108,16 @@
     return [[[LOXTemporaryFileStorage alloc] initWithUUID:[LOXUtil uuid] forBasePath:packageBasePath] autorelease];
 }
 
-- (NSArray *)getSpineItems
+- (LOXSpine *)spine
 {
-    return _spineItems;
+    return _spine;
 }
 
 - (void)dealloc
 {
     [self cleanup];
 
-    [_spineItems release];
+    [_spine release];
     [_packageStorages release];
     [super dealloc];
 }
@@ -124,7 +125,7 @@
 - (void)cleanup
 {
     [_packageStorages removeAllObjects];
-    [_spineItems removeAllObjects];
+    [_spine clear];
 
     if (_container != NULL) {
         delete _container;
@@ -143,10 +144,10 @@
 
     if (!storage) {
         NSLog(@"Package storrage with id %@ not found", spineItem.packageStorageId);
-        return spineItem.basePath;
+        return spineItem.href;
     }
 
-    NSString *fullPath = [storage absolutePathForFile: spineItem.basePath];
+    NSString *fullPath = [storage absolutePathForFile: spineItem.href];
 
     return fullPath;
 }
@@ -255,8 +256,8 @@
 
 - (LOXSpineItem *)findSpineItemWithBasePath:(NSString *)href
 {
-    for (LOXSpineItem * spineItem in _spineItems) {
-        if ([[self removeLeadingRelativeParentPath:spineItem.basePath] isEqualToString: [self removeLeadingRelativeParentPath:href]]) {
+    for (LOXSpineItem * spineItem in _spine.items) {
+        if ([[self removeLeadingRelativeParentPath:spineItem.href] isEqualToString: [self removeLeadingRelativeParentPath:href]]) {
             return spineItem;
         }
     }
@@ -279,7 +280,7 @@
 
 - (LOXSpineItem *)findSpineItemWithIdref:(NSString *)idref
 {
-    for (LOXSpineItem * spineItem in _spineItems) {
+    for (LOXSpineItem * spineItem in _spine.items) {
         if ([spineItem.idref isEqualToString:idref]) {
             return spineItem;
         }

@@ -40,6 +40,7 @@
 		AD8C8DEDA920FC142B70BEFD /* LOXTemporaryFileStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C844D86553834F8FA6218 /* LOXTemporaryFileStorage.m */; };
 		AD8C8E1A55DF37104794CB0B /* LOXBookmark.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C88680CC24FB32FFF24CF /* LOXBookmark.mm */; };
 		AD8C8FBE76DB2FF1310CB0F7 /* LOXSpineItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C888D32C974E22AB2A950 /* LOXSpineItem.mm */; };
+		AD8C8FEC1BEE54616D993C28 /* LOXSpine.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C822BBDDC6CE7D3881F23 /* LOXSpine.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +109,7 @@
 		AD8C80D1982D46C86A4BEB37 /* LOXTemporaryFileStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTemporaryFileStorage.h; sourceTree = "<group>"; };
 		AD8C80DFC213AC00E000BD2C /* LOXTocView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTocView.h; sourceTree = "<group>"; };
 		AD8C821D3AEC654EFB843790 /* LOXTocView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXTocView.m; sourceTree = "<group>"; };
+		AD8C822BBDDC6CE7D3881F23 /* LOXSpine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXSpine.mm; sourceTree = "<group>"; };
 		AD8C8280F38E9B894E512240 /* LOXBook.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXBook.mm; sourceTree = "<group>"; };
 		AD8C83A9144B9D7D511B15B2 /* LOXTocEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTocEntry.h; sourceTree = "<group>"; };
 		AD8C842F70081FB730F15DFC /* LOXUserData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXUserData.mm; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 		AD8C84A9A8317F4A33CF8E3F /* LOXTocViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXTocViewController.mm; sourceTree = "<group>"; };
 		AD8C84B7191C8676F84497C7 /* LOXBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXBookmark.h; sourceTree = "<group>"; };
 		AD8C8579F49901F4DF1AEECE /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		AD8C869CF03EFAA95618DE7C /* LOXSpine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpine.h; sourceTree = "<group>"; };
 		AD8C86BBB399B4D50BC24F17 /* LOXTocViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTocViewController.h; sourceTree = "<group>"; };
 		AD8C874F5D988F316B2F82AC /* LOXTocEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXTocEntry.m; sourceTree = "<group>"; };
 		AD8C88680CC24FB32FFF24CF /* LOXBookmark.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXBookmark.mm; sourceTree = "<group>"; };
@@ -252,6 +255,8 @@
 				AD8C8BD5C407A1352816C2FF /* LOXSpineItem.h */,
 				AD8C89FC764D79D48CE677C6 /* LOXToc.mm */,
 				AD8C888D32C974E22AB2A950 /* LOXSpineItem.mm */,
+				AD8C822BBDDC6CE7D3881F23 /* LOXSpine.mm */,
+				AD8C869CF03EFAA95618DE7C /* LOXSpine.h */,
 			);
 			name = Model;
 			path = LauncherOSX;
@@ -427,6 +432,7 @@
 				AD8C8B777241C74E9F43FBC1 /* LOXTocEntry.m in Sources */,
 				AD8C88181150EF3F56F98CF6 /* LOXToc.mm in Sources */,
 				AD8C8FBE76DB2FF1310CB0F7 /* LOXSpineItem.mm in Sources */,
+				AD8C8FEC1BEE54616D993C28 /* LOXSpine.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

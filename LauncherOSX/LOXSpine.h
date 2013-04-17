@@ -16,31 +16,21 @@
 //
 
 
-
 #import <Foundation/Foundation.h>
-#import "spine.h"
+
+@class LOXSpineItem;
 
 
-namespace ePub3 {
-    class SpineItem;
-}
+@interface LOXSpine : NSObject
 
-@interface LOXSpineItem : NSObject {
 
-@private
-    const ePub3::SpineItem * _sdkSpineItem;
-    NSString* _idref;
+@property (nonatomic, readonly) NSArray *items;
 
-    NSString* _packageStorrageId;
-}
 
-@property(nonatomic, readonly) NSString *idref;
-@property(nonatomic, readonly) NSString *packageStorageId;
-@property(nonatomic, readonly) NSString *href;
+- (void)addItem:(LOXSpineItem *)spineItem;
 
-- (const ePub3::SpineItem *) sdkSpineItem;
+- (void)clear;
 
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItem const *)sdkSpineItem;
-
+- (NSInteger)itemCount;
 
 @end

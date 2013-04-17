@@ -24,7 +24,7 @@
 
 @synthesize idref = _idref;
 @synthesize packageStorageId = _packageStorrageId;
-@synthesize basePath = _basePath;
+@synthesize href = _href;
 
 - (const ePub3::SpineItem *)sdkSpineItem
 {
@@ -38,8 +38,8 @@
         auto str = sdkSpineItem->Idref().c_str();
 
         auto manifestItem = sdkSpineItem->ManifestItem();
-        _basePath = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
-        [_basePath retain];
+        _href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
+        [_href retain];
         _packageStorrageId = storageId;
         [_packageStorrageId retain];
         _idref = [[NSString stringWithUTF8String:str] retain];
@@ -54,7 +54,7 @@
 {
     [_packageStorrageId release];
     [_idref release];
-    [_basePath release];
+    [_href release];
     [super dealloc];
 }
 
