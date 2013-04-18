@@ -25,6 +25,7 @@
 @synthesize idref = _idref;
 @synthesize packageStorageId = _packageStorrageId;
 @synthesize href = _href;
+@synthesize properties = _properties;
 
 - (const ePub3::SpineItem *)sdkSpineItem
 {
@@ -44,6 +45,7 @@
         [_packageStorrageId retain];
         _idref = [[NSString stringWithUTF8String:str] retain];
         _sdkSpineItem = sdkSpineItem;
+
     }
 
     return self;
