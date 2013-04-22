@@ -33,4 +33,7 @@
 
 - (NSInteger)itemCount;
 
+- (NSString *)toJSON;
+
+- (NSDictionary *)toDictionary;
 @end

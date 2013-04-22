@@ -57,4 +57,30 @@
     return [_items count];
 }
 
+-(NSString*) toJSON
+{
+    NSDictionary * dict = [self toDictionary];
+
+    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
+
+    NSString* jsonString = [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+
+    return jsonString;
+}
+
+-(NSDictionary *) toDictionary
+{
+    NSMutableDictionary * dict = [NSMutableDictionary dictionary];
+
+    NSMutableArray * itemDicts = [NSMutableArray array];
+
+    for(LOXSpineItem * item in _items) {
+        [itemDicts addObject:[item toDictionary]];
+    }
+
+    [dict setObject:itemDicts forKey:@"items"];
+}
+
+
+
 @end

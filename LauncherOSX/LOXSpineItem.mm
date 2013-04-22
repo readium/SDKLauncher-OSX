@@ -25,7 +25,7 @@
 @synthesize idref = _idref;
 @synthesize packageStorageId = _packageStorrageId;
 @synthesize href = _href;
-@synthesize properties = _properties;
+@synthesize spread = _spread;
 
 - (const ePub3::SpineItem *)sdkSpineItem
 {
@@ -46,11 +46,33 @@
         _idref = [[NSString stringWithUTF8String:str] retain];
         _sdkSpineItem = sdkSpineItem;
 
+        if(sdkSpineItem->Spread() == ePub3::SpineItem::PageSpread::Left) {
+            _spread = @"Left";
+        }
+        else if(sdkSpineItem->Spread() == ePub3::SpineItem::PageSpread::Right) {
+            _spread = @"Right";
+        }
+        else{
+            _spread = @"";
+        }
+
     }
 
     return self;
 
 }
+
+- (NSDictionary *)toDictionary
+{
+    NSMutableDictionary * dict = [NSMutableDictionary dictionary];
+
+    [dict setObject:_href forKey:@"href"];
+    [dict setObject:_idref forKey:@"idref"];
+    [dict setObject:_spread forKey:@"spread"];
+
+    return dict;
+}
+
 
 - (void)dealloc
 {
