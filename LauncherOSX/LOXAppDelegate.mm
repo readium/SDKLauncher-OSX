@@ -22,7 +22,7 @@
 #import "LOXAppDelegate.h"
 #import "LOXePubSdkApi.h"
 
-#include "container.h"
+#import <ePub3/container.h>
 #import "LOXScriptInjector.h"
 #import "LOXUserData.h"
 #import "LOXBook.h"
