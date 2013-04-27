@@ -534,10 +534,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LauncherOSX/LauncherOSX-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					"readium-sdk/ePub3/**",
-					"${SDKROOT}/usr/include/libxml2",
-					"Objective-Zip/**",
-					"${SCRROOT}/readium-sdk/ePub3/ThirdParty",
+					"${SRCROOT}/readium-sdk/Platform/Apple/include",
+					/usr/include/libxml2,
+					"${SRCROOT}/Objective-Zip/**",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -552,10 +551,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LauncherOSX/LauncherOSX-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					"readium-sdk/ePub3/**",
-					"${SDKROOT}/usr/include/libxml2",
-					"Objective-Zip/**",
-					"${SCRROOT}/readium-sdk/ePub3/ThirdParty",
+					"${SRCROOT}/readium-sdk/Platform/Apple/include",
+					/usr/include/libxml2,
+					"${SRCROOT}/Objective-Zip/**",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
