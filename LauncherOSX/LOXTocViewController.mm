@@ -176,7 +176,7 @@
     }
 
     //count and remove leading parent directory navigation ".."
-    NSMutableArray *contentPathComponents = (NSMutableArray *)[contentRef componentsSeparatedByString:@"/"];
+    NSArray *contentPathComponents = [contentRef componentsSeparatedByString:@"/"];
 
     int parentNavCount = 0;
     for(NSString *part in contentPathComponents) {
