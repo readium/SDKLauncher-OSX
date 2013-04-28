@@ -12,4 +12,6 @@
 @interface LOXToc : LOXTocEntry
 
 
+@property (nonatomic, retain) NSString *sourcerHref;
+
 @end

@@ -190,7 +190,6 @@
 				8597D61716824655000FAAAF /* LauncherOSX */,
 				8597D61016824655000FAAAF /* Frameworks */,
 				8597D60E16824655000FAAAF /* Products */,
-				AD8C8352A678DFED6EB3CEBF /* Model */,
 			);
 			sourceTree = "<group>";
 		};
@@ -225,6 +224,7 @@
 		8597D61716824655000FAAAF /* LauncherOSX */ = {
 			isa = PBXGroup;
 			children = (
+				AD8C8352A678DFED6EB3CEBF /* Model */,
 				AD8C8C165CD8EBCC0E30AE2F /* ePubSdkApi */,
 				8597D62316824655000FAAAF /* LOXAppDelegate.h */,
 				8597D62416824655000FAAAF /* LOXAppDelegate.mm */,
@@ -268,7 +268,6 @@
 				AD8C888D32C974E22AB2A950 /* LOXSpineItem.mm */,
 			);
 			name = Model;
-			path = LauncherOSX;
 			sourceTree = "<group>";
 		};
 		AD8C835D54F353C175EF63D8 /* Utils */ = {

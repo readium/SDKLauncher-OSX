@@ -96,6 +96,7 @@ using namespace ePub3;
 {
     _epubApi = [[LOXePubSdkApi alloc] init];
     self.webViewController.epubApi = _epubApi;
+    self.tocViewController.epubApi = _epubApi;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
