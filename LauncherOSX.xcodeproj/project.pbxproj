@@ -65,6 +65,13 @@
 			remoteGlobalIDString = AB61CE4A1694845700299BB1;
 			remoteInfo = UnitTests;
 		};
+		8573953F172ED4880071B66C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 558E562716EF859800FCF273 /* ePub3.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = ABA72C231655382E003125FF;
+			remoteInfo = ePub3;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -329,6 +336,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8597D62B16824656000FAAAF /* Build configuration list for PBXNativeTarget "LauncherOSX" */;
 			buildPhases = (
+				8573953B172ED0F60071B66C /* ShellScript */,
 				8597D60916824655000FAAAF /* Sources */,
 				8597D60A16824655000FAAAF /* Frameworks */,
 				8597D60B16824655000FAAAF /* Resources */,
@@ -337,6 +345,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				85739540172ED4880071B66C /* PBXTargetDependency */,
 			);
 			name = LauncherOSX;
 			productName = LauncherOSX;
@@ -415,6 +424,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		8573953B172ED0F60071B66C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "install_name_tool -id @executable_path/../Frameworks/ePub3.dylib \"$TARGET_BUILD_DIR/ePub3.dylib\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8597D60916824655000FAAAF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -445,6 +471,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		85739540172ED4880071B66C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ePub3;
+			targetProxy = 8573953F172ED4880071B66C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		8597D61A16824655000FAAAF /* InfoPlist.strings */ = {
