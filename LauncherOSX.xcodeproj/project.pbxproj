@@ -19,6 +19,7 @@
 		855CFEE8169DFA3E00AD311E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 855CFEE7169DFA3D00AD311E /* libz.dylib */; };
 		856354F716DE7C3A009DA283 /* BookmarkDlg.xib in Resources */ = {isa = PBXBuildFile; fileRef = 856354F616DE7C3A009DA283 /* BookmarkDlg.xib */; };
 		856354FA16DEB3AF009DA283 /* LOXBookmarkEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 856354F916DEB3AF009DA283 /* LOXBookmarkEditController.m */; };
+		85739532172AE0280071B66C /* ePub3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 558E562E16EF859800FCF273 /* ePub3.dylib */; };
 		8578F14A16D4095F003914EB /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8578F14816D4095F003914EB /* Model.xcdatamodeld */; };
 		8597D61216824655000FAAAF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8597D61116824655000FAAAF /* Cocoa.framework */; };
 		8597D61C16824655000FAAAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8597D61A16824655000FAAAF /* InfoPlist.strings */; };
@@ -64,7 +65,27 @@
 			remoteGlobalIDString = AB61CE4A1694845700299BB1;
 			remoteInfo = UnitTests;
 		};
+		8573953F172ED4880071B66C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 558E562716EF859800FCF273 /* ePub3.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = ABA72C231655382E003125FF;
+			remoteInfo = ePub3;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8573952E172ADFD00071B66C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				85739532172AE0280071B66C /* ePub3.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
@@ -176,7 +197,6 @@
 				8597D61716824655000FAAAF /* LauncherOSX */,
 				8597D61016824655000FAAAF /* Frameworks */,
 				8597D60E16824655000FAAAF /* Products */,
-				AD8C8352A678DFED6EB3CEBF /* Model */,
 			);
 			sourceTree = "<group>";
 		};
@@ -211,6 +231,7 @@
 		8597D61716824655000FAAAF /* LauncherOSX */ = {
 			isa = PBXGroup;
 			children = (
+				AD8C8352A678DFED6EB3CEBF /* Model */,
 				AD8C8C165CD8EBCC0E30AE2F /* ePubSdkApi */,
 				8597D62316824655000FAAAF /* LOXAppDelegate.h */,
 				8597D62416824655000FAAAF /* LOXAppDelegate.mm */,
@@ -254,7 +275,6 @@
 				AD8C888D32C974E22AB2A950 /* LOXSpineItem.mm */,
 			);
 			name = Model;
-			path = LauncherOSX;
 			sourceTree = "<group>";
 		};
 		AD8C835D54F353C175EF63D8 /* Utils */ = {
@@ -316,13 +336,16 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8597D62B16824656000FAAAF /* Build configuration list for PBXNativeTarget "LauncherOSX" */;
 			buildPhases = (
+				8573953B172ED0F60071B66C /* ShellScript */,
 				8597D60916824655000FAAAF /* Sources */,
 				8597D60A16824655000FAAAF /* Frameworks */,
 				8597D60B16824655000FAAAF /* Resources */,
+				8573952E172ADFD00071B66C /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				85739540172ED4880071B66C /* PBXTargetDependency */,
 			);
 			name = LauncherOSX;
 			productName = LauncherOSX;
@@ -401,6 +424,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		8573953B172ED0F60071B66C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "install_name_tool -id @executable_path/../Frameworks/ePub3.dylib \"$TARGET_BUILD_DIR/ePub3.dylib\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8597D60916824655000FAAAF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -431,6 +471,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		85739540172ED4880071B66C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ePub3;
+			targetProxy = 8573953F172ED4880071B66C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		8597D61A16824655000FAAAF /* InfoPlist.strings */ = {
@@ -519,10 +567,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LauncherOSX/LauncherOSX-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					"readium-sdk/ePub3/**",
-					"${SDKROOT}/usr/include/libxml2",
-					"Objective-Zip/**",
-					"${SCRROOT}/readium-sdk/ePub3/ThirdParty",
+					"${SRCROOT}/readium-sdk/Platform/Apple/include",
+					/usr/include/libxml2,
+					"${SRCROOT}/Objective-Zip/**",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -537,10 +584,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LauncherOSX/LauncherOSX-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					"readium-sdk/ePub3/**",
-					"${SDKROOT}/usr/include/libxml2",
-					"Objective-Zip/**",
-					"${SCRROOT}/readium-sdk/ePub3/ThirdParty",
+					"${SRCROOT}/readium-sdk/Platform/Apple/include",
+					/usr/include/libxml2,
+					"${SRCROOT}/Objective-Zip/**",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";

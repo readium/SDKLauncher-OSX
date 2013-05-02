@@ -10,6 +10,7 @@
 @class LOXToc;
 @class LOXAppDelegate;
 @class LOXTocEntry;
+@class LOXePubSdkApi;
 
 
 @interface LOXTocViewController : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate, NSTableViewDelegate> {
@@ -20,6 +21,7 @@
     IBOutlet LOXAppDelegate* _appDelegate;
 }
 
+@property(nonatomic, retain) LOXePubSdkApi *epubApi;
 
 - (void)setToc:(LOXToc *)toc;
 

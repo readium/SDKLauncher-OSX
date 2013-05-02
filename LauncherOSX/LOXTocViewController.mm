@@ -8,11 +8,14 @@
 #import "LOXTocViewController.h"
 #import "LOXToc.h"
 #import "LOXAppDelegate.h"
+#import "LOXePubSdkApi.h"
 
 
 @interface LOXTocViewController ()
 - (BOOL)isClickableItem:(LOXTocEntry *)item;
 
+
+- (NSString *)resolveContentRef:(NSString *)contentRef;
 
 @end
 
@@ -158,7 +161,52 @@
         return;
     }
 
-    [_appDelegate openContentDocRef:entry.contentRef];
+    NSString *href = [self resolveContentRef:entry.contentRef];
+
+    [_appDelegate openContentDocRef:href];
+}
+
+
+//because entry contentRef can be relative to the toc file but spine item are relative to the package document
+//we have to build the href path from toc location and entry content ref
+-(NSString*) resolveContentRef:(NSString *)contentRef
+{
+    if(_toc.sourcerHref.length == 0) {
+        return contentRef;
+    }
+
+    //count and remove leading parent directory navigation ".."
+    NSArray *contentPathComponents = [contentRef componentsSeparatedByString:@"/"];
+
+    int parentNavCount = 0;
+    for(NSString *part in contentPathComponents) {
+
+        if(![part isEqualToString: @".."]) {
+            break;
+        }
+
+        parentNavCount++;
+    }
+
+    NSRange range;
+    range.location = parentNavCount;
+    range.length = contentPathComponents.count - parentNavCount;
+    contentPathComponents = [contentPathComponents subarrayWithRange:range];
+    NSString * cleanedContentRef = [contentPathComponents componentsJoinedByString:@"/"];
+
+    //remove trailing directory navigation equal parent navigation count for contentRef path (above)
+    //remove toc file name
+    NSString *tocDir = [_toc.sourcerHref stringByDeletingLastPathComponent];
+
+    while(parentNavCount > 0 && tocDir.length > 0) {
+        tocDir = [tocDir stringByDeletingLastPathComponent];
+        parentNavCount--;
+    }
+
+
+    NSString* combinedPath = [tocDir stringByAppendingPathComponent:cleanedContentRef] ;
+
+    return combinedPath;
 }
 
 @end
