@@ -18,7 +18,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import "spine.h"
+#import <ePub3/spine.h>
 
 
 namespace ePub3 {

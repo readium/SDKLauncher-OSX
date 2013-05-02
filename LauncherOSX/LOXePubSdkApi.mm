@@ -21,11 +21,11 @@
 
 #import "LOXePubSdkApi.h"
 
-#include "container.h"
-#include "package.h"
-#include "cfi.h"
-#include "nav_table.h"
-#include "nav_point.h"
+#import <ePub3/container.h>
+#import <ePub3/package.h>
+#import <ePub3/cfi.h>
+#import <ePub3/nav_table.h>
+#import <ePub3/nav_point.h>
 
 #import "LOXSpineItem.h"
 #import "LOXTemporaryFileStorage.h"
@@ -303,6 +303,8 @@
     if(toc.title.length == 0) {
         toc.title = @"Table of content";
     }
+
+    toc.sourcerHref = [NSString stringWithUTF8String:navTable->SourceHref().c_str()];
 
     [self addNavElementChildrenFrom:navTable toTocEntry:toc];
 
