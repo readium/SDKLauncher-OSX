@@ -47,10 +47,10 @@
         _sdkSpineItem = sdkSpineItem;
 
         if(sdkSpineItem->Spread() == ePub3::SpineItem::PageSpread::Left) {
-            _spread = @"Left";
+            _spread = @"left";
         }
         else if(sdkSpineItem->Spread() == ePub3::SpineItem::PageSpread::Right) {
-            _spread = @"Right";
+            _spread = @"right";
         }
         else{
             _spread = @"";
