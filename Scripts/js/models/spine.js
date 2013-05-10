@@ -3,13 +3,15 @@
 //wrapper of the spine object received from hosting application
 ReadiumSDK.Models.Spine = Backbone.Model.extend({
 
-    items: undefined,
+    items: [],
     direction: undefined,
     layout: undefined,
+    package: undefined,
 
     initialize : function() {
 
-        var spineData = this.get("spine");
+        this.package = this.get("package");
+        var spineData = this.get("spineData");
 
         if(spineData) {
 
@@ -22,17 +24,13 @@ ReadiumSDK.Models.Spine = Backbone.Model.extend({
 
             this.items = spineData.items;
 
-            for(var i = 0; i < this.items.length; i++) {
+            var length = this.items.length;
+            for(var i = 0; i < length; i++) {
                 var item = this.items[i];
                 item.index = i;
             }
         }
 
-    },
-
-    isFixedLayout: function() {
-
-        return this.layout == "pre-paginated";
     },
 
     prevItem:  function(item) {
@@ -53,6 +51,10 @@ ReadiumSDK.Models.Spine = Backbone.Model.extend({
         return undefined;
     },
 
+    getItemUrl: function(item) {
+
+        return this.package.rootUrl + "/" + item.href;
+    },
 
     isValidIndex: function(index) {
 
@@ -79,6 +81,34 @@ ReadiumSDK.Models.Spine = Backbone.Model.extend({
     isLeftToRight: function() {
 
         return !this.isRightToLeft();
+    },
+
+    getItemById: function(idref) {
+
+        var length = this.items.length;
+
+        for(var i = 0; i < length; i++) {
+            if(this.items[i].idref == idref) {
+
+                return this.items[i];
+            }
+        }
+
+        return undefined;
+    },
+
+    getItemByHref: function(href) {
+
+        var length = this.items.length;
+
+        for(var i = 0; i < length; i++) {
+            if(this.items[i].href == href) {
+
+                return this.items[i];
+            }
+        }
+
+        return undefined;
     }
 
 });

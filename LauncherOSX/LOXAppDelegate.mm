@@ -23,15 +23,16 @@
 #import "LOXePubSdkApi.h"
 
 #import <ePub3/container.h>
-#import "LOXScriptInjector.h"
 #import "LOXUserData.h"
 #import "LOXBook.h"
 #import "LOXBookmarksController.h"
 #import "LOXBookmark.h"
 #import "LOXSpineItem.h"
-#import "LOXToc.h"
 #import "LOXTocViewController.h"
 #import "LOXSpine.h"
+#import "LOXPackage.h"
+#import "LOXCurrentPageData.h"
+#import "LOXPageNumberTextController.h"
 
 
 using namespace ePub3;
@@ -41,12 +42,6 @@ using namespace ePub3;
 
 - (NSString *)selectFile;
 
-- (void)updateWebView;
-
-- (void)openCurrentSpineItemContentCfi:(NSString *)cfi;
-
-- (void)openCurrentSpineItemElementId:(NSString *)elementId;
-
 - (void)reportError:(NSString *)error;
 
 - (bool)openDocumentWithPath:(NSString *)path;
@@ -54,24 +49,24 @@ using namespace ePub3;
 @end
 
 
+
 @implementation LOXAppDelegate {
 @private
+
     LOXePubSdkApi *_epubApi;
-    LOXScriptInjector *_scriptInjector;
     LOXUserData *_userData;
     LOXBook*_currentBook;
-
-    NSString *_contentCfiWaitingForWebViewRendering;
-    NSString *_elementIdWaitingForWebViewRendering;
+    LOXPackage *_package;
 }
 
+@synthesize currentPageData = _currentPageData;
 
 - (id)init
 {
     self = [super init];
     if (self) {
 
-        _scriptInjector = [[LOXScriptInjector alloc] init];
+        _currentPageData = [[LOXCurrentPageData alloc] init];
         _userData = [[LOXUserData alloc] init];
     }
 
@@ -80,24 +75,22 @@ using namespace ePub3;
 
 - (void)dealloc
 {
-    [_scriptInjector release];
+    [_package release];
     [_epubApi release];
     [_userData release];
-    [_contentCfiWaitingForWebViewRendering release];
-    [_elementIdWaitingForWebViewRendering release];
+    [_currentPageData release];
     [super dealloc];
 }
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
-{
-    self.spineViewController.selectionChangedLiscener = self;
-}
 
 -(void) awakeFromNib
 {
     _epubApi = [[LOXePubSdkApi alloc] init];
-    self.webViewController.epubApi = _epubApi;
-    self.tocViewController.epubApi = _epubApi;
+
+    self.webViewController.currentPageData = _currentPageData;
+    self.pageNumController.currentPageData = _currentPageData;
+    self.spineViewController.selectionChangedLiscener = self.webViewController;
+
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
@@ -121,18 +114,17 @@ using namespace ePub3;
 {
     try {
 
-        [_epubApi openFile:path];
+        [_package release];
+        _package = [_epubApi openFile:path];
 
-        LOXSpine* spine = [_epubApi spine];
-
-        [self.spineViewController setSpine:spine];
-
-        if (spine.itemCount > 0) {
-            [self.spineViewController selectSpineIndex:0];
+        if(!_package) {
+            return NO;
         }
 
-        LOXToc *toc = [_epubApi getToc];
-        [self.tocViewController setToc:toc];
+        [_package retain];
+
+        [self.tocViewController setPackage: _package];
+        [self.spineViewController setPackage:_package];
 
         _currentBook = [self getBookForPath:path];
         _currentBook.dateOpened = [NSDate date];
@@ -141,6 +133,8 @@ using namespace ePub3;
         [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:path]];
 
         [self.window setTitle:[path lastPathComponent]];
+
+        [self.webViewController openPackage:_package];
 
         return YES;
     }
@@ -166,8 +160,8 @@ using namespace ePub3;
     if(!book) {
         book = [[[LOXBook alloc] init] autorelease];
         book.filePath = path;
-        book.packageId = [_epubApi getPackageID];
-        book.name = [_epubApi getPackageTitle];
+        book.packageId = _package.packageId;
+        book.name = _package.title;
         [_userData addBook: book];
     }
 
@@ -189,11 +183,6 @@ using namespace ePub3;
 }
 
 
-- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem *)spineItem
-{
-    self.currentSpineItem = spineItem;
-    [self updateWebView];
-}
 
 
 - (NSString *)selectFile
@@ -215,21 +204,6 @@ using namespace ePub3;
     return nil;
 }
 
-- (void)updateWebView
-{
-    if (self.currentSpineItem) {
-
-        NSString *path = [_epubApi getPathToSpineItem:self.currentSpineItem];
-
-        NSString *html = [_scriptInjector injectHtmlFile:path];
-
-        [self.webViewController displayHtml:html withBaseUrlPath:_scriptInjector.baseUrlPath];
-    }
-    else {
-        [self.webViewController clear];
-    }
-}
-
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
     [_userData save];
@@ -240,7 +214,9 @@ using namespace ePub3;
 
 - (LOXBookmark *)createBookmark
 {
-    if(!self.currentSpineItem) {
+    LOXSpineItem *spineItem = [_package.spine getSpineItemWithId:_currentPageData.idref];
+
+    if(!spineItem) {
         return nil;
     }
 
@@ -249,9 +225,9 @@ using namespace ePub3;
     LOXBookmark *bookmark = [[[LOXBookmark alloc] init] autorelease];
 
     bookmark.title = [NSString stringWithFormat:@"Bookmark #%li", n];
-    bookmark.idref = _currentSpineItem.idref;
-    bookmark.basePath = _currentSpineItem.href;
-    bookmark.spineItemCFI = [_epubApi getCfiForSpineItem:_currentSpineItem];
+    bookmark.idref = spineItem.idref;
+    bookmark.basePath = spineItem.href;
+    bookmark.spineItemCFI = [_package getCfiForSpineItem: spineItem];
     bookmark.contentCFI = [self.webViewController getCurrentPageCfi];
 
     return bookmark;
@@ -260,92 +236,12 @@ using namespace ePub3;
 
 - (void)openBookmark:(LOXBookmark *)bookmark
 {
-
-    LOXSpineItem *spineItem = [_epubApi findSpineItemWithIdref: bookmark.idref];
-
-    if(spineItem == nil) {
-        return;
-    }
-
-    if (_currentSpineItem == spineItem) {
-        [self openCurrentSpineItemContentCfi:bookmark.contentCFI];
-    }
-    else {
-        _contentCfiWaitingForWebViewRendering = bookmark.contentCFI;
-        [_contentCfiWaitingForWebViewRendering retain];
-        [self.spineViewController selectSpieItem:spineItem];
-    }
+    [self.webViewController openSpineItem:bookmark.idref elementCfi:bookmark.spineItemCFI];
 }
 
--(void)openCurrentSpineItemContentCfi:(NSString *) cfi
+-(void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef
 {
-    int pageIx = [self.webViewController getPageForElementCfi:cfi];
-    if(pageIx >= 0) {
-        [self.webViewController openPageIndex:pageIx];
-    }
-
-}
-
--(void)openCurrentSpineItemElementId:(NSString*) elementId
-{
-    int pageIx = [self.webViewController getPageForElementId:elementId];
-    if(pageIx >= 0) {
-        [self.webViewController openPageIndex:pageIx];
-    }
-}
-
-- (void)onPaginationScriptingReady
-{
-    if (_contentCfiWaitingForWebViewRendering != nil ){
-
-        [self openCurrentSpineItemContentCfi: _contentCfiWaitingForWebViewRendering];
-
-        [_contentCfiWaitingForWebViewRendering release];
-        _contentCfiWaitingForWebViewRendering = nil;
-    }
-
-    if (_elementIdWaitingForWebViewRendering != nil) {
-
-        [self openCurrentSpineItemElementId:_elementIdWaitingForWebViewRendering];
-
-        [_elementIdWaitingForWebViewRendering release];
-        _elementIdWaitingForWebViewRendering = nil;
-    }
-}
-
--(void)openContentDocRef:(NSString *)contentRef
-{
-    NSRange range =[contentRef rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
-
-    NSString *contentDocUrl = range.location != NSNotFound ? [contentRef substringWithRange: NSMakeRange(0, range.location)] : contentRef;
-
-    NSString *elementId = nil;
-    if(range.location != NSNotFound && range.location + 1 < contentRef.length) {
-        elementId = [contentRef substringFromIndex:range.location + 1];
-    }
-
-    LOXSpineItem *spineItem = [_epubApi findSpineItemWithBasePath: contentDocUrl];
-
-    if(spineItem == nil) {
-        return;
-    }
-
-    if (_currentSpineItem == spineItem) {
-        if(elementId != nil) {
-            [self openCurrentSpineItemElementId:elementId];
-        }
-    }
-    else {
-        if(elementId != nil) {
-            [_elementIdWaitingForWebViewRendering release];
-            _elementIdWaitingForWebViewRendering = elementId;
-            [_elementIdWaitingForWebViewRendering retain];
-
-        }
-
-        [self.spineViewController selectSpieItem:spineItem];
-    }
-
+   [self.webViewController openContentUrl:contentRef fromSourceFileUrl:sourceRef];
 }
 
 @end

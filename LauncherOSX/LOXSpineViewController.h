@@ -24,7 +24,7 @@
 @class LOXSpineViewController;
 @class LOXSpineItem;
 @class LOXSpine;
-
+@class LOXPackage;
 
 
 @protocol LOXSpineViewControllerDelegate
@@ -34,16 +34,16 @@
 @interface LOXSpineViewController : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
 @private
     IBOutlet NSTableView *_tableView;
-    LOXSpine *_spine;
-}
+  }
 
 @property (assign, nonatomic) id<LOXSpineViewControllerDelegate> selectionChangedLiscener;
 
 - (void)selectSpieItem:(LOXSpineItem *)spineItem;
 
-- (void)setSpine:(LOXSpine *)spine;
+- (void)setPackage:(LOXPackage *)package;
 
 - (void)selectSpineIndex:(NSUInteger)index;
 
 
+- (void)selectFirstItem;
 @end

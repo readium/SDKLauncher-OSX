@@ -18,10 +18,10 @@
 
 ReadiumSDK.HostAppFeedback = function(reader) {
 
-    reader.on("PageChanged", function(pageIx, pageCount){
+    reader.on("PageChanged", function(pageIx, pageCount, idref){
 
         if(window.LauncherUI) {
-            window.LauncherUI.onOpenPageIndexOfPages(pageIx, pageCount);
+            window.LauncherUI.onOpenPage(pageIx, pageCount, idref);
         }
 
     }),

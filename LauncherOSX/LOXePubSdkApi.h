@@ -26,6 +26,7 @@
 @class LOXToc;
 @class LOXSpineItem;
 @class LOXSpine;
+@class LOXPackage;
 
 namespace ePub3 {
     class Container;
@@ -34,39 +35,12 @@ namespace ePub3 {
 
 @interface LOXePubSdkApi : NSObject {
 
-@private
-    ePub3::Container *_container;
-    const ePub3::Package *_package;
-
-    LOXSpine *_spine;
-    NSMutableArray *_packageStorages;
 }
 
-@property(nonatomic, retain) NSMutableArray *packageStorages;
 
 
 +(void)initialize;
 
-- (void)prepareResourceWithPath:(NSString *)path;
-
-- (void)openFile:(NSString *)file;
-
-- (LOXSpine *)spine;
-
-- (NSString*)getPathToSpineItem:(LOXSpineItem *) spineItem;
-
-- (NSString *)getPackageID;
-
-
-- (NSString *)getPackageTitle;
-
-- (NSString *)getCfiForSpineItem:(LOXSpineItem *)spineItem;
-
-- (LOXSpineItem *)findSpineItemWithBasePath:(NSString *)string;
-
-- (LOXSpineItem *)findSpineItemWithIdref:(NSString *)idref;
-
-- (LOXToc*)getToc;
-
+- (LOXPackage *)openFile:(NSString *)file;
 
 @end

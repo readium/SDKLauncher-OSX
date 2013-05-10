@@ -8,6 +8,8 @@ body {
     width: 100%;
     margin: 0;
     padding: 20px;
+    position: absolute;
+    overflow: hidden;
     box-sizing:border-box;
 	-moz-box-sizing:border-box; /* Firefox */
 	-webkit-box-sizing:border-box; /* Safari */
@@ -27,5 +29,21 @@ iframe {
     height:100%;
     width: 99%;
     border-width: 0px;
+}
+
+.left_page {
+
+    left: 0%;
+    width: 50%;
+}
+
+.right_page {
+    left: 50%;
+    width: 50%;
+}
+
+.fixed-page-wrap {
+
+    position: absolute;
 }
 

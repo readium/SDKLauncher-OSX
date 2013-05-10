@@ -25,16 +25,16 @@
 #import "LOXSpineViewController.h"
 #import "LOXWebViewController.h"
 
-@class LOXScriptInjector;
 @class LOXUserData;
 @class LOXBookmarksController;
 @class LOXBookmark;
 @class LOXBookmarkEditController;
 @class LOXTocViewController;
 @class LOXSpineItem;
+@class LOXCurrentPageData;
 
 
-@interface LOXAppDelegate : NSObject <NSApplicationDelegate, LOXSpineViewControllerDelegate>
+@interface LOXAppDelegate : NSObject <NSApplicationDelegate>
 
 
 //ui
@@ -44,10 +44,9 @@
 @property (assign) IBOutlet LOXWebViewController *webViewController;
 @property (assign) IBOutlet LOXBookmarksController *bookmarksController;
 @property (assign) IBOutlet LOXTocViewController *tocViewController;
+@property (assign) IBOutlet LOXPageNumberTextController *pageNumController;
 
-
-@property (assign) LOXSpineItem *currentSpineItem;
-
+@property (nonatomic, readonly) LOXCurrentPageData *currentPageData;
 
 - (IBAction)openDocument:(id)sender;
 
@@ -55,8 +54,7 @@
 
 - (void)openBookmark:(LOXBookmark *)bookmark;
 
-- (void)onPaginationScriptingReady;
+- (void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString *)sourceRef;
 
-- (void)openContentDocRef:(NSString *)contentRef;
 
 @end

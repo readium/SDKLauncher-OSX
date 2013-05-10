@@ -22,23 +22,28 @@
 #import "LOXSpineViewController.h"
 #import "LOXSpineItem.h"
 #import "LOXSpine.h"
+#import "LOXPackage.h"
 
 
 @interface LOXSpineViewController ()
 
 @end
 
-@implementation LOXSpineViewController
+@implementation LOXSpineViewController {
+
+    LOXPackage *_package;
+
+}
 
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
-    return [_spine itemCount];
+    return [_package.spine itemCount];
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    LOXSpineItem *item = [[_spine items] objectAtIndex:(NSUInteger) row];
+    LOXSpineItem *item = [[_package.spine items] objectAtIndex:(NSUInteger) row];
 
     NSString* propIdentifier = [tableColumn identifier];
     return [item valueForKey:propIdentifier];
@@ -49,15 +54,15 @@
     NSTableView *tableView = notification.object;
     NSInteger row = [tableView selectedRow];
 
-    LOXSpineItem * selectedItem = row == -1 ? nil : [[_spine items] objectAtIndex:(NSUInteger) row];
+    LOXSpineItem * selectedItem = row == -1 ? nil : [[_package.spine items] objectAtIndex:(NSUInteger) row];
 
     [self.selectionChangedLiscener spineView:self selectionChangedTo:selectedItem];
 }
 
 - (void)selectSpieItem: (LOXSpineItem *) spineItem
 {
-    for (NSUInteger i = 0; i < _spine.itemCount; i++){
-        if ([[_spine items] objectAtIndex:i] == spineItem) {
+    for (NSUInteger i = 0; i < _package.spine.itemCount; i++){
+        if ([[_package.spine items] objectAtIndex:i] == spineItem) {
             NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:i];
             [_tableView selectRowIndexes:indexSet byExtendingSelection:NO];
             break;
@@ -65,12 +70,11 @@
     }
 }
 
-- (void)setSpine:(LOXSpine *)spine
+- (void)setPackage:(LOXPackage *)package
 {
-    [_spine release];
-
-    _spine = spine;
-    [_spine retain];
+    [_package release];
+    _package = package;
+    [_package retain];
 
     [_tableView reloadData];
 }
@@ -83,8 +87,15 @@
 
 - (void)dealloc
 {
-    [_spine release];
+    [_package release];
     [super dealloc];
 }
 
+- (void)selectFirstItem {
+
+    if (_package.spine.itemCount > 0) {
+        [self selectSpineIndex:0];
+    }
+
+}
 @end

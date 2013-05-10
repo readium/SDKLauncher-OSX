@@ -3,17 +3,17 @@
 ReadiumSDK.Views.OnePageView = Backbone.View.extend({
 
     spineItem: undefined,
+    spine: undefined,
 
     meta_size : {
         width:undefined,
         height:undefined
     },
 
-    events: {
-        "load" : "onIFrameLoad"
-    },
 
     initialize: function() {
+
+        this.spine = this.options.spine;
 
     },
 
@@ -24,7 +24,9 @@ ReadiumSDK.Views.OnePageView = Backbone.View.extend({
 
     render: function() {
 
-        this.el.src = this.spineItem ? this.spineItem.href : "about:blank";
+        var src = this.spineItem ? this.spine.getItemUrl(this.spineItem) : "about:blank";
+
+        ReadiumSDK.Helpers.LoadIframe(this.el, src, this.onIFrameLoad, this);
     },
 
     remove: function() {
@@ -35,13 +37,14 @@ ReadiumSDK.Views.OnePageView = Backbone.View.extend({
         Backbone.View.prototype.remove.call(this);
     },
 
-    onIFrameLoad:  function() {
+    onIFrameLoad:  function(success) {
 
-        this.updateMetaSize();
+        if(success) {
+            this.updateMetaSize();
+        }
+
         this.trigger("PageLoaded");
     },
-
-
 
     updateMetaSize: function() {
 

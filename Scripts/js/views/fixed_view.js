@@ -11,15 +11,15 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
 
     initialize: function() {
 
-        template: _.template($("#template-fixed-view").html());
+        this.template = _.template($("#template-fixed-view").html());
         var html = this.template({});
         this.$el.append(html);
 
         this.spread = new ReadiumSDK.Models.Spread(this.options.spine);
 
-        this.leftPageView = new ReadiumSDK.Views.OnePageView({el: document.getElementById("fixed_left_iframe")});
-        this.rightPageView = new ReadiumSDK.Views.OnePageView({el: document.getElementById("fixed_right_iframe")});
-        this.centerPageView = new ReadiumSDK.Views.OnePageView({el: document.getElementById("fixed_center_iframe")});
+        this.leftPageView = new ReadiumSDK.Views.OnePageView({spine: this.options.spine, el: document.getElementById("fixed_left_iframe")});
+        this.rightPageView = new ReadiumSDK.Views.OnePageView({spine: this.options.spine, el: document.getElementById("fixed_right_iframe")});
+        this.centerPageView = new ReadiumSDK.Views.OnePageView({spine: this.options.spine, el: document.getElementById("fixed_center_iframe")});
 
         this.spread.openFirst();
 
@@ -115,13 +115,19 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
 
     },
 
-    openLeft: function() {
+    openSpineItem: function(spineItem) {
+
+        this.spread.openItem(spineItem);
+        this.render();
+    },
+
+    openPrevPage: function() {
 
         this.spread.openLeft();
         this.render();
     },
 
-    openRight: function() {
+    openNextPage: function() {
 
         this.spread.openRight();
         this.render();

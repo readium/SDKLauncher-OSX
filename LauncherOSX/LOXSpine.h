@@ -33,7 +33,7 @@
 
 - (NSInteger)itemCount;
 
-- (NSString *)toJSON;
-
 - (NSDictionary *)toDictionary;
+
+- (LOXSpineItem *)getSpineItemWithId:(NSString*)idref;
 @end

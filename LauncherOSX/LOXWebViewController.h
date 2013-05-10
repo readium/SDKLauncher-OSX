@@ -22,49 +22,44 @@
 #import <Foundation/Foundation.h>
 #import <WebKit/WebKit.h>
 #import <WebKit/WebResourceLoadDelegate.h>
+#import "LOXSpineViewController.h"
 
 @class LOXePubSdkApi;
 @class LOXPageNumberTextController;
 @class LOXBookmarksController;
 @class LOXAppDelegate;
+@class LOXPackage;
+@class LOXCurrentPageData;
 
 
-@interface LOXWebViewController : NSObject {
+@interface LOXWebViewController : NSObject<LOXSpineViewControllerDelegate> {
 
 @private
     IBOutlet WebView *_webView;
 }
 
-- (void)displayUrlPath:(NSString *)urlPath;
-
 - (void) clear;
-
-@property(nonatomic, retain) LOXePubSdkApi *epubApi;
 
 @property (assign) IBOutlet NSButton *prevPageButton;
 @property (assign) IBOutlet NSButton *nextPageButton;
 
-@property (assign) IBOutlet LOXPageNumberTextController *pageNumController;
 @property (assign) IBOutlet LOXAppDelegate *appDelegate;
 
-
-- (void)displayHtml:(NSString *)html withBaseUrlPath:(NSString *)baseUrlPath;
+@property (nonatomic, retain) LOXCurrentPageData *currentPageData;
 
 - (IBAction)onPrevPageClick:(id)sender;
 - (IBAction)onNextPageClick:(id)sender;
 
-- (void)openPageIndex:(int)pageIx;
+- (void)onOpenPage:(int)index1 ofPages:(int)count spineItem:(NSString *)idref;
 
+- (void)openSpineItem:(id)idref elementCfi:(NSString *)cfi;
 
-- (void)onOpenPageIndex:(int)index ofPages:(int)count;
+- (void)openSpineItem:(NSString *)idref pageIndex:(int)pageIx;
 
-- (void)onPaginationScriptingReady;
-
+- (void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString *)sourceRef;
 
 - (NSString *)getCurrentPageCfi;
 
-- (int)getPageForElementCfi:(NSString *)cfi;
+- (void)openPackage:(LOXPackage *)package;
 
-
-- (int)getPageForElementId:(NSString *)elementId;
 @end

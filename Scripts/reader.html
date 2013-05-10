@@ -9,11 +9,14 @@
         <script src="js/models/spine_item.js" type="text/javascript"></script>
         <script src="js/models/spine.js" type="text/javascript"></script>
         <script src="js/models/fixed_page_spread.js" type="text/javascript"></script>
+        <script src="js/models/package.js" type="text/javascript"></script>
+        <script src="js/models/open_page_data.js" type="text/javascript"></script>
         <script src="lib/epub_cfi.js" type="text/javascript"></script>
         <script src="js/views/cfi_navigation_logic.js" type="text/javascript"></script>
         <script src="js/views/reflowable_view.js" type="text/javascript"></script>
         <script src="js/views/one_page_view.js" type="text/javascript"></script>
         <script src="js/views/fixed_view.js" type="text/javascript"></script>
+        <script src="js/views/reader_view.js" type="text/javascript"></script>
         <script src="host_app_feedback.js" type="text/javascript"></script>
 
         <!--reflowable view-->
@@ -50,32 +53,40 @@
 
                 ///////////////////////////////////
                 //DEBUGGING CODE
-                var spineData = {
 
-                    items: [
-                        {href: "books/page-blanche-20130322/EPUB/Content/cover.xhtml", spread: "right"},
-                        {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_000.xhtml", spread: "left"},
-                        {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_001.xhtml", spread: "right"},
-                        {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_002.xhtml", spread: "left"},
-                        {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_003.xhtml", spread: "right"},
-                        {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_004.xhtml", spread: "left"},
-                        {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_005.xhtml", spread: "right"},
-                        {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_006.xhtml", spread: "left"},
-                        {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_007.xhtml", spread: "right"},
-                        {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_008.xhtml", spread: "left"}
-                    ]
-
-                };
-
-                ReadiumSDK.reader.setSpineData($.stringify(spineData));
-
-                $("#leftBtn").on("click", function () {
-                    ReadiumSDK.reader.openLeft();
-                });
-
-                $("#rightBtn").on("click", function () {
-                    ReadiumSDK.reader.openRight();
-                });
+//                var packageData = {
+//
+//                    layout: "pre-paginated",
+//
+//                     spine : {
+//
+//                            items: [
+//                                {href: "books/page-blanche-20130322/EPUB/Content/cover.xhtml", spread: "right"},
+//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_000.xhtml", spread: "left"},
+//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_001.xhtml", spread: "right"},
+//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_002.xhtml", spread: "left"},
+//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_003.xhtml", spread: "right"},
+//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_004.xhtml", spread: "left"},
+//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_005.xhtml", spread: "right"},
+//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_006.xhtml", spread: "left"},
+//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_007.xhtml", spread: "right"},
+//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_008.xhtml", spread: "left"}
+//                            ]
+//                     }
+//
+//                };
+//
+//                ReadiumSDK.reader.setPackageData(JSON.stringify(packageData));
+//
+//                ReadiumSDK.reader.openFirstPage();
+//
+//                $("#leftBtn").on("click", function () {
+//                    ReadiumSDK.reader.openLeft();
+//                });
+//
+//                $("#rightBtn").on("click", function () {
+//                    ReadiumSDK.reader.openRight();
+//                });
                 //
                 //////////////////////////////////
 

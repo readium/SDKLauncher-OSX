@@ -57,16 +57,6 @@
     return [_items count];
 }
 
--(NSString*) toJSON
-{
-    NSDictionary * dict = [self toDictionary];
-
-    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
-
-    NSString* jsonString = [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
-
-    return jsonString;
-}
 
 -(NSDictionary *) toDictionary
 {
@@ -79,8 +69,20 @@
     }
 
     [dict setObject:itemDicts forKey:@"items"];
+
+    return dict;
 }
 
+- (LOXSpineItem *)getSpineItemWithId:(NSString *)idref {
+
+    for(LOXSpineItem *item in _items) {
+        if([item.idref isEqualToString:idref]) {
+            return item;
+        }
+    }
+
+    return nil;
+}
 
 
 @end
