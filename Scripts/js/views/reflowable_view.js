@@ -184,7 +184,8 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         if(this.paginationInfo.currentPage < 0 || this.paginationInfo.currentPage >= this.paginationInfo.pageCount) {
 
-            this.trigger("PageChanged", 0, 0);
+
+            this.trigger("PageChanged", 0, 0, this.currentSpineItem ? this.currentSpineItem.idref : "");
             return;
         }
 
@@ -192,7 +193,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         this.$epubHtml.css("left", -this.paginationInfo.pageOffset + "px");
 
-        this.trigger("PageChanged", this.paginationInfo.currentPage, this.paginationInfo.pageCount);
+        this.trigger("PageChanged", this.paginationInfo.currentPage, this.paginationInfo.pageCount, this.currentSpineItem.idref);
 
     },
 

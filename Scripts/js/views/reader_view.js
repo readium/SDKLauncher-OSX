@@ -6,6 +6,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     package: undefined,
     spine: undefined,
 
+    appFeedback: undefined,
+
     setPackageData: function(packageData) {
 
         this.reset();
@@ -25,6 +27,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
             this.currentView = new ReadiumSDK.Views.ReflowableView({spine:this.spine});
         }
+
+        this.appFeedback = new ReadiumSDK.HostAppFeedback(this.currentView);
     },
 
 
