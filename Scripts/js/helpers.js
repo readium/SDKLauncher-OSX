@@ -72,7 +72,7 @@ ReadiumSDK.Helpers.LoadIframe = function(iframe, src, callback, context) {
 
     var isWaitingForFrameLoad = true;
 
-    iframe.load = function() {
+    iframe.onload = function() {
 
         isWaitingForFrameLoad = false;
         callback.call(context, true);
