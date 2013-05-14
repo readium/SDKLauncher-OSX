@@ -936,7 +936,7 @@
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="943940271"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1058}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -1134,6 +1134,14 @@
 						<reference key="destination" ref="332956679"/>
 					</object>
 					<int key="connectionID">1137</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">pageNumController</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="1058085330"/>
+					</object>
+					<int key="connectionID">1138</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2748,7 +2756,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1137</int>
+			<int key="maxID">1138</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2768,6 +2776,7 @@
 					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="bookmarksController">LOXBookmarksController</string>
+						<string key="pageNumController">LOXPageNumberTextController</string>
 						<string key="spineViewController">LOXSpineViewController</string>
 						<string key="tocViewController">LOXTocViewController</string>
 						<string key="webViewController">LOXWebViewController</string>
@@ -2777,6 +2786,10 @@
 						<object class="IBToOneOutletInfo" key="bookmarksController">
 							<string key="name">bookmarksController</string>
 							<string key="candidateClassName">LOXBookmarksController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="pageNumController">
+							<string key="name">pageNumController</string>
+							<string key="candidateClassName">LOXPageNumberTextController</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="spineViewController">
 							<string key="name">spineViewController</string>
@@ -2991,7 +3004,6 @@
 						<string key="_webView">WebView</string>
 						<string key="appDelegate">LOXAppDelegate</string>
 						<string key="nextPageButton">NSButton</string>
-						<string key="pageNumController">LOXPageNumberTextController</string>
 						<string key="prevPageButton">NSButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -3007,10 +3019,6 @@
 							<string key="name">nextPageButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="pageNumController">
-							<string key="name">pageNumController</string>
-							<string key="candidateClassName">LOXPageNumberTextController</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="prevPageButton">
 							<string key="name">prevPageButton</string>
 							<string key="candidateClassName">NSButton</string>
@@ -3022,11 +3030,70 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">NSDocument</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="printDocument:">id</string>
+						<string key="revertDocumentToSaved:">id</string>
+						<string key="runPageLayout:">id</string>
+						<string key="saveDocument:">id</string>
+						<string key="saveDocumentAs:">id</string>
+						<string key="saveDocumentTo:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="printDocument:">
+							<string key="name">printDocument:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="revertDocumentToSaved:">
+							<string key="name">revertDocumentToSaved:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="runPageLayout:">
+							<string key="name">runPageLayout:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="saveDocument:">
+							<string key="name">saveDocument:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="saveDocumentAs:">
+							<string key="name">saveDocumentAs:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="saveDocumentTo:">
+							<string key="name">saveDocumentTo:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/NSDocument.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">NSLayoutConstraint</string>
 					<string key="superclassName">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/NSLayoutConstraint.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">WebView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">reloadFromOrigin:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">reloadFromOrigin:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">reloadFromOrigin:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/WebView.h</string>
 					</object>
 				</object>
 			</array>

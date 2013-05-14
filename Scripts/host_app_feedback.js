@@ -16,21 +16,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-ReadiumSDK.HostAppFeedback = function(view) {
+ReadiumSDK.HostAppFeedback.ReportPageChanged = function (currentPagesInfo) {
 
-    view.on("PageChanged", function(pageIx, pageCount, idref){
-
-        if(window.LauncherUI) {
-            window.LauncherUI.onOpenPage(pageIx, pageCount, idref);
-        }
-
-    }),
-
-    view.on("PaginationReady", function() {
-        if(window.LauncherUI) {
-            window.LauncherUI.onPaginationScriptingReady();
-        }
-    });
+    if (window.LauncherUI) {
+        window.LauncherUI.onOpenPage(JSON.stringify(currentPagesInfo));
+    }
 
 
 };

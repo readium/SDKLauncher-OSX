@@ -31,7 +31,7 @@
 @class LOXBookmarkEditController;
 @class LOXTocViewController;
 @class LOXSpineItem;
-@class LOXCurrentPageData;
+@class LOXCurrentPagesInfo;
 
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate>
@@ -46,7 +46,7 @@
 @property (assign) IBOutlet LOXTocViewController *tocViewController;
 @property (assign) IBOutlet LOXPageNumberTextController *pageNumController;
 
-@property (nonatomic, readonly) LOXCurrentPageData *currentPageData;
+@property (nonatomic, readonly) LOXCurrentPagesInfo *currentPagesInfo;
 
 - (IBAction)openDocument:(id)sender;
 

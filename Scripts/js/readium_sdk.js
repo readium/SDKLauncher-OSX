@@ -22,6 +22,7 @@ ReadiumSDK = {
     Views : {},
     Collections: {},
     Routers: {},
-    Helpers: {}
+    Helpers: {},
+    HostAppFeedback: {}
 
 };

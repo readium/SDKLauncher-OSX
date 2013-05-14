@@ -1,8 +1,8 @@
 
-ReadiumSDK.Models.OpenPageData = function(spineItem) {
+ReadiumSDK.Models.PageOpenRequest = function(spineItem) {
 
     this.spineItem = spineItem;
-    this.pageIndex = undefined;
+    this.spineItemPageIndex = undefined;
     this.elementId = undefined;
     this.elementCfi = undefined;
 
@@ -14,7 +14,7 @@ ReadiumSDK.Models.OpenPageData = function(spineItem) {
 
     this.setPageIndex = function(pageIndex) {
         this.reset();
-        this.pageIndex = pageIndex;
+        this.spineItemPageIndex = pageIndex;
     };
 
     this.setElementId = function(elementId) {
@@ -27,4 +27,6 @@ ReadiumSDK.Models.OpenPageData = function(spineItem) {
         this.reset();
         this.elementCfi = elementCfi;
     };
+
+
 };

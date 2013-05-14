@@ -6,9 +6,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     package: undefined,
     spine: undefined,
 
-    appFeedback: undefined,
-
-    setPackageData: function(packageData) {
+    openBook: function(packageData, openPageRequestData) {
 
         this.reset();
 
@@ -28,7 +26,30 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             this.currentView = new ReadiumSDK.Views.ReflowableView({spine:this.spine});
         }
 
-        this.appFeedback = new ReadiumSDK.HostAppFeedback(this.currentView);
+        var self = this;
+        this.currentView.on("PageChanged", function(){
+
+            var paginationReportData = self.currentView.getPaginationInfo();
+            ReadiumSDK.HostAppFeedback.ReportPageChanged(paginationReportData);
+
+        });
+
+        if(openPageRequestData && openPageRequestData.idref) {
+
+            if(openPageRequestData.pageIndex) {
+                this.openSpineItemPage(openPageRequestData.idref, openPageRequestData.pageIndex);
+            }
+            else if(openPageRequestData.elementCfi) {
+                this.openSpineItemElementCfi(openPageRequestData.idref, openPageRequestData.elementCfi);
+            }
+            else {
+                this.openSpineItemPage(openPageRequestData.idref, 0);
+            }
+
+        }
+        else {
+            console.log("Invalid page request data: idref required!");
+        }
     },
 
 
@@ -44,6 +65,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         if(this.currentView) {
 
+            this.currentView.off("PageChanged");
             this.currentView.remove();
         }
     },
@@ -74,12 +96,38 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             return;
         }
 
-        var pageData = new ReadiumSDK.Models.OpenPageData(spineItem);
+        var pageData = new ReadiumSDK.Models.PageOpenRequest(spineItem);
         if(elementCfi) {
             pageData.setElementCfi(elementCfi);
         }
 
-        this.currentView.openPageData(pageData);
+        this.currentView.openPage(pageData);
+    },
+
+    openPage: function(pageIndex) {
+
+        if(!this.currentView) {
+            return;
+        }
+
+        var pageRequest;
+        if(this.package.isFixedLayout) {
+            var spineItem = this.package.spine.items[pageIndex];
+            if(!spineItem) {
+                return;
+            }
+
+            pageRequest = new ReadiumSDK.Models.PageOpenRequest(spineItem);
+            pageRequest.setPageIndex(0);
+        }
+        else {
+
+            pageRequest = new ReadiumSDK.Models.PageOpenRequest(undefined);
+            pageRequest.setPageIndex(pageIndex);
+
+        }
+
+        this.currentView.openPage(pageRequest);
     },
 
     openSpineItemPage: function(idref, pageIndex) {
@@ -90,12 +138,12 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             return;
         }
 
-        var pageData = new ReadiumSDK.Models.OpenPageData(spineItem);
+        var pageData = new ReadiumSDK.Models.PageOpenRequest(spineItem);
         if(pageIndex) {
             pageData.setPageIndex(pageIndex);
         }
 
-        this.currentView.OpenPageData(pageData);
+        this.currentView.openPage(pageData);
     },
 
     // if content ref is relative not ot he package but other file (ex. toc file) we need container ref
@@ -112,7 +160,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             hrefPart = combinedPath.splice(0, hashIndex);
             elementId = combinedPath.splice(hashIndex);
         }
-        else{
+        else {
             hrefPart = combinedPath;
             elementId = undefined;
         }
@@ -123,10 +171,10 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             return;
         }
 
-        var pageData = new ReadiumSDK.Models.OpenPageData(spineItem)
+        var pageData = new ReadiumSDK.Models.PageOpenRequest(spineItem)
         pageData.setElementId(elementId);
 
-        this.currentView.openPageData(pageData);
+        this.currentView.openPage(pageData);
     },
 
     resolveContentRef: function(contentRef, sourceFileHref) {
@@ -148,7 +196,6 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             parentNavCount++;
         }
 
-        var sourceParts = sourceFileHref.split("/");
 
         var sourcePartsCount = sourceParts.length;// chop filename
 
@@ -161,9 +208,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         var rightPart = pathComponents.splice(parentNavCount);
 
-        var result = leftPart ? leftPart + "/" + rightPart : rightPart;
-
-        return result
+        return leftPart ? leftPart + "/" + rightPart : rightPart
     }
 
 });

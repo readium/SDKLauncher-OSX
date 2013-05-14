@@ -143,6 +143,22 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
 
         return dfd.promise();
 
+    },
+
+    getPaginationInfo: function() {
+
+        var paginationInfo = new ReadiumSDK.Models.CurrentPagesInfo(this.spine.items.length, this.spine.package.isFixedLayout);
+
+        var spreadItems = [this.spread.leftItem, this.spread.rightItem, this.spread.centerItem];
+
+        for(var i = 0; i < spreadItems.length; i++) {
+
+            var spreadItem = spreadItems[i];
+
+            if(spreadItem) {
+                paginationInfo.addOpenPage(0, 1, spreadItem.idref, spreadItem.index);
+            }
+        }
     }
 
 });

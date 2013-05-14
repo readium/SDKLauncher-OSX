@@ -26,4 +26,5 @@
 + (NSString *)uuid;
 + (void)ensureDirectoryForFile:(NSString*)filePath;
 
++ (id)valueForKey:(NSString *)keyName orDefault:(id)defaultValue fromDictionary:(NSDictionary *)dict;
 @end

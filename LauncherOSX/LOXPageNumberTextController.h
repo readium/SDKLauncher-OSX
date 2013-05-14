@@ -20,7 +20,7 @@
 #import <Foundation/Foundation.h>
 
 @class LOXWebViewController;
-@class LOXCurrentPageData;
+@class LOXCurrentPagesInfo;
 
 @interface LOXPageNumberTextController : NSObject <NSTextFieldDelegate> {
 
@@ -30,10 +30,7 @@
 @property (assign) IBOutlet NSTextField *pageNumberCtrl;
 @property (assign) IBOutlet NSTextField *pageCountCtrl;
 
-@property (nonatomic, readonly) int pageIx;
-@property (nonatomic, readonly) int pageCount;
-
-@property (nonatomic, retain) LOXCurrentPageData *currentPageData;
+@property (nonatomic, retain) LOXCurrentPagesInfo *currentPagesInfo;
 
 
 @end

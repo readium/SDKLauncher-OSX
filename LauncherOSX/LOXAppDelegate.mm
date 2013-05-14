@@ -31,8 +31,9 @@
 #import "LOXTocViewController.h"
 #import "LOXSpine.h"
 #import "LOXPackage.h"
-#import "LOXCurrentPageData.h"
+#import "LOXCurrentPagesInfo.h"
 #import "LOXPageNumberTextController.h"
+#import "LOXOpenPageInfo.h"
 
 
 using namespace ePub3;
@@ -59,14 +60,14 @@ using namespace ePub3;
     LOXPackage *_package;
 }
 
-@synthesize currentPageData = _currentPageData;
+@synthesize currentPagesInfo = _currentPagesInfo;
 
 - (id)init
 {
     self = [super init];
     if (self) {
 
-        _currentPageData = [[LOXCurrentPageData alloc] init];
+        _currentPagesInfo = [[LOXCurrentPagesInfo alloc] init];
         _userData = [[LOXUserData alloc] init];
     }
 
@@ -78,7 +79,7 @@ using namespace ePub3;
     [_package release];
     [_epubApi release];
     [_userData release];
-    [_currentPageData release];
+    [_currentPagesInfo release];
     [super dealloc];
 }
 
@@ -87,8 +88,8 @@ using namespace ePub3;
 {
     _epubApi = [[LOXePubSdkApi alloc] init];
 
-    self.webViewController.currentPageData = _currentPageData;
-    self.pageNumController.currentPageData = _currentPageData;
+    self.webViewController.currentPagesInfo = _currentPagesInfo;
+    self.pageNumController.currentPagesInfo = _currentPagesInfo;
     self.spineViewController.selectionChangedLiscener = self.webViewController;
 
 }
@@ -214,7 +215,13 @@ using namespace ePub3;
 
 - (LOXBookmark *)createBookmark
 {
-    LOXSpineItem *spineItem = [_package.spine getSpineItemWithId:_currentPageData.idref];
+    LOXOpenPageInfo* openPageInfo = _currentPagesInfo.firstOpenPage;
+
+    if(!openPageInfo) {
+        return nil;
+    }
+
+    LOXSpineItem *spineItem = [_package.spine getSpineItemWithId:openPageInfo.idref];
 
     if(!spineItem) {
         return nil;

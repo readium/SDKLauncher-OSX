@@ -29,7 +29,7 @@
 @class LOXBookmarksController;
 @class LOXAppDelegate;
 @class LOXPackage;
-@class LOXCurrentPageData;
+@class LOXCurrentPagesInfo;
 
 
 @interface LOXWebViewController : NSObject<LOXSpineViewControllerDelegate> {
@@ -40,21 +40,23 @@
 
 - (void) clear;
 
+- (void)onOpenPage:(NSString *)currentPaginationInfo;
+
 @property (assign) IBOutlet NSButton *prevPageButton;
 @property (assign) IBOutlet NSButton *nextPageButton;
 
 @property (assign) IBOutlet LOXAppDelegate *appDelegate;
 
-@property (nonatomic, retain) LOXCurrentPageData *currentPageData;
+@property (nonatomic, retain) LOXCurrentPagesInfo *currentPagesInfo;
 
 - (IBAction)onPrevPageClick:(id)sender;
 - (IBAction)onNextPageClick:(id)sender;
 
-- (void)onOpenPage:(int)index1 ofPages:(int)count spineItem:(NSString *)idref;
-
 - (void)openSpineItem:(id)idref elementCfi:(NSString *)cfi;
 
 - (void)openSpineItem:(NSString *)idref pageIndex:(int)pageIx;
+
+- (void)openPage:(int)pageIndex;
 
 - (void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString *)sourceRef;
 

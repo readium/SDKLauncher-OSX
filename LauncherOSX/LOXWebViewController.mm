@@ -27,10 +27,12 @@
 #import "LOXPackage.h"
 #import "LOXSpine.h"
 #import "LOXSpineItem.h"
-#import "LOXCurrentPageData.h"
+#import "LOXCurrentPagesInfo.h"
 
 
 @interface LOXWebViewController ()
+
+-(void)onPageChanged:(NSNotification*) notification;
 
 - (NSString *)loadHtmlTemplate;
 
@@ -56,6 +58,11 @@
     NSString* html = [self loadHtmlTemplate];
     NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
     [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
+}
+
+-(void)onPageChanged:(NSNotification*) notification
+{
+    [self updateUI];
 }
 
 - (IBAction)onPrevPageClick:(id)sender
@@ -103,8 +110,12 @@
     _package = package;
     [_package retain];
 
-    NSString* packageJSON = [_package toJSON];
-    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setPackageData(%@)", packageJSON];
+
+    NSDictionary * dict = [_package toDictionary];
+    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
+    NSString* jsonString = [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+
+    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", jsonString];
     [_webView stringByEvaluatingJavaScriptFromString:callString];
 }
 
@@ -147,8 +158,7 @@
 //this allows JavaScript to call the -logJavaScriptString: method
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
 {
-    if(    sel == @selector(onOpenPage:ofPages:spineItem:)
-        || sel ==  @selector(onPaginationScriptingReady)) {
+    if( sel == @selector(onOpenPage:) ) {
 
         return NO;
     }
@@ -159,13 +169,9 @@
 //this returns a nice name for the method in the JavaScript environment
 +(NSString*)webScriptNameForSelector:(SEL)sel
 {
-    if(sel == @selector(onOpenPage:ofPages:spineItem:)) {
+    if(sel == @selector(onOpenPage:)) {
 
         return @"onOpenPage";
-    }
-    else if (sel == @selector(onPaginationScriptingReady)) {
-
-        return @"onPaginationScriptingReady";
     }
 
     return nil;
@@ -180,10 +186,21 @@
     [windowScriptObject setValue:self forKey:@"LauncherUI"];
 }
 
-- (void)onOpenPage:(int)index ofPages:(int)count spineItem:(NSString*)idref
+- (void)onOpenPage:(NSString*) currentPaginationInfo
 {
-    [self.currentPageData setCurrentPage:index pageCount:count spineIdRef:idref];
-    [self updateUI];
+
+        NSData* data = [currentPaginationInfo dataUsingEncoding:NSUTF8StringEncoding];
+
+        NSError *e = nil;
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
+
+        if (!dict) {
+            NSLog(@"Error parsing JSON: %@", e);
+        }
+        else {
+
+            [self.currentPagesInfo fromDictionary:dict];
+        }
 }
 
 
@@ -194,8 +211,8 @@
 
 - (void)updateUI
 {
-    [self.prevPageButton setEnabled:self.currentPageData.pageCount > 0 && self.currentPageData.pageIndex > 0];
-    [self.nextPageButton setEnabled:self.currentPageData.pageCount > 0 && self.currentPageData.pageIndex < self.currentPageData.pageCount - 1];
+    [self.prevPageButton setEnabled: [self.currentPagesInfo canGoPrev]];
+    [self.nextPageButton setEnabled: [self.currentPagesInfo canGoNext]];
 }
 
 
@@ -238,6 +255,12 @@
 {
     WebScriptObject* script = [_webView windowScriptObject];
     [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.openSpineItemPage(\"%@\", %d)", idref, pageIx]];
+}
+
+-(void)openPage:(int)pageIndex
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.openPage(%d)", pageIndex]];
 }
 
 -(void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef

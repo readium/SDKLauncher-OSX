@@ -45,4 +45,10 @@
     }
 }
 
++(id)valueForKey:(NSString *)keyName orDefault:(id)defaultValue fromDictionary:(NSDictionary*)dict
+{
+    id val = [dict objectForKey:keyName];
+    return val ? val : defaultValue;
+}
+
 @end

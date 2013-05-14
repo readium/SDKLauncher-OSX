@@ -18,12 +18,13 @@
 
 #import "LOXPageNumberTextController.h"
 #import "LOXWebViewController.h"
-#import "LOXCurrentPageData.h"
+#import "LOXCurrentPagesInfo.h"
+#import "LOXOpenPageInfo.h"
 
 
 @interface LOXPageNumberTextController ()
-- (void)onPageChanged __unused;
 
+- (void)onPageChanged:(NSNotification*) notification;
 - (void)updatePageNumberControls;
 
 @end
@@ -32,9 +33,6 @@
 
 
 }
-
-@synthesize pageIx = _pageIx;
-@synthesize pageCount = _pageCount;
 
 -(void)awakeFromNib
 {
@@ -50,25 +48,26 @@
     [super dealloc];
 }
 
--(void)onPageChanged __unused
+-(void)onPageChanged:(NSNotification*) notification
 {
     [self updatePageNumberControls];
 }
 
 - (void)updatePageNumberControls
 {
-        if (self.currentPageData.pageCount <= 0) {
+    LOXOpenPageInfo *openPage = [self.currentPagesInfo firstOpenPage];
+
+    if (openPage) {
+
+        [self.pageNumberCtrl setEditable:YES];
+        [self.pageNumberCtrl setStringValue:[NSString stringWithFormat:@"%@", [[self.currentPagesInfo getPageNumbers] componentsJoinedByString:@","]]];
+        [self.pageCountCtrl setStringValue:[NSString stringWithFormat:@"/ %d", [self.currentPagesInfo getPageCount]]];
+    }
+    else {
 
         [self.pageNumberCtrl setEditable:NO];
         [self.pageNumberCtrl setStringValue:@""];
         [self.pageCountCtrl setStringValue:@"/"];
-
-    }
-    else {
-
-        [self.pageNumberCtrl setEditable:YES];
-        [self.pageNumberCtrl setStringValue:[NSString stringWithFormat:@"%d", self.currentPageData.pageIndex + 1]];
-        [self.pageCountCtrl setStringValue:[NSString stringWithFormat:@"/ %d", self.currentPageData.pageCount]];
 
     }
 }
@@ -78,9 +77,9 @@
 {
     int page =  (int)[self.pageNumberCtrl integerValue];
 
-    if(page > 0 && page <= _pageCount) {
+    if(page > 0 && page <= [self.currentPagesInfo getPageCount]) {
 
-        [self.webViewController openSpineItem:self.currentPageData.idref pageIndex:page - 1];
+        [self.webViewController openPage: page - 1];
     }
     else {
         NSBeep();

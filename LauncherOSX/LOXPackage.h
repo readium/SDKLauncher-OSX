@@ -29,6 +29,8 @@
 
 - (NSString *)toJSON;
 
+- (NSDictionary *)toDictionary;
+
 @property(nonatomic, readonly) LOXSpine *spine;
 @property(nonatomic, readonly) NSString *title;
 @property(nonatomic, readonly) NSString *packageId;
