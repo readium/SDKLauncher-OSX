@@ -1193,7 +1193,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">onNextPageClick:</string>
+						<string key="label">onRightPageClick:</string>
 						<reference key="source" ref="901247368"/>
 						<reference key="destination" ref="838258766"/>
 					</object>
@@ -1201,7 +1201,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">onPrevPageClick:</string>
+						<string key="label">onLeftPageClick:</string>
 						<reference key="source" ref="901247368"/>
 						<reference key="destination" ref="288884514"/>
 					</object>

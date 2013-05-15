@@ -49,8 +49,8 @@
 
 @property (nonatomic, retain) LOXCurrentPagesInfo *currentPagesInfo;
 
-- (IBAction)onPrevPageClick:(id)sender;
-- (IBAction)onNextPageClick:(id)sender;
+- (IBAction)onLeftPageClick:(id)sender;
+- (IBAction)onRightPageClick:(id)sender;
 
 - (void)openSpineItem:(id)idref elementCfi:(NSString *)cfi;
 

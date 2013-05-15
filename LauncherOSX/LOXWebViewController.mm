@@ -65,17 +65,17 @@
     [self updateUI];
 }
 
-- (IBAction)onPrevPageClick:(id)sender
+- (IBAction)onLeftPageClick:(id)sender
 {
     WebScriptObject* script = [_webView windowScriptObject];
-    [script evaluateWebScript:@"ReadiumSDK.reader.movePrevPage()"];
+    [script evaluateWebScript:@"ReadiumSDK.reader.openPageLeft()"];
 }
 
 
-- (IBAction)onNextPageClick:(id)sender
+- (IBAction)onRightPageClick:(id)sender
 {
     WebScriptObject* script = [_webView windowScriptObject];
-    [script evaluateWebScript:@"ReadiumSDK.reader.moveNextPage()"];
+    [script evaluateWebScript:@"ReadiumSDK.reader.openPageRight()"];
 }
 
 -(NSString*) getCurrentPageCfi

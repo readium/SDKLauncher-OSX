@@ -52,13 +52,33 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         }
     },
 
+    openPageLeft: function() {
 
-    openNextPage: function() {
-        this.currentView.openNextPage();
+        if(this.package.spine.isLeftToRight()) {
+            this.openPagePrev();
+        }
+        else {
+            this.openPageNext();
+        }
     },
 
-    openPrevPage: function() {
-        this.currentView.openPrevPage();
+    openPageRight: function() {
+
+        if(this.package.spine.isLeftToRight()) {
+            this.openPageNext();
+        }
+        else {
+            this.openPagePrev();
+        }
+
+    },
+
+    openPageNext: function() {
+        this.currentView.openPageNext();
+    },
+
+    openPagePrev: function() {
+        this.currentView.openPagePrev();
     },
 
     reset: function() {

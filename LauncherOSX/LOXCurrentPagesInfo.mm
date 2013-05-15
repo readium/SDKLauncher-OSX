@@ -87,6 +87,10 @@ FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
 
 -(bool)canGoPrev
 {
+    if(_openPages.count == 0) {
+        return NO;
+    }
+
     LOXOpenPageInfo *firstOpenPage = [_openPages objectAtIndex:0];
     return firstOpenPage.spineItemIndex > 0 || firstOpenPage.spineItemPageIndex > 0;
 }

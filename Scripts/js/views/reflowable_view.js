@@ -36,10 +36,11 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         visibleColumnCount : 2,
         columnGap : 20,
-        pageCount : 0,
-        currentPage : 0,
+        spreadCount : 0,
+        currentSpread : 0,
         columnWidth : undefined,
-        pageOffset : 0
+        pageOffset : 0,
+        columnCount: 0
     },
 
     initialize: function() {
@@ -87,7 +88,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         if(this.currentSpineItem != spineItem) {
 
-            this.paginationInfo.currentPage = 0;
+            this.paginationInfo.currentSpread = 0;
             this.currentSpineItem = spineItem;
             this.isWaitingFrameRender = true;
 
@@ -174,25 +175,26 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             pageIndex = this.navigation.getPageForElementCfi(pageRequest.elementCfi);
         }
 
-        if(pageIndex && pageIndex >= 0 && pageIndex < this.paginationInfo.pageCount) {
+        if(pageIndex && pageIndex >= 0 && pageIndex < this.paginationInfo.spreadCount) {
 
-            this.paginationInfo.currentPage = pageIndex;
+            this.paginationInfo.currentSpread = pageIndex;
             this.onPaginationChanged();
         }
     },
 
     render: function(){
 
-        if(this.paginationInfo.currentPage < 0 || this.paginationInfo.currentPage >= this.paginationInfo.pageCount) {
-
+        if(this.paginationInfo.currentSpread < 0 || this.paginationInfo.currentSpread >= this.paginationInfo.spreadCount) {
 
             this.trigger("PageChanged", 0, 0, this.currentSpineItem ? this.currentSpineItem.idref : "");
-            return;
+            return this;
         }
 
-        this.paginationInfo.pageOffset = (this.paginationInfo.columnWidth + this.paginationInfo.columnGap) * this.paginationInfo.visibleColumnCount * this.paginationInfo.currentPage;
+        this.paginationInfo.pageOffset = (this.paginationInfo.columnWidth + this.paginationInfo.columnGap) * this.paginationInfo.visibleColumnCount * this.paginationInfo.currentSpread;
 
         this.$epubHtml.css("left", -this.paginationInfo.pageOffset + "px");
+
+        return this;
     },
 
     updateViewportSize: function() {
@@ -225,8 +227,8 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
                 console.log("Encountered a case statement with no required-namespace");
                 return false;
             }
-            // all the xmlns's that readium is known to support
-            // TODO this is going to require maintanence
+            // all the xmlns that readium is known to support
+            // TODO this is going to require maintenance
             var supportedNamespaces = ["http://www.w3.org/1998/Math/MathML"];
             return _.include(supportedNamespaces, ns);
         };
@@ -255,12 +257,10 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         })
     },
 
-    openPrevPage:  function () {
+    openPagePrev:  function () {
 
-        console.log("OnPrevPage()");
-
-        if(this.paginationInfo.currentPage > 0) {
-            this.paginationInfo.currentPage--;
+        if(this.paginationInfo.currentSpread > 0) {
+            this.paginationInfo.currentSpread--;
             this.onPaginationChanged();
         }
     },
@@ -268,15 +268,15 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     onPaginationChanged: function() {
 
         this.render();
-        this.trigger("PageChanged", this.paginationInfo.currentPage, this.paginationInfo.pageCount, this.currentSpineItem.idref);
+        this.trigger("PageChanged", this.paginationInfo.currentSpread, this.paginationInfo.spreadCount, this.currentSpineItem.idref);
     },
 
-    openNextPage: function () {
+    openPageNext: function () {
 
         console.log("OnNextPage()");
 
-        if(this.paginationInfo.currentPage < this.paginationInfo.pageCount - 1) {
-            this.paginationInfo.currentPage++;
+        if(this.paginationInfo.currentSpread < this.paginationInfo.spreadCount - 1) {
+            this.paginationInfo.currentSpread++;
             this.onPaginationChanged();
         }
     },
@@ -307,12 +307,12 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             //we do this to prevent css from doing column optimization smarts.
             self.$iframe.css("width", columnizedContentWidth);
 
-            var columnCount = Math.round((columnizedContentWidth + self.paginationInfo.columnGap) / (self.paginationInfo.columnWidth + self.paginationInfo.columnGap));
+            self.paginationInfo.columnCount = Math.round((columnizedContentWidth + self.paginationInfo.columnGap) / (self.paginationInfo.columnWidth + self.paginationInfo.columnGap));
 
-            self.paginationInfo.pageCount =  Math.ceil(columnCount / self.paginationInfo.visibleColumnCount);
+            self.paginationInfo.spreadCount =  Math.ceil(self.paginationInfo.columnCount / self.paginationInfo.visibleColumnCount);
 
-            if(self.paginationInfo.currentPage >= self.paginationInfo.pageCount) {
-                self.paginationInfo.currentPage = self.paginationInfo.pageCount - 1;
+            if(self.paginationInfo.currentSpread >= self.paginationInfo.spreadCount) {
+                self.paginationInfo.currentSpread = self.paginationInfo.spreadCount - 1;
             }
 
             self.onPaginationChanged();
@@ -345,8 +345,11 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             return paginationInfo;
         }
 
-        for(var i = 0; i < this.paginationInfo.visibleColumnCount; i++) {
-            paginationInfo.addOpenPage(this.paginationInfo.currentPage + i, this.paginationInfo.pageCount, this.currentSpineItem.idref, this.currentSpineItem.index);
+        var currentPage = this.paginationInfo.currentSpread * this.paginationInfo.visibleColumnCount;
+
+        for(var i = 0; i < this.paginationInfo.visibleColumnCount && (currentPage + i) < this.paginationInfo.columnCount; i++) {
+
+            paginationInfo.addOpenPage(currentPage + i, this.paginationInfo.columnCount, this.currentSpineItem.idref, this.currentSpineItem.index);
         }
 
         return paginationInfo;
