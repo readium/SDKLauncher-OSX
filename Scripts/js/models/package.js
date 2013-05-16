@@ -23,7 +23,7 @@ ReadiumSDK.Models.Package = Backbone.Model.extend({
 
     isFixedLayout: function() {
 
-        return this.layout == "pre-paginated";
+        return this.layout === "pre-paginated";
     }
 
 

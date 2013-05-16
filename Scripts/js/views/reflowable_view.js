@@ -21,7 +21,6 @@
 
 ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
-    el: 'body',
     currentSpineItem: undefined,
     isWaitingFrameRender: false,
     deferredPageRequest: undefined,
@@ -46,23 +45,26 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     initialize: function() {
 
         this.spine = this.options.spine;
+        this.navigation = new ReadiumSDK.Views.CfiNavigationLogic({paginationInfo: this.paginationInfo});
+    },
+
+    render: function(){
 
         this.template = _.template($("#template-reflowable-view").html());
-        var html = this.template({});
-        this.$el.append(html);
+        this.$el.html(this.template({}));
 
-        this.$viewport = $("#viewport");
-        this.$iframe = $("#epubContentIframe");
-
-        this.navigation = new ReadiumSDK.Views.CfiNavigationLogic({paginationInfo: this.paginationInfo});
+        this.$viewport = $("#viewport", this.$el);
+        this.$iframe = $("#epubContentIframe", this.$el);
 
         //event with namespace for clean unbinding
         $(window).on("resize.ReadiumSDK.reflowableView", _.bind(this.onViewportResize, this));
+
+        return this;
     },
 
     remove: function() {
 
-        $(window).off("resize.ReadiumSDK.readerView");
+        $(window).off("resize.ReadiumSDK.reflowableView");
 
         //base remove
         Backbone.View.prototype.remove.call(this);
@@ -174,27 +176,24 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         else if(pageRequest.elementCfi) {
             pageIndex = this.navigation.getPageForElementCfi(pageRequest.elementCfi);
         }
+        else if(pageRequest.firstPage) {
+            pageIndex = 0;
+        }
+        else if(pageRequest.lastPage) {
+            pageIndex = this.paginationInfo.columnCount - 1;
+        }
 
-        if(pageIndex && pageIndex >= 0 && pageIndex < this.paginationInfo.spreadCount) {
+        if(pageIndex && pageIndex >= 0 && pageIndex < this.paginationInfo.columnCount) {
 
-            this.paginationInfo.currentSpread = pageIndex;
+            this.paginationInfo.currentSpread = Math.floor(pageIndex / this.paginationInfo.visibleColumnCount) ;
             this.onPaginationChanged();
         }
     },
 
-    render: function(){
-
-        if(this.paginationInfo.currentSpread < 0 || this.paginationInfo.currentSpread >= this.paginationInfo.spreadCount) {
-
-            this.trigger("PageChanged", 0, 0, this.currentSpineItem ? this.currentSpineItem.idref : "");
-            return this;
-        }
+    redraw: function() {
 
         this.paginationInfo.pageOffset = (this.paginationInfo.columnWidth + this.paginationInfo.columnGap) * this.paginationInfo.visibleColumnCount * this.paginationInfo.currentSpread;
-
         this.$epubHtml.css("left", -this.paginationInfo.pageOffset + "px");
-
-        return this;
     },
 
     updateViewportSize: function() {
@@ -257,27 +256,61 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         })
     },
 
+    onPaginationChanged: function() {
+
+        this.redraw();
+
+        if(this.paginationInfo.currentSpread < 0 || this.paginationInfo.currentSpread >= this.paginationInfo.spreadCount) {
+
+            this.trigger("PageChanged", 0, 0, this.currentSpineItem ? this.currentSpineItem.idref : "");
+        }
+        else {
+
+            this.trigger("PageChanged", this.paginationInfo.currentSpread, this.paginationInfo.spreadCount, this.currentSpineItem.idref);
+        }
+    },
+
     openPagePrev:  function () {
+
+        if(!this.currentSpineItem) {
+            return;
+        }
 
         if(this.paginationInfo.currentSpread > 0) {
             this.paginationInfo.currentSpread--;
             this.onPaginationChanged();
         }
-    },
+        else {
 
-    onPaginationChanged: function() {
+            var prevSpineItem = this.spine.prevItem(this.currentSpineItem);
+            if(prevSpineItem) {
 
-        this.render();
-        this.trigger("PageChanged", this.paginationInfo.currentSpread, this.paginationInfo.spreadCount, this.currentSpineItem.idref);
+                var pageRequest = new ReadiumSDK.Models.PageOpenRequest(prevSpineItem);
+                pageRequest.setLastPage();
+                this.openPage(pageRequest);
+            }
+        }
     },
 
     openPageNext: function () {
 
-        console.log("OnNextPage()");
+        if(!this.currentSpineItem) {
+            return;
+        }
 
         if(this.paginationInfo.currentSpread < this.paginationInfo.spreadCount - 1) {
             this.paginationInfo.currentSpread++;
             this.onPaginationChanged();
+        }
+        else {
+
+            var nextSpineItem = this.spine.nextItem(this.currentSpineItem);
+            if(nextSpineItem) {
+
+                var pageRequest = new ReadiumSDK.Models.PageOpenRequest(nextSpineItem);
+                pageRequest.setFirstPage();
+                this.openPage(pageRequest);
+            }
         }
     },
 
@@ -296,7 +329,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.$epubHtml.css("-webkit-column-width", this.paginationInfo.columnWidth + "px");
 
         //we will render on timer but rendering before gives better visual experience
-        this.render();
+        this.redraw();
 
         var self = this;
         //TODO it takes time for layout engine to arrange columns we waite

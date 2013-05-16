@@ -242,7 +242,7 @@
 
 - (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem *)spineItem
 {
-    [self openSpineItem:spineItem.idref elementCfi:@""];
+    [self openSpineItem:spineItem.idref pageIndex:0];
 }
 
 - (void)openSpineItem:idref elementCfi:(NSString *)cfi

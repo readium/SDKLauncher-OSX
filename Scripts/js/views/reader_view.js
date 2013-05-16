@@ -2,16 +2,12 @@
 
 ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
+    el: 'body',
     currentView: undefined,
     package: undefined,
     spine: undefined,
 
-    openBook: function(packageData, openPageRequestData) {
-
-        this.reset();
-
-        this.package = new ReadiumSDK.Models.Package({packageData: packageData});
-        this.spine = this.package.spine;
+    render: function() {
 
         if(!this.package || ! this.spine) {
             return;
@@ -26,6 +22,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             this.currentView = new ReadiumSDK.Views.ReflowableView({spine:this.spine});
         }
 
+        this.$el.append(this.currentView.render().$el);
+
         var self = this;
         this.currentView.on("PageChanged", function(){
 
@@ -34,22 +32,47 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         });
 
-        if(openPageRequestData && openPageRequestData.idref) {
+    },
 
-            if(openPageRequestData.pageIndex) {
-                this.openSpineItemPage(openPageRequestData.idref, openPageRequestData.pageIndex);
-            }
-            else if(openPageRequestData.elementCfi) {
-                this.openSpineItemElementCfi(openPageRequestData.idref, openPageRequestData.elementCfi);
+    openBook: function(packageData, openPageRequestData) {
+
+        this.reset();
+
+        this.package = new ReadiumSDK.Models.Package({packageData: packageData});
+        this.spine = this.package.spine;
+
+        this.render();
+
+        if(openPageRequestData) {
+
+            if(openPageRequestData.idref) {
+
+                if(openPageRequestData.pageIndex) {
+                    this.openSpineItemPage(openPageRequestData.idref, openPageRequestData.pageIndex);
+                }
+                else if(openPageRequestData.elementCfi) {
+                    this.openSpineItemElementCfi(openPageRequestData.idref, openPageRequestData.elementCfi);
+                }
+                else {
+                    this.openSpineItemPage(openPageRequestData.idref, 0);
+                }
             }
             else {
-                this.openSpineItemPage(openPageRequestData.idref, 0);
+                console.log("Invalid page request data: idref required!");
+
+            }
+        }
+        else {// if we where not asked to open specific page we will open the first one
+
+            var spineItem = this.spine.first();
+            if(spineItem) {
+                var pageOpenRequest = new ReadiumSDK.Models.PageOpenRequest(spineItem);
+                pageOpenRequest.setFirstPage();
+                this.currentView.openPage(pageOpenRequest);
             }
 
         }
-        else {
-            console.log("Invalid page request data: idref required!");
-        }
+
     },
 
     openPageLeft: function() {
