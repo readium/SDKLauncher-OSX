@@ -257,13 +257,13 @@
     [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.openSpineItemPage(\"%@\", %d)", idref, pageIx]];
 }
 
--(void)openPage:(int)pageIndex
+- (void)openPage:(int)pageIndex
 {
     WebScriptObject* script = [_webView windowScriptObject];
     [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.openPage(%d)", pageIndex]];
 }
 
--(void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef
+- (void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef
 {
     WebScriptObject* script = [_webView windowScriptObject];
 
@@ -271,6 +271,8 @@
 
     [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.openContentUrl(\"%@\", \"%@\")", contentRef, sourceRefParam]];
 }
+
+
 
 
 @end

@@ -16,31 +16,26 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
+ReadiumSDK.Views.CfiNavigationLogic = function(paginationInfo, $viewport, $iframe){
 
-    el: '#epubContentIframe',
+    this.paginationInfo = paginationInfo;
+    this.$viewport = $viewport;
+    this.$iframe = $iframe;
 
-    initialize: function () {
+    this.getRootElement = function(){
 
-        this.$viewport = $("#viewport");
+        return this.$iframe[0].contentDocument.documentElement
 
-    },
-
-    getRootElement: function(){
-
-        return this.$el[0].contentDocument.documentElement
-
-    },
+    };
 
     //we look for text and images
-    findFirstVisibleElement: function () {
+    this.findFirstVisibleElement = function () {
 
         var $elements;
         var $firstVisibleTextNode = null;
         var percentOfElementHeight = 0;
 
-        var pagination = this.options.paginationInfo;
-        var columnsLeftOfViewport = Math.round(pagination.pageOffset / (pagination.columnWidth + pagination.columnGap));
+        var columnsLeftOfViewport = Math.round(this.paginationInfo.pageOffset / (this.paginationInfo.columnWidth + this.paginationInfo.columnGap));
 
         var visibleTop = columnsLeftOfViewport * this.$viewport.height();
 
@@ -90,9 +85,9 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
         });
 
         return {$element: $firstVisibleTextNode, percentY: percentOfElementHeight};
-    },
+    };
 
-    getFirstVisibleElementCfi: function() {
+    this.getFirstVisibleElementCfi = function() {
 
         var foundElement = this.findFirstVisibleElement();
 
@@ -108,11 +103,11 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
         }
 
         return cfi + "@0:" + foundElement.percentY;
-    },
+    };
 
-    getPageForElementCfi: function(cfi) {
+    this.getPageForElementCfi = function(cfi) {
 
-        var contentDoc = this.$el[0].contentDocument;
+        var contentDoc = this.$iframe[0].contentDocument;
         var cfiParts = this.splitCfi(cfi);
 
         var wrappedCfi = "epubcfi(" + cfiParts.cfi + ")";
@@ -124,22 +119,21 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
         }
 
         return this.getPageForElement($element, cfiParts.x, cfiParts.y);
-    },
+    };
 
-    getPageForElement: function($element, x, y) {
+    this.getPageForElement = function($element, x, y) {
 
-        var pagination = this.options.paginationInfo;
         var elementRect = ReadiumSDK.Helpers.Rect.fromElement($element);
         var posInElement = Math.ceil(elementRect.top + y * elementRect.height / 100);
 
         var column = Math.floor(posInElement / this.$viewport.height());
 
-        return Math.floor(column / pagination.visibleColumnCount);
-    },
+        return column;
+    };
 
-    getPageForElementId: function(id) {
+    this.getPageForElementId = function(id) {
 
-        var contentDoc = this.$el[0].contentDocument;
+        var contentDoc = this.$iframe[0].contentDocument;
 
         var $element = $("#" + id, contentDoc);
         if($element.length == 0) {
@@ -147,9 +141,9 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
         }
 
         return this.getPageForElement($element, 0, 0);
-    },
+    };
 
-    splitCfi: function(cfi) {
+    this.splitCfi = function(cfi) {
 
         var ret = {
             cfi: "",
@@ -179,6 +173,6 @@ ReadiumSDK.Views.CfiNavigationLogic = Backbone.View.extend({
         }
 
         return ret;
-    }
+    };
 
-});
+};

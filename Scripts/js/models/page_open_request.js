@@ -9,7 +9,7 @@ ReadiumSDK.Models.PageOpenRequest = function(spineItem) {
     this.lastPage = false;
 
     this.reset = function() {
-        this.pageIndex = undefined;
+        this.spineItemPageIndex = undefined;
         this.elementId = undefined;
         this.elementCfi = undefined;
         this.firstPage = false;

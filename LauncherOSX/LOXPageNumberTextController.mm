@@ -60,14 +60,14 @@
     if (openPage) {
 
         [self.pageNumberCtrl setEditable:YES];
-        [self.pageNumberCtrl setStringValue:[NSString stringWithFormat:@"%@", [[self.currentPagesInfo getPageNumbers] componentsJoinedByString:@","]]];
-        [self.pageCountCtrl setStringValue:[NSString stringWithFormat:@"/ %d", [self.currentPagesInfo getPageCount]]];
+        [self.pageNumberCtrl setStringValue:[NSString stringWithFormat:@"%@", [[self.currentPagesInfo getPageNumbers] componentsJoinedByString:@" | "]]];
+        [self.pageCountCtrl setStringValue:[NSString stringWithFormat:@" / %d", [self.currentPagesInfo getPageCount]]];
     }
     else {
 
         [self.pageNumberCtrl setEditable:NO];
         [self.pageNumberCtrl setStringValue:@""];
-        [self.pageCountCtrl setStringValue:@"/"];
+        [self.pageCountCtrl setStringValue:@""];
 
     }
 }

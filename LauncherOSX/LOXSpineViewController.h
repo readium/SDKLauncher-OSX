@@ -25,6 +25,7 @@
 @class LOXSpineItem;
 @class LOXSpine;
 @class LOXPackage;
+@class LOXCurrentPagesInfo;
 
 
 @protocol LOXSpineViewControllerDelegate
@@ -37,13 +38,13 @@
   }
 
 @property (assign, nonatomic) id<LOXSpineViewControllerDelegate> selectionChangedLiscener;
+@property (nonatomic, retain) LOXCurrentPagesInfo *currentPagesInfo;
+
+- (LOXSpineItem *)getSelectedItem;
 
 - (void)selectSpieItem:(LOXSpineItem *)spineItem;
 
 - (void)setPackage:(LOXPackage *)package;
 
-- (void)selectSpineIndex:(NSUInteger)index;
 
-
-- (void)selectFirstItem;
 @end

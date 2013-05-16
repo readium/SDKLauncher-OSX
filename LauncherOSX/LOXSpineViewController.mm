@@ -23,10 +23,15 @@
 #import "LOXSpineItem.h"
 #import "LOXSpine.h"
 #import "LOXPackage.h"
+#import "LOXCurrentPagesInfo.h"
+#import "LOXOpenPageInfo.h"
 
 
 @interface LOXSpineViewController ()
 
+- (void)onPageChanged:(id)onPageChanged;
+
+- (LOXSpineItem *)getOpenSpineItem;
 @end
 
 @implementation LOXSpineViewController {
@@ -35,6 +40,24 @@
 
 }
 
+- (void)awakeFromNib
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onPageChanged:)
+                                                 name:LOXPageChangedEvent
+                                               object:nil];
+}
+
+- (void)onPageChanged:(id)onPageChanged
+{
+    LOXSpineItem *openSpineItem = [self getOpenSpineItem];
+
+    if(!openSpineItem) {
+        return;
+    }
+
+    [self selectSpieItem:openSpineItem];
+}
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
@@ -51,12 +74,35 @@
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification
 {
-    NSTableView *tableView = notification.object;
-    NSInteger row = [tableView selectedRow];
+    LOXSpineItem * selectedItem = [self getSelectedItem];
 
+    if(!selectedItem) {
+        return;
+    }
+
+    LOXSpineItem *openSpineItem = [self getOpenSpineItem];
+
+    if(selectedItem != openSpineItem) {
+        [self.selectionChangedLiscener spineView:self selectionChangedTo:selectedItem];
+    }
+}
+
+- (LOXSpineItem *)getOpenSpineItem
+{
+    LOXOpenPageInfo *openPage = self.currentPagesInfo.firstOpenPage;
+
+    if(!openPage) {
+        return nil;
+    }
+
+    return [_package.spine getSpineItemWithId:openPage.idref];
+}
+
+- (LOXSpineItem *)getSelectedItem
+{
+    NSInteger row = [_tableView selectedRow];
     LOXSpineItem * selectedItem = row == -1 ? nil : [[_package.spine items] objectAtIndex:(NSUInteger) row];
-
-    [self.selectionChangedLiscener spineView:self selectionChangedTo:selectedItem];
+    return selectedItem;
 }
 
 - (void)selectSpieItem: (LOXSpineItem *) spineItem
@@ -79,11 +125,6 @@
     [_tableView reloadData];
 }
 
-- (void)selectSpineIndex:(NSUInteger)index
-{
-    [_tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
-}
-
 
 - (void)dealloc
 {
@@ -91,11 +132,4 @@
     [super dealloc];
 }
 
-- (void)selectFirstItem {
-
-    if (_package.spine.itemCount > 0) {
-        [self selectSpineIndex:0];
-    }
-
-}
 @end

@@ -143,7 +143,7 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
 
     getPaginationInfo: function() {
 
-        var paginationInfo = new ReadiumSDK.Models.CurrentPagesInfo(this.spine.items.length, this.spine.package.isFixedLayout);
+        var paginationInfo = new ReadiumSDK.Models.CurrentPagesInfo(this.spine.items.length, this.spine.package.isFixedLayout());
 
         var spreadItems = [this.spread.leftItem, this.spread.rightItem, this.spread.centerItem];
 

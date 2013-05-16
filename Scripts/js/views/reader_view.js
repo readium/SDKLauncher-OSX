@@ -34,6 +34,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     },
 
+    //API
     openBook: function(packageData, openPageRequestData) {
 
         this.reset();
@@ -75,6 +76,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     },
 
+    //API
     openPageLeft: function() {
 
         if(this.package.spine.isLeftToRight()) {
@@ -85,6 +87,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         }
     },
 
+    //API
     openPageRight: function() {
 
         if(this.package.spine.isLeftToRight()) {
@@ -96,10 +99,12 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     },
 
+    //API
     openPageNext: function() {
         this.currentView.openPageNext();
     },
 
+    //API
     openPagePrev: function() {
         this.currentView.openPagePrev();
     },
@@ -147,6 +152,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         this.currentView.openPage(pageData);
     },
 
+    //API
     openPage: function(pageIndex) {
 
         if(!this.currentView) {
@@ -154,7 +160,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         }
 
         var pageRequest;
-        if(this.package.isFixedLayout) {
+        if(this.package.isFixedLayout()) {
             var spineItem = this.package.spine.items[pageIndex];
             if(!spineItem) {
                 return;
@@ -173,6 +179,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         this.currentView.openPage(pageRequest);
     },
 
+    //API
     openSpineItemPage: function(idref, pageIndex) {
 
         var spineItem = this.getSpineItem(idref);
@@ -191,6 +198,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     // if content ref is relative not ot he package but other file (ex. toc file) we need container ref
     // to resolve contentref relative to the package
+    //API
     openContentUrl: function(contentRefUrl, sourceFileHref) {
 
         var combinedPath = this.resolveContentRef(contentRefUrl, sourceFileHref);
@@ -252,6 +260,13 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         var rightPart = pathComponents.splice(parentNavCount);
 
         return leftPart ? leftPart + "/" + rightPart : rightPart
+    },
+
+    //API
+    getFirstVisibleElementCfi: function() {
+
+        return this.currentView.getFirstVisibleElementCfi();
+
     }
 
 });

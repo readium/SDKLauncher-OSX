@@ -88,6 +88,7 @@ using namespace ePub3;
 {
     _epubApi = [[LOXePubSdkApi alloc] init];
 
+    self.spineViewController.currentPagesInfo = _currentPagesInfo;
     self.webViewController.currentPagesInfo = _currentPagesInfo;
     self.pageNumController.currentPagesInfo = _currentPagesInfo;
     self.spineViewController.selectionChangedLiscener = self.webViewController;
@@ -243,7 +244,7 @@ using namespace ePub3;
 
 - (void)openBookmark:(LOXBookmark *)bookmark
 {
-    [self.webViewController openSpineItem:bookmark.idref elementCfi:bookmark.spineItemCFI];
+    [self.webViewController openSpineItem:bookmark.idref elementCfi:bookmark.contentCFI];
 }
 
 -(void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef

@@ -45,7 +45,6 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     initialize: function() {
 
         this.spine = this.options.spine;
-        this.navigation = new ReadiumSDK.Views.CfiNavigationLogic({paginationInfo: this.paginationInfo});
     },
 
     render: function(){
@@ -165,16 +164,17 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             return;
         }
 
-        var pageIndex;
+        var pageIndex = undefined;
+        var navigation = new ReadiumSDK.Views.CfiNavigationLogic(this.paginationInfo, this.$viewport, this.$iframe);
 
-        if(pageRequest.pageIndex) {
-            pageIndex = pageRequest.pageIndex;
+        if(pageRequest.spineItemPageIndex !== undefined) {
+            pageIndex = pageRequest.spineItemPageIndex;
         }
         else if(pageRequest.elementId) {
-            pageIndex = this.navigation.getPageForElementId(pageRequest.elementId);
+            pageIndex = navigation.getPageForElementId(pageRequest.elementId);
         }
         else if(pageRequest.elementCfi) {
-            pageIndex = this.navigation.getPageForElementCfi(pageRequest.elementCfi);
+            pageIndex = navigation.getPageForElementCfi(pageRequest.elementCfi);
         }
         else if(pageRequest.firstPage) {
             pageIndex = 0;
@@ -183,7 +183,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             pageIndex = this.paginationInfo.columnCount - 1;
         }
 
-        if(pageIndex && pageIndex >= 0 && pageIndex < this.paginationInfo.columnCount) {
+        if(pageIndex !== undefined && pageIndex >= 0 && pageIndex < this.paginationInfo.columnCount) {
 
             this.paginationInfo.currentSpread = Math.floor(pageIndex / this.paginationInfo.visibleColumnCount) ;
             this.onPaginationChanged();
@@ -356,23 +356,13 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
     getFirstVisibleElementCfi: function(){
 
-        return this.navigation.getFirstVisibleElementCfi();
-    },
-
-    getPageForElementCfi: function(cfi) {
-
-        return this.navigation.getPageForElementCfi(cfi);
-
-    },
-
-    getPageForElementId: function(id) {
-
-        return this.navigation.getPageForElementId(id);
+        var navigation = new ReadiumSDK.Views.CfiNavigationLogic(this.paginationInfo, this.$viewport, this.$iframe);
+        return navigation.getFirstVisibleElementCfi();
     },
 
     getPaginationInfo: function() {
 
-        var paginationInfo = new ReadiumSDK.Models.CurrentPagesInfo(this.spine.items.length, this.spine.package.isFixedLayout);
+        var paginationInfo = new ReadiumSDK.Models.CurrentPagesInfo(this.spine.items.length, this.spine.package.isFixedLayout());
 
         if(!this.currentSpineItem) {
             return paginationInfo;
