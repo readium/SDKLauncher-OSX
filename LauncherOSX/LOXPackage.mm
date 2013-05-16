@@ -98,7 +98,7 @@
         toc.title = @"Table of content";
     }
 
-    toc.sourcerHref = [NSString stringWithUTF8String:navTable->SourceHref().c_str()];
+    toc.sourceHref = [NSString stringWithUTF8String:navTable->SourceHref().c_str()];
 
     [self addNavElementChildrenFrom:navTable toTocEntry:toc];
 

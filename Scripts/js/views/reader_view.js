@@ -48,8 +48,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
             if(openPageRequestData.idref) {
 
-                if(openPageRequestData.pageIndex) {
-                    this.openSpineItemPage(openPageRequestData.idref, openPageRequestData.pageIndex);
+                if(openPageRequestData.spineItemPageIndex) {
+                    this.openSpineItemPage(openPageRequestData.idref, openPageRequestData.spineItemPageIndex);
                 }
                 else if(openPageRequestData.elementCfi) {
                     this.openSpineItemElementCfi(openPageRequestData.idref, openPageRequestData.elementCfi);
@@ -201,15 +201,15 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     //API
     openContentUrl: function(contentRefUrl, sourceFileHref) {
 
-        var combinedPath = this.resolveContentRef(contentRefUrl, sourceFileHref);
+        var combinedPath = ReadiumSDK.Helpers.ResolveContentRef(contentRefUrl, sourceFileHref);
 
 
         var hashIndex = combinedPath.indexOf("#");
         var hrefPart;
         var elementId;
         if(hashIndex >= 0) {
-            hrefPart = combinedPath.splice(0, hashIndex);
-            elementId = combinedPath.splice(hashIndex);
+            hrefPart = combinedPath.substr(0, hashIndex);
+            elementId = combinedPath.substr(hashIndex + 1);
         }
         else {
             hrefPart = combinedPath;
@@ -223,44 +223,14 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         }
 
         var pageData = new ReadiumSDK.Models.PageOpenRequest(spineItem)
-        pageData.setElementId(elementId);
+        if(elementId){
+            pageData.setElementId(elementId);
+        }
 
         this.currentView.openPage(pageData);
     },
 
-    resolveContentRef: function(contentRef, sourceFileHref) {
 
-        if(!sourceFileHref) {
-            return contentRef;
-        }
-
-        var sourceParts = sourceFileHref.split("/");
-        var pathComponents = contentRef.split("/");
-
-        var parentNavCount = 0;
-        for(var part in pathComponents) {
-
-            if(!(part === "..") || parentNavCount >= sourceParts.length) {
-                break;
-            }
-
-            parentNavCount++;
-        }
-
-
-        var sourcePartsCount = sourceParts.length;// chop filename
-
-        sourcePartsCount = sourcePartsCount - parentNavCount;
-
-        var leftPart = "";
-        if(sourcePartsCount > 0) {
-            leftPart = sourceParts.slice(0, sourcePartsCount).join("/");
-        }
-
-        var rightPart = pathComponents.splice(parentNavCount);
-
-        return leftPart ? leftPart + "/" + rightPart : rightPart
-    },
 
     //API
     getFirstVisibleElementCfi: function() {

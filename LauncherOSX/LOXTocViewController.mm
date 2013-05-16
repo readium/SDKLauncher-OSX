@@ -155,7 +155,7 @@
         return;
     }
 
-    [_appDelegate openContentUrl:entry.contentRef fromSourceFileUrl:_package.toc.sourcerHref];
+    [_appDelegate openContentUrl:entry.contentRef fromSourceFileUrl:_package.toc.sourceHref];
 }
 
 
