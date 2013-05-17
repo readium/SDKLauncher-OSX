@@ -133,9 +133,6 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         this.applySwitches(epubContentDocument);
         this.registerTriggers(epubContentDocument);
-
-
-        this.openDeferredElement()
     },
 
     openDeferredElement: function() {
@@ -348,6 +345,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
                 self.paginationInfo.currentSpread = self.paginationInfo.spreadCount - 1;
             }
 
+            self.openDeferredElement();
             self.onPaginationChanged();
 
         }, 100);
