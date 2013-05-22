@@ -39,7 +39,7 @@
 @implementation LOXePubSdkApi {
     NSMutableArray *_packages;
 
-    ePub3::Container *_container;
+    ePub3::ContainerPtr _container;
 
     LOXPackage* _currentPackage;
 }
@@ -66,7 +66,7 @@
 {
     [self cleanup];
 
-     _container = new ePub3::Container([file UTF8String]);
+     _container = ePub3::Container::OpenContainer([file UTF8String]);
 
     [self readPackages];
 
@@ -101,11 +101,6 @@
     [_packages removeAllObjects];
     [_currentPackage release];
     _currentPackage = nil;
-
-    if (_container != NULL) {
-        delete _container;
-        _container = NULL;
-    }
 }
 
 

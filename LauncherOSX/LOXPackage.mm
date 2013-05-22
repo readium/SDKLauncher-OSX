@@ -1,5 +1,7 @@
-
+#import <ePub3/nav_element.h>
 #import <ePub3/nav_table.h>
+#import <ePub3/nav_point.h>
+#import <ePub3/archive.h>
 #import <ePub3/package.h>
 
 
@@ -15,13 +17,15 @@
 
 - (LOXToc *)getToc;
 
-- (void)saveContentOfReader:(ePub3::ArchiveReader const *)reader toPath:(NSString *)path;
+- (void)copyTitleFromNavElement:(ePub3::NavigationElementPtr)element toEntry:(LOXTocEntry *)entry;
+
+- (void)saveContentOfReader:(ePub3::unique_ptr<ePub3::ArchiveReader>&)reader toPath:(NSString *)path;
 
 @end
 
 @implementation LOXPackage {
 
-    const ePub3::Package *_sdkPackage;
+    ePub3::PackagePtr _sdkPackage;
     LOXTemporaryFileStorage *_storage;
 }
 
@@ -32,7 +36,7 @@
 @synthesize layout = _layout;
 @synthesize rootDirectory = _rootDirectory;
 
-- (id)initWithSdkPackage:(ePub3::Package const *)sdkPackage {
+- (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage {
 
     self = [super init];
     if(self) {
@@ -49,7 +53,7 @@
 
         _rootDirectory = _storage.rootDirectory;
 
-        const ePub3::SpineItem *spineItem = _sdkPackage->FirstSpineItem();
+        auto spineItem = _sdkPackage->FirstSpineItem();
         while (spineItem) {
 
             LOXSpineItem *loxSpineItem = [[[LOXSpineItem alloc] initWithStorageId:_storage.uuid forSdkSpineItem:spineItem] autorelease];
@@ -70,7 +74,7 @@
 }
 
 
-- (LOXTemporaryFileStorage *)createStorageForPackage:(const ePub3::Package*)package
+- (LOXTemporaryFileStorage *)createStorageForPackage:(ePub3::PackagePtr)package
 {
     NSString *packageBasePath = [NSString stringWithUTF8String:package->BasePath().c_str()];
     return [[[LOXTemporaryFileStorage alloc] initWithUUID:[LOXUtil uuid] forBasePath:packageBasePath] autorelease];
@@ -100,16 +104,17 @@
 
     toc.sourceHref = [NSString stringWithUTF8String:navTable->SourceHref().c_str()];
 
-    [self addNavElementChildrenFrom:navTable toTocEntry:toc];
+
+    [self addNavElementChildrenFrom:std::dynamic_pointer_cast<ePub3::NavigationElement>(navTable) toTocEntry:toc];
 
     return toc;
 }
 
-- (void)addNavElementChildrenFrom:(const ePub3::NavigationElement *)navElement toTocEntry:(LOXTocEntry *)parentEntry
+- (void)addNavElementChildrenFrom:(ePub3::NavigationElementPtr)navElement toTocEntry:(LOXTocEntry *)parentEntry
 {
     for (auto el = navElement->Children().begin(); el != navElement->Children().end(); el++) {
 
-        auto navPoint = dynamic_cast<ePub3::NavigationPoint*>(*el);
+        ePub3::NavigationPointPtr navPoint = std::dynamic_pointer_cast<ePub3::NavigationPoint>(*el);
 
         if(navPoint != nil) {
 
@@ -125,7 +130,7 @@
     }
 }
 
--(void)copyTitleFromNavElement:(ePub3::NavigationElement*)element toEntry:(LOXTocEntry *)entry
+-(void)copyTitleFromNavElement:(ePub3::NavigationElementPtr)element toEntry:(LOXTocEntry *)entry
 {
     NSString *title = [NSString stringWithUTF8String: element->Title().c_str()];
     entry.title = [title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -157,7 +162,7 @@
     [self saveContentOfReader:reader toPath: path];
 }
 
-- (void)saveContentOfReader:(const ePub3::ArchiveReader *)reader toPath:(NSString *)path
+- (void)saveContentOfReader:(ePub3::unique_ptr<ePub3::ArchiveReader>&)reader toPath:(NSString *)path
 {
     char buffer[1024];
 

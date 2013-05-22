@@ -7,6 +7,7 @@
 
 
 #import <Foundation/Foundation.h>
+#import <ePub3/package.h>
 
 @class LOXSpine;
 @class LOXSpineItem;
@@ -16,7 +17,7 @@
 
 @interface LOXPackage : NSObject
 
--(id)initWithSdkPackage:(const ePub3::Package*) sdkPackage;
+-(id)initWithSdkPackage:(ePub3::PackagePtr) sdkPackage;
 
 - (NSString *)getPathToSpineItem:(LOXSpineItem *)spineItem;
 

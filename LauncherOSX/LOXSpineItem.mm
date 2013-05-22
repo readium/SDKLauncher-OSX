@@ -27,12 +27,12 @@
 @synthesize href = _href;
 @synthesize spread = _spread;
 
-- (const ePub3::SpineItem *)sdkSpineItem
+- (ePub3::SpineItemPtr)sdkSpineItem
 {
     return _sdkSpineItem;
 }
 
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(const ePub3::SpineItem *)sdkSpineItem
+- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem
 {
     self = [super init];
     if(self) {
@@ -46,10 +46,10 @@
         _idref = [[NSString stringWithUTF8String:str] retain];
         _sdkSpineItem = sdkSpineItem;
 
-        if(sdkSpineItem->Spread() == ePub3::SpineItem::PageSpread::Left) {
+        if(sdkSpineItem->Spread() == ePub3::PageSpread::Left) {
             _spread = @"left";
         }
-        else if(sdkSpineItem->Spread() == ePub3::SpineItem::PageSpread::Right) {
+        else if(sdkSpineItem->Spread() == ePub3::PageSpread::Right) {
             _spread = @"right";
         }
         else{

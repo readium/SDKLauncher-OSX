@@ -28,7 +28,7 @@ namespace ePub3 {
 @interface LOXSpineItem : NSObject {
 
 @private
-    const ePub3::SpineItem * _sdkSpineItem;
+    ePub3::SpineItemPtr _sdkSpineItem;
     NSString* _idref;
 
     NSString* _packageStorrageId;
@@ -39,9 +39,9 @@ namespace ePub3 {
 @property(nonatomic, readonly) NSString *href;
 @property(nonatomic, readonly) NSString *spread;
 
-- (const ePub3::SpineItem *) sdkSpineItem;
+- (ePub3::SpineItemPtr) sdkSpineItem;
 
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItem const *)sdkSpineItem;
+- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem;
 
 -(NSDictionary *)toDictionary;
 
