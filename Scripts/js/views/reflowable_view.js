@@ -45,14 +45,14 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     initialize: function() {
 
         this.spine = this.options.spine;
+        this.template = _.template($("#template-reflowable-view").html());
     },
 
     render: function(){
 
-        this.template = _.template($("#template-reflowable-view").html());
         this.$el.html(this.template({}));
 
-        this.$viewport = $("#viewport", this.$el);
+        this.$viewport = $("#viewport_reflowable", this.$el);
         this.$iframe = $("#epubContentIframe", this.$el);
 
         //event with namespace for clean unbinding
@@ -162,7 +162,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         }
 
         var pageIndex = undefined;
-        var navigation = new ReadiumSDK.Views.CfiNavigationLogic(this.paginationInfo, this.$viewport, this.$iframe);
+        var navigation = new ReadiumSDK.Views.CfiNavigationLogic(this.$viewport, this.$iframe);
 
         if(pageRequest.spineItemPageIndex !== undefined) {
             pageIndex = pageRequest.spineItemPageIndex;
@@ -256,15 +256,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     onPaginationChanged: function() {
 
         this.redraw();
-
-        if(this.paginationInfo.currentSpread < 0 || this.paginationInfo.currentSpread >= this.paginationInfo.spreadCount) {
-
-            this.trigger("PageChanged", 0, 0, this.currentSpineItem ? this.currentSpineItem.idref : "");
-        }
-        else {
-
-            this.trigger("PageChanged", this.paginationInfo.currentSpread, this.paginationInfo.spreadCount, this.currentSpineItem.idref);
-        }
+        this.trigger("PaginationChanged");
     },
 
     openPagePrev:  function () {
@@ -354,8 +346,11 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
     getFirstVisibleElementCfi: function(){
 
-        var navigation = new ReadiumSDK.Views.CfiNavigationLogic(this.paginationInfo, this.$viewport, this.$iframe);
-        return navigation.getFirstVisibleElementCfi();
+        var columnsLeftOfViewport = Math.round(this.paginationInfo.pageOffset / (this.paginationInfo.columnWidth + this.paginationInfo.columnGap));
+        var topOffset = columnsLeftOfViewport * this.$viewport.height();
+
+        var navigation = new ReadiumSDK.Views.CfiNavigationLogic(this.$viewport, this.$iframe);
+        return navigation.getFirstVisibleElementCfi(topOffset);
     },
 
     getPaginationInfo: function() {

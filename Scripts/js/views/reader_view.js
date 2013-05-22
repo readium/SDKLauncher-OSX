@@ -25,7 +25,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         this.$el.append(this.currentView.render().$el);
 
         var self = this;
-        this.currentView.on("PageChanged", function(){
+        this.currentView.on("PaginationChanged", function(){
 
             var paginationReportData = self.currentView.getPaginationInfo();
             ReadiumSDK.HostAppFeedback.ReportPageChanged(paginationReportData);
@@ -113,7 +113,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         if(this.currentView) {
 
-            this.currentView.off("PageChanged");
+            this.currentView.off("PaginationChanged");
             this.currentView.remove();
         }
     },

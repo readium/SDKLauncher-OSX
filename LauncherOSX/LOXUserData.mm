@@ -55,17 +55,24 @@
 
 - (void)save
 {
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    @try
+    {
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
-    NSMutableArray *books = [NSMutableArray array];
+        NSMutableArray *books = [NSMutableArray array];
 
-    for (LOXBook *book in self.books) {
-        [books addObject:[book toDictionary]];
+        for (LOXBook *book in self.books) {
+            [books addObject:[book toDictionary]];
+        }
+
+        [ud setObject:books forKey:@"books"];
+
+        [ud synchronize];
     }
-
-    [ud setObject:books forKey:@"books"];
-
-    [ud synchronize];
+    @catch(NSException *ex)
+    {
+        NSLog(@"Error: %@", ex);
+    }
 }
 
 

@@ -43,7 +43,7 @@
         _packageId =[NSString stringWithUTF8String:_sdkPackage->PackageID().c_str()];
         _title = [NSString stringWithUTF8String:_sdkPackage->Title().c_str()];
 //        _layout = [NSString stringWithUTF8String:_sdkPackage->Layout().c_str()];
-        _layout = @"reflowable"; //this is temporary  - sdkPackage will expose property sun
+        _layout = @"pre-paginated"; //this is temporary  - sdkPackage will expose property sun ZZZZ
 
         _storage = [[self createStorageForPackage:_sdkPackage] retain];
 
@@ -235,6 +235,7 @@
     NSMutableDictionary * dict = [NSMutableDictionary dictionary];
 
     [dict setObject:_rootDirectory forKey:@"rootUrl"];
+    [dict setObject:_layout forKey:@"layout"];
     [dict setObject:[_spine toDictionary] forKey:@"spine"];
 
     return dict;

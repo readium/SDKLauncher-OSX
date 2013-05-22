@@ -16,9 +16,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-ReadiumSDK.Views.CfiNavigationLogic = function(paginationInfo, $viewport, $iframe){
+ReadiumSDK.Views.CfiNavigationLogic = function($viewport, $iframe){
 
-    this.paginationInfo = paginationInfo;
     this.$viewport = $viewport;
     this.$iframe = $iframe;
 
@@ -29,15 +28,11 @@ ReadiumSDK.Views.CfiNavigationLogic = function(paginationInfo, $viewport, $ifram
     };
 
     //we look for text and images
-    this.findFirstVisibleElement = function () {
+    this.findFirstVisibleElement = function (topOffset) {
 
         var $elements;
         var $firstVisibleTextNode = null;
         var percentOfElementHeight = 0;
-
-        var columnsLeftOfViewport = Math.round(this.paginationInfo.pageOffset / (this.paginationInfo.columnWidth + this.paginationInfo.columnGap));
-
-        var visibleTop = columnsLeftOfViewport * this.$viewport.height();
 
         $elements = $("body", this.getRootElement()).find(":not(iframe)").contents().filter(function () {
             return this.nodeType === Node.TEXT_NODE || this.nodeName.toLowerCase() === 'img';
@@ -66,15 +61,15 @@ ReadiumSDK.Views.CfiNavigationLogic = function(paginationInfo, $viewport, $ifram
 
             var elementRect = ReadiumSDK.Helpers.Rect.fromElement($element);
 
-            if (elementRect.bottom() > visibleTop) {
+            if (elementRect.bottom() > topOffset) {
 
                 $firstVisibleTextNode = $element;
 
-                if(elementRect.top > visibleTop) {
+                if(elementRect.top > topOffset) {
                     percentOfElementHeight = 0;
                 }
                 else {
-                    percentOfElementHeight = Math.ceil(((visibleTop - elementRect.top) / elementRect.height) * 100);
+                    percentOfElementHeight = Math.ceil(((topOffset - elementRect.top) / elementRect.height) * 100);
                 }
 
                 // Break the loop
@@ -87,9 +82,9 @@ ReadiumSDK.Views.CfiNavigationLogic = function(paginationInfo, $viewport, $ifram
         return {$element: $firstVisibleTextNode, percentY: percentOfElementHeight};
     };
 
-    this.getFirstVisibleElementCfi = function() {
+    this.getFirstVisibleElementCfi = function(topOffset) {
 
-        var foundElement = this.findFirstVisibleElement();
+        var foundElement = this.findFirstVisibleElement(topOffset);
 
         if(!foundElement.$element) {
             console.log("Could not generate CFI no visible element on page");

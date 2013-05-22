@@ -22,27 +22,25 @@
 
         <!--reflowable view-->
         <script type="text/html" id="template-reflowable-view">
-            <div id="viewport" class="clearfix">
+            <div id="viewport_reflowable" class="clearfix">
                 <iframe scrolling="no" id="epubContentIframe"></iframe>
             </div>
         </script>
 
         <!-- Fixed Layout View -->
         <script type="text/html" id="template-fixed-view">
-            <div id="readium-book-view-el">
-                <div id="page-wrap" class="clearfix">
-                    <div id="fixed_left" class="fixed-page-wrap left_page">
-                        <iframe id="fixed_left_iframe"></iframe>
-                    </div>
-                    <div id="fixed_right" class="fixed-page-wrap right_page">
-                        <iframe id="fixed_right_iframe"></iframe>
-                    </div>
-                    <div id="fixed_center" class="fixed-page-wrap center_page">
-                        <iframe id="fixed_center_iframe"></iframe>
-                    </div>
+            <div id="viewport_fixed">
+                <div id="spread-wrap" class="clearfix">
                 </div>
             </div>
         </script>
+
+        <script type="text/html" id="template-ope-fixed-page-view">
+            <div class="fixed-page-wrap">
+                <iframe></iframe>
+            </div>
+        </script>
+
 
         <script type="text/javascript">
 
@@ -57,6 +55,7 @@
 //                var packageData = {
 //
 //                    layout: "pre-paginated",
+//                    rootUrl: "",
 //
 //                     spine : {
 //
@@ -76,9 +75,7 @@
 //
 //                };
 //
-//                ReadiumSDK.reader.setPackageData(JSON.stringify(packageData));
-//
-//                ReadiumSDK.reader.openFirstPage();
+//                ReadiumSDK.reader.openBook(packageData);
 //
 //                $("#leftBtn").on("click", function () {
 //                    ReadiumSDK.reader.openLeft();
