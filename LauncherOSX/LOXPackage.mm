@@ -43,7 +43,7 @@
         _packageId =[NSString stringWithUTF8String:_sdkPackage->PackageID().c_str()];
         _title = [NSString stringWithUTF8String:_sdkPackage->Title().c_str()];
 //        _layout = [NSString stringWithUTF8String:_sdkPackage->Layout().c_str()];
-        _layout = @"pre-paginated"; //this is temporary  - sdkPackage will expose property sun ZZZZ
+        _layout = @"reflowable"; //@"pre-paginated"; //this is temporary  - sdkPackage will expose property sun ZZZZ
 
         _storage = [[self createStorageForPackage:_sdkPackage] retain];
 

@@ -30,6 +30,7 @@
 @class LOXAppDelegate;
 @class LOXPackage;
 @class LOXCurrentPagesInfo;
+@class LOXBookmark;
 
 
 @interface LOXWebViewController : NSObject<LOXSpineViewControllerDelegate> {
@@ -59,6 +60,8 @@
 - (void)openPage:(int)pageIndex;
 
 - (void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString *)sourceRef;
+
+- (LOXBookmark *)createBookmark;
 
 - (NSString *)getCurrentPageCfi;
 

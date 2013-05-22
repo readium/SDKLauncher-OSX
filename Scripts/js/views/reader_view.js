@@ -231,12 +231,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     },
 
 
-
-    //API
-    getFirstVisibleElementCfi: function() {
-
-        return this.currentView.getFirstVisibleElementCfi();
-
+    bookmarkCurrentPage: function() {
+        return JSON.stringify(this.currentView.bookmarkCurrentPage());
     }
 
 });

@@ -370,6 +370,16 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         return paginationInfo;
 
+    },
+
+    bookmarkCurrentPage: function() {
+
+        if(!this.currentSpineItem) {
+
+            return new ReadiumSDK.Models.BookmarkData("", "");
+        }
+
+        return new ReadiumSDK.Models.BookmarkData(this.currentSpineItem.idref, this.getFirstVisibleElementCfi());
     }
 
 });

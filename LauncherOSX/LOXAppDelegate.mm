@@ -216,27 +216,21 @@ using namespace ePub3;
 
 - (LOXBookmark *)createBookmark
 {
-    LOXOpenPageInfo* openPageInfo = _currentPagesInfo.firstOpenPage;
+    NSInteger n = _currentBook.bookmarks.count + 1;
 
-    if(!openPageInfo) {
+    LOXBookmark *bookmark = [self.webViewController createBookmark];
+    if(!bookmark) {
         return nil;
     }
 
-    LOXSpineItem *spineItem = [_package.spine getSpineItemWithId:openPageInfo.idref];
-
+    LOXSpineItem *spineItem = [_package.spine getSpineItemWithId:bookmark.idref];
     if(!spineItem) {
         return nil;
     }
 
-    NSInteger n = _currentBook.bookmarks.count + 1;
-
-    LOXBookmark *bookmark = [[[LOXBookmark alloc] init] autorelease];
-
     bookmark.title = [NSString stringWithFormat:@"Bookmark #%li", n];
-    bookmark.idref = spineItem.idref;
     bookmark.basePath = spineItem.href;
     bookmark.spineItemCFI = [_package getCfiForSpineItem: spineItem];
-    bookmark.contentCFI = [self.webViewController getCurrentPageCfi];
 
     return bookmark;
 }

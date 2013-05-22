@@ -28,6 +28,7 @@
 #import "LOXSpine.h"
 #import "LOXSpineItem.h"
 #import "LOXCurrentPagesInfo.h"
+#import "LOXBookmark.h"
 
 
 @interface LOXWebViewController ()
@@ -272,7 +273,30 @@
     [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.openContentUrl(\"%@\", \"%@\")", contentRef, sourceRefParam]];
 }
 
+-(LOXBookmark*) createBookmark
+{
 
+    WebScriptObject* script = [_webView windowScriptObject];
+    NSString *callString = @"ReadiumSDK.reader.bookmarkCurrentPage()";
+    NSString * bookmarkData = [script evaluateWebScript:callString];
+
+    NSData* data = [bookmarkData dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSError *e = nil;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
+
+    if (!dict) {
+        NSLog(@"Error parsing JSON: %@", e);
+        return nil;
+    }
+
+    LOXBookmark *bookmark = [[[LOXBookmark alloc] init] autorelease];
+
+    bookmark.idref = dict[@"idref"];
+    bookmark.contentCFI = dict[@"contentCFI"];
+
+    return bookmark;
+}
 
 
 @end

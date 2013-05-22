@@ -155,29 +155,33 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
         return paginationInfo;
     },
 
-    getFirstVisibleElementCfi: function(){
+    bookmarkCurrentPage: function() {
 
         var viewsToCheck = [];
 
-        if(this.centerPageView.isDisplaying()) {
+        if( this.spine.isLeftToRight() ) {
             viewsToCheck = [this.leftPageView, this.centerPageView, this.rightPageView];
         }
         else {
             viewsToCheck = [this.rightPageView, this.centerPageView, this.leftPageView];
         }
 
-        var cfi;
-
         for(var i = 0; i < viewsToCheck.length; i++) {
             if(viewsToCheck[i].isDisplaying()) {
-                cfi = viewsToCheck[i].getFirstVisibleElementCfi();
-                if(cfi) {
-                    return cfi;
+
+                var idref = viewsToCheck[i].currentSpineItem.idref;
+                var cfi = viewsToCheck[i].getFirstVisibleElementCfi();
+
+                if(cfi == undefined) {
+                    cfi = "";
                 }
+
+                return new ReadiumSDK.Models.BookmarkData(idref, cfi);
+
             }
         }
 
-        return "";
+        return new ReadiumSDK.Models.BookmarkData("", "");
     }
 
 
