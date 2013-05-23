@@ -17,17 +17,13 @@ ReadiumSDK.Models.Spine = Backbone.Model.extend({
 
             this.direction = spineData.direction;
             if(!this.direction) {
-                this.direction = "left-to-right";
+                this.direction = "ltr";
             }
 
-            this.layout = spineData.layout;
-
-            this.items = spineData.items;
-
-            var length = this.items.length;
+            var length = spineData.items.length;
             for(var i = 0; i < length; i++) {
-                var item = this.items[i];
-                item.index = i;
+                var item = new ReadiumSDK.Models.SpineItem(spineData.items[i], i);
+                this.items.push(item);
             }
         }
 
@@ -75,7 +71,7 @@ ReadiumSDK.Models.Spine = Backbone.Model.extend({
 
     isRightToLeft: function() {
 
-        return this.direction == "right-to-left";
+        return this.direction == "rtl";
     },
 
     isLeftToRight: function() {

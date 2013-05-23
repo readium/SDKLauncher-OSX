@@ -26,12 +26,14 @@
 
 }
 
+@synthesize direction = _direction;
 @synthesize items = _items;
 
-- (id)init
+- (id)initWithDirection:(NSString*)direction
 {
     if ((self = [super init])) {
         _items = [[NSMutableArray alloc] init];
+        _direction = direction;
     }
 
     return self;
@@ -68,6 +70,7 @@
         [itemDicts addObject:[item toDictionary]];
     }
 
+    [dict setObject:_direction forKey:@"direction"];
     [dict setObject:itemDicts forKey:@"items"];
 
     return dict;

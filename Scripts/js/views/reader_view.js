@@ -34,7 +34,14 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     },
 
-    //API
+    /**
+     * Triggers the process of opening the book and requesting resources specified in the packageData
+     *
+     * @param {ReadiumSDK.Models.PackageData} packageData DTO Object hierarchy of Package, Spine, SpineItems passed by
+     * host application to the reader
+     * @param {ReadiumSDK.Models.PageOpenRequest|undefined} openPageRequestData Optional parameter specifying
+     * on what page book should be open when it is loaded. If nothing is specified book will be opened on the first page
+     */
     openBook: function(packageData, openPageRequestData) {
 
         this.reset();
@@ -76,7 +83,9 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     },
 
-    //API
+    /**
+     *Flips the page from left to right
+     */
     openPageLeft: function() {
 
         if(this.package.spine.isLeftToRight()) {
@@ -87,7 +96,9 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         }
     },
 
-    //API
+    /**
+     * Flips the page from right to left
+     */
     openPageRight: function() {
 
         if(this.package.spine.isLeftToRight()) {
@@ -99,12 +110,16 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     },
 
-    //API
+    /**
+     * Opens the next page. Takes to account the page progression direction to decide to flip page left or right
+     */
     openPageNext: function() {
         this.currentView.openPageNext();
     },
 
-    //API
+    /**
+     * Opens the previews page. Takes to account the page progression direction to decide to flip page left or right
+     */
     openPagePrev: function() {
         this.currentView.openPagePrev();
     },
@@ -136,6 +151,12 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     },
 
+    /**
+     * Opens the page of the spine item with element with provided cfi
+     *
+     * @param {string} idref Id of the spine item
+     * @param {string} elementCfi CFI of the element to be shown
+     */
     openSpineItemElementCfi: function(idref, elementCfi) {
 
         var spineItem = this.getSpineItem(idref);
@@ -152,7 +173,12 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         this.currentView.openPage(pageData);
     },
 
-    //API
+    /**
+     *
+     * Opens specified page index of the current spine item
+     *
+     * @param {number} pageIndex Zero based index of the page in the current spine item
+     */
     openPage: function(pageIndex) {
 
         if(!this.currentView) {
@@ -179,7 +205,13 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         this.currentView.openPage(pageRequest);
     },
 
-    //API
+    /**
+     *
+     * Opens page index of the spine item with idref provided
+     *
+     * @param {string} idref Id of the spine item
+     * @param {number} pageIndex Zero based index of the page in the spine item
+     */
     openSpineItemPage: function(idref, pageIndex) {
 
         var spineItem = this.getSpineItem(idref);
@@ -196,9 +228,15 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         this.currentView.openPage(pageData);
     },
 
-    // if content ref is relative not ot he package but other file (ex. toc file) we need container ref
-    // to resolve contentref relative to the package
-    //API
+    /**
+     * Opens the content document specified by the url
+     *
+     * @param {string} contentRefUrl Url of the content document
+     * @param {string | undefined} sourceFileHref Url to the file that contentRefUrl is relative to. If contentRefUrl is
+     * relative ot the source file that contains it instead of the package file (ex. TOC file) We have to know the
+     * sourceFileHref to resolve contentUrl relative to the package file.
+     *
+     */
     openContentUrl: function(contentRefUrl, sourceFileHref) {
 
         var combinedPath = ReadiumSDK.Helpers.ResolveContentRef(contentRefUrl, sourceFileHref);
@@ -230,7 +268,12 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         this.currentView.openPage(pageData);
     },
 
-
+    /**
+     *
+     * Returns the bookmark associated with currently opened page.
+     *
+     * @returns {string} Stringified ReadiumSDK.Models.BookmarkData object.
+     */
     bookmarkCurrentPage: function() {
         return JSON.stringify(this.currentView.bookmarkCurrentPage());
     }

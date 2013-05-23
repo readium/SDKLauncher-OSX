@@ -37,7 +37,8 @@ namespace ePub3 {
 @property(nonatomic, readonly) NSString *idref;
 @property(nonatomic, readonly) NSString *packageStorageId;
 @property(nonatomic, readonly) NSString *href;
-@property(nonatomic, readonly) NSString *spread;
+@property(nonatomic, readonly) NSString *page_spread;
+@property(nonatomic, readonly) NSString *rendition_layout;
 
 - (ePub3::SpineItemPtr) sdkSpineItem;
 

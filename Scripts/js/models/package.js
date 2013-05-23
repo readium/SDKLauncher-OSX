@@ -2,7 +2,7 @@
 ReadiumSDK.Models.Package = Backbone.Model.extend({
 
     spine: undefined,
-    layout: undefined,
+    rendition_layout: undefined,
     rootUrl: undefined,
 
 
@@ -13,7 +13,7 @@ ReadiumSDK.Models.Package = Backbone.Model.extend({
         if(packageData) {
 
             this.rootUrl = packageData.rootUrl;
-            this.layout = packageData.layout;
+            this.rendition_layout = packageData.rendition_layout;
             this.spine = new ReadiumSDK.Models.Spine({spineData: packageData.spine, package: this});
 
         }
@@ -23,7 +23,7 @@ ReadiumSDK.Models.Package = Backbone.Model.extend({
 
     isFixedLayout: function() {
 
-        return this.layout === "pre-paginated";
+        return this.rendition_layout === "pre-paginated";
     }
 
 

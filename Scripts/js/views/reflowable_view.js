@@ -321,8 +321,8 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.redraw();
 
         var self = this;
-        //TODO it takes time for layout engine to arrange columns we waite
-        //it would be better to react on layout column reflow finished event
+        //TODO it takes time for rendition_layout engine to arrange columns we waite
+        //it would be better to react on rendition_layout column reflow finished event
         setTimeout(function(){
 
             var columnizedContentWidth = self.$epubHtml[0].scrollWidth;

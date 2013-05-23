@@ -25,7 +25,8 @@
 @synthesize idref = _idref;
 @synthesize packageStorageId = _packageStorrageId;
 @synthesize href = _href;
-@synthesize spread = _spread;
+@synthesize page_spread = _page_spread;
+@synthesize rendition_layout = _rendition_layout;
 
 - (ePub3::SpineItemPtr)sdkSpineItem
 {
@@ -46,15 +47,22 @@
         _idref = [[NSString stringWithUTF8String:str] retain];
         _sdkSpineItem = sdkSpineItem;
 
+        auto zzzz = sdkSpineItem->Spread();
+
         if(sdkSpineItem->Spread() == ePub3::PageSpread::Left) {
-            _spread = @"left";
+            _page_spread = @"page-spread-left";
         }
         else if(sdkSpineItem->Spread() == ePub3::PageSpread::Right) {
-            _spread = @"right";
+            _page_spread = @"page-spread-right";
         }
         else{
-            _spread = @"";
+            _page_spread = @"";
         }
+
+        [_page_spread retain];
+
+        _rendition_layout = @"reflowable"; //ZZZZ has to be obtained from SDK
+        [_rendition_layout retain];
 
     }
 
@@ -68,7 +76,8 @@
 
     [dict setObject:_href forKey:@"href"];
     [dict setObject:_idref forKey:@"idref"];
-    [dict setObject:_spread forKey:@"spread"];
+    [dict setObject:_page_spread forKey:@"page_spread"];
+    [dict setObject:_rendition_layout forKey:@"rendition_layout"];
 
     return dict;
 }
@@ -79,6 +88,8 @@
     [_packageStorrageId release];
     [_idref release];
     [_href release];
+    [_page_spread release];
+    [_rendition_layout release];
     [super dealloc];
 }
 

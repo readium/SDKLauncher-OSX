@@ -11,7 +11,6 @@
 		850B1A5916A61F9900619C3C /* libObjective-Zip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5816A61F9900619C3C /* libObjective-Zip.a */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
 		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
-		850B1A9116A631E800619C3C /* LOXZipHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8F16A631E800619C3C /* LOXZipHelper.mm */; };
 		850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9416A6320200619C3C /* LOXSpineViewController.mm */; };
 		850B1A9816A6320200619C3C /* LOXWebViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9616A6320200619C3C /* LOXWebViewController.mm */; };
 		855CFDB61696200B00AD311E /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 855CFDB51696200B00AD311E /* WebKit.framework */; };
@@ -97,8 +96,6 @@
 		850B1A5A16A61FB900619C3C /* ePub3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = ePub3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		850B1A8C16A631E800619C3C /* LOXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXUtil.h; sourceTree = "<group>"; };
 		850B1A8D16A631E800619C3C /* LOXUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXUtil.mm; sourceTree = "<group>"; };
-		850B1A8E16A631E800619C3C /* LOXZipHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXZipHelper.h; sourceTree = "<group>"; };
-		850B1A8F16A631E800619C3C /* LOXZipHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXZipHelper.mm; sourceTree = "<group>"; };
 		850B1A9316A6320200619C3C /* LOXSpineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpineViewController.h; sourceTree = "<group>"; };
 		850B1A9416A6320200619C3C /* LOXSpineViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXSpineViewController.mm; sourceTree = "<group>"; };
 		850B1A9516A6320200619C3C /* LOXWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXWebViewController.h; sourceTree = "<group>"; };
@@ -299,8 +296,6 @@
 			children = (
 				850B1A8C16A631E800619C3C /* LOXUtil.h */,
 				850B1A8D16A631E800619C3C /* LOXUtil.mm */,
-				850B1A8E16A631E800619C3C /* LOXZipHelper.h */,
-				850B1A8F16A631E800619C3C /* LOXZipHelper.mm */,
 				AD8C844D86553834F8FA6218 /* LOXTemporaryFileStorage.m */,
 				AD8C80D1982D46C86A4BEB37 /* LOXTemporaryFileStorage.h */,
 			);
@@ -465,7 +460,6 @@
 				8597D62516824655000FAAAF /* LOXAppDelegate.mm in Sources */,
 				855CFE4B169B912300AD311E /* LOXePubSdkApi.mm in Sources */,
 				850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */,
-				850B1A9116A631E800619C3C /* LOXZipHelper.mm in Sources */,
 				850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */,
 				850B1A9816A6320200619C3C /* LOXWebViewController.mm in Sources */,
 				AD8C8DEDA920FC142B70BEFD /* LOXTemporaryFileStorage.m in Sources */,

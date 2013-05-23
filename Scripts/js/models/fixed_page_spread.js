@@ -50,10 +50,10 @@ ReadiumSDK.Models.Spread = function(spine) {
 
     this.setItem = function(item) {
 
-        if(item.spread == "left") {
+        if(item.isLeftPage()) {
             this.leftItem = item;
         }
-        else if (item.spread == "right") {
+        else if (item.isRightPage()) {
             this.rightItem = item;
         }
         else {

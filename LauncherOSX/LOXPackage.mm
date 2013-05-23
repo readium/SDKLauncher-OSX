@@ -1,6 +1,5 @@
 #import <ePub3/nav_element.h>
 #import <ePub3/nav_table.h>
-#import <ePub3/nav_point.h>
 #import <ePub3/archive.h>
 #import <ePub3/package.h>
 
@@ -14,6 +13,8 @@
 
 
 @interface LOXPackage ()
+
+- (NSString *)getLayoutProperty;
 
 - (LOXToc *)getToc;
 
@@ -33,7 +34,7 @@
 @synthesize title = _title;
 @synthesize packageId = _packageId;
 @synthesize toc = _toc;
-@synthesize layout = _layout;
+@synthesize rendition_layout = _rendition_layout;
 @synthesize rootDirectory = _rootDirectory;
 
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage {
@@ -42,12 +43,14 @@
     if(self) {
 
         _sdkPackage = sdkPackage;
-        _spine = [[LOXSpine alloc] init];
+        _spine = [[LOXSpine alloc] initWithDirection:@"ltr"]; //ZZZZ this should be determined from the sdk properties
         _toc = [[self getToc] retain];
         _packageId =[NSString stringWithUTF8String:_sdkPackage->PackageID().c_str()];
         _title = [NSString stringWithUTF8String:_sdkPackage->Title().c_str()];
 //        _layout = [NSString stringWithUTF8String:_sdkPackage->Layout().c_str()];
-        _layout = @"reflowable"; //@"pre-paginated"; //this is temporary  - sdkPackage will expose property sun ZZZZ
+//        _layout = @"reflowable"; //@"pre-paginated"; //this is temporary  - sdkPackage will expose property sun ZZZZ
+
+        _rendition_layout = [self getLayoutProperty];
 
         _storage = [[self createStorageForPackage:_sdkPackage] retain];
 
@@ -64,6 +67,22 @@
     }
     
     return self;
+}
+
+-(NSString*)getLayoutProperty
+{
+    auto iri = _sdkPackage->MakePropertyIRI("layout", "rendition");
+//    auto iri = _sdkPackage->PropertyIRIFromString("rendition");
+
+    auto propertyList = _sdkPackage->PropertiesMatching(iri);
+
+    if(propertyList.size() > 0) {
+        auto prop = propertyList[0];
+        NSString * value = [NSString stringWithUTF8String:prop->Value().c_str()];
+        return value;
+    }
+
+    return @"reflowable";
 }
 
 - (void)dealloc {
@@ -240,7 +259,7 @@
     NSMutableDictionary * dict = [NSMutableDictionary dictionary];
 
     [dict setObject:_rootDirectory forKey:@"rootUrl"];
-    [dict setObject:_layout forKey:@"layout"];
+    [dict setObject:_rendition_layout forKey:@"rendition_layout"];
     [dict setObject:[_spine toDictionary] forKey:@"spine"];
 
     return dict;

@@ -36,7 +36,7 @@
 @property(nonatomic, readonly) NSString *title;
 @property(nonatomic, readonly) NSString *packageId;
 @property(nonatomic, readonly) LOXToc *toc;
-@property(nonatomic, readonly) NSString* layout;
+@property(nonatomic, readonly) NSString* rendition_layout;
 @property(nonatomic, readonly) NSString* rootDirectory;
 
 

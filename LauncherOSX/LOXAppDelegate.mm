@@ -33,8 +33,6 @@
 #import "LOXPackage.h"
 #import "LOXCurrentPagesInfo.h"
 #import "LOXPageNumberTextController.h"
-#import "LOXOpenPageInfo.h"
-
 
 using namespace ePub3;
 

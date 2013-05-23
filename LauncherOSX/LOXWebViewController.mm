@@ -20,12 +20,7 @@
 //
 
 #import "LOXWebViewController.h"
-#import "LOXePubSdkApi.h"
-#import "LOXPageNumberTextController.h"
-#import "LOXBookmarksController.h"
-#import "LOXAppDelegate.h"
 #import "LOXPackage.h"
-#import "LOXSpine.h"
 #import "LOXSpineItem.h"
 #import "LOXCurrentPagesInfo.h"
 #import "LOXBookmark.h"
