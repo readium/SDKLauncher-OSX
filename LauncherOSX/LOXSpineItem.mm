@@ -47,8 +47,6 @@
         _idref = [[NSString stringWithUTF8String:str] retain];
         _sdkSpineItem = sdkSpineItem;
 
-        auto zzzz = sdkSpineItem->Spread();
-
         if(sdkSpineItem->Spread() == ePub3::PageSpread::Left) {
             _page_spread = @"page-spread-left";
         }

@@ -1,3 +1,20 @@
+//  Created by Boris Schneiderman.
+//  Copyright (c) 2012-2013 The Readium Foundation.
+//
+//  The Readium SDK is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 #import <ePub3/nav_element.h>
 #import <ePub3/nav_table.h>
 #import <ePub3/archive.h>
@@ -43,12 +60,10 @@
     if(self) {
 
         _sdkPackage = sdkPackage;
-        _spine = [[LOXSpine alloc] initWithDirection:@"ltr"]; //ZZZZ this should be determined from the sdk properties
+        _spine = [[LOXSpine alloc] initWithDirection:@"default"]; //ZZZZ this should be determined from the sdk properties
         _toc = [[self getToc] retain];
         _packageId =[NSString stringWithUTF8String:_sdkPackage->PackageID().c_str()];
         _title = [NSString stringWithUTF8String:_sdkPackage->Title().c_str()];
-//        _layout = [NSString stringWithUTF8String:_sdkPackage->Layout().c_str()];
-//        _layout = @"reflowable"; //@"pre-paginated"; //this is temporary  - sdkPackage will expose property sun ZZZZ
 
         _rendition_layout = [self getLayoutProperty];
 
@@ -72,7 +87,6 @@
 -(NSString*)getLayoutProperty
 {
     auto iri = _sdkPackage->MakePropertyIRI("layout", "rendition");
-//    auto iri = _sdkPackage->PropertyIRIFromString("rendition");
 
     auto propertyList = _sdkPackage->PropertiesMatching(iri);
 
@@ -97,13 +111,6 @@
 {
     NSString *packageBasePath = [NSString stringWithUTF8String:package->BasePath().c_str()];
     return [[[LOXTemporaryFileStorage alloc] initWithUUID:[LOXUtil uuid] forBasePath:packageBasePath] autorelease];
-}
-
-- (NSString*)getPathToSpineItem:(LOXSpineItem *) spineItem
-{
-    NSString *fullPath = [_storage absolutePathForFile: spineItem.href];
-
-    return fullPath;
 }
 
 - (LOXToc*)getToc
@@ -212,46 +219,6 @@
     }
 
     return cfi;
-}
-
--(bool)isPackageContainsPath:(NSString*) path
-{
-    return [path rangeOfString:_storage.uuid].location != NSNotFound;
-}
-
-- (LOXSpineItem *)findSpineItemWithBasePath:(NSString *)href
-{
-    for (LOXSpineItem * spineItem in _spine.items) {
-        if ([[self removeLeadingRelativeParentPath:spineItem.href] isEqualToString: [self removeLeadingRelativeParentPath:href]]) {
-            return spineItem;
-        }
-    }
-
-    return nil;
-}
-
-//path's can come from different files id different dpth and they may contain leading "../"
-//we have to remove it to compare path's
--(NSString*) removeLeadingRelativeParentPath: (NSString*) path
-{
-    NSString* ret = [NSString stringWithString:[path lowercaseString]];
-
-    while([ret hasPrefix:@"../"]) {
-        ret  = [ret substringFromIndex:3];
-    }
-
-    return ret;
-}
-
--(NSString*) toJSON
-{
-    NSDictionary * dict = [self toDictionary];
-
-    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
-
-    NSString* jsonString = [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
-
-    return jsonString;
 }
 
 -(NSDictionary *) toDictionary

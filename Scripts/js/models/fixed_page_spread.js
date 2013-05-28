@@ -1,4 +1,18 @@
-
+//  Created by Boris Schneiderman.
+//  Copyright (c) 2012-2013 The Readium Foundation.
+//
+//  The Readium SDK is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ReadiumSDK.Models.Spread = function(spine) {
 
@@ -137,16 +151,16 @@ ReadiumSDK.Models.Spread = function(spine) {
 
         var neighbourItem = undefined;
 
-        if(item.spread == "left") {
+        if(item.isLeftPage()) {
 
             neighbourItem = this.spine.isRightToLeft() ? this.spine.prevItem(item) : this.spine.nextItem(item);
         }
-        else if(item.spread == "right") {
+        else if(item.isRightPage()) {
 
             neighbourItem = this.spine.isRightToLeft() ? this.spine.nextItem(item) : this.spine.prevItem(item);
         }
 
-        if(neighbourItem && (neighbourItem.spread == item.spread || neighbourItem.spread == "center") ) {
+        if(neighbourItem && (neighbourItem.isCenterPage() || neighbourItem.page_spread === item.page_spread) ) {
 
             neighbourItem = undefined;
         }
