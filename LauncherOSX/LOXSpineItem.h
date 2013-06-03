@@ -25,6 +25,8 @@ namespace ePub3 {
     class SpineItem;
 }
 
+@class LOXPackage;
+
 @interface LOXSpineItem : NSObject {
 
 @private
@@ -40,9 +42,10 @@ namespace ePub3 {
 @property(nonatomic, readonly) NSString *page_spread;
 @property(nonatomic, readonly) NSString *rendition_layout;
 
+- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage *)package;
+
 - (ePub3::SpineItemPtr) sdkSpineItem;
 
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem;
 
 -(NSDictionary *)toDictionary;
 

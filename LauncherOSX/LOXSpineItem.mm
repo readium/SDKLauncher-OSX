@@ -18,6 +18,7 @@
 #import <ePub3/manifest.h>
 #import <ePub3/spine.h>
 #import "LOXSpineItem.h"
+#import "LOXPackage.h"
 
 
 @implementation LOXSpineItem
@@ -33,7 +34,7 @@
     return _sdkSpineItem;
 }
 
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem
+- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage*)package
 {
     self = [super init];
     if(self) {
@@ -56,12 +57,10 @@
         else{
             _page_spread = @"";
         }
-
         [_page_spread retain];
 
-        _rendition_layout = @"reflowable"; //ZZZZ has to be obtained from SDK
+        _rendition_layout = [package getProperty:"layout" withPrefix:"rendition" forObject:_sdkSpineItem.get()];
         [_rendition_layout retain];
-
     }
 
     return self;

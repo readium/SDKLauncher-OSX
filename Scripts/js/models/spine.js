@@ -38,7 +38,7 @@ ReadiumSDK.Models.Spine = Backbone.Model.extend({
 
             var length = spineData.items.length;
             for(var i = 0; i < length; i++) {
-                var item = new ReadiumSDK.Models.SpineItem(spineData.items[i], i);
+                var item = new ReadiumSDK.Models.SpineItem(spineData.items[i], i, this);
                 this.items.push(item);
             }
         }

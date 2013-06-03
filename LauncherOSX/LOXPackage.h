@@ -28,6 +28,8 @@
 
 -(id)initWithSdkPackage:(ePub3::PackagePtr) sdkPackage;
 
+- (NSString *)getProperty:(ePub3::string const &)propertyName withPrefix:(ePub3::string const &)prefix forObject:(ePub3::PropertyHolder *)object;
+
 - (void)prepareResourceWithPath:(NSString *)path;
 
 - (NSString *)getCfiForSpineItem:(LOXSpineItem *)spineItem;

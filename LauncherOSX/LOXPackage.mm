@@ -74,7 +74,7 @@
         auto spineItem = _sdkPackage->FirstSpineItem();
         while (spineItem) {
 
-            LOXSpineItem *loxSpineItem = [[[LOXSpineItem alloc] initWithStorageId:_storage.uuid forSdkSpineItem:spineItem] autorelease];
+            LOXSpineItem *loxSpineItem = [[[LOXSpineItem alloc] initWithStorageId:_storage.uuid forSdkSpineItem:spineItem fromPackage:self] autorelease];
             [_spine addItem: loxSpineItem];
             spineItem = spineItem->Next();
         }
@@ -84,11 +84,11 @@
     return self;
 }
 
--(NSString*)getLayoutProperty
+-(NSString*)getProperty:(const ePub3::string&)propertyName withPrefix:(const ePub3::string&)prefix forObject:(ePub3::PropertyHolder*)object
 {
-    auto iri = _sdkPackage->MakePropertyIRI("layout", "rendition");
+    auto iri = _sdkPackage->MakePropertyIRI(propertyName, prefix);
 
-    auto propertyList = _sdkPackage->PropertiesMatching(iri);
+    auto propertyList = object->PropertiesMatching(iri);
 
     if(propertyList.size() > 0) {
         auto prop = propertyList[0];
@@ -96,7 +96,13 @@
         return value;
     }
 
-    return @"reflowable";
+    return @"";
+}
+
+-(NSString*)getLayoutProperty
+{
+    return [self getProperty:"layout" withPrefix:"rendition" forObject: _sdkPackage.get()];
+
 }
 
 - (void)dealloc {
