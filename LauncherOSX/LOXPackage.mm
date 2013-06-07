@@ -60,16 +60,30 @@
     if(self) {
 
         _sdkPackage = sdkPackage;
-        _spine = [[LOXSpine alloc] initWithDirection:@"default"]; //ZZZZ this should be determined from the sdk properties
-        _toc = [[self getToc] retain];
-        _packageId =[NSString stringWithUTF8String:_sdkPackage->PackageID().c_str()];
-        _title = [NSString stringWithUTF8String:_sdkPackage->Title().c_str()];
 
-        _rendition_layout = [self getLayoutProperty];
+        NSString* direction;
+
+        auto pageProgression = _sdkPackage->PageProgressionDirection();
+        if(pageProgression == ePub3::PageProgression::LeftToRight) {
+            direction = @"ltr";
+        }
+        else if(pageProgression == ePub3::PageProgression::RightToLeft) {
+            direction = @"rtl";
+        }
+        else {
+            direction = @"default";
+        }
+
+        _spine = [[LOXSpine alloc] initWithDirection:direction];
+        _toc = [[self getToc] retain];
+        _packageId = [[NSString stringWithUTF8String:_sdkPackage->PackageID().c_str()] retain];
+        _title = [[NSString stringWithUTF8String:_sdkPackage->Title().c_str()] retain];
+
+        _rendition_layout = [[self getLayoutProperty] retain];
 
         _storage = [[self createStorageForPackage:_sdkPackage] retain];
 
-        _rootDirectory = _storage.rootDirectory;
+        _rootDirectory = [_storage.rootDirectory retain];
 
         auto spineItem = _sdkPackage->FirstSpineItem();
         while (spineItem) {
@@ -109,6 +123,10 @@
     [_spine release];
     [_toc release];
     [_storage release];
+    [_packageId release];
+    [_title release];
+    [_rendition_layout release];
+    [_rootDirectory release];
     [super dealloc];
 }
 

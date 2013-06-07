@@ -49,6 +49,7 @@ FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
 
     self.isFixedLayout = [[LOXUtil valueForKey:@"isFixedLayout" orDefault:[NSNumber numberWithBool:NO] fromDictionary:dict] boolValue];
     self.spineItemCount = [[LOXUtil valueForKey:@"spineItemCount" orDefault:[NSNumber numberWithInt:0] fromDictionary:dict] integerValue];
+    self.pageProgressionDirection = [LOXUtil valueForKey:@"pageProgressionDirection" orDefault:@"default" fromDictionary:dict];
 
     NSArray *arr = (NSArray*)[LOXUtil valueForKey:@"openPages" orDefault:nil fromDictionary:dict];
 
@@ -93,6 +94,15 @@ FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
     return lastOpenPage.spineItemIndex < _spineItemCount - 1 || lastOpenPage.spineItemPageIndex < lastOpenPage.spineItemPageCount - 1;
 }
 
+-(bool)canGoLeft
+{
+    return [self.pageProgressionDirection isEqualToString:@"rtl"] ? [self canGoNext] : [self canGoPrev];
+}
+
+-(bool)canGoRight
+{
+    return [self.pageProgressionDirection isEqualToString:@"rtl"] ? [self canGoPrev] : [self canGoNext];
+}
 
 -(bool)canGoPrev
 {

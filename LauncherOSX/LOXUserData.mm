@@ -85,6 +85,16 @@
     }
 }
 
+- (LOXBook *)findBookWithId:(NSString *)packageId
+{
+    for (LOXBook *book in self.books) {
+        if ([book.packageId compare:packageId] == NSOrderedSame) {
+            return book;
+        }
+    }
+
+    return nil;
+}
 
 - (LOXBook *)findBookForPath:(NSString *)path
 {

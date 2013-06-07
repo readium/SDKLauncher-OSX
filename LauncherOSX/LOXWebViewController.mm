@@ -207,8 +207,8 @@
 
 - (void)updateUI
 {
-    [self.prevPageButton setEnabled: [self.currentPagesInfo canGoPrev]];
-    [self.nextPageButton setEnabled: [self.currentPagesInfo canGoNext]];
+    [self.leftPageButton setEnabled:[self.currentPagesInfo canGoLeft]];
+    [self.rightPageButton setEnabled:[self.currentPagesInfo canGoRight]];
 }
 
 

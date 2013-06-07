@@ -28,11 +28,16 @@ NSString *const LOXPageChangedEvent = @"PageChangedEvent";
 @property (nonatomic, readonly) NSArray *openPages;
 @property (nonatomic) bool isFixedLayout;
 @property (nonatomic) int spineItemCount;
+@property (nonatomic, retain) NSString* pageProgressionDirection;
 
 
 - (void)fromDictionary:(NSDictionary *)dict;
 
 - (bool)canGoNext;
+
+- (bool)canGoLeft;
+
+- (bool)canGoRight;
 
 - (bool)canGoPrev;
 

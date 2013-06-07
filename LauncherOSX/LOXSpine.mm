@@ -33,7 +33,7 @@
 {
     if ((self = [super init])) {
         _items = [[NSMutableArray alloc] init];
-        _direction = direction;
+        _direction = [direction retain];
     }
 
     return self;
@@ -41,6 +41,7 @@
 
 - (void)dealloc {
     [_items release];
+    [_direction release];
     [super dealloc];
 }
 

@@ -1177,7 +1177,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">nextPageButton</string>
+						<string key="label">rightPageButton</string>
 						<reference key="source" ref="901247368"/>
 						<reference key="destination" ref="838258766"/>
 					</object>
@@ -1185,7 +1185,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">prevPageButton</string>
+						<string key="label">leftPageButton</string>
 						<reference key="source" ref="901247368"/>
 						<reference key="destination" ref="288884514"/>
 					</object>
@@ -3003,8 +3003,8 @@
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="_webView">WebView</string>
 						<string key="appDelegate">LOXAppDelegate</string>
-						<string key="nextPageButton">NSButton</string>
-						<string key="prevPageButton">NSButton</string>
+						<string key="rightPageButton">NSButton</string>
+						<string key="leftPageButton">NSButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="_webView">
@@ -3015,12 +3015,12 @@
 							<string key="name">appDelegate</string>
 							<string key="candidateClassName">LOXAppDelegate</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="nextPageButton">
-							<string key="name">nextPageButton</string>
+						<object class="IBToOneOutletInfo" key="rightPageButton">
+							<string key="name">rightPageButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="prevPageButton">
-							<string key="name">prevPageButton</string>
+						<object class="IBToOneOutletInfo" key="leftPageButton">
+							<string key="name">leftPageButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
 					</dictionary>

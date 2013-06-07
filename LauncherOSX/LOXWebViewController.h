@@ -43,8 +43,8 @@
 
 - (void)onOpenPage:(NSString *)currentPaginationInfo;
 
-@property (assign) IBOutlet NSButton *prevPageButton;
-@property (assign) IBOutlet NSButton *nextPageButton;
+@property (assign) IBOutlet NSButton *leftPageButton;
+@property (assign) IBOutlet NSButton *rightPageButton;
 
 @property (assign) IBOutlet LOXAppDelegate *appDelegate;
 

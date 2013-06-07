@@ -79,9 +79,11 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
                     this.openSpineItemPage(openPageRequestData.idref, 0);
                 }
             }
+            else if(openPageRequestData.contentRefUrl && openPageRequestData.sourceFileHref) {
+                this.openContentUrl(openPageRequestData.contentRefUrl, openPageRequestData.sourceFileHref);
+            }
             else {
                 console.log("Invalid page request data: idref required!");
-
             }
         }
         else {// if we where not asked to open specific page we will open the first one

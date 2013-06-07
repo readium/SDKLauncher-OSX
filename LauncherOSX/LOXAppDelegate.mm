@@ -41,6 +41,8 @@ using namespace ePub3;
 
 - (NSString *)selectFile;
 
+- (LOXBook *)findOrCreateBookForCurrentPackageWithPath:(NSString *)path;
+
 - (void)reportError:(NSString *)error;
 
 - (bool)openDocumentWithPath:(NSString *)path;
@@ -126,7 +128,7 @@ using namespace ePub3;
         [self.tocViewController setPackage: _package];
         [self.spineViewController setPackage:_package];
 
-        _currentBook = [self getBookForPath:path];
+        _currentBook = [self findOrCreateBookForCurrentPackageWithPath:path];
         _currentBook.dateOpened = [NSDate date];
         [self.bookmarksController setBook:_currentBook];
 
@@ -153,9 +155,9 @@ using namespace ePub3;
 
 }
 
-- (LOXBook *)getBookForPath:(NSString *)path
+- (LOXBook *)findOrCreateBookForCurrentPackageWithPath:(NSString *)path
 {
-    LOXBook * book = [_userData findBookForPath:path];
+    LOXBook * book = [_userData findBookWithId:_package.packageId];
 
     if(!book) {
         book = [[[LOXBook alloc] init] autorelease];
@@ -181,8 +183,6 @@ using namespace ePub3;
     [alert setMessageText:error];
     [alert runModal];
 }
-
-
 
 
 - (NSString *)selectFile

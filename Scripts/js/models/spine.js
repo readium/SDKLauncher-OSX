@@ -72,7 +72,11 @@ ReadiumSDK.Models.Spine = Backbone.Model.extend({
 
     getItemUrl: function(item) {
 
-        return this.package.rootUrl + "/" + item.href;
+        if(this.package.rootUrl) {
+            return this.package.rootUrl + "/" + item.href;
+        }
+
+        return item.href;
     },
 
     isValidIndex: function(index) {
