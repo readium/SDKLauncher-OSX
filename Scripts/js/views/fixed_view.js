@@ -118,13 +118,13 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
 
     openPagePrev: function() {
 
-        this.spread.openLeft();
+        this.spread.openPrev();
         this.redraw();
     },
 
     openPageNext: function() {
 
-        this.spread.openRight();
+        this.spread.openNext();
         this.redraw();
     },
 

@@ -59,9 +59,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.$iframe.css("right", "");
         this.$iframe.css(this.spine.isLeftToRight() ? "left" : "right", "0px");
 
-
-        //event with namespace for clean unbinding
-//        $(window).on("resize.ReadiumSDK.reflowableView", _.bind(this.onViewportResize, this));
+        //We will call onViewportResize after user stopped resizing window
         var lazyResize = _.debounce(this.onViewportResize, 100);
         $(window).on("resize.ReadiumSDK.reflowableView", _.bind(lazyResize, this));
 
@@ -329,7 +327,6 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         //we do this because CSS will floor column with by itself if it is not a round number
         this.paginationInfo.columnWidth = Math.floor(this.paginationInfo.columnWidth);
 
-//        this.$epubHtml.css("width", this.lastViewPortSize.width);
         this.$epubHtml.css("width", this.paginationInfo.columnWidth);
 
         this.shiftBookOfScreen();
@@ -353,11 +350,14 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
             self.openDeferredElement();
 
+            //We do this to force re-rendering of the document in the iframe.
+            //There is a bug in WebView control with right to left columns layout - after resizing the window html document
+            //is shifted in side the containing div. Hiding and showing the html element puts document in place.
             self.$epubHtml.hide();
             setTimeout(function() {
                 self.$epubHtml.show();
                 self.onPaginationChanged();
-            }, 100);
+            }, 50);
 
         }, 100);
 
