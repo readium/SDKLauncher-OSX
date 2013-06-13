@@ -119,3 +119,11 @@ ReadiumSDK.Helpers.ResolveContentRef = function(contentRef, sourceFileHref) {
     return combined.join("/");
 
 };
+
+/**
+ * @return {boolean}
+ */
+ReadiumSDK.Helpers.EndsWith = function (str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+};
+
