@@ -14,6 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Wrapper of the SpineItem object received from the host application
+ *
+ * @class ReadiumSDK.Models.SpineItem
+ *
+ * @param itemData spine item properties container
+ * @param {Number} index
+ * @param {ReadiumSDK.Models.Spine} spine
+ *
+ */
 
 ReadiumSDK.Models.SpineItem = function(itemData, index, spine){
 

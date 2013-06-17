@@ -14,6 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ *
+ * Top level View object. Interface for view manipulation public APIs
+ *
+ * @class ReadiumSDK.Views.ReaderView
+ *
+ * */
 ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     el: 'body',
@@ -51,6 +58,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     /**
      * Triggers the process of opening the book and requesting resources specified in the packageData
      *
+     * @method openBook
      * @param {ReadiumSDK.Models.PackageData} packageData DTO Object hierarchy of Package, Spine, SpineItems passed by
      * host application to the reader
      * @param {ReadiumSDK.Models.PageOpenRequest|undefined} openPageRequestData Optional parameter specifying
@@ -100,7 +108,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     },
 
     /**
-     *Flips the page from left to right
+     * Flips the page from left to right. Takes to account the page progression direction to decide to flip to prev or next page.
+     * @method openPageLeft
      */
     openPageLeft: function() {
 
@@ -113,7 +122,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     },
 
     /**
-     * Flips the page from right to left
+     * Flips the page from right to left. Takes to account the page progression direction to decide to flip to prev or next page.
+     * @method openPageRight
      */
     openPageRight: function() {
 
@@ -127,14 +137,14 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     },
 
     /**
-     * Opens the next page. Takes to account the page progression direction to decide to flip page left or right
+     * Opens the next page.
      */
     openPageNext: function() {
         this.currentView.openPageNext();
     },
 
     /**
-     * Opens the previews page. Takes to account the page progression direction to decide to flip page left or right
+     * Opens the previews page.
      */
     openPagePrev: function() {
         this.currentView.openPagePrev();
@@ -170,6 +180,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     /**
      * Opens the page of the spine item with element with provided cfi
      *
+     * @method openSpineItemElementCfi
+     *
      * @param {string} idref Id of the spine item
      * @param {string} elementCfi CFI of the element to be shown
      */
@@ -192,6 +204,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     /**
      *
      * Opens specified page index of the current spine item
+     *
+     * @method openPage
      *
      * @param {number} pageIndex Zero based index of the page in the current spine item
      */
@@ -247,6 +261,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     /**
      * Opens the content document specified by the url
      *
+     * @method openContentUrl
+     *
      * @param {string} contentRefUrl Url of the content document
      * @param {string | undefined} sourceFileHref Url to the file that contentRefUrl is relative to. If contentRefUrl is
      * relative ot the source file that contains it instead of the package file (ex. TOC file) We have to know the
@@ -287,6 +303,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     /**
      *
      * Returns the bookmark associated with currently opened page.
+     *
+     * @method bookmarkCurrentPage
      *
      * @returns {string} Stringified ReadiumSDK.Models.BookmarkData object.
      */

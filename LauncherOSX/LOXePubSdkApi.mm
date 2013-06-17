@@ -83,7 +83,7 @@
 
     for (auto package = packages.begin(); package != packages.end(); ++package) {
 
-        [_packages addObject:[[LOXPackage alloc] initWithSdkPackage: *package]];
+        [_packages addObject:[[[LOXPackage alloc] initWithSdkPackage:*package] autorelease]];
     }
 }
 
