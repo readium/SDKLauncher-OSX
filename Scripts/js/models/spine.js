@@ -30,9 +30,9 @@ ReadiumSDK.Models.Spine = Backbone.Model.extend({
     items: [],
 
     /**
-     * Page progression direction
+     * Page progression direction ltr|rtl|default
      * @property direction
-     * @type {string} ltr|rtl|default
+     * @type {string}
      */
     direction: undefined,
 
