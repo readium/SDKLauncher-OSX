@@ -27,15 +27,15 @@
 ReadiumSDK.Models.PackageData = {
 
     /**
-     * @property rootUrl
-     * @type {string} Url of the package file
+     * @property rootUrl Url of the package file
+     * @type {string}
      *
      */
     rootUrl: "",
     /**
      *
-     * @property rendering_layout
-     * @type {string} "reflowable"|"pre-paginated"
+     * @property rendering_layout expected values "reflowable"|rendering_layout="pre-paginated"
+     * @type {string}
      */
     rendering_layout: "",
 

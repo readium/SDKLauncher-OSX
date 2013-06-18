@@ -6,7 +6,7 @@
     "url": "https://github.com/readium",
         "options": {
         "linkNatives": "true",
-        "outdir": "./docs",
+        "outdir": "./yuidoc_out",
         "paths": "../Scripts"
     }
 }

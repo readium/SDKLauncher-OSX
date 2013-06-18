@@ -129,3 +129,6 @@ UserInterfaceState.xcuserstate
 #
 # ...none. Everything is now explained.
 js_docs/docs
+js_docs/jsdoc_out
+js_docs/node_modules
+js_docs/yuidoc_out
