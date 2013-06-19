@@ -37,8 +37,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
                 return;
             }
 
-            this.currentView.off("PaginationChanged");
-            this.currentView.remove();
+            this.resetCurrentView();
         }
 
         if(isReflowable) {
@@ -62,6 +61,13 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     },
 
+    resetCurrentView: function() {
+
+        this.currentView.off("PaginationChanged");
+        this.currentView.remove();
+        this.currentView = undefined;
+    },
+
     /**
      * Triggers the process of opening the book and requesting resources specified in the packageData
      *
@@ -75,6 +81,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         this.package = new ReadiumSDK.Models.Package({packageData: packageData});
         this.spine = this.package.spine;
+
+        this.resetCurrentView();
 
         if(openPageRequestData) {
 
@@ -157,7 +165,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             return;
         }
 
-        var currentSpineItem = this.spine.getItemByHref(lastOpenPage.idref);
+        var currentSpineItem = this.spine.getItemById(lastOpenPage.idref);
 
         var nextSpineItem = this.spine.nextItem(currentSpineItem);
 
@@ -185,11 +193,11 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         var firstOpenPage = paginationInfo.openPages[0];
 
         if(firstOpenPage.spineItemPageIndex > 0) {
-            this.currentView.openPrev();
+            this.currentView.openPagePrev();
             return;
         }
 
-        var currentSpineItem = this.spine.getItemByHref(firstOpenPage.idref);
+        var currentSpineItem = this.spine.getItemById(firstOpenPage.idref);
 
         var prevSpineItem = this.spine.prevItem(currentSpineItem);
 

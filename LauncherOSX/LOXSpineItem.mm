@@ -60,6 +60,9 @@
         [_page_spread retain];
 
         _rendition_layout = [package getProperty:"layout" withPrefix:"rendition" forObject:_sdkSpineItem.get()];
+
+        NSString* zz = [package getProperty:"layout-pre-paginated" withPrefix:"rendition" forObject:_sdkSpineItem.get()];
+
         [_rendition_layout retain];
     }
 
