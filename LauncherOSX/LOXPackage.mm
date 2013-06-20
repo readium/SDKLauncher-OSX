@@ -101,7 +101,6 @@
 -(NSString*)getProperty:(const ePub3::string&)propertyName withPrefix:(const ePub3::string&)prefix forObject:(ePub3::PropertyHolder*)object
 {
     auto iri = _sdkPackage->MakePropertyIRI(propertyName, prefix);
-
     auto propertyList = object->PropertiesMatching(iri);
 
     if(propertyList.size() > 0) {

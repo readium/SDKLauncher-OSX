@@ -59,9 +59,36 @@
         }
         [_page_spread retain];
 
-        _rendition_layout = [package getProperty:"layout" withPrefix:"rendition" forObject:_sdkSpineItem.get()];
 
-        NSString* zz = [package getProperty:"layout-pre-paginated" withPrefix:"rendition" forObject:_sdkSpineItem.get()];
+        //////////////////////////////////////////////////zzzzz
+        //This is complete hack to overcome the sdk bug to return layout property for the
+        //"Thomas Cole - The Voyage of Life" book. File cole-voyage-of-life-20120320.epub
+
+        //this what suppose to work:
+        //_rendition_layout = [package getProperty:"layout" withPrefix:"rendition" forObject:_sdkSpineItem.get()];
+
+        //This is what we do instead:
+        _rendition_layout = @"";
+
+        for(int i = 0; i < _sdkSpineItem->NumberOfProperties(); i++) {
+            auto prop = _sdkSpineItem->PropertyAt(i);
+
+            auto iriString = prop->PropertyIdentifier().IRIString();
+            NSString* tmp = [NSString stringWithUTF8String: iriString.c_str()];
+
+            if([tmp rangeOfString:@"reflowable"].location != NSNotFound) {
+                _rendition_layout = @"reflowable";
+                break;
+            }
+
+            if([tmp rangeOfString:@"pre-paginated"].location != NSNotFound) {
+                _rendition_layout = @"pre-paginated";
+                break;
+            }
+        }
+
+        //
+        /////////////////////////////////////////////////
 
         [_rendition_layout retain];
     }
