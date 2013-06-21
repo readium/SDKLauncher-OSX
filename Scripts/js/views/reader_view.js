@@ -63,6 +63,10 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     resetCurrentView: function() {
 
+        if(!this.currentView) {
+            return;
+        }
+
         this.currentView.off("PaginationChanged");
         this.currentView.remove();
         this.currentView = undefined;

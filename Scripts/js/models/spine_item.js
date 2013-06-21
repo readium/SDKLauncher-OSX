@@ -35,7 +35,7 @@ ReadiumSDK.Models.SpineItem = function(itemData, index, spine){
     this.spine = spine;
 
     this.isLeftPage = function() {
-        return !this.isRightPage() && !this.isCenterPage();
+        return this.page_spread === "page-spread-left";
     };
 
     this.isRightPage = function() {
@@ -43,7 +43,7 @@ ReadiumSDK.Models.SpineItem = function(itemData, index, spine){
     };
 
     this.isCenterPage = function() {
-        return this.page_spread === "page-spread-center";
+        return !this.isLeftPage() && !this.isRightPage();
     };
 
     this.isReflowable = function() {
