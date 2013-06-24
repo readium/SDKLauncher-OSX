@@ -13,40 +13,22 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-
 
 
 #import <Foundation/Foundation.h>
-#import <ePub3/spine.h>
 
 
-namespace ePub3 {
-    class SpineItem;
-}
-
-@class LOXPackage;
-
-@interface LOXSpineItem : NSObject {
-
-@private
-    ePub3::SpineItemPtr _sdkSpineItem;
-    NSString* _idref;
-
-    NSString* _packageStorrageId;
-}
-
-@property(nonatomic, readonly) NSString *idref;
-@property(nonatomic, readonly) NSString *packageStorageId;
-@property(nonatomic, readonly) NSString *href;
-@property(nonatomic, readonly) NSString *page_spread;
-@property(nonatomic, readonly) NSString *rendition_layout;
-
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage *)package;
-
-- (ePub3::SpineItemPtr) sdkSpineItem;
+//{pageIndex: pageIndex, spineItemIndex: spineItemIndex, idref: idref, spineItemPageCount: spineItemPageCount }
 
 
--(NSDictionary *)toDictionary;
+@interface LOXOpenPageInfo : NSObject
 
+
+@property (nonatomic, retain) NSString* idref;
+@property (nonatomic) int spineItemPageIndex;
+@property (nonatomic) int spineItemPageCount;
+@property (nonatomic) int spineItemIndex;
+
+
++ (LOXOpenPageInfo *)pageInfoFromDictionary:(NSDictionary *)dictionary;
 @end

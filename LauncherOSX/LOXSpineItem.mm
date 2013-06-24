@@ -18,43 +18,75 @@
 #import <ePub3/manifest.h>
 #import <ePub3/spine.h>
 #import "LOXSpineItem.h"
+#import "LOXPackage.h"
 
 
 @implementation LOXSpineItem
 
 @synthesize idref = _idref;
 @synthesize packageStorageId = _packageStorrageId;
-@synthesize basePath = _basePath;
+@synthesize href = _href;
+@synthesize page_spread = _page_spread;
+@synthesize rendition_layout = _rendition_layout;
 
-- (const ePub3::SpineItem *)sdkSpineItem
+- (ePub3::SpineItemPtr)sdkSpineItem
 {
     return _sdkSpineItem;
 }
 
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(const ePub3::SpineItem *)sdkSpineItem
+- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage*)package
 {
     self = [super init];
     if(self) {
         auto str = sdkSpineItem->Idref().c_str();
 
         auto manifestItem = sdkSpineItem->ManifestItem();
-        _basePath = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
-        [_basePath retain];
+        _href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
+        [_href retain];
         _packageStorrageId = storageId;
         [_packageStorrageId retain];
         _idref = [[NSString stringWithUTF8String:str] retain];
         _sdkSpineItem = sdkSpineItem;
+
+        if(sdkSpineItem->Spread() == ePub3::PageSpread::Left) {
+            _page_spread = @"page-spread-left";
+        }
+        else if(sdkSpineItem->Spread() == ePub3::PageSpread::Right) {
+            _page_spread = @"page-spread-right";
+        }
+        else{
+            _page_spread = @"";
+        }
+        [_page_spread retain];
+
+        _rendition_layout = [package getProperty:"layout" withPrefix:"rendition" forObject:_sdkSpineItem.get()];
+        [_rendition_layout retain];
     }
 
     return self;
 
 }
 
+- (NSDictionary *)toDictionary
+{
+    NSMutableDictionary * dict = [NSMutableDictionary dictionary];
+
+    [dict setObject:_href forKey:@"href"];
+    [dict setObject:_idref forKey:@"idref"];
+    [dict setObject:_page_spread forKey:@"page_spread"];
+    [dict setObject:_rendition_layout forKey:@"rendition_layout"];
+
+    return dict;
+}
+
+
 - (void)dealloc
 {
     [_packageStorrageId release];
     [_idref release];
-    [_basePath release];
+    [_href release];
+    [_page_spread release];
+    [_rendition_layout release];
     [super dealloc];
 }
 

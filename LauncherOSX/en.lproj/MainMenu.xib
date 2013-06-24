@@ -447,7 +447,7 @@
 						<object class="NSButton" id="288884514">
 							<reference key="NSNextResponder" ref="439893737"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{532, 7}, {82, 32}}</string>
+							<string key="NSFrame">{{502, 7}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="736543241"/>
@@ -482,6 +482,7 @@
 											<string key="NSFrame">{{-7, -10}, {219, 451}}</string>
 											<reference key="NSSuperview" ref="700688380"/>
 											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView" ref="591154175"/>
 											<string key="NSReuseIdentifierKey">_NS:9</string>
 											<array class="NSMutableArray" key="NSTabViewItems">
 												<object class="NSTabViewItem" id="55051363">
@@ -766,7 +767,6 @@
 																		<string key="NSFrame">{{1, 389}, {196, 15}}</string>
 																		<reference key="NSSuperview" ref="589722507"/>
 																		<reference key="NSWindow"/>
-																		<reference key="NSNextKeyView" ref="847228729"/>
 																		<string key="NSReuseIdentifierKey">_NS:60</string>
 																		<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																		<int key="NSsFlags">1</int>
@@ -880,7 +880,7 @@
 						<object class="NSTextField" id="736543241">
 							<reference key="NSNextResponder" ref="439893737"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{616, 13}, {44, 22}}</string>
+							<string key="NSFrame">{{586, 13}, {74, 22}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="993777637"/>
@@ -936,7 +936,7 @@
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="943940271"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1058}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -1137,6 +1137,14 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
+						<string key="label">pageNumController</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="1058085330"/>
+					</object>
+					<int key="connectionID">1138</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
 						<string key="label">_tableView</string>
 						<reference key="source" ref="703955208"/>
 						<reference key="destination" ref="304076411"/>
@@ -1169,7 +1177,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">nextPageButton</string>
+						<string key="label">rightPageButton</string>
 						<reference key="source" ref="901247368"/>
 						<reference key="destination" ref="838258766"/>
 					</object>
@@ -1177,7 +1185,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">prevPageButton</string>
+						<string key="label">leftPageButton</string>
 						<reference key="source" ref="901247368"/>
 						<reference key="destination" ref="288884514"/>
 					</object>
@@ -1185,7 +1193,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">onNextPageClick:</string>
+						<string key="label">onRightPageClick:</string>
 						<reference key="source" ref="901247368"/>
 						<reference key="destination" ref="838258766"/>
 					</object>
@@ -1193,7 +1201,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">onPrevPageClick:</string>
+						<string key="label">onLeftPageClick:</string>
 						<reference key="source" ref="901247368"/>
 						<reference key="destination" ref="288884514"/>
 					</object>
@@ -1673,22 +1681,6 @@
 								<float key="scoringTypeFloat">24</float>
 								<int key="contentType">2</int>
 							</object>
-							<object class="IBNSLayoutConstraint" id="939002405">
-								<reference key="firstItem" ref="736543241"/>
-								<int key="firstAttribute">11</int>
-								<int key="relation">0</int>
-								<reference key="secondItem" ref="993777637"/>
-								<int key="secondAttribute">11</int>
-								<float key="multiplier">1</float>
-								<object class="IBLayoutConstant" key="constant">
-									<double key="value">0.0</double>
-								</object>
-								<float key="priority">1000</float>
-								<reference key="containingView" ref="439893737"/>
-								<int key="scoringType">6</int>
-								<float key="scoringTypeFloat">24</float>
-								<int key="contentType">2</int>
-							</object>
 							<object class="IBNSLayoutConstraint" id="155402535">
 								<reference key="firstItem" ref="736543241"/>
 								<int key="firstAttribute">5</int>
@@ -1704,6 +1696,22 @@
 								<int key="scoringType">6</int>
 								<float key="scoringTypeFloat">24</float>
 								<int key="contentType">3</int>
+							</object>
+							<object class="IBNSLayoutConstraint" id="939002405">
+								<reference key="firstItem" ref="736543241"/>
+								<int key="firstAttribute">11</int>
+								<int key="relation">0</int>
+								<reference key="secondItem" ref="993777637"/>
+								<int key="secondAttribute">11</int>
+								<float key="multiplier">1</float>
+								<object class="IBLayoutConstant" key="constant">
+									<double key="value">0.0</double>
+								</object>
+								<float key="priority">1000</float>
+								<reference key="containingView" ref="439893737"/>
+								<int key="scoringType">6</int>
+								<float key="scoringTypeFloat">24</float>
+								<int key="contentType">2</int>
 							</object>
 							<object class="IBNSLayoutConstraint" id="132081022">
 								<reference key="firstItem" ref="439893737"/>
@@ -1802,8 +1810,8 @@
 								<int key="contentType">3</int>
 							</object>
 							<reference ref="736543241"/>
-							<reference ref="288884514"/>
 							<reference ref="993777637"/>
+							<reference ref="288884514"/>
 						</array>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -2099,7 +2107,7 @@
 						<reference key="object" ref="736543241"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="300612754"/>
-							<object class="IBNSLayoutConstraint" id="728781255">
+							<object class="IBNSLayoutConstraint" id="749144703">
 								<reference key="firstItem" ref="736543241"/>
 								<int key="firstAttribute">7</int>
 								<int key="relation">0</int>
@@ -2107,7 +2115,7 @@
 								<int key="secondAttribute">0</int>
 								<float key="multiplier">1</float>
 								<object class="IBLayoutConstant" key="constant">
-									<double key="value">44</double>
+									<double key="value">74</double>
 								</object>
 								<float key="priority">1000</float>
 								<reference key="containingView" ref="736543241"/>
@@ -2178,18 +2186,8 @@
 						<reference key="parent" ref="439893737"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">916</int>
-						<reference key="object" ref="728781255"/>
-						<reference key="parent" ref="736543241"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">923</int>
 						<reference key="object" ref="132081022"/>
-						<reference key="parent" ref="439893737"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">924</int>
-						<reference key="object" ref="155402535"/>
 						<reference key="parent" ref="439893737"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -2565,6 +2563,16 @@
 						<reference key="object" ref="777553625"/>
 						<reference key="parent" ref="0"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1140</int>
+						<reference key="object" ref="749144703"/>
+						<reference key="parent" ref="736543241"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1141</int>
+						<reference key="object" ref="155402535"/>
+						<reference key="parent" ref="439893737"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -2618,6 +2626,8 @@
 				<string key="1126.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1127.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1131.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1140.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1141.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="124.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="125.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="126.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2647,8 +2657,8 @@
 					<reference ref="586797609"/>
 					<reference ref="155739711"/>
 					<reference ref="132081022"/>
-					<reference ref="155402535"/>
 					<reference ref="939002405"/>
+					<reference ref="155402535"/>
 					<reference ref="516199452"/>
 					<reference ref="647810958"/>
 					<reference ref="574329875"/>
@@ -2713,7 +2723,7 @@
 				<string key="83.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="830.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<array class="NSMutableArray" key="848.IBNSViewMetadataConstraints">
-					<reference ref="728781255"/>
+					<reference ref="749144703"/>
 				</array>
 				<boolean value="NO" key="848.IBNSViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
 				<string key="848.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2729,10 +2739,8 @@
 				<string key="890.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="910.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="911.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="916.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="92.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="923.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="924.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="927.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="928.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="929.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2748,7 +2756,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1137</int>
+			<int key="maxID">1141</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2768,6 +2776,7 @@
 					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="bookmarksController">LOXBookmarksController</string>
+						<string key="pageNumController">LOXPageNumberTextController</string>
 						<string key="spineViewController">LOXSpineViewController</string>
 						<string key="tocViewController">LOXTocViewController</string>
 						<string key="webViewController">LOXWebViewController</string>
@@ -2777,6 +2786,10 @@
 						<object class="IBToOneOutletInfo" key="bookmarksController">
 							<string key="name">bookmarksController</string>
 							<string key="candidateClassName">LOXBookmarksController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="pageNumController">
+							<string key="name">pageNumController</string>
+							<string key="candidateClassName">LOXPageNumberTextController</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="spineViewController">
 							<string key="name">spineViewController</string>
@@ -2974,25 +2987,24 @@
 					<string key="className">LOXWebViewController</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="onNextPageClick:">id</string>
-						<string key="onPrevPageClick:">id</string>
+						<string key="onLeftPageClick:">id</string>
+						<string key="onRightPageClick:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="onNextPageClick:">
-							<string key="name">onNextPageClick:</string>
+						<object class="IBActionInfo" key="onLeftPageClick:">
+							<string key="name">onLeftPageClick:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="onPrevPageClick:">
-							<string key="name">onPrevPageClick:</string>
+						<object class="IBActionInfo" key="onRightPageClick:">
+							<string key="name">onRightPageClick:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="_webView">WebView</string>
 						<string key="appDelegate">LOXAppDelegate</string>
-						<string key="nextPageButton">NSButton</string>
-						<string key="pageNumController">LOXPageNumberTextController</string>
-						<string key="prevPageButton">NSButton</string>
+						<string key="rightPageButton">NSButton</string>
+						<string key="leftPageButton">NSButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="_webView">
@@ -3003,16 +3015,12 @@
 							<string key="name">appDelegate</string>
 							<string key="candidateClassName">LOXAppDelegate</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="nextPageButton">
-							<string key="name">nextPageButton</string>
+						<object class="IBToOneOutletInfo" key="rightPageButton">
+							<string key="name">rightPageButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="pageNumController">
-							<string key="name">pageNumController</string>
-							<string key="candidateClassName">LOXPageNumberTextController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="prevPageButton">
-							<string key="name">prevPageButton</string>
+						<object class="IBToOneOutletInfo" key="leftPageButton">
+							<string key="name">leftPageButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
 					</dictionary>

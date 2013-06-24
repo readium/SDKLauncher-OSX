@@ -16,12 +16,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+/**
+ * Top level ReadiumSDK namespace
+ * @class ReadiumSDK
+ * @static
+ */
 ReadiumSDK = {
+
+    /**
+     Current version of the JS SDK
+     @method version
+     @static
+     @return {string} version
+     */
+    version: function() {
+        return "0.5.1";
+    },
 
     Models : {},
     Views : {},
     Collections: {},
     Routers: {},
-    Helpers: {}
-
+    Helpers: {},
+    HostAppFeedback: {}
 };

@@ -1,8 +1,18 @@
+//  Created by Boris Schneiderman.
+//  Copyright (c) 2012-2013 The Readium Foundation.
 //
-// Created by boriss on 2013-02-25.
+//  The Readium SDK is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
 //
-// To change the template use AppCode | Preferences | File Templates.
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
 //
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #import "LOXUserData.h"
@@ -55,19 +65,36 @@
 
 - (void)save
 {
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    @try
+    {
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
-    NSMutableArray *books = [NSMutableArray array];
+        NSMutableArray *books = [NSMutableArray array];
 
-    for (LOXBook *book in self.books) {
-        [books addObject:[book toDictionary]];
+        for (LOXBook *book in self.books) {
+            [books addObject:[book toDictionary]];
+        }
+
+        [ud setObject:books forKey:@"books"];
+
+        [ud synchronize];
     }
-
-    [ud setObject:books forKey:@"books"];
-
-    [ud synchronize];
+    @catch(NSException *ex)
+    {
+        NSLog(@"Error: %@", ex);
+    }
 }
 
+- (LOXBook *)findBookWithId:(NSString *)packageId
+{
+    for (LOXBook *book in self.books) {
+        if ([book.packageId compare:packageId] == NSOrderedSame) {
+            return book;
+        }
+    }
+
+    return nil;
+}
 
 - (LOXBook *)findBookForPath:(NSString *)path
 {

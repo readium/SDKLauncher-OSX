@@ -1,5 +1,3 @@
-//  LauncherOSX
-//
 //  Created by Boris Schneiderman.
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
@@ -19,19 +17,35 @@
 
 #import <Foundation/Foundation.h>
 
-
-@interface LOXScriptInjector : NSObject    {
-
-@private
+@class LOXOpenPageInfo;
 
 
-}
+NSString *const LOXPageChangedEvent = @"PageChangedEvent";
 
-@property (nonatomic, retain) NSString *baseUrlPath;
-
--(id)init;
-
-- (NSString *)injectHtmlFile:(NSString *)path;
+@interface LOXCurrentPagesInfo : NSObject
 
 
+@property (nonatomic, readonly) NSArray *openPages;
+@property (nonatomic) bool isFixedLayout;
+@property (nonatomic) int spineItemCount;
+@property (nonatomic, retain) NSString* pageProgressionDirection;
+
+
+- (void)fromDictionary:(NSDictionary *)dict;
+
+- (bool)canGoNext;
+
+- (bool)canGoLeft;
+
+- (bool)canGoRight;
+
+- (bool)canGoPrev;
+
+- (LOXOpenPageInfo *)firstOpenPage;
+
+- (NSArray *)getPageNumbers;
+
+- (bool)isOpen;
+
+- (int)getPageCount;
 @end

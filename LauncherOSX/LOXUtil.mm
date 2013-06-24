@@ -31,18 +31,10 @@
     return [(NSString *) string autorelease];
 }
 
-+ (void)ensureDirectoryForFile:(NSString*)filePath
++(id)valueForKey:(NSString *)keyName orDefault:(id)defaultValue fromDictionary:(NSDictionary*)dict
 {
-    NSString * dirPath = [filePath stringByDeletingLastPathComponent];
-
-    NSError * error = nil;
-    [[NSFileManager defaultManager] createDirectoryAtPath:dirPath
-                              withIntermediateDirectories:YES
-                                               attributes:nil
-                                                    error:&error];
-    if (error != nil) {
-        NSLog(@"error creating directory: %@", error);
-    }
+    id val = [dict objectForKey:keyName];
+    return val ? val : defaultValue;
 }
 
 @end

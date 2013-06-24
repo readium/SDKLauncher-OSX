@@ -1,28 +1,37 @@
+//  Created by Boris Schneiderman.
+//  Copyright (c) 2012-2013 The Readium Foundation.
 //
-// Created by boriss on 2013-03-15.
+//  The Readium SDK is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
 //
-// To change the template use AppCode | Preferences | File Templates.
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
 //
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #import "LOXTocViewController.h"
 #import "LOXToc.h"
 #import "LOXAppDelegate.h"
-#import "LOXePubSdkApi.h"
+#import "LOXPackage.h"
 
 
 @interface LOXTocViewController ()
+- (void)updateToc;
+
 - (BOOL)isClickableItem:(LOXTocEntry *)item;
-
-
-- (NSString *)resolveContentRef:(NSString *)contentRef;
 
 @end
 
 @implementation LOXTocViewController {
 
-    LOXToc* _toc;
     NSMutableArray *_cells;
+    LOXPackage *_package;
 
 }
 
@@ -43,22 +52,16 @@
     [_outlineView setAction:@selector(clickInView:)];
 }
 
--(void) setToc:(LOXToc *)toc
+-(void)updateToc
 {
-    [_toc release];
-
-    _toc = toc;
-    [_toc retain];
-
     [_cells removeAllObjects];
     [_outlineView reloadData];
-
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
 {
     if(item == nil) { //root
-        return _toc;
+        return _package.toc;
     }
 
     LOXTocEntry * container = (LOXTocEntry *)item;
@@ -81,7 +84,7 @@
 {
     //root level
     if(item == nil) {
-        return _toc == nil ? 0 : 1;
+        return _package.toc == nil ? 0 : 1;
     }
 
     LOXTocEntry *container = (LOXTocEntry *)item;
@@ -98,8 +101,8 @@
 
 - (void)dealloc
 {
-    [_toc release];
     [_cells release];
+    [_package release];
     [super dealloc];
 }
 
@@ -161,52 +164,60 @@
         return;
     }
 
-    NSString *href = [self resolveContentRef:entry.contentRef];
-
-    [_appDelegate openContentDocRef:href];
+    [_appDelegate openContentUrl:entry.contentRef fromSourceFileUrl:_package.toc.sourceHref];
 }
 
 
-//because entry contentRef can be relative to the toc file but spine item are relative to the package document
-//we have to build the href path from toc location and entry content ref
--(NSString*) resolveContentRef:(NSString *)contentRef
+////because entry contentRef can be relative to the toc file but spine item are relative to the package document
+////we have to build the href path from toc location and entry content ref
+//-(NSString*) resolveContentRef:(NSString *)contentRef
+//{
+//    if(_package.toc.sourcerHref.length == 0) {
+//        return contentRef;
+//    }
+//
+//    //count and remove leading parent directory navigation ".."
+//    NSArray *contentPathComponents = [contentRef componentsSeparatedByString:@"/"];
+//
+//    int parentNavCount = 0;
+//    for(NSString *part in contentPathComponents) {
+//
+//        if(![part isEqualToString: @".."]) {
+//            break;
+//        }
+//
+//        parentNavCount++;
+//    }
+//
+//    NSRange range;
+//    range.location = parentNavCount;
+//    range.length = contentPathComponents.count - parentNavCount;
+//    contentPathComponents = [contentPathComponents subarrayWithRange:range];
+//    NSString * cleanedContentRef = [contentPathComponents componentsJoinedByString:@"/"];
+//
+//    //remove trailing directory navigation equal parent navigation count for contentRef path (above)
+//    //remove toc file name
+//    NSString *tocDir = [_package.toc.sourcerHref stringByDeletingLastPathComponent];
+//
+//    while(parentNavCount > 0 && tocDir.length > 0) {
+//        tocDir = [tocDir stringByDeletingLastPathComponent];
+//        parentNavCount--;
+//    }
+//
+//
+//    NSString* combinedPath = [tocDir stringByAppendingPathComponent:cleanedContentRef] ;
+//
+//    return combinedPath;
+//}
+
+- (void)setPackage:(LOXPackage *)package
 {
-    if(_toc.sourcerHref.length == 0) {
-        return contentRef;
-    }
 
-    //count and remove leading parent directory navigation ".."
-    NSArray *contentPathComponents = [contentRef componentsSeparatedByString:@"/"];
+    [_package release];
+    _package = package;
+    [_package retain];
 
-    int parentNavCount = 0;
-    for(NSString *part in contentPathComponents) {
+    [self updateToc];
 
-        if(![part isEqualToString: @".."]) {
-            break;
-        }
-
-        parentNavCount++;
-    }
-
-    NSRange range;
-    range.location = parentNavCount;
-    range.length = contentPathComponents.count - parentNavCount;
-    contentPathComponents = [contentPathComponents subarrayWithRange:range];
-    NSString * cleanedContentRef = [contentPathComponents componentsJoinedByString:@"/"];
-
-    //remove trailing directory navigation equal parent navigation count for contentRef path (above)
-    //remove toc file name
-    NSString *tocDir = [_toc.sourcerHref stringByDeletingLastPathComponent];
-
-    while(parentNavCount > 0 && tocDir.length > 0) {
-        tocDir = [tocDir stringByDeletingLastPathComponent];
-        parentNavCount--;
-    }
-
-
-    NSString* combinedPath = [tocDir stringByAppendingPathComponent:cleanedContentRef] ;
-
-    return combinedPath;
 }
-
 @end

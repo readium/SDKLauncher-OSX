@@ -22,38 +22,27 @@
 #import "LOXePubSdkApi.h"
 
 #import <ePub3/container.h>
-#import <ePub3/package.h>
-#import <ePub3/cfi.h>
 #import <ePub3/nav_table.h>
-#import <ePub3/nav_point.h>
 
 #import "LOXSpineItem.h"
-#import "LOXTemporaryFileStorage.h"
-#import "LOXUtil.h"
-#import "LOXToc.h"
+#import "LOXPackage.h"
 
 
 @interface LOXePubSdkApi ()
 
 - (void)cleanup;
 
-- (LOXTemporaryFileStorage *)findStorageWithId:(NSString *)storageId;
-
-- (void)saveContentOfReader:(ePub3::ArchiveReader const *)reader toPath:(NSString *)path inStorrage:(LOXTemporaryFileStorage *)storage;
-
-- (NSString *)unwrapCfi:(NSString *)cfi;
-
-- (NSString *)removeLeadingRelativeParentPath:(NSString *)path;
-
-- (void)copyTitleFromNavElement:(ePub3::NavigationElement *)element toEntry:(LOXTocEntry *)entry;
-
-
 - (void)readPackages;
 
 @end
 
-@implementation LOXePubSdkApi
+@implementation LOXePubSdkApi {
+    NSMutableArray *_packages;
 
+    ePub3::ContainerPtr _container;
+
+    LOXPackage* _currentPackage;
+}
 
 
 +(void)initialize
@@ -66,20 +55,26 @@
     self = [super init];
     
     if(self){
-        _spineItems = [[NSMutableArray array] retain];
-        _packageStorages = [[NSMutableArray array] retain];
+
+        _packages = [[NSMutableArray array] retain];
     }
 
     return self;
 }
 
-- (void)openFile:(NSString *)file
+- (LOXPackage *)openFile:(NSString *)file
 {
     [self cleanup];
 
-     _container = new ePub3::Container([file UTF8String]);
+     _container = ePub3::Container::OpenContainer([file UTF8String]);
 
     [self readPackages];
+
+    if([_packages count] > 0) {
+        return [_packages objectAtIndex:0];
+    }
+
+    return nil;
 }
 
 - (void)readPackages
@@ -88,254 +83,29 @@
 
     for (auto package = packages.begin(); package != packages.end(); ++package) {
 
-        LOXTemporaryFileStorage *storage = [self createStorageForPackage: *package];
-        [_packageStorages addObject:storage];
-
-        const ePub3::SpineItem *spineItem = (*package)->FirstSpineItem();
-        while (spineItem) {
-
-            LOXSpineItem *loxSpineItem = [[[LOXSpineItem alloc] initWithStorageId:storage.uuid forSdkSpineItem:spineItem] autorelease];
-            [_spineItems addObject:loxSpineItem];
-            spineItem = spineItem->Next();
-        }
+        [_packages addObject:[[[LOXPackage alloc] initWithSdkPackage:*package] autorelease]];
     }
 }
 
-- (LOXTemporaryFileStorage *)createStorageForPackage:(const ePub3::Package*)package
-{
-    NSString *packageBasePath = [NSString stringWithUTF8String:package->BasePath().c_str()];
-    return [[[LOXTemporaryFileStorage alloc] initWithUUID:[LOXUtil uuid] forBasePath:packageBasePath] autorelease];
-}
-
-- (NSArray *)getSpineItems
-{
-    return _spineItems;
-}
 
 - (void)dealloc
 {
     [self cleanup];
 
-    [_spineItems release];
-    [_packageStorages release];
+    [_packages release];
     [super dealloc];
 }
 
 - (void)cleanup
 {
-    [_packageStorages removeAllObjects];
-    [_spineItems removeAllObjects];
-
-    if (_container != NULL) {
-        delete _container;
-        _container = NULL;
-    }
+    [_packages removeAllObjects];
+    [_currentPackage release];
+    _currentPackage = nil;
 }
 
 
-- (NSString*)getPathToSpineItem:(LOXSpineItem *) spineItem
-{
-     auto manifestItem = [spineItem sdkSpineItem]->ManifestItem();
-    _package = manifestItem->Package();
-
-    LOXTemporaryFileStorage *storage = [self findStorageWithId:spineItem.packageStorageId];
 
 
-    if (!storage) {
-        NSLog(@"Package storrage with id %@ not found", spineItem.packageStorageId);
-        return spineItem.basePath;
-    }
-
-    NSString *fullPath = [storage absolutePathForFile: spineItem.basePath];
-
-    return fullPath;
-}
-
--(NSString*)getPackageID
-{
-    if (!_package) {
-        return @"";
-    }
-
-    return [NSString stringWithUTF8String:_package->PackageID().c_str()];
-}
-
--(NSString *)getPackageTitle
-{
-    if(!_package) {
-        return @"";
-    }
-
-    return [NSString stringWithUTF8String:_package->Title().c_str()];
-}
-
--(LOXTemporaryFileStorage *)findStorageWithId:(NSString *)storageId
-{
-    for(LOXTemporaryFileStorage * storage in _packageStorages)   {
-        if([storage.uuid isEqualToString:storageId]) {
-            return storage;
-        }
-    } 
-    
-    return nil;
-}
-
--(LOXTemporaryFileStorage *)findStorrageForPath:(NSString *) path
-{
-    for(LOXTemporaryFileStorage * storage in _packageStorages)   {
-        if([path rangeOfString:storage.uuid].location != NSNotFound ) {
-            return storage;
-        }
-    }
-
-    return nil;
-}
-
--(void)prepareResourceWithPath:(NSString *)path
-{
-    LOXTemporaryFileStorage *storage = [self findStorrageForPath:path];
-
-    if(!storage) {
-        return;
-    }
-    
-    if (![storage isLocalResourcePath:path]) {
-        return;
-    }
-
-    if([storage isResoursFoundAtPath:path]) {
-        return;
-    }
-
-    NSString * relativePath = [storage relativePathFromFullPath:path];
-
-    std::string str([relativePath UTF8String]);
-    auto reader = _package->ReaderForRelativePath(str);
-
-    if(reader == NULL){
-        NSLog(@"No archive found for path %@", relativePath);
-        return;
-    }
-
-    [self saveContentOfReader:reader toPath: path inStorrage:storage];
-}
-
-- (void)saveContentOfReader:(const ePub3::ArchiveReader *)reader toPath:(NSString *)path inStorrage:(LOXTemporaryFileStorage *)storage
-{
-    char buffer[1024];
-
-    NSMutableData * data = [NSMutableData data];
-
-    ssize_t readBytes = reader->read(buffer, 1024);
-
-    while (readBytes > 0) {
-        [data appendBytes:buffer length:(NSUInteger) readBytes];
-        readBytes = reader->read(buffer, 1024);
-    }
-
-    [storage saveData:data  toPaht:path];
-}
-
--(NSString*) getCfiForSpineItem:(LOXSpineItem *) spineItem
-{
-    ePub3::string cfi = _package->CFIForSpineItem([spineItem sdkSpineItem]).String();
-    NSString * nsCfi = [NSString stringWithUTF8String: cfi.c_str()];
-    return [self unwrapCfi: nsCfi];
-}
-
--(NSString *)unwrapCfi:(NSString *)cfi
-{
-    if ([cfi hasPrefix:@"epubcfi("] && [cfi hasSuffix:@")"]) {
-        NSRange r = NSMakeRange(8, [cfi length] - 9);
-        return [cfi substringWithRange:r];
-    }
-
-    return cfi;
-}
-
-- (LOXSpineItem *)findSpineItemWithBasePath:(NSString *)href
-{
-    for (LOXSpineItem * spineItem in _spineItems) {
-        if ([[self removeLeadingRelativeParentPath:spineItem.basePath] isEqualToString: [self removeLeadingRelativeParentPath:href]]) {
-            return spineItem;
-        }
-    }
-
-    return nil;
-}
-
-//path's can come from different files id different dpth and they may contain leading "../"
-//we have to remove it to compare path's
--(NSString*) removeLeadingRelativeParentPath: (NSString*) path
-{
-    NSString* ret = [NSString stringWithString:[path lowercaseString]];
-
-    while([ret hasPrefix:@"../"]) {
-        ret  = [ret substringFromIndex:3];
-    }
-
-    return ret;
-}
-
-- (LOXSpineItem *)findSpineItemWithIdref:(NSString *)idref
-{
-    for (LOXSpineItem * spineItem in _spineItems) {
-        if ([spineItem.idref isEqualToString:idref]) {
-            return spineItem;
-        }
-    }
-
-    return nil;
-}
-
-- (LOXToc*)getToc
-{
-    auto navTable = _package->NavigationTable("toc");
-
-    if(navTable == nil) {
-        return nil;
-    }
-
-    LOXToc *toc = [[[LOXToc alloc] init] autorelease];
-
-    toc.title = [NSString stringWithUTF8String:navTable->Title().c_str()];
-    if(toc.title.length == 0) {
-        toc.title = @"Table of content";
-    }
-
-    toc.sourcerHref = [NSString stringWithUTF8String:navTable->SourceHref().c_str()];
-
-    [self addNavElementChildrenFrom:navTable toTocEntry:toc];
-
-    return toc;
-}
-
-- (void)addNavElementChildrenFrom:(const ePub3::NavigationElement *)navElement toTocEntry:(LOXTocEntry *)parentEntry
-{
-    for (auto el = navElement->Children().begin(); el != navElement->Children().end(); el++) {
-
-        auto navPoint = dynamic_cast<ePub3::NavigationPoint*>(*el);
-
-        if(navPoint != nil) {
-
-            LOXTocEntry *entry = [[[LOXTocEntry alloc] init] autorelease];
-            [self copyTitleFromNavElement:navPoint toEntry:entry];
-            entry.contentRef = [NSString stringWithUTF8String:navPoint->Content().c_str()];
-
-            [parentEntry addChild:entry];
-
-            [self addNavElementChildrenFrom:navPoint toTocEntry:entry];
-        }
-
-    }
-}
-
--(void)copyTitleFromNavElement:(ePub3::NavigationElement*)element toEntry:(LOXTocEntry *)entry
-{
-    NSString *title = [NSString stringWithUTF8String: element->Title().c_str()];
-    entry.title = [title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-}
 
 
 @end

@@ -18,9 +18,13 @@
 
 #import "LOXPageNumberTextController.h"
 #import "LOXWebViewController.h"
+#import "LOXCurrentPagesInfo.h"
+#import "LOXOpenPageInfo.h"
 
 
 @interface LOXPageNumberTextController ()
+
+- (void)onPageChanged:(NSNotification*) notification;
 - (void)updatePageNumberControls;
 
 @end
@@ -30,31 +34,40 @@
 
 }
 
-@synthesize pageIx = _pageIx;
-@synthesize pageCount = _pageCount;
-
--(void)setPageIndex:(int)index ofPages:(int)count
+-(void)awakeFromNib
 {
-    _pageIx = index;
-    _pageCount = count;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onPageChanged:)
+                                                 name:LOXPageChangedEvent
+                                               object:nil];
+}
 
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
+}
+
+-(void)onPageChanged:(NSNotification*) notification
+{
     [self updatePageNumberControls];
 }
 
 - (void)updatePageNumberControls
 {
-    if (_pageCount <= 0) {
+    LOXOpenPageInfo *openPage = [self.currentPagesInfo firstOpenPage];
 
-        [self.pageNumberCtrl setEditable:NO];
-        [self.pageNumberCtrl setStringValue:@""];
-        [self.pageCountCtrl setStringValue:@"/"];
+    if (openPage) {
 
+        [self.pageNumberCtrl setEditable:YES];
+        [self.pageNumberCtrl setStringValue:[NSString stringWithFormat:@"%@", [[self.currentPagesInfo getPageNumbers] componentsJoinedByString:@" | "]]];
+        [self.pageCountCtrl setStringValue:[NSString stringWithFormat:@" / %d", [self.currentPagesInfo getPageCount]]];
     }
     else {
 
-        [self.pageNumberCtrl setEditable:YES];
-        [self.pageNumberCtrl setStringValue:[NSString stringWithFormat:@"%d", _pageIx + 1]];
-        [self.pageCountCtrl setStringValue:[NSString stringWithFormat:@"/ %d", _pageCount]];
+        [self.pageNumberCtrl setEditable:NO];
+        [self.pageNumberCtrl setStringValue:@""];
+        [self.pageCountCtrl setStringValue:@""];
 
     }
 }
@@ -64,9 +77,9 @@
 {
     int page =  (int)[self.pageNumberCtrl integerValue];
 
-    if(page > 0 && page <= _pageCount) {
+    if(page > 0 && page <= [self.currentPagesInfo getPageCount]) {
 
-        [self.webViewController openPageIndex:page - 1];
+        [self.webViewController openPage: page - 1];
     }
     else {
         NSBeep();

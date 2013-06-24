@@ -13,40 +13,36 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-
 
 
 #import <Foundation/Foundation.h>
-#import <ePub3/spine.h>
+#import <ePub3/package.h>
+
+@class LOXSpine;
+@class LOXSpineItem;
+@class LOXTemporaryFileStorage;
+@class LOXToc;
 
 
-namespace ePub3 {
-    class SpineItem;
-}
+@interface LOXPackage : NSObject
 
-@class LOXPackage;
+-(id)initWithSdkPackage:(ePub3::PackagePtr) sdkPackage;
 
-@interface LOXSpineItem : NSObject {
+- (NSString *)getProperty:(ePub3::string const &)propertyName withPrefix:(ePub3::string const &)prefix forObject:(ePub3::PropertyHolder *)object;
 
-@private
-    ePub3::SpineItemPtr _sdkSpineItem;
-    NSString* _idref;
+- (void)prepareResourceWithPath:(NSString *)path;
 
-    NSString* _packageStorrageId;
-}
-
-@property(nonatomic, readonly) NSString *idref;
-@property(nonatomic, readonly) NSString *packageStorageId;
-@property(nonatomic, readonly) NSString *href;
-@property(nonatomic, readonly) NSString *page_spread;
-@property(nonatomic, readonly) NSString *rendition_layout;
-
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage *)package;
-
-- (ePub3::SpineItemPtr) sdkSpineItem;
+- (NSString *)getCfiForSpineItem:(LOXSpineItem *)spineItem;
 
 
--(NSDictionary *)toDictionary;
+- (NSDictionary *)toDictionary;
+
+@property(nonatomic, readonly) LOXSpine *spine;
+@property(nonatomic, readonly) NSString *title;
+@property(nonatomic, readonly) NSString *packageId;
+@property(nonatomic, readonly) LOXToc *toc;
+@property(nonatomic, readonly) NSString* rendition_layout;
+@property(nonatomic, readonly) NSString* rootDirectory;
+
 
 @end

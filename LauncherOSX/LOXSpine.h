@@ -16,37 +16,27 @@
 //
 
 
-
 #import <Foundation/Foundation.h>
-#import <ePub3/spine.h>
+
+@class LOXSpineItem;
 
 
-namespace ePub3 {
-    class SpineItem;
-}
-
-@class LOXPackage;
-
-@interface LOXSpineItem : NSObject {
-
-@private
-    ePub3::SpineItemPtr _sdkSpineItem;
-    NSString* _idref;
-
-    NSString* _packageStorrageId;
-}
-
-@property(nonatomic, readonly) NSString *idref;
-@property(nonatomic, readonly) NSString *packageStorageId;
-@property(nonatomic, readonly) NSString *href;
-@property(nonatomic, readonly) NSString *page_spread;
-@property(nonatomic, readonly) NSString *rendition_layout;
-
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage *)package;
-
-- (ePub3::SpineItemPtr) sdkSpineItem;
+@interface LOXSpine : NSObject
 
 
--(NSDictionary *)toDictionary;
+@property (nonatomic, readonly) NSArray *items;
+@property (nonatomic, retain) NSString* direction;
 
+
+- (id)initWithDirection:(NSString *)direction;
+
+- (void)addItem:(LOXSpineItem *)spineItem;
+
+- (void)clear;
+
+- (NSInteger)itemCount;
+
+- (NSDictionary *)toDictionary;
+
+- (LOXSpineItem *)getSpineItemWithId:(NSString*)idref;
 @end

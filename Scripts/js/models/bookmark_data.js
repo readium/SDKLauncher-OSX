@@ -1,7 +1,3 @@
-//
-//  LOXZipHelper.h
-//  LauncherOSX
-//
 //  Created by Boris Schneiderman.
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
@@ -17,12 +13,25 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
 
-#import <Foundation/Foundation.h>
 
-@interface LOXZipHelper : NSObject
+/**
+ @class ReadiumSDK.Models.BookmarkData
+ */
+ReadiumSDK.Models.BookmarkData = function(idref, contentCFI) {
 
-+ (void)unzipFile:(NSString *)fileName toFolder:(NSString *)destinationFolder;
+    /**
+     * spine item idref
+     * @property idref
+     * @type {string}
+     */
+    this.idref = idref;
 
-@end
+    /**
+     * cfi of the first visible element
+     * @property contentCFI
+     * @type {string}
+     */
+    this.contentCFI = contentCFI;
+
+};

@@ -21,32 +21,52 @@
 
 #import "LOXSpineViewController.h"
 #import "LOXSpineItem.h"
+#import "LOXSpine.h"
+#import "LOXPackage.h"
+#import "LOXCurrentPagesInfo.h"
+#import "LOXOpenPageInfo.h"
 
 
 @interface LOXSpineViewController ()
 
+- (void)onPageChanged:(id)onPageChanged;
+
+- (LOXSpineItem *)getOpenSpineItem;
 @end
 
-@implementation LOXSpineViewController
+@implementation LOXSpineViewController {
 
-- (id)init
+    LOXPackage *_package;
+
+}
+
+- (void)awakeFromNib
 {
-    self = [super init];
-    if (self) {
-        _spineItems = [[NSMutableArray alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onPageChanged:)
+                                                 name:LOXPageChangedEvent
+                                               object:nil];
+}
+
+- (void)onPageChanged:(id)onPageChanged
+{
+    LOXSpineItem *openSpineItem = [self getOpenSpineItem];
+
+    if(!openSpineItem) {
+        return;
     }
 
-    return self;
+    [self selectSpieItem:openSpineItem];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
-    return [_spineItems count];
+    return [_package.spine itemCount];
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    LOXSpineItem *item = [_spineItems objectAtIndex:(NSUInteger) row];
+    LOXSpineItem *item = [[_package.spine items] objectAtIndex:(NSUInteger) row];
 
     NSString* propIdentifier = [tableColumn identifier];
     return [item valueForKey:propIdentifier];
@@ -54,18 +74,41 @@
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification
 {
-    NSTableView *tableView = notification.object;
-    NSInteger row = [tableView selectedRow];
+    LOXSpineItem * selectedItem = [self getSelectedItem];
 
-    LOXSpineItem * selectedItem = row == -1 ? nil : [_spineItems objectAtIndex:(NSUInteger) row];
+    if(!selectedItem) {
+        return;
+    }
 
-    [self.selectionChangedLiscener spineView:self selectionChangedTo:selectedItem];
+    LOXSpineItem *openSpineItem = [self getOpenSpineItem];
+
+    if(selectedItem != openSpineItem) {
+        [self.selectionChangedLiscener spineView:self selectionChangedTo:selectedItem];
+    }
+}
+
+- (LOXSpineItem *)getOpenSpineItem
+{
+    LOXOpenPageInfo *openPage = self.currentPagesInfo.firstOpenPage;
+
+    if(!openPage) {
+        return nil;
+    }
+
+    return [_package.spine getSpineItemWithId:openPage.idref];
+}
+
+- (LOXSpineItem *)getSelectedItem
+{
+    NSInteger row = [_tableView selectedRow];
+    LOXSpineItem * selectedItem = row == -1 ? nil : [[_package.spine items] objectAtIndex:(NSUInteger) row];
+    return selectedItem;
 }
 
 - (void)selectSpieItem: (LOXSpineItem *) spineItem
 {
-    for (NSUInteger i = 0; i < _spineItems.count; i++){
-        if ([_spineItems objectAtIndex:i] == spineItem) {
+    for (NSUInteger i = 0; i < _package.spine.itemCount; i++){
+        if ([[_package.spine items] objectAtIndex:i] == spineItem) {
             NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:i];
             [_tableView selectRowIndexes:indexSet byExtendingSelection:NO];
             break;
@@ -73,28 +116,19 @@
     }
 }
 
-- (void)addSpineItem:(NSString *)spineItem
+- (void)setPackage:(LOXPackage *)package
 {
-    [_spineItems addObject:spineItem];
-    [_tableView reloadData];
-}
+    [_package release];
+    _package = package;
+    [_package retain];
 
-- (void)clear
-{
-    [_spineItems removeAllObjects];
     [_tableView reloadData];
-}
-
-- (void)selectSpineIndex:(NSUInteger)index
-{
-    [_tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
 }
 
 
 - (void)dealloc
 {
-    [self clear];
-    [_spineItems release];
+    [_package release];
     [super dealloc];
 }
 
