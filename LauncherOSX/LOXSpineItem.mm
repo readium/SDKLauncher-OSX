@@ -48,6 +48,17 @@
         _idref = [[NSString stringWithUTF8String:str] retain];
         _sdkSpineItem = sdkSpineItem;
 
+//        _page_spread = @"";
+//
+//        auto spreadProp = sdkSpineItem->PropertyMatching("spread", "rendition");
+//        if(spreadProp != nullptr) {
+//
+//            auto zzz = spreadProp->Value();
+//            _page_spread = [NSString stringWithUTF8String: spreadProp->Value().c_str()];
+//        }
+//
+//        [_page_spread retain];
+
         if(sdkSpineItem->Spread() == ePub3::PageSpread::Left) {
             _page_spread = @"page-spread-left";
         }
@@ -57,7 +68,20 @@
         else{
             _page_spread = @"";
         }
+
         [_page_spread retain];
+
+
+        _rendition_layout = @"";
+        auto layoutProp = _sdkSpineItem->PropertyMatching("layout", "rendition");
+        if(layoutProp != nullptr) {
+            _rendition_layout = [NSString stringWithUTF8String: layoutProp->Value().c_str()];
+        }
+
+        [_rendition_layout retain];
+
+
+//        auto renditionValue = _sdkSpineItem->PropertyMatching("rendition", "layout")->Value();
 
 
         //////////////////////////////////////////////////zzzzz
@@ -68,29 +92,29 @@
         //_rendition_layout = [package getProperty:"layout" withPrefix:"rendition" forObject:_sdkSpineItem.get()];
 
         //This is what we do instead:
-        _rendition_layout = @"";
-
-        for(int i = 0; i < _sdkSpineItem->NumberOfProperties(); i++) {
-            auto prop = _sdkSpineItem->PropertyAt(i);
-
-            auto iriString = prop->PropertyIdentifier().IRIString();
-            NSString* tmp = [NSString stringWithUTF8String: iriString.c_str()];
-
-            if([tmp rangeOfString:@"reflowable"].location != NSNotFound) {
-                _rendition_layout = @"reflowable";
-                break;
-            }
-
-            if([tmp rangeOfString:@"pre-paginated"].location != NSNotFound) {
-                _rendition_layout = @"pre-paginated";
-                break;
-            }
-        }
-
-        //
-        /////////////////////////////////////////////////
-
-        [_rendition_layout retain];
+//        _rendition_layout = @"";
+//
+//        for(int i = 0; i < _sdkSpineItem->NumberOfProperties(); i++) {
+//            auto prop = _sdkSpineItem->PropertyAt(i);
+//
+//            auto iriString = prop->PropertyIdentifier().IRIString();
+//            NSString* tmp = [NSString stringWithUTF8String: iriString.c_str()];
+//
+//            if([tmp rangeOfString:@"reflowable"].location != NSNotFound) {
+//                _rendition_layout = @"reflowable";
+//                break;
+//            }
+//
+//            if([tmp rangeOfString:@"pre-paginated"].location != NSNotFound) {
+//                _rendition_layout = @"pre-paginated";
+//                break;
+//            }
+//        }
+//
+//        //
+//        /////////////////////////////////////////////////
+//
+//        [_rendition_layout retain];
     }
 
     return self;

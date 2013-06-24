@@ -114,7 +114,14 @@
 
 -(NSString*)getLayoutProperty
 {
-    return [self getProperty:"layout" withPrefix:"rendition" forObject: _sdkPackage.get()];
+    auto prop = _sdkPackage->PropertyMatching("layout", "rendition");
+    if(prop != nullptr) {
+        return [NSString stringWithUTF8String: prop->Value().c_str()];
+    }
+
+    return @"";
+
+//    return [self getProperty:"layout" withPrefix:"rendition" forObject: _sdkPackage.get()];
 
 }
 
