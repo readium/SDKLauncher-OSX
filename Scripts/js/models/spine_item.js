@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
+/*
  * Wrapper of the SpineItem object received from the host application
  *
  * @class ReadiumSDK.Models.SpineItem

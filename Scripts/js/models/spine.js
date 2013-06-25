@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
+/*
  *  Wrapper of the spine object received from hosting application
  *
  *  @class  ReadiumSDK.Models.Spine
@@ -22,21 +22,21 @@
 
 ReadiumSDK.Models.Spine = Backbone.Model.extend({
 
-    /**
+    /*
      * Collection of spine items
      * @property items
      * @type {Array}
      */
     items: [],
 
-    /**
+    /*
      * Page progression direction ltr|rtl|default
      * @property direction
      * @type {string}
      */
     direction: undefined,
 
-    /**
+    /*
      * @property package
      * @type {ReadiumSDK.Models.Package}
      *
