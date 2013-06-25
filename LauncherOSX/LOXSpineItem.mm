@@ -57,10 +57,17 @@
         else{
             _page_spread = @"";
         }
+
         [_page_spread retain];
 
-        _rendition_layout = [package getProperty:"layout" withPrefix:"rendition" forObject:_sdkSpineItem.get()];
+        _rendition_layout = @"";
+        auto layoutProp = _sdkSpineItem->PropertyMatching("layout", "rendition");
+        if(layoutProp != nullptr) {
+            _rendition_layout = [NSString stringWithUTF8String: layoutProp->Value().c_str()];
+        }
+
         [_rendition_layout retain];
+
     }
 
     return self;
@@ -78,7 +85,6 @@
 
     return dict;
 }
-
 
 - (void)dealloc
 {

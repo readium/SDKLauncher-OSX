@@ -47,6 +47,10 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
         $(window).on("resize.ReadiumSDK.readerView", _.bind(this.onViewportResize, this));
     },
 
+    isReflowable: function() {
+        return false;
+    },
+
     render: function(){
 
         this.template = _.template($("#template-fixed-view").html(), {});

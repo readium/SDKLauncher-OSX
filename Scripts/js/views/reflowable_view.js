@@ -78,6 +78,10 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         Backbone.View.prototype.remove.call(this);
     },
 
+    isReflowable: function() {
+        return true;
+    },
+
     onViewportResize: function() {
 
         if(this.updateViewportSize()) {
