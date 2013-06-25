@@ -28,19 +28,25 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     package: undefined,
     spine: undefined,
 
-    render: function() {
+    renderCurrentView: function(isReflowable) {
 
-        if(!this.package || ! this.spine) {
-            return;
+        if(this.currentView){
+
+            //current view is already rendered
+            if( this.currentView.isReflowable() === isReflowable) {
+                return;
+            }
+
+            this.resetCurrentView();
         }
 
-        if(this.package.isFixedLayout()) {
+        if(isReflowable) {
 
-            this.currentView = new ReadiumSDK.Views.FixedView({spine:this.spine});
+            this.currentView = new ReadiumSDK.Views.ReflowableView({spine:this.spine});
         }
         else {
 
-            this.currentView = new ReadiumSDK.Views.ReflowableView({spine:this.spine});
+            this.currentView = new ReadiumSDK.Views.FixedView({spine:this.spine});
         }
 
         this.$el.append(this.currentView.render().$el);
@@ -55,6 +61,17 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
     },
 
+    resetCurrentView: function() {
+
+        if(!this.currentView) {
+            return;
+        }
+
+        this.currentView.off("PaginationChanged");
+        this.currentView.remove();
+        this.currentView = undefined;
+    },
+
     /**
      * Triggers the process of opening the book and requesting resources specified in the packageData
      *
@@ -66,12 +83,10 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
      */
     openBook: function(packageData, openPageRequestData) {
 
-        this.reset();
-
         this.package = new ReadiumSDK.Models.Package({packageData: packageData});
         this.spine = this.package.spine;
 
-        this.render();
+        this.resetCurrentView();
 
         if(openPageRequestData) {
 
@@ -100,7 +115,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             if(spineItem) {
                 var pageOpenRequest = new ReadiumSDK.Models.PageOpenRequest(spineItem);
                 pageOpenRequest.setFirstPage();
-                this.currentView.openPage(pageOpenRequest);
+                this.openPage(pageOpenRequest);
             }
 
         }
@@ -140,23 +155,64 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
      * Opens the next page.
      */
     openPageNext: function() {
-        this.currentView.openPageNext();
+
+        var paginationInfo = this.currentView.getPaginationInfo();
+
+        if(paginationInfo.openPages.length == 0) {
+            return;
+        }
+
+        var lastOpenPage = paginationInfo.openPages[paginationInfo.openPages.length - 1];
+
+        if(lastOpenPage.spineItemPageIndex < lastOpenPage.spineItemPageCount - 1) {
+            this.currentView.openPageNext();
+            return;
+        }
+
+        var currentSpineItem = this.spine.getItemById(lastOpenPage.idref);
+
+        var nextSpineItem = this.spine.nextItem(currentSpineItem);
+
+        if(!nextSpineItem) {
+            return;
+        }
+
+        var openPageRequest = new ReadiumSDK.Models.PageOpenRequest(nextSpineItem);
+        openPageRequest.setFirstPage();
+
+        this.openPage(openPageRequest);
     },
 
     /**
      * Opens the previews page.
      */
     openPagePrev: function() {
-        this.currentView.openPagePrev();
-    },
 
-    reset: function() {
+        var paginationInfo = this.currentView.getPaginationInfo();
 
-        if(this.currentView) {
-
-            this.currentView.off("PaginationChanged");
-            this.currentView.remove();
+        if(paginationInfo.openPages.length == 0) {
+            return;
         }
+
+        var firstOpenPage = paginationInfo.openPages[0];
+
+        if(firstOpenPage.spineItemPageIndex > 0) {
+            this.currentView.openPagePrev();
+            return;
+        }
+
+        var currentSpineItem = this.spine.getItemById(firstOpenPage.idref);
+
+        var prevSpineItem = this.spine.prevItem(currentSpineItem);
+
+        if(!prevSpineItem) {
+            return;
+        }
+
+        var openPageRequest = new ReadiumSDK.Models.PageOpenRequest(prevSpineItem);
+        openPageRequest.setLastPage();
+
+        this.openPage(openPageRequest);
     },
 
     getSpineItem: function(idref) {
@@ -198,18 +254,18 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             pageData.setElementCfi(elementCfi);
         }
 
-        this.currentView.openPage(pageData);
+        this.openPage(pageData);
     },
 
     /**
      *
      * Opens specified page index of the current spine item
      *
-     * @method openPage
+     * @method openPageIndex
      *
      * @param {number} pageIndex Zero based index of the page in the current spine item
      */
-    openPage: function(pageIndex) {
+    openPageIndex: function(pageIndex) {
 
         if(!this.currentView) {
             return;
@@ -232,8 +288,15 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         }
 
+        this.openPage(pageRequest);
+    },
+
+    openPage: function(pageRequest) {
+
+        this.renderCurrentView(pageRequest.spineItem.isReflowable());
         this.currentView.openPage(pageRequest);
     },
+
 
     /**
      *
@@ -255,7 +318,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             pageData.setPageIndex(pageIndex);
         }
 
-        this.currentView.openPage(pageData);
+        this.openPage(pageData);
     },
 
     /**
@@ -297,7 +360,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             pageData.setElementId(elementId);
         }
 
-        this.currentView.openPage(pageData);
+        this.openPage(pageData);
     },
 
     /**
