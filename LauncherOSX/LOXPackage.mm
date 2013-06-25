@@ -98,20 +98,6 @@
     return self;
 }
 
--(NSString*)getProperty:(const ePub3::string&)propertyName withPrefix:(const ePub3::string&)prefix forObject:(ePub3::PropertyHolder*)object
-{
-    auto iri = _sdkPackage->MakePropertyIRI(propertyName, prefix);
-    auto propertyList = object->PropertiesMatching(iri);
-
-    if(propertyList.size() > 0) {
-        auto prop = propertyList[0];
-        NSString * value = [NSString stringWithUTF8String:prop->Value().c_str()];
-        return value;
-    }
-
-    return @"";
-}
-
 -(NSString*)getLayoutProperty
 {
     auto prop = _sdkPackage->PropertyMatching("layout", "rendition");
@@ -120,9 +106,6 @@
     }
 
     return @"";
-
-//    return [self getProperty:"layout" withPrefix:"rendition" forObject: _sdkPackage.get()];
-
 }
 
 - (void)dealloc {
