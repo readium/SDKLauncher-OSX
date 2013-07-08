@@ -17,7 +17,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
+/*
  * Renders reflowable content using CSS columns
  *
  * @class ReadiumSDK.Views.ReflowableView
@@ -76,6 +76,10 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         //base remove
         Backbone.View.prototype.remove.call(this);
+    },
+
+    isReflowable: function() {
+        return true;
     },
 
     onViewportResize: function() {

@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
+/*
  * View for rendering fixed layout page spread
  * @class ReadiumSDK.Views.FixedView
  */
@@ -45,6 +45,10 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
 
         //event with namespace for clean unbinding
         $(window).on("resize.ReadiumSDK.readerView", _.bind(this.onViewportResize, this));
+    },
+
+    isReflowable: function() {
+        return false;
     },
 
     render: function(){
