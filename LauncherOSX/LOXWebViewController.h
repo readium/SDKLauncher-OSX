@@ -31,6 +31,8 @@
 @class LOXPackage;
 @class LOXCurrentPagesInfo;
 @class LOXBookmark;
+@class LOXPreferences;
+
 
 
 @interface LOXWebViewController : NSObject<LOXSpineViewControllerDelegate> {
@@ -42,6 +44,9 @@
 - (void) clear;
 
 - (void)onOpenPage:(NSString *)currentPaginationInfo;
+- (void)onReaderInitialized;
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 
 @property (assign) IBOutlet NSButton *leftPageButton;
 @property (assign) IBOutlet NSButton *rightPageButton;
@@ -49,6 +54,7 @@
 @property (assign) IBOutlet LOXAppDelegate *appDelegate;
 
 @property (nonatomic, retain) LOXCurrentPagesInfo *currentPagesInfo;
+
 
 - (IBAction)onLeftPageClick:(id)sender;
 - (IBAction)onRightPageClick:(id)sender;
@@ -66,5 +72,7 @@
 - (NSString *)getCurrentPageCfi;
 
 - (void)openPackage:(LOXPackage *)package;
+
+-(void)observePreferences:(LOXPreferences *)preferences;
 
 @end
