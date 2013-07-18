@@ -256,7 +256,7 @@
 - (void)openPage:(int)pageIndex
 {
     WebScriptObject* script = [_webView windowScriptObject];
-    [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.openPage(%d)", pageIndex]];
+    [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.openPageIndex(%d)", pageIndex]];
 }
 
 - (void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef

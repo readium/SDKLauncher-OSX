@@ -1,0 +1,12 @@
+{
+    "name": "ReadiumSDK DOM Access Layer API",
+    "description": "Public API for JavaScript layer of ReadiumSDK project",
+    "logo": "icon_32x32@2x.png",
+    "version": "0.5.0",
+    "url": "https://github.com/readium",
+        "options": {
+        "linkNatives": "true",
+        "outdir": "./yuidoc_out",
+        "paths": "../Scripts"
+    }
+}
