@@ -18,12 +18,14 @@
 #import <Foundation/Foundation.h>
 
 @class LOXBook;
+@class LOXPreferences;
 
 
 @interface LOXUserData : NSObject
 
 
-@property (retain, nonatomic, readonly) NSArray *books;
+@property (nonatomic, retain, readonly) NSArray *books;
+@property (nonatomic, retain) LOXPreferences *preferences;
 
 - (void)save;
 

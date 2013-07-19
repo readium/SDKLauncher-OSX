@@ -17,6 +17,7 @@
 
 #import "LOXUserData.h"
 #import "LOXBook.h"
+#import "LOXPreferences.h"
 
 @interface LOXUserData ()
 
@@ -31,11 +32,13 @@
 @implementation LOXUserData {
 
     NSMutableArray *_books;
+    LOXPreferences *_preferences;
 
 }
 
 
 @synthesize books = _books;
+@synthesize preferences = _preferences;
 
 - (id)init
 {
@@ -44,6 +47,7 @@
     if (self) {
 
         self.books = [NSMutableArray array];
+        self.preferences = [[[LOXPreferences alloc] init] autorelease];
 
         [self load];
     }
@@ -61,6 +65,11 @@
 
         [self addBook:[LOXBook bookFromDictionary:dict]];
     }
+
+    NSDictionary * dict = [ud objectForKey:@"preferences"];
+
+    self.preferences = [dict ? ([[LOXPreferences alloc] initWithDictionary:dict])
+                                : ([[LOXPreferences alloc] init]) autorelease];
 }
 
 - (void)save
@@ -76,6 +85,8 @@
         }
 
         [ud setObject:books forKey:@"books"];
+
+        [ud setObject:[self.preferences toDictionary] forKey:@"preferences"];
 
         [ud synchronize];
     }
@@ -109,7 +120,7 @@
 
 - (void)dealloc
 {
-
+    [_preferences release];
     [_books release];
     [super dealloc];
 }

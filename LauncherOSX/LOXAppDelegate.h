@@ -32,6 +32,7 @@
 @class LOXTocViewController;
 @class LOXSpineItem;
 @class LOXCurrentPagesInfo;
+@class LOXPreferencesController;
 
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate>
@@ -40,15 +41,19 @@
 //ui
 @property (assign) IBOutlet NSWindow *window;
 
+@property (assign) IBOutlet NSMenuItem *preferencesMenu;
+
 @property (assign) IBOutlet LOXSpineViewController *spineViewController;
 @property (assign) IBOutlet LOXWebViewController *webViewController;
 @property (assign) IBOutlet LOXBookmarksController *bookmarksController;
 @property (assign) IBOutlet LOXTocViewController *tocViewController;
 @property (assign) IBOutlet LOXPageNumberTextController *pageNumController;
+@property (assign) IBOutlet LOXPreferencesController *preferencesController;
 
 @property (nonatomic, readonly) LOXCurrentPagesInfo *currentPagesInfo;
 
 - (IBAction)openDocument:(id)sender;
+- (IBAction)showPreferences:(id)sender;
 
 - (LOXBookmark*)createBookmark;
 

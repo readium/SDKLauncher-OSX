@@ -67,6 +67,8 @@
     _bookmark = bookmark;
     [_bookmark retain];
 
+    //Make sure that in nib file "Visible at launch" property set to false
+    //otherwise sheet il not be attached to the window
     [NSBundle loadNibNamed:@"BookmarkDlg" owner:self];
 
     [NSApp beginSheet:self.sheet
