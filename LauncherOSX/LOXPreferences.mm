@@ -20,7 +20,7 @@
     self = [super init];
     if(self) {
 
-        self.fontSize = [NSNumber numberWithInt:10];
+        self.fontSize = [NSNumber numberWithInt:100];
         self.isSyntheticSpread = [NSNumber numberWithBool:YES];
         self.columnGap = [NSNumber numberWithInt:20];
 
