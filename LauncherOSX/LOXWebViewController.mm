@@ -24,6 +24,7 @@
 #import "LOXSpineItem.h"
 #import "LOXCurrentPagesInfo.h"
 #import "LOXBookmark.h"
+#import "LOXPreferences.h"
 
 
 @interface LOXWebViewController ()
@@ -31,6 +32,8 @@
 -(void)onPageChanged:(NSNotification*) notification;
 
 - (NSString *)loadHtmlTemplate;
+
+- (void)updateSettings:(LOXPreferences *)preferences;
 
 - (void)updateUI;
 
@@ -40,12 +43,13 @@
 
     LOXPackage *_package;
     NSString* _baseUrlPath;
-
+    LOXPreferences *_preferences;
 }
 
 
 - (void)awakeFromNib
 {
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onPageChanged:)
                                                  name:LOXPageChangedEvent
@@ -106,7 +110,6 @@
     _package = package;
     [_package retain];
 
-
     NSDictionary * dict = [_package toDictionary];
     NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
     NSString* jsonString = [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
@@ -115,20 +118,17 @@
     [_webView stringByEvaluatingJavaScriptFromString:callString];
 }
 
-//-(int) getPageForElementCfi:(NSString*) cfi
-//{
-//    WebScriptObject* script = [_webView windowScriptObject];
-//    NSString *callString = [NSString stringWithFormat:@"ReadiumSDK.reader.getPageForElementCfi(\"%@\")", cfi];
-//    NSString* ret = [script evaluateWebScript:callString];
-//
-//    if ([ret isMemberOfClass:[WebUndefined class]]){
-//        NSLog(@"cfi %@ not found", cfi);
-//        return -1;
-//    }
-//
-//    return [ret intValue];
-//}
+- (void)observePreferences:(LOXPreferences *)preferences
+{
+   [_preferences removeChangeObserver:self];
+   [_preferences release];
 
+    _preferences = preferences;
+    [_preferences retain];
+    [_preferences registerChangeObserver:self];
+
+    [self updateSettings:_preferences];
+}
 
 - (void)clear
 {
@@ -154,7 +154,7 @@
 //this allows JavaScript to call the -logJavaScriptString: method
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
 {
-    if( sel == @selector(onOpenPage:) ) {
+    if( sel == @selector(onOpenPage:) || sel == @selector(onReaderInitialized)) {
 
         return NO;
     }
@@ -166,8 +166,10 @@
 +(NSString*)webScriptNameForSelector:(SEL)sel
 {
     if(sel == @selector(onOpenPage:)) {
-
         return @"onOpenPage";
+    }
+    else if(sel == @selector(onReaderInitialized)) {
+        return @"onReaderInitialized";
     }
 
     return nil;
@@ -197,6 +199,30 @@
 
             [self.currentPagesInfo fromDictionary:dict];
         }
+}
+
+
+- (void)onReaderInitialized
+{
+    [self updateSettings:_preferences];
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if(object == _preferences) {
+        [self updateSettings:_preferences];
+    }
+
+}
+
+-(void)updateSettings:(LOXPreferences *)preferences
+{
+    NSDictionary * dict = [preferences toDictionary];
+    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
+    NSString* jsonString = [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+
+    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.updateSettings(%@)", jsonString];
+    [_webView stringByEvaluatingJavaScriptFromString:callString];
 }
 
 
@@ -232,8 +258,10 @@
 
     [_package release];
     [_baseUrlPath release];
-    [super dealloc];
+    [_preferences removeChangeObserver:self];
+    [_preferences release];
 
+    [super dealloc];
 }
 
 - (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem *)spineItem

@@ -33,6 +33,7 @@
 #import "LOXPackage.h"
 #import "LOXCurrentPagesInfo.h"
 #import "LOXPageNumberTextController.h"
+#import "LOXPreferencesController.h"
 
 using namespace ePub3;
 
@@ -92,6 +93,8 @@ using namespace ePub3;
     self.webViewController.currentPagesInfo = _currentPagesInfo;
     self.pageNumController.currentPagesInfo = _currentPagesInfo;
     self.spineViewController.selectionChangedLiscener = self.webViewController;
+
+    [self.webViewController observePreferences:_userData.preferences];
 
 }
 
@@ -239,9 +242,14 @@ using namespace ePub3;
     [self.webViewController openSpineItem:bookmark.idref elementCfi:bookmark.contentCFI];
 }
 
--(void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef
+- (void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef
 {
    [self.webViewController openContentUrl:contentRef fromSourceFileUrl:sourceRef];
+}
+
+- (IBAction)showPreferences:(id)sender
+{
+    [self.preferencesController showPreferences:_userData.preferences];
 }
 
 @end

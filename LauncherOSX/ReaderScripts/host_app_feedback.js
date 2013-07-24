@@ -1,3 +1,5 @@
+//  LauncherOSX
+//
 //  Created by Boris Schneiderman.
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
@@ -14,25 +16,22 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+ReadiumSDK.HostAppFeedback = function() {
 
-#import <Foundation/Foundation.h>
+    ReadiumSDK.on("ReaderInitialized", function(){
+        ReadiumSDK.reader.on("PaginationChanged", this.onPaginationChanged, this);
 
-@class LOXBook;
-@class LOXPreferences;
+        window.LauncherUI.onReaderInitialized();
 
+    }, this);
 
-@interface LOXUserData : NSObject
+    this.onPaginationChanged = function(paginationInfo) {
 
+        if (window.LauncherUI) {
+            window.LauncherUI.onOpenPage(JSON.stringify(paginationInfo));
+        }
 
-@property (nonatomic, retain, readonly) NSArray *books;
-@property (nonatomic, retain) LOXPreferences *preferences;
+    };
 
-- (void)save;
+}();
 
-- (LOXBook *)findBookWithId:(NSString *)packageId;
-
-- (LOXBook *)findBookForPath:(NSString *)path;
-
-
-- (void)addBook:(LOXBook *)book;
-@end
