@@ -18,7 +18,54 @@ body {
 #viewport {
     width: 100%;
     height: 100%;
+    position: relative;
+    background: red;
 }
+
+
+.book-box {
+    position: absolute;
+
+    padding: 20px;
+    margin: 20px;
+
+    border-left-style: ridge;
+    border-left-color: black;
+    border-left-width: 25px;
+
+    border-right-style: ridge;
+    border-right-color: black;
+    border-right-width: 25px;
+
+    border-top-style: ridge;
+    border-top-color: black;
+    border-top-width: 5px;
+
+    border-bottom-style: ridge;
+    border-bottom-color: black;
+    border-bottom-width: 5px;
+
+    background: green;
+}
+
+
+/*Fixed layout */
+
+.book-box-fixed {
+
+}
+
+
+.page-box-fixed {
+    position: absolute;
+}
+
+
+.iframe-fixed {
+    width: 100%;
+    height: 100%;
+}
+
 
 #viewport_reflowable {
 	height: 100%;
@@ -29,6 +76,12 @@ body {
 	visibility: visible;
 	overflow: hidden;
 }
+
+
+.book-box-reflowable {
+
+}
+
 
 .content-box {
     position: absolute;
@@ -41,32 +94,7 @@ iframe {
     border-width: 0;
 }
 
-.iframe-fixed {
-    width: 100%;
-    height: 100%;
-}
 
-.left-page {
 
-    left: 0;
-    width: 50%;
-    height: 100%;
-}
 
-.right-page {
-    left: 50%;
-    width: 50%;
-    height: 100%;
-}
-
-.center-page {
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.page-wrap-fixed {
-
-    position: absolute;
-}
 
