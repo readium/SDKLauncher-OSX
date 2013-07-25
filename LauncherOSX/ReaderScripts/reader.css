@@ -15,13 +15,17 @@ body {
 	-webkit-box-sizing:border-box; /* Safari */
 }
 
+iframe {
+    border-width: 0;
+}
+
+
 #viewport {
     width: 100%;
     height: 100%;
     position: relative;
     background: red;
 }
-
 
 .book-box {
     position: absolute;
@@ -66,33 +70,24 @@ body {
     height: 100%;
 }
 
-
-#viewport_reflowable {
-	height: 100%;
-	width: 100%;
-	margin: 0;
-	padding: 0;
-	opacity: 1;
-	visibility: visible;
-	overflow: hidden;
-}
-
+/*Reflowable layout*/
 
 .book-box-reflowable {
-
+    position: absolute;
+    left:0;
+    top:0;
+    right: 0;
+    bottom: 0;
 }
 
-
-.content-box {
+#content-box-reflowable {
     position: absolute;
     opacity: 1;
     visibility: visible;
     overflow: hidden;
+    background: lemonchiffon;
 }
 
-iframe {
-    border-width: 0;
-}
 
 
 
