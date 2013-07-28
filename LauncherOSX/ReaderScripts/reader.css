@@ -7,7 +7,7 @@ body {
     height: 100%;
     width: 100%;
     margin: 0;
-    padding: 20px;
+    padding: 10px;
     position: absolute;
     overflow: hidden;
     box-sizing:border-box;
@@ -27,8 +27,8 @@ iframe {
     background: red;
 }
 
-.book-box {
-    position: absolute;
+.book-frame {
+    position: absolute !important;
 
     padding: 20px;
     margin: 20px;
@@ -52,18 +52,72 @@ iframe {
     background: green;
 }
 
+.page-frame-left {
+
+    border-left-style: outset;
+    border-left-color: cyan;
+    border-left-width: 5px;
+
+    border-right-style: solid;
+    border-right-color: cyan;
+    border-right-width: 0px;
+
+    border-top-style: outset;
+    border-top-color: cyan;
+    border-top-width: 5px;
+
+    border-bottom-style: outset;
+    border-bottom-color: cyan;
+    border-bottom-width: 5px;
+}
+
+.page-frame-right {
+
+    border-left-style: outset;
+    border-left-color: cyan;
+    border-left-width: 0px;
+
+    border-right-style: solid;
+    border-right-color: cyan;
+    border-right-width: 5px;
+
+    border-top-style: outset;
+    border-top-color: cyan;
+    border-top-width: 5px;
+
+    border-bottom-style: outset;
+    border-bottom-color: cyan;
+    border-bottom-width: 5px;
+
+}
+
+.page-frame-center {
+
+    border-left-style: outset;
+    border-left-color: cyan;
+    border-left-width: 5px;
+
+    border-right-style: solid;
+    border-right-color: cyan;
+    border-right-width: 5px;
+
+    border-top-style: outset;
+    border-top-color: cyan;
+    border-top-width: 5px;
+
+    border-bottom-style: outset;
+    border-bottom-color: cyan;
+    border-bottom-width: 5px;
+
+}
+
 
 /*Fixed layout */
 
-.book-box-fixed {
 
+.page-frame-fixed {
+    position: absolute !important;
 }
-
-
-.page-box-fixed {
-    position: absolute;
-}
-
 
 .iframe-fixed {
     width: 100%;
@@ -72,16 +126,18 @@ iframe {
 
 /*Reflowable layout*/
 
-.book-box-reflowable {
-    position: absolute;
+#book-frame-reflowable {
+    position: absolute !important;
     left:0;
     top:0;
     right: 0;
     bottom: 0;
 }
 
-#content-box-reflowable {
-    position: absolute;
+
+
+#content-frame-reflowable {
+    position: absolute !important;
     opacity: 1;
     visibility: visible;
     overflow: hidden;
