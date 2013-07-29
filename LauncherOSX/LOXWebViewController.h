@@ -71,7 +71,7 @@
 
 - (NSString *)getCurrentPageCfi;
 
-- (void)openPackage:(LOXPackage *)package;
+- (void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark;
 
 -(void)observePreferences:(LOXPreferences *)preferences;
 

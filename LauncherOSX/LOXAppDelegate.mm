@@ -37,6 +37,8 @@
 
 using namespace ePub3;
 
+FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
+
 @interface LOXAppDelegate ()
 
 
@@ -45,6 +47,8 @@ using namespace ePub3;
 - (LOXBook *)findOrCreateBookForCurrentPackageWithPath:(NSString *)path;
 
 - (void)reportError:(NSString *)error;
+
+- (void)onPageChanged:(id)onPageChanged;
 
 - (bool)openDocumentWithPath:(NSString *)path;
 
@@ -96,6 +100,22 @@ using namespace ePub3;
 
     [self.webViewController observePreferences:_userData.preferences];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onPageChanged:)
+                                                 name:LOXPageChangedEvent
+                                               object:nil];
+
+}
+
+- (void)onPageChanged:(id)onPageChanged
+{
+    LOXBookmark *bookmark = [self createBookmark];
+
+    if(bookmark) {
+
+        bookmark.title = @"lastOpenPage";
+        _currentBook.lastOpenPage = bookmark;
+    }
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
@@ -139,7 +159,7 @@ using namespace ePub3;
 
         [self.window setTitle:[path lastPathComponent]];
 
-        [self.webViewController openPackage:_package];
+        [self.webViewController openPackage:_package onPage:_currentBook.lastOpenPage];
 
         return YES;
     }
@@ -217,7 +237,6 @@ using namespace ePub3;
 
 - (LOXBookmark *)createBookmark
 {
-    NSInteger n = _currentBook.bookmarks.count + 1;
 
     LOXBookmark *bookmark = [self.webViewController createBookmark];
     if(!bookmark) {
@@ -229,8 +248,7 @@ using namespace ePub3;
         return nil;
     }
 
-    bookmark.title = [NSString stringWithFormat:@"Bookmark #%li", n];
-    bookmark.basePath = spineItem.href;
+     bookmark.basePath = spineItem.href;
     bookmark.spineItemCFI = [_package getCfiForSpineItem: spineItem];
 
     return bookmark;
