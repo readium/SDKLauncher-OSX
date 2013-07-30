@@ -20,7 +20,7 @@
 @class LOXOpenPageInfo;
 
 
-NSString *const LOXPageChangedEvent = @"PageChangedEvent";
+
 
 @interface LOXCurrentPagesInfo : NSObject
 

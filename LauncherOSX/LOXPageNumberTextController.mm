@@ -20,6 +20,7 @@
 #import "LOXWebViewController.h"
 #import "LOXCurrentPagesInfo.h"
 #import "LOXOpenPageInfo.h"
+#import "LOXAppDelegate.h"
 
 
 @interface LOXPageNumberTextController ()

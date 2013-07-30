@@ -25,6 +25,7 @@
 #import "LOXCurrentPagesInfo.h"
 #import "LOXBookmark.h"
 #import "LOXPreferences.h"
+#import "LOXAppDelegate.h"
 
 
 @interface LOXWebViewController ()
@@ -37,6 +38,7 @@
 
 - (void)updateUI;
 
+- (NSString *)toJson:(NSDictionary *)dict;
 @end
 
 @implementation LOXWebViewController {
@@ -104,17 +106,25 @@
 }
 
 
--(void)openPackage:(LOXPackage *)package
+-(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
 {
     [_package release];
     _package = package;
     [_package retain];
 
-    NSDictionary * dict = [_package toDictionary];
-    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
-    NSString* jsonString = [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+    NSString *packageJson = [self toJson:[_package toDictionary]];
 
-    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", jsonString];
+    NSString* callString;
+
+    if(bookmark) {
+        NSDictionary *locationDict = [[[NSDictionary alloc] initWithObjectsAndKeys:bookmark.idref, @"idref", bookmark.contentCFI, @"elementCfi", nil] autorelease];
+        NSString* jsonLocation = [self toJson:locationDict];
+        callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@,%@)", packageJson, jsonLocation];
+    }
+    else {
+        callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", packageJson];
+    }
+
     [_webView stringByEvaluatingJavaScriptFromString:callString];
 }
 
@@ -154,7 +164,7 @@
 //this allows JavaScript to call the -logJavaScriptString: method
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
 {
-    if( sel == @selector(onOpenPage:) || sel == @selector(onReaderInitialized)) {
+    if( sel == @selector(onOpenPage:) || sel == @selector(onReaderInitialized) || sel == @selector(onSettingsApplied)) {
 
         return NO;
     }
@@ -170,6 +180,9 @@
     }
     else if(sel == @selector(onReaderInitialized)) {
         return @"onReaderInitialized";
+    }
+    else if(sel == @selector(onSettingsApplied)) {
+        return @"onSettingsApplied";
     }
 
     return nil;
@@ -198,6 +211,7 @@
         else {
 
             [self.currentPagesInfo fromDictionary:dict];
+            [[NSNotificationCenter defaultCenter] postNotificationName:LOXPageChangedEvent object:self];
         }
 }
 
@@ -321,5 +335,16 @@
     return bookmark;
 }
 
+-(NSString *)toJson:(NSDictionary *)dict
+{
+    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
+    return [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+}
+
+
+-(void)onSettingsApplied
+{
+    NSLog(@"Settings has been applied to the reader");
+}
 
 @end

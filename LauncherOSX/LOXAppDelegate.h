@@ -34,6 +34,7 @@
 @class LOXCurrentPagesInfo;
 @class LOXPreferencesController;
 
+NSString *const LOXPageChangedEvent = @"PageChangedEvent";
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate>
 
