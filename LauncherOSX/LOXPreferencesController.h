@@ -13,8 +13,13 @@
 @interface LOXPreferencesController : NSObject
 
 - (IBAction)onClose:(id)sender;
+- (IBAction)onApplyStyle:(id)sender;
+- (IBAction)selectorSelected:(id)sender;
 
 @property (assign) IBOutlet NSWindow *sheet;
+
+@property (assign) IBOutlet NSPopUpButton *selectorsCtrl;
+@property (assign) IBOutlet NSTextField *styleCtrl;
 
 @property(nonatomic, retain) LOXPreferences *preferences;
 

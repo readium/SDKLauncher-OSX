@@ -8,14 +8,40 @@
 
 #import "LOXPreferencesController.h"
 #import "LOXPreferences.h"
+#import "LOXSampleStylesProvider.h"
+
+@interface LOXPreferencesController ()
+- (void)updateStylesUI;
+@end
 
 @implementation LOXPreferencesController {
     LOXPreferences *_preferences;
+    LOXSampleStylesProvider *_stylesProvider;
 }
 
-- (IBAction)onClose:(id)sender {
+- (IBAction)onClose:(id)sender
+{
     [self closeSheet];
 }
+
+- (IBAction)onApplyStyle:(id)sender
+{
+
+}
+
+- (IBAction)selectorSelected:(id)sender
+{
+    NSString *selector = [self.selectorsCtrl titleOfSelectedItem];
+
+    NSString *style = [_stylesProvider styleForSelector:selector];
+
+    if(selector) {
+
+        [self.styleCtrl setStringValue:style];
+
+    }
+}
+
 
 - (void)showPreferences:(LOXPreferences *)preferences
 {
@@ -25,6 +51,7 @@
 
     _preferences = preferences;
     [_preferences retain];
+
 
     //Make sure that in nib file "Visible at launch" property set to false
     //otherwise sheet il not be attached to the window
@@ -36,9 +63,22 @@
        didEndSelector:nil
           contextInfo:nil];
 
+    [self updateStylesUI];
+
 }
 
+-(void)updateStylesUI
+{
+    [_stylesProvider release];
+    _stylesProvider = [[LOXSampleStylesProvider alloc] init];
+    [_stylesProvider retain];
 
+    [self.selectorsCtrl removeAllItems];
+    [self.selectorsCtrl addItemsWithTitles:[_stylesProvider selectors]];
+    [self.selectorsCtrl selectItemAtIndex:0];
+
+    [self selectorSelected: self];
+}
 
 - (void)closeSheet
 {
@@ -55,6 +95,7 @@
 
 - (void)dealloc {
     [_preferences release];
+    [_stylesProvider release];
     [super dealloc];
 }
 

@@ -20,7 +20,6 @@
 #import <Foundation/Foundation.h>
 
 @class LOXBook;
-@class LOXePubApi;
 @class LOXAppDelegate;
 @class LOXBookmarkEditController;
 @class LOXBookmark;
