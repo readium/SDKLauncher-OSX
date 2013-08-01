@@ -7,7 +7,7 @@
 
 
 #import "LOXSampleStylesProvider.h"
-
+#import "LOXCSSStyle.h"
 
 
 @implementation LOXSampleStylesProvider {
@@ -36,45 +36,93 @@
 
 - (NSDictionary *)parseCSS:(NSString *)content
 {
-    NSString *commentsPattern = @"(?<!"")\\/\\*.+?\\*\\/(?!"")";
+    content = [self removeCommentsFromString:content];
 
     NSError *error = NULL;
-    NSRegularExpression *regexComments = [NSRegularExpression regularExpressionWithPattern:commentsPattern
+
+//    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"([^{]+)\\s*\\{\\s*([^}]+)\\s*\\}"
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"([^{]+)\\{([^}]+)\\}"
                                                                            options:NSRegularExpressionCaseInsensitive
                                                                              error:&error];
 
-
-    content = [regexComments stringByReplacingMatchesInString:content
-                                                      options:NSRegularExpressionCaseInsensitive
-                                                        range:NSMakeRange(0, [content length])
-                                                 withTemplate:@""];
-
-    NSArray *tokens = [content componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"{}"]];
+    NSArray *matches = [regex matchesInString:content
+                                      options:0
+                                        range:NSMakeRange(0, [content length])];
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    NSString* selector;
-    NSString* style;
 
-    for(NSUInteger i = 1; i < tokens.count; i = i + 2) {
+    for(NSTextCheckingResult *match in matches) {
 
-        selector = [tokens[i-1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        style = tokens[i];
+        if(match.numberOfRanges == 3) {
 
-        NSString *trimmedStyle = [style stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if(selector.length > 0 && trimmedStyle.length > 0) {
-            [dict setObject:[NSString stringWithFormat:@"{%@}", style] forKey:selector];
+            NSString *selector = [content substringWithRange:[match rangeAtIndex:1]];
+            selector = [selector stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            NSString *block = [content substringWithRange:[match rangeAtIndex:2]];
+            NSDictionary *entries = [self parseStatementsFromBlock:block];
+
+            LOXCSSStyle *style = [[[LOXCSSStyle alloc] initWithSelector:selector content:block entries:entries] autorelease];
+            [dict setObject:style forKey:style.selector];
         }
+
+    }
+
+    return dict;
+
+}
+
+- (NSDictionary *)parseStatementsFromBlock:(NSString *)block {
+
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(.+?):(.+?);"
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:&error];
+
+    NSArray *matches = [regex matchesInString:block
+                                      options:0
+                                        range:NSMakeRange(0, [block length])];
+
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+
+    for(NSTextCheckingResult *match in matches) {
+
+        if(match.numberOfRanges == 3) {
+
+            NSString *name = [block substringWithRange:[match rangeAtIndex:1]];
+            name = [name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            NSString *value = [block substringWithRange:[match rangeAtIndex:2]];
+            value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+            [dict setObject:value forKey:name];
+        }
+
     }
 
     return dict;
 }
+
+-(NSString*) removeCommentsFromString:(NSString*)string
+{
+    NSError *error = NULL;
+    NSString *commentsPattern = @"(?<!"")\\/\\*.+?\\*\\/(?!"")";
+
+    NSRegularExpression *regexComments = [NSRegularExpression regularExpressionWithPattern:commentsPattern
+                                                                                   options:NSRegularExpressionCaseInsensitive
+                                                                                     error:&error];
+
+
+    return [regexComments stringByReplacingMatchesInString:string
+                                                      options:NSRegularExpressionCaseInsensitive
+                                                        range:NSMakeRange(0, [string length])
+                                                 withTemplate:@""];
+}
+
 
 -(NSArray *)selectors
 {
     return [_styles allKeys];
 }
 
--(NSString *)styleForSelector:(NSString *)selector
+-(LOXCSSStyle *)styleForSelector:(NSString *)selector
 {
     return _styles[selector];
 }

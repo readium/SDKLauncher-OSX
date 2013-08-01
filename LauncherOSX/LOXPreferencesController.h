@@ -19,7 +19,7 @@
 @property (assign) IBOutlet NSWindow *sheet;
 
 @property (assign) IBOutlet NSPopUpButton *selectorsCtrl;
-@property (assign) IBOutlet NSTextField *styleCtrl;
+@property (assign) IBOutlet NSTextView *styleCtrl;
 
 @property(nonatomic, retain) LOXPreferences *preferences;
 

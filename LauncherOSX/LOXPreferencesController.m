@@ -9,6 +9,7 @@
 #import "LOXPreferencesController.h"
 #import "LOXPreferences.h"
 #import "LOXSampleStylesProvider.h"
+#import "LOXCSSStyle.h"
 
 @interface LOXPreferencesController ()
 - (void)updateStylesUI;
@@ -33,11 +34,10 @@
 {
     NSString *selector = [self.selectorsCtrl titleOfSelectedItem];
 
-    NSString *style = [_stylesProvider styleForSelector:selector];
+    LOXCSSStyle *style = [_stylesProvider styleForSelector:selector];
 
     if(selector) {
-
-        [self.styleCtrl setStringValue:style];
+        [self.styleCtrl setString: style.content];
 
     }
 }

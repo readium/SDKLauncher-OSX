@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class LOXCSSStyle;
+
 
 @interface LOXSampleStylesProvider : NSObject
 
@@ -16,5 +18,5 @@
 
 - (NSArray *)selectors;
 
-- (NSString *)styleForSelector:(NSString *)selector;
+- (LOXCSSStyle *)styleForSelector:(NSString *)selector;
 @end

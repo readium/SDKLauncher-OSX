@@ -1,7 +1,5 @@
 
 .book-frame {
-    position: absolute !important;
-
     padding: 20px;
     margin: 20px;
 
@@ -22,16 +20,6 @@
     border-bottom-width: 5px;
 
     background: green;
-}
-
-
-.page-frame-fixed {
-    position: absolute !important;
-}
-
-.iframe-fixed {
-    width: 100%;
-    height: 100%;
 }
 
 .page-frame-left {
