@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class LOXPreferences;
+@class LOXWebViewController;
 
 @interface LOXPreferencesController : NSObject
 
@@ -22,6 +23,7 @@
 @property (assign) IBOutlet NSTextView *styleCtrl;
 
 @property(nonatomic, retain) LOXPreferences *preferences;
+@property(nonatomic, retain) LOXWebViewController *webViewController;
 
 -(void) showPreferences:(LOXPreferences*)preferences;
 -(void) closeSheet;

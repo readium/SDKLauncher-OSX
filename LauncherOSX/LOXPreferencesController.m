@@ -10,6 +10,7 @@
 #import "LOXPreferences.h"
 #import "LOXSampleStylesProvider.h"
 #import "LOXCSSStyle.h"
+#import "LOXWebViewController.h"
 
 @interface LOXPreferencesController ()
 - (void)updateStylesUI;
@@ -27,16 +28,20 @@
 
 - (IBAction)onApplyStyle:(id)sender
 {
+    NSString *selector = [self.selectorsCtrl titleOfSelectedItem];
 
+    if(selector) {
+        LOXCSSStyle *style = [_stylesProvider styleForSelector:selector];
+        [self.webViewController setStyle:style];
+    }
 }
 
 - (IBAction)selectorSelected:(id)sender
 {
     NSString *selector = [self.selectorsCtrl titleOfSelectedItem];
 
-    LOXCSSStyle *style = [_stylesProvider styleForSelector:selector];
-
     if(selector) {
+        LOXCSSStyle *style = [_stylesProvider styleForSelector:selector];
         [self.styleCtrl setString: style.content];
 
     }

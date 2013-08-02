@@ -100,6 +100,8 @@ FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
 
     [self.webViewController observePreferences:_userData.preferences];
 
+    self.preferencesController.webViewController = self.webViewController;
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onPageChanged:)
                                                  name:LOXPageChangedEvent

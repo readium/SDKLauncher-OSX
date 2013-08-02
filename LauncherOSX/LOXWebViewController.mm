@@ -26,6 +26,7 @@
 #import "LOXBookmark.h"
 #import "LOXPreferences.h"
 #import "LOXAppDelegate.h"
+#import "LOXCSSStyle.h"
 
 
 @interface LOXWebViewController ()
@@ -215,6 +216,13 @@
         }
 }
 
+-(void)setStyle:(LOXCSSStyle *)style
+{
+    NSString* declarations = [self toJson:style.declarations];
+
+    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setStyle(\"%@\",\"%@\")", style.selector, declarations];
+    [_webView stringByEvaluatingJavaScriptFromString:callString];
+}
 
 - (void)onReaderInitialized
 {

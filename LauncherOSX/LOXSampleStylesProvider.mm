@@ -58,9 +58,9 @@
             NSString *selector = [content substringWithRange:[match rangeAtIndex:1]];
             selector = [selector stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             NSString *block = [content substringWithRange:[match rangeAtIndex:2]];
-            NSDictionary *entries = [self parseStatementsFromBlock:block];
+            NSDictionary *declarations = [self parseStatementsFromBlock:block];
 
-            LOXCSSStyle *style = [[[LOXCSSStyle alloc] initWithSelector:selector content:block entries:entries] autorelease];
+            LOXCSSStyle *style = [[[LOXCSSStyle alloc] initWithSelector:selector content:block declarations:declarations] autorelease];
             [dict setObject:style forKey:style.selector];
         }
 
