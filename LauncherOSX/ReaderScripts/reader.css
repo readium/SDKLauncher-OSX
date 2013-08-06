@@ -28,11 +28,11 @@ iframe {
 
 /*Fixed layout */
 
-#book-frame-fixed {
+#fixed-book-frame {
     position: absolute !important;
 }
 
-.page-frame-fixed {
+.fixed-page-frame {
     position: absolute !important;
 }
 
@@ -44,7 +44,7 @@ iframe {
 
 /*Reflowable layout*/
 
-#book-frame-reflowable {
+#reflowable-book-frame {
     position: absolute !important;
     left:0;
     top:0;
@@ -52,7 +52,7 @@ iframe {
     bottom: 0;
 }
 
-#content-frame-reflowable {
+#reflowable-content-frame {
     position: absolute !important;
     opacity: 1;
     visibility: visible;
@@ -67,23 +67,33 @@ iframe {
 
 }
 
+.fixed-book-frame {
+
+}
+
 /*fixed layout frames only*/
-.page-frame-left {
+.fixed-page-frame-left {
 
 }
 
-.page-frame-right {
+.fixed-page-frame-right {
 
 }
 
-.page-frame-center {
+.fixed-page-frame-center {
 
 }
 
 /*reflowable layout*/
-.content-frame {
+.reflowable-book-frame {
 
 }
+
+.reflowable-content-frame {
+
+}
+
+
 
 
 

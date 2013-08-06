@@ -220,7 +220,7 @@
 {
     NSString* declarations = [self toJson:style.declarations];
 
-    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setStyle(\"%@\",\"%@\")", style.selector, declarations];
+    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setStyle(\"%@\",%@)", style.selector, declarations];
     [_webView stringByEvaluatingJavaScriptFromString:callString];
 }
 

@@ -19,10 +19,10 @@
     border-bottom-color: black;
     border-bottom-width: 5px;
 
-    background: green;
+    background: #7dbc73;
 }
 
-.page-frame-left {
+.fixed-page-frame-left {
 
     border-left-style: outset;
     border-left-color: cyan;
@@ -41,7 +41,7 @@
     border-bottom-width: 5px;
 }
 
-.page-frame-right {
+.fixed-page-frame-right {
 
     border-left-style: outset;
     border-left-color: cyan;
@@ -61,7 +61,7 @@
 
 }
 
-.page-frame-center {
+.fixed-page-frame-center {
 
     border-left-style: outset;
     border-left-color: cyan;
@@ -80,7 +80,7 @@
     border-bottom-width: 5px;
 }
 
-.content-frame {
+.reflowable-content-frame {
     border: 5px outset cyan;
     border-right-style: solid;
     background: lemonchiffon;

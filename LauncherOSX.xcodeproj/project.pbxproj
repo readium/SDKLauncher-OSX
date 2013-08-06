@@ -45,6 +45,7 @@
 		AD8C8673800C23241F4580E5 /* LOXBook.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C8280F38E9B894E512240 /* LOXBook.mm */; };
 		AD8C88181150EF3F56F98CF6 /* LOXToc.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C89FC764D79D48CE677C6 /* LOXToc.mm */; };
 		AD8C89E6EDC52FCF3247DDE2 /* LOXTocViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C84A9A8317F4A33CF8E3F /* LOXTocViewController.mm */; };
+		AD8C8AAB286212996B85854B /* LOXCSSParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C83B00F9FB913F1AA9F05 /* LOXCSSParser.mm */; };
 		AD8C8B777241C74E9F43FBC1 /* LOXTocEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C874F5D988F316B2F82AC /* LOXTocEntry.m */; };
 		AD8C8C250F0834BD0A00705A /* LOXPreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C8AEAB8B5247A5B9A5850 /* LOXPreferences.mm */; };
 		AD8C8D0C7929CFD9F068D423 /* LOXBookmarksController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C8D529AEBFEB697DDD1A6 /* LOXBookmarksController.mm */; };
@@ -166,6 +167,7 @@
 		AD8C82F57013B73CA6A6C6D0 /* LOXOpenPageInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXOpenPageInfo.h; sourceTree = "<group>"; };
 		AD8C833C5347AFE6E04A2943 /* LOXPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXPreferences.h; sourceTree = "<group>"; };
 		AD8C83A9144B9D7D511B15B2 /* LOXTocEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTocEntry.h; sourceTree = "<group>"; };
+		AD8C83B00F9FB913F1AA9F05 /* LOXCSSParser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXCSSParser.mm; sourceTree = "<group>"; };
 		AD8C83EF79530E06DC222D53 /* LOXCSSStyle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXCSSStyle.mm; sourceTree = "<group>"; };
 		AD8C841541DD1EF439C84D0E /* LOXCurrentPagesInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXCurrentPagesInfo.h; sourceTree = "<group>"; };
 		AD8C842F70081FB730F15DFC /* LOXUserData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXUserData.mm; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 		AD8C84A9A8317F4A33CF8E3F /* LOXTocViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXTocViewController.mm; sourceTree = "<group>"; };
 		AD8C84B7191C8676F84497C7 /* LOXBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXBookmark.h; sourceTree = "<group>"; };
 		AD8C8579F49901F4DF1AEECE /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		AD8C859915BA52DF64318CB7 /* LOXCSSParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXCSSParser.h; sourceTree = "<group>"; };
 		AD8C869CF03EFAA95618DE7C /* LOXSpine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSpine.h; sourceTree = "<group>"; };
 		AD8C86BBB399B4D50BC24F17 /* LOXTocViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTocViewController.h; sourceTree = "<group>"; };
 		AD8C874F5D988F316B2F82AC /* LOXTocEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXTocEntry.m; sourceTree = "<group>"; };
@@ -356,6 +359,8 @@
 				AD8C80D1982D46C86A4BEB37 /* LOXTemporaryFileStorage.h */,
 				AD8C8F410069609045A3F696 /* LOXSampleStylesProvider.mm */,
 				AD8C8AF2AB844074F32F3B5F /* LOXSampleStylesProvider.h */,
+				AD8C83B00F9FB913F1AA9F05 /* LOXCSSParser.mm */,
+				AD8C859915BA52DF64318CB7 /* LOXCSSParser.h */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -545,6 +550,7 @@
 				AD8C8C250F0834BD0A00705A /* LOXPreferences.mm in Sources */,
 				AD8C849E0CA86BA0F7F6BC19 /* LOXSampleStylesProvider.mm in Sources */,
 				AD8C810A0BAB1FA3DE565736 /* LOXCSSStyle.mm in Sources */,
+				AD8C8AAB286212996B85854B /* LOXCSSParser.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
