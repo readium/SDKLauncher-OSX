@@ -13,4 +13,5 @@
 
 + (NSDictionary *)parseCSS:(NSString *)cssContent;
 
++ (NSDictionary *)parseDeclarationsString:(NSString *)block error:(NSError**)error;
 @end

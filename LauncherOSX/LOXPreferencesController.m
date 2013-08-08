@@ -11,6 +11,8 @@
 #import "LOXSampleStylesProvider.h"
 #import "LOXCSSStyle.h"
 #import "LOXWebViewController.h"
+#import "LOXCSSParser.h"
+#import "LOXUtil.h"
 
 @interface LOXPreferencesController ()
 - (void)updateStylesUI;
@@ -28,11 +30,26 @@
 
 - (IBAction)onApplyStyle:(id)sender
 {
-    NSString *selector = [self.selectorsCtrl titleOfSelectedItem];
+   NSString *selector = [self.selectorsCtrl titleOfSelectedItem];
 
     if(selector) {
         LOXCSSStyle *style = [_stylesProvider styleForSelector:selector];
-        [self.webViewController setStyle:style];
+
+        NSString* block = [self.styleCtrl string];
+        NSError *error = NULL;
+        NSDictionary *declarations = [LOXCSSParser parseDeclarationsString:block error:&error];
+
+        if(error) {
+
+            NSString* msg = [NSString stringWithFormat:@"Parsing error: %@", error.localizedDescription];
+            [LOXUtil reportError:msg];
+
+            return;
+        }
+
+        style.declarationsBlock = block;
+
+        [self.webViewController setStyle:selector declarations:declarations];
     }
 }
 
@@ -42,7 +59,7 @@
 
     if(selector) {
         LOXCSSStyle *style = [_stylesProvider styleForSelector:selector];
-        [self.styleCtrl setString: style.content];
+        [self.styleCtrl setString: style.declarationsBlock];
 
     }
 }

@@ -37,4 +37,13 @@
     return val ? val : defaultValue;
 }
 
++(void)reportError:(NSString *)error
+{
+    NSLog(@"%@", error);
+
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert setMessageText:error];
+    [alert runModal];
+}
+
 @end

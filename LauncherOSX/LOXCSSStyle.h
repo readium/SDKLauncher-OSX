@@ -11,10 +11,10 @@
 
 @interface LOXCSSStyle : NSObject
 
--(id)initWithSelector:(NSString *)selector content:(NSString *)content declarations:(NSDictionary *)declarations;
+
+- (id)initWithSelector:(NSString *)selector declarationsBlock:(NSString *)declarations;
 
 @property (nonatomic, retain) NSString* selector;
-@property (nonatomic, retain) NSString* content;
-@property (nonatomic, readonly) NSDictionary *declarations;
+@property (nonatomic, copy) NSString* declarationsBlock;
 
 @end

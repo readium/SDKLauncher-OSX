@@ -42,9 +42,9 @@
             NSString *selector = [cssContent substringWithRange:[match rangeAtIndex:1]];
             selector = [selector stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             NSString *block = [cssContent substringWithRange:[match rangeAtIndex:2]];
-            NSDictionary *declarations = [self parseStatementsFromBlock:block];
+            block = [NSString stringWithFormat:@"{%@}", block];
 
-            LOXCSSStyle *style = [[[LOXCSSStyle alloc] initWithSelector:selector content:block declarations:declarations] autorelease];
+            LOXCSSStyle *style = [[[LOXCSSStyle alloc] initWithSelector:selector declarationsBlock:block] autorelease];
             [dict setObject:style forKey:style.selector];
         }
 
@@ -54,12 +54,18 @@
 
 }
 
-+ (NSDictionary *)parseDeclarationsFromString:(NSString *)block {
++ (NSDictionary *)parseDeclarationsString:(NSString *)block error:(NSError**)error
+{
+    block = [block stringByReplacingOccurrencesOfString:@"{" withString:@""];
+    block = [block stringByReplacingOccurrencesOfString:@"}" withString:@""];
 
-    NSError *error = NULL;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(.+?):(.+?);"
                                                                            options:NSRegularExpressionCaseInsensitive
-                                                                             error:&error];
+                                                                             error:error];
+
+    if(*error) {
+        return nil;
+    }
 
     NSArray *matches = [regex matchesInString:block
                                       options:0

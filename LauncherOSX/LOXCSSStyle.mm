@@ -21,30 +21,18 @@
 
 @implementation LOXCSSStyle {
 
-
-@private NSDictionary *_declarations;
-
 }
 
-@synthesize declarations = _declarations;
-
-- (id)initWithSelector:(NSString *)selector content:(NSString *)content declarations:(NSDictionary *)declarations
+- (id)initWithSelector:(NSString *)selector declarationsBlock:(NSString *)declarations
 {
     self = [super init];
     if(self) {
         self.selector = selector;
-        self.content = content;
-        _declarations = declarations;
-        [_declarations retain];
-    }
+        self.declarationsBlock = declarations;
+         }
 
     return self;
 }
 
-- (void)dealloc
-{
-    [_declarations release];
-    [super dealloc];
-}
 
 @end

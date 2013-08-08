@@ -59,7 +59,7 @@
 
 }
 
--(void) removeChangeObserver:(NSObject *)observer
+-(void)removeChangeObserver:(NSObject *)observer
 {
     for (id propertyName in _observableProperties) {
         [self removeObserver:observer forKeyPath:propertyName];

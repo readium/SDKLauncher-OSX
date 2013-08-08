@@ -34,6 +34,7 @@
 #import "LOXCurrentPagesInfo.h"
 #import "LOXPageNumberTextController.h"
 #import "LOXPreferencesController.h"
+#import "LOXUtil.h"
 
 using namespace ePub3;
 
@@ -45,8 +46,6 @@ FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
 - (NSString *)selectFile;
 
 - (LOXBook *)findOrCreateBookForCurrentPackageWithPath:(NSString *)path;
-
-- (void)reportError:(NSString *)error;
 
 - (void)onPageChanged:(id)onPageChanged;
 
@@ -166,14 +165,14 @@ FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
         return YES;
     }
     catch (NSException *e) {
-        [self reportError:[e reason]];
+        [LOXUtil reportError:[e reason]];
     }
     catch (std::exception& e) {
         auto msg = e.what();
-        [self reportError:[NSString stringWithUTF8String:msg]];
+        [LOXUtil reportError:[NSString stringWithUTF8String:msg]];
     }
     catch (...) {
-        [self reportError:@"unknown exceprion"];
+        [LOXUtil reportError:@"unknown exceprion"];
     }
 
     return NO;
@@ -200,14 +199,7 @@ FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
     return [self openDocumentWithPath:filename];
 }
 
-- (void)reportError:(NSString *)error
-{
-    NSLog(@"%@", error);
 
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-    [alert setMessageText:error];
-    [alert runModal];
-}
 
 
 - (NSString *)selectFile

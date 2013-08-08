@@ -45,7 +45,7 @@
 
 - (void)onOpenPage:(NSString *)currentPaginationInfo;
 
-- (void)setStyle:(LOXCSSStyle *)style;
+-(void)setStyle:(NSString*)selector declarations:(NSDictionary *)declarations;
 
 - (void)onReaderInitialized;
 
