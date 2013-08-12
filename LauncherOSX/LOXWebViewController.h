@@ -45,7 +45,7 @@
 
 - (void)onOpenPage:(NSString *)currentPaginationInfo;
 
--(void)setStyle:(NSString*)selector declarations:(NSDictionary *)declarations;
+-(void)setStyles:(NSArray *)styles;
 
 - (void)onReaderInitialized;
 

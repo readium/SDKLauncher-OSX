@@ -34,5 +34,14 @@
     return self;
 }
 
+- (NSDictionary *)toDictionary
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+
+    [dict setObject:self.selector forKey:@"selector"];
+    [dict setObject:self.declarations forKey:@"declarations"];
+
+    return dict;
+}
 
 @end

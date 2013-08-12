@@ -50,9 +50,9 @@
     }
 
     style.declarationsBlock = block;
+    style.declarations = declarations;
 
-    [self.webViewController setStyle:style.selector declarations:declarations];
-
+    [self.webViewController setStyles:[NSArray arrayWithObject:style]];
 }
 
 -(LOXCSSStyle *)selectedStyle
