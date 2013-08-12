@@ -78,4 +78,5 @@
 
 -(void)observePreferences:(LOXPreferences *)preferences;
 
+- (void)resetStyles;
 @end

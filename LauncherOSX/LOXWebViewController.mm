@@ -354,4 +354,9 @@
     NSLog(@"Settings has been applied to the reader");
 }
 
+- (void)resetStyles
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.resetStyles()"];
+}
 @end

@@ -15,6 +15,8 @@
 #import "LOXUtil.h"
 
 @interface LOXPreferencesController ()
+- (LOXCSSStyle *)selectedStyle;
+
 - (void)updateStylesUI;
 @end
 
@@ -30,38 +32,51 @@
 
 - (IBAction)onApplyStyle:(id)sender
 {
-   NSString *selector = [self.selectorsCtrl titleOfSelectedItem];
-
-    if(selector) {
-        LOXCSSStyle *style = [_stylesProvider styleForSelector:selector];
-
-        NSString* block = [self.styleCtrl string];
-        NSError *error = NULL;
-        NSDictionary *declarations = [LOXCSSParser parseDeclarationsString:block error:&error];
-
-        if(error) {
-
-            NSString* msg = [NSString stringWithFormat:@"Parsing error: %@", error.localizedDescription];
-            [LOXUtil reportError:msg];
-
-            return;
-        }
-
-        style.declarationsBlock = block;
-
-        [self.webViewController setStyle:selector declarations:declarations];
+    LOXCSSStyle *style = [self selectedStyle];
+    if(!style) {
+        return;
     }
+
+    NSString* block = [self.styleCtrl string];
+    NSError *error = NULL;
+    NSDictionary *declarations = [LOXCSSParser parseDeclarationsString:block error:&error];
+
+    if(error) {
+
+        NSString* msg = [NSString stringWithFormat:@"Parsing error: %@", error.localizedDescription];
+        [LOXUtil reportError:msg];
+
+        return;
+    }
+
+    style.declarationsBlock = block;
+
+    [self.webViewController setStyle:style.selector declarations:declarations];
+
+}
+
+-(LOXCSSStyle *)selectedStyle
+{
+    int ix = [self.selectorsCtrl indexOfSelectedItem];
+    if(ix == -1) {
+        return nil;
+    }
+
+    return [_stylesProvider styleForIndex:ix];
 }
 
 - (IBAction)selectorSelected:(id)sender
 {
-    NSString *selector = [self.selectorsCtrl titleOfSelectedItem];
+    LOXCSSStyle *style = [self selectedStyle];
 
-    if(selector) {
-        LOXCSSStyle *style = [_stylesProvider styleForSelector:selector];
-        [self.styleCtrl setString: style.declarationsBlock];
-
+    if(style) {
+        [self.styleCtrl setString: style.declarationsBlock];;
     }
+}
+
+- (IBAction)clearStyles:(id)sender
+{
+    [self.webViewController resetStyles];
 }
 
 
@@ -96,7 +111,11 @@
     [_stylesProvider retain];
 
     [self.selectorsCtrl removeAllItems];
-    [self.selectorsCtrl addItemsWithTitles:[_stylesProvider selectors]];
+
+    for(LOXCSSStyle *style in [_stylesProvider styles]) {
+        [self.selectorsCtrl addItemWithTitle:style.selector];
+    }
+
     [self.selectorsCtrl selectItemAtIndex:0];
 
     [self selectorSelected: self];

@@ -16,7 +16,7 @@
 -(id)init;
 
 
-- (NSArray *)selectors;
+- (NSArray *)styles;
 
-- (LOXCSSStyle *)styleForSelector:(NSString *)selector;
+- (LOXCSSStyle *)styleForIndex:(int)index;
 @end

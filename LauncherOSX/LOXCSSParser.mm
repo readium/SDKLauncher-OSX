@@ -18,7 +18,7 @@
 
 }
 
-+ (NSDictionary *)parseCSS:(NSString *)cssContent
++ (NSArray *)parseCSS:(NSString *)cssContent
 {
     cssContent = [self removeCommentsFromString:cssContent];
 
@@ -33,7 +33,7 @@
                                       options:0
                                         range:NSMakeRange(0, [cssContent length])];
 
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    NSMutableArray *array = [NSMutableArray array];
 
     for(NSTextCheckingResult *match in matches) {
 
@@ -45,12 +45,12 @@
             block = [NSString stringWithFormat:@"{%@}", block];
 
             LOXCSSStyle *style = [[[LOXCSSStyle alloc] initWithSelector:selector declarationsBlock:block] autorelease];
-            [dict setObject:style forKey:style.selector];
+            [array addObject:style];
         }
 
     }
 
-    return dict;
+    return array;
 
 }
 

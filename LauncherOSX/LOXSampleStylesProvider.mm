@@ -13,7 +13,7 @@
 
 @implementation LOXSampleStylesProvider {
 
-    NSDictionary *_styles;
+    NSArray *_styles;
 }
 
 
@@ -36,15 +36,17 @@
     return self;
 }
 
--(NSArray *)selectors
+-(NSArray *)styles
 {
-    return [_styles allKeys];
+    return _styles;
 }
 
--(LOXCSSStyle *)styleForSelector:(NSString *)selector
+
+-(LOXCSSStyle *)styleForIndex:(int) index
 {
-    return _styles[selector];
+    return [_styles objectAtIndex:index];
 }
+
 
 - (void)dealloc
 {

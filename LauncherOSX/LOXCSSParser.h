@@ -11,7 +11,7 @@
 
 @interface LOXCSSParser : NSObject
 
-+ (NSDictionary *)parseCSS:(NSString *)cssContent;
++ (NSArray *)parseCSS:(NSString *)cssContent;
 
 + (NSDictionary *)parseDeclarationsString:(NSString *)block error:(NSError**)error;
 @end

@@ -16,6 +16,7 @@
 - (IBAction)onClose:(id)sender;
 - (IBAction)onApplyStyle:(id)sender;
 - (IBAction)selectorSelected:(id)sender;
+- (IBAction)clearStyles:(id)sender;
 
 @property (assign) IBOutlet NSWindow *sheet;
 
