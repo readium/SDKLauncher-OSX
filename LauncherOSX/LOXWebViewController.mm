@@ -26,6 +26,7 @@
 #import "LOXBookmark.h"
 #import "LOXPreferences.h"
 #import "LOXAppDelegate.h"
+#import "LOXCSSStyle.h"
 
 
 @interface LOXWebViewController ()
@@ -38,7 +39,7 @@
 
 - (void)updateUI;
 
-- (NSString *)toJson:(NSDictionary *)dict;
+- (NSString *)toJson:(id)object;
 @end
 
 @implementation LOXWebViewController {
@@ -215,6 +216,19 @@
         }
 }
 
+-(void)setStyles:(NSArray *)styles
+{
+    NSMutableArray *arr = [NSMutableArray array];
+
+    for(LOXCSSStyle *style in styles) {
+        [arr addObject:[style toDictionary]];
+    }
+
+    NSString* jsonDecl = [self toJson: arr];
+
+    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setStyles(%@)", jsonDecl];
+    [_webView stringByEvaluatingJavaScriptFromString:callString];
+}
 
 - (void)onReaderInitialized
 {
@@ -335,11 +349,12 @@
     return bookmark;
 }
 
--(NSString *)toJson:(NSDictionary *)dict
+-(NSString *)toJson:(id)object
 {
-    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
+    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil];
     return [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
 }
+
 
 
 -(void)onSettingsApplied
@@ -347,4 +362,9 @@
     NSLog(@"Settings has been applied to the reader");
 }
 
+- (void)resetStyles
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.clearStyles()"];
+}
 @end

@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
         return NSApplicationMain(argc, (const char **) argv);
     }
     @catch (NSException *e) {
-        NSLog(@"ZZZZ");
+        NSLog([NSString stringWithFormat:@"Error: %@", e.reason]);
     }
 
 }

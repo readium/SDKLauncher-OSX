@@ -1,7 +1,3 @@
-//
-//  LOXUtil.h
-//  LauncherOSX
-//
 //  Created by Boris Schneiderman.
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
@@ -19,13 +15,33 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import <Foundation/Foundation.h>
 
-@interface LOXUtil : NSObject
+#import "LOXCSSStyle.h"
 
-+ (NSString *)uuid;
 
-+ (id)valueForKey:(NSString *)keyName orDefault:(id)defaultValue fromDictionary:(NSDictionary *)dict;
+@implementation LOXCSSStyle {
 
-+ (void)reportError:(NSString *)error;
+}
+
+- (id)initWithSelector:(NSString *)selector declarationsBlock:(NSString *)declarations
+{
+    self = [super init];
+    if(self) {
+        self.selector = selector;
+        self.declarationsBlock = declarations;
+         }
+
+    return self;
+}
+
+- (NSDictionary *)toDictionary
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+
+    [dict setObject:self.selector forKey:@"selector"];
+    [dict setObject:self.declarations forKey:@"declarations"];
+
+    return dict;
+}
+
 @end

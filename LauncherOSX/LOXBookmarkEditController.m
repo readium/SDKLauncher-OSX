@@ -79,7 +79,6 @@
 
     [self updateControls];
 
-
 }
 
 - (void)dealloc

@@ -32,7 +32,7 @@
 @class LOXCurrentPagesInfo;
 @class LOXBookmark;
 @class LOXPreferences;
-
+@class LOXCSSStyle;
 
 
 @interface LOXWebViewController : NSObject<LOXSpineViewControllerDelegate> {
@@ -44,6 +44,9 @@
 - (void) clear;
 
 - (void)onOpenPage:(NSString *)currentPaginationInfo;
+
+-(void)setStyles:(NSArray *)styles;
+
 - (void)onReaderInitialized;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
@@ -75,4 +78,5 @@
 
 -(void)observePreferences:(LOXPreferences *)preferences;
 
+- (void)resetStyles;
 @end
