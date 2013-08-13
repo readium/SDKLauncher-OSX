@@ -365,6 +365,6 @@
 - (void)resetStyles
 {
     WebScriptObject* script = [_webView windowScriptObject];
-    [script evaluateWebScript: @"ReadiumSDK.reader.resetStyles()"];
+    [script evaluateWebScript: @"ReadiumSDK.reader.clearStyles()"];
 }
 @end
