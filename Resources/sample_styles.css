@@ -1,87 +1,52 @@
 
 .book-frame {
-    padding: 20px;
+    padding: 6px 17px 6px 17px;
     margin: 20px;
-
-    border-left-style: ridge;
-    border-left-color: black;
-    border-left-width: 25px;
-
-    border-right-style: ridge;
-    border-right-color: black;
-    border-right-width: 25px;
-
-    border-top-style: ridge;
-    border-top-color: black;
-    border-top-width: 5px;
-
-    border-bottom-style: ridge;
-    border-bottom-color: black;
-    border-bottom-width: 5px;
-
-    background: #7dbc73;
+    border: 1px solid #005E25;
+    border-radius: 5px;
+    box-shadow: 0 3px 0 #1E2331;
+    background: #576793;
 }
 
 .fixed-page-frame-left {
 
-    border-left-style: outset;
-    border-left-color: cyan;
-    border-left-width: 5px;
-
+    border: 0 #f0f0f0;
     border-right-style: solid;
-    border-right-color: cyan;
-    border-right-width: 0px;
-
-    border-top-style: outset;
-    border-top-color: cyan;
-    border-top-width: 5px;
-
-    border-bottom-style: outset;
-    border-bottom-color: cyan;
-    border-bottom-width: 5px;
-}
+    border-bottom: 3px outset;
+    border-left: 3px outset;
+    background-color: white;
+    padding: 10px 0 10px 10px;
+    box-shadow: -5px 5px 5px 0 rgba(0, 0, 0, 0.1);}
 
 .fixed-page-frame-right {
 
+    border: 0 #f0f0f0;
+    border-right: 3px solid;
+    border-bottom: 3px outset;
     border-left-style: outset;
-    border-left-color: cyan;
-    border-left-width: 0px;
-
-    border-right-style: solid;
-    border-right-color: cyan;
-    border-right-width: 5px;
-
-    border-top-style: outset;
-    border-top-color: cyan;
-    border-top-width: 5px;
-
-    border-bottom-style: outset;
-    border-bottom-color: cyan;
-    border-bottom-width: 5px;
+    background-color: white;
+    padding:10px 10px 10px 0;
+    box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.1);
 
 }
 
 .fixed-page-frame-center {
 
-    border-left-style: outset;
-    border-left-color: cyan;
-    border-left-width: 5px;
-
+    border: 0 #f0f0f0;
     border-right-style: solid;
-    border-right-color: cyan;
-    border-right-width: 5px;
-
-    border-top-style: outset;
-    border-top-color: cyan;
-    border-top-width: 5px;
-
-    border-bottom-style: outset;
-    border-bottom-color: cyan;
-    border-bottom-width: 5px;
+    border-bottom: 3px outset;
+    border-left: 3px outset;
+    background-color: white;
+    padding: 10px;
+    box-shadow: -5px 5px 5px 0 rgba(0, 0, 0, 0.1);
 }
 
 .reflowable-content-frame {
-    border: 5px outset cyan;
+    border: 0 #f0f0f0;
     border-right-style: solid;
-    background: lemonchiffon;
+    border-bottom: 3px outset;
+    border-left: 3px outset;
+    background-color: white;
+    padding: 10px;
+    box-shadow: -5px 5px 5px 0 rgba(0, 0, 0, 0.1);
 }
