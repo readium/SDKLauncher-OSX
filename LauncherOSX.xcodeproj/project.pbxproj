@@ -18,7 +18,6 @@
 		855CFEE8169DFA3E00AD311E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 855CFEE7169DFA3D00AD311E /* libz.dylib */; };
 		8561A1F0178B6F1B007D15D3 /* js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8561A1E6178B6ED1007D15D3 /* js */; };
 		8561A1F1178B6F1E007D15D3 /* lib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8561A1E7178B6ED1007D15D3 /* lib */; };
-		8561A1F2178B6F22007D15D3 /* reader.css in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8561A1E8178B6ED1007D15D3 /* reader.css */; };
 		8561A1F3178B6F25007D15D3 /* reader.html in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8561A1E9178B6ED1007D15D3 /* reader.html */; };
 		856354F716DE7C3A009DA283 /* BookmarkDlg.xib in Resources */ = {isa = PBXBuildFile; fileRef = 856354F616DE7C3A009DA283 /* BookmarkDlg.xib */; };
 		856354FA16DEB3AF009DA283 /* LOXBookmarkEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 856354F916DEB3AF009DA283 /* LOXBookmarkEditController.m */; };
@@ -100,7 +99,6 @@
 				8561A1F0178B6F1B007D15D3 /* js in CopyFiles */,
 				8561A1F1178B6F1E007D15D3 /* lib in CopyFiles */,
 				85ADCFF717B45CBC009F224E /* static in CopyFiles */,
-				8561A1F2178B6F22007D15D3 /* reader.css in CopyFiles */,
 				85DC4030179074CE0044849D /* host_app_feedback.js in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -134,7 +132,6 @@
 		855CFEE7169DFA3D00AD311E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		8561A1E6178B6ED1007D15D3 /* js */ = {isa = PBXFileReference; lastKnownFileType = folder; name = js; path = "readium-shared-js/js"; sourceTree = "<group>"; };
 		8561A1E7178B6ED1007D15D3 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lib; path = "readium-shared-js/lib"; sourceTree = "<group>"; };
-		8561A1E8178B6ED1007D15D3 /* reader.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = reader.css; path = LauncherOSX/ReaderScripts/reader.css; sourceTree = "<group>"; };
 		8561A1E9178B6ED1007D15D3 /* reader.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = reader.html; path = LauncherOSX/ReaderScripts/reader.html; sourceTree = "<group>"; };
 		856354F616DE7C3A009DA283 /* BookmarkDlg.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BookmarkDlg.xib; sourceTree = "<group>"; };
 		856354F816DEB3AE009DA283 /* LOXBookmarkEditController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXBookmarkEditController.h; sourceTree = "<group>"; };
@@ -243,7 +240,6 @@
 				85DC402E179074660044849D /* host_app_feedback.js */,
 				8561A1E6178B6ED1007D15D3 /* js */,
 				8561A1E7178B6ED1007D15D3 /* lib */,
-				8561A1E8178B6ED1007D15D3 /* reader.css */,
 				8561A1E9178B6ED1007D15D3 /* reader.html */,
 			);
 			name = Scripts;

@@ -25,29 +25,6 @@
         <script src="js/views/reader_view.js" type="text/javascript"></script>
         <script src="host_app_feedback.js" type="text/javascript"></script>
 
-        <!--reflowable view-->
-        <!--<script type="text/html" id="template-reflowable-view">-->
-            <!--<div id="reflowable-book-frame" class="clearfix book-frame reflowable-book-frame">-->
-                <!--<div id="reflowable-content-frame" class="reflowable-content-frame">-->
-                    <!--<iframe scrolling="no" id="epubContentIframe"></iframe>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</script>-->
-
-        <!-- Fixed Layout View -->
-        <!--<script type="text/html" id="template-fixed-view">-->
-            <!--<div id="fixed-book-frame" class="clearfix book-frame fixed-book-frame">-->
-
-            <!--</div>-->
-        <!--</script>-->
-
-        <!--<script type="text/html" id="template-ope-fixed-page-view">-->
-            <!--<div class="fixed-page-frame">-->
-                <!--<iframe scrolling="no" class="iframe-fixed"></iframe>-->
-            <!--</div>-->
-        <!--</script>-->
-
-
         <script type="text/javascript">
 
             $(document).ready(function () {
@@ -55,44 +32,6 @@
 
                 ReadiumSDK.reader = new ReadiumSDK.Views.ReaderView({el:"#viewport"});
                 ReadiumSDK.trigger("ReaderInitialized");
-
-                ///////////////////////////////////
-                //DEBUGGING CODE
-
-//                var packageData = {
-//
-//                    rendition_layout: "pre-paginated",
-//                    rootUrl: "",
-//
-//                     spine : {
-//
-//                            items: [
-//                                {href: "books/page-blanche-20130322/EPUB/Content/cover.xhtml", spread: "right"},
-//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_000.xhtml", spread: "left"},
-//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_001.xhtml", spread: "right"},
-//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_002.xhtml", spread: "left"},
-//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_003.xhtml", spread: "right"},
-//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_004.xhtml", spread: "left"},
-//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_005.xhtml", spread: "right"},
-//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_006.xhtml", spread: "left"},
-//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_007.xhtml", spread: "right"},
-//                                {href: "books/page-blanche-20130322/EPUB/Content/PageBlanche_Page_008.xhtml", spread: "left"}
-//                            ]
-//                     }
-//
-//                };
-//
-//                ReadiumSDK.reader.openBook(packageData);
-//
-//                $("#leftBtn").on("click", function () {
-//                    ReadiumSDK.reader.openLeft();
-//                });
-//
-//                $("#rightBtn").on("click", function () {
-//                    ReadiumSDK.reader.openRight();
-//                });
-                //
-                //////////////////////////////////
 
             });
 
