@@ -46,4 +46,10 @@
     [alert runModal];
 }
 
++(NSString *)toJson:(id)object
+{
+    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil];
+    return [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+}
+
 @end
