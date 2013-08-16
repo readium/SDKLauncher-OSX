@@ -41,6 +41,7 @@
 @property(nonatomic, readonly) LOXToc *toc;
 @property(nonatomic, readonly) NSString* rendition_layout;
 @property(nonatomic, readonly) NSString* rootDirectory;
+@property(nonatomic, readonly) NSArray* mediaOverlays;
 
 
 @end

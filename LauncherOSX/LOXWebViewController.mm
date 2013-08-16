@@ -27,6 +27,7 @@
 #import "LOXPreferences.h"
 #import "LOXAppDelegate.h"
 #import "LOXCSSStyle.h"
+#import "LOXUtil.h"
 
 
 @interface LOXWebViewController ()
@@ -39,7 +40,6 @@
 
 - (void)updateUI;
 
-- (NSString *)toJson:(id)object;
 @end
 
 @implementation LOXWebViewController {
@@ -113,13 +113,13 @@
     _package = package;
     [_package retain];
 
-    NSString *packageJson = [self toJson:[_package toDictionary]];
+    NSString *packageJson = [LOXUtil toJson:[_package toDictionary]];
 
     NSString* callString;
 
     if(bookmark) {
         NSDictionary *locationDict = [[[NSDictionary alloc] initWithObjectsAndKeys:bookmark.idref, @"idref", bookmark.contentCFI, @"elementCfi", nil] autorelease];
-        NSString* jsonLocation = [self toJson:locationDict];
+        NSString* jsonLocation = [LOXUtil toJson:locationDict];
         callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@,%@)", packageJson, jsonLocation];
     }
     else {
@@ -224,7 +224,7 @@
         [arr addObject:[style toDictionary]];
     }
 
-    NSString* jsonDecl = [self toJson: arr];
+    NSString* jsonDecl = [LOXUtil toJson: arr];
 
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setStyles(%@)", jsonDecl];
     [_webView stringByEvaluatingJavaScriptFromString:callString];
@@ -348,13 +348,6 @@
 
     return bookmark;
 }
-
--(NSString *)toJson:(id)object
-{
-    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil];
-    return [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
-}
-
 
 
 -(void)onSettingsApplied

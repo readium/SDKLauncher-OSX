@@ -28,4 +28,6 @@
 + (id)valueForKey:(NSString *)keyName orDefault:(id)defaultValue fromDictionary:(NSDictionary *)dict;
 
 + (void)reportError:(NSString *)error;
+
++ (NSString *)toJson:(id)object;
 @end
