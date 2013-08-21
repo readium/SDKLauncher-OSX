@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class LOXMediaOverlay;
+@class LOXSmilModel;
 
 
 @interface LOXSMILParser : NSObject <NSXMLParserDelegate>
@@ -16,5 +16,5 @@
 
 - (id)initWithData:(NSData *)data;
 
-- (LOXMediaOverlay *)parse;
+- (LOXSmilModel *)parse;
 @end

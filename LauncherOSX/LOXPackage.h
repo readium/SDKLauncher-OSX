@@ -22,6 +22,7 @@
 @class LOXSpineItem;
 @class LOXTemporaryFileStorage;
 @class LOXToc;
+@class LOXMediaOverlay;
 
 
 @interface LOXPackage : NSObject
@@ -39,9 +40,10 @@
 @property(nonatomic, readonly) NSString *title;
 @property(nonatomic, readonly) NSString *packageId;
 @property(nonatomic, readonly) LOXToc *toc;
-@property(nonatomic, readonly) NSString* rendition_layout;
-@property(nonatomic, readonly) NSString* rootDirectory;
-@property(nonatomic, readonly) NSArray* mediaOverlays;
+@property(nonatomic, readonly) NSString *rendition_layout;
+@property(nonatomic, readonly) NSString *rootDirectory;
+
+@property(nonatomic, readonly) LOXMediaOverlay *mediaOverlay;
 
 
 @end
