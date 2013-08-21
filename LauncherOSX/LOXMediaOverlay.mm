@@ -50,7 +50,6 @@
             }
         }
     }
-
 }
 
 - (LOXSmilModel *)createMediaOverlayForItem:(ePub3::ManifestItemPtr) item fromSdkPackage:(ePub3::PackagePtr)sdkPackage
@@ -89,5 +88,22 @@
 }
 
 
+- (NSDictionary *)toDictionary {
 
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+
+    NSMutableArray *smilDictionaries = [NSMutableArray array];
+    for(LOXSmilModel *mo in _smilModels) {
+        [smilDictionaries addObject:[mo toDictionary]];
+    }
+
+    [dict setObject:smilDictionaries forKey:@"smil_models"];
+
+    return dict;
+}
+
+- (void)dealloc {
+    [_smilModels release];
+    [super dealloc];
+}
 @end

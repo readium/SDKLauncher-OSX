@@ -13,4 +13,7 @@
 
 @property(nonatomic, readonly) NSArray *smilModels;
 
+- (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage;
+
+- (NSDictionary *)toDictionary;
 @end
