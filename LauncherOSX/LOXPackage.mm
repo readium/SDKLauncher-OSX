@@ -27,17 +27,11 @@
 #import "LOXTemporaryFileStorage.h"
 #import "LOXUtil.h"
 #import "LOXToc.h"
+#import "LOXSmilModel.h"
 #import "LOXMediaOverlay.h"
-#import "LOXSMILParser.h"
 
 
 @interface LOXPackage ()
-
-- (void)parseSMIs;
-
-- (LOXMediaOverlay *)createMediaOverlayForItem:(ePub3::ManifestItemPtr)item;
-
-- (NSData *)dataFromItem:(ePub3::ManifestItemPtr)item;
 
 - (NSString *)getLayoutProperty;
 
@@ -53,7 +47,7 @@
 
     ePub3::PackagePtr _sdkPackage;
     LOXTemporaryFileStorage *_storage;
-    NSMutableArray *_mediaOverlays;
+
 }
 
 @synthesize spine = _spine;
@@ -62,14 +56,14 @@
 @synthesize toc = _toc;
 @synthesize rendition_layout = _rendition_layout;
 @synthesize rootDirectory = _rootDirectory;
-@synthesize mediaOverlays = _mediaOverlays;
+@synthesize mediaOverlay = _mediaOverlay;
+
 
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage {
 
     self = [super init];
     if(self) {
 
-        _mediaOverlays = [[NSMutableArray array] retain];
         _sdkPackage = sdkPackage;
 
         NSString* direction;
@@ -104,67 +98,10 @@
             spineItem = spineItem->Next();
         }
 
-        [self parseSMIs];
+        _mediaOverlay = [[LOXMediaOverlay alloc] initWithSdkPackage:_sdkPackage];
     }
     
     return self;
-}
-
-- (void)parseSMIs
-{
-    auto manifestTable =  _sdkPackage->Manifest();
-
-    for(auto iter = manifestTable.begin(); iter != manifestTable.end(); iter++) {
-
-        auto item = iter->second;
-
-        auto mediaType = item->MediaType();
-        if(mediaType == "application/smil+xml") {
-            LOXMediaOverlay * mediaOverlay = [self createMediaOverlayForItem:item];
-            if(mediaOverlay) {
-                [_mediaOverlays addObject:mediaOverlay];
-            }
-        }
-
-        auto mediaOverlayId = item->MediaOverlayID(); //ZZZZ
-        auto mediaOverlay = item->MediaOverlay(); //ZZZZZ
-    }
-
-}
-
-- (LOXMediaOverlay *)createMediaOverlayForItem:(ePub3::ManifestItemPtr) item
-{
-    NSData *data = [self dataFromItem:item];
-
-    LOXSMILParser *parser = [[LOXSMILParser alloc] initWithData:data];
-
-    LOXMediaOverlay *mediaOverlay = [[[parser parse] retain] autorelease];
-    mediaOverlay.id = [NSString stringWithUTF8String:item->Identifier().c_str()];
-    mediaOverlay.href = [NSString stringWithUTF8String:item->Href().c_str()];
-
-    [parser release];
-
-    return mediaOverlay;
-
-}
-
--(NSData *)dataFromItem:(ePub3::ManifestItemPtr) item
-{
-    auto reader = _sdkPackage->ReaderForRelativePath(item->Href());
-
-    char buffer[1024];
-
-    NSMutableData * data = [NSMutableData data];
-
-    ssize_t readBytes = reader->read(buffer, 1024);
-
-    while (readBytes > 0) {
-        [data appendBytes:buffer length:(NSUInteger) readBytes];
-        readBytes = reader->read(buffer, 1024);
-    }
-
-    return data;
-
 }
 
 -(NSString*)getLayoutProperty
@@ -185,7 +122,7 @@
     [_title release];
     [_rendition_layout release];
     [_rootDirectory release];
-    [_mediaOverlays release];
+    [_mediaOverlay release];
     [super dealloc];
 }
 
@@ -311,13 +248,8 @@
     [dict setObject:_rootDirectory forKey:@"rootUrl"];
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
     [dict setObject:[_spine toDictionary] forKey:@"spine"];
+    [dict setObject:[_mediaOverlay toDictionary] forKey:@"media_overlay"];
 
-    NSMutableArray *mediaOverlays = [NSMutableArray array];
-    for(LOXMediaOverlay *mo in _mediaOverlays) {
-        [mediaOverlays addObject:[mo toDictionary]];
-    }
-
-    [dict setObject:mediaOverlays forKey:@"mediaOverlays"];
 
     return dict;
 }

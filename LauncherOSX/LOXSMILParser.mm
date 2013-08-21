@@ -7,7 +7,7 @@
 
 
 #import "LOXSMILParser.h"
-#import "LOXMediaOverlay.h"
+#import "LOXSmilModel.h"
 
 
 @interface LOXSMILParser ()
@@ -17,7 +17,7 @@
 @implementation LOXSMILParser
 {
     NSXMLParser *_parser;
-    LOXMediaOverlay *_mediaOverlay;
+    LOXSmilModel *_mediaOverlay;
 
     NSMutableArray *_stack;
     NSArray *_nodeNames;
@@ -121,10 +121,10 @@ didStartElement:(NSString *)elementName
 
 }
 
-- (LOXMediaOverlay *)parse
+- (LOXSmilModel *)parse
 {
     [_mediaOverlay release];
-    _mediaOverlay = [[LOXMediaOverlay alloc] init];
+    _mediaOverlay = [[LOXSmilModel alloc] init];
 
     if( [_parser parse] ) {
         return _mediaOverlay;

@@ -1,5 +1,5 @@
 //
-// Created by Boris Schneiderman on 2013-08-14.
+// Created by Boris Schneiderman on 2013-08-20.
 // Copyright (c) 2013 Boris Schneiderman. All rights reserved.
 //
 // To change the template use AppCode | Preferences | File Templates.
@@ -11,13 +11,9 @@
 
 @interface LOXMediaOverlay : NSObject
 
-@property (nonatomic, readonly) NSArray *childern;
-@property (nonatomic, copy) NSString *href;
-@property (nonatomic, copy) NSString *id;
-@property (nonatomic, copy) NSString *smilVersion;
+@property(nonatomic, readonly) NSArray *smilModels;
 
-
-- (void)addItem:(NSDictionary *)item;
+- (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage;
 
 - (NSDictionary *)toDictionary;
 @end
