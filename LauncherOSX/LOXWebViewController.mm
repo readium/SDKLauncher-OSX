@@ -113,18 +113,21 @@
     _package = package;
     [_package retain];
 
-    NSString *packageJson = [LOXUtil toJson:[_package toDictionary]];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
-    NSString* callString;
+    [dict setObject:[_package toDictionary] forKey:@"package"];
 
     if(bookmark) {
         NSDictionary *locationDict = [[[NSDictionary alloc] initWithObjectsAndKeys:bookmark.idref, @"idref", bookmark.contentCFI, @"elementCfi", nil] autorelease];
-        NSString* jsonLocation = [LOXUtil toJson:locationDict];
-        callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@,%@)", packageJson, jsonLocation];
+        [dict setObject:locationDict forKey:@"openPageRequest"];
     }
-    else {
-        callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", packageJson];
+
+    if(_preferences) {
+        [dict setObject:[_preferences toDictionary] forKey:@"settings"];
     }
+
+    NSString *json = [LOXUtil toJson:dict];
+    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", json];
 
     [_webView stringByEvaluatingJavaScriptFromString:callString];
 }
@@ -137,8 +140,6 @@
     _preferences = preferences;
     [_preferences retain];
     [_preferences registerChangeObserver:self];
-
-    [self updateSettings:_preferences];
 }
 
 - (void)clear
@@ -245,9 +246,7 @@
 
 -(void)updateSettings:(LOXPreferences *)preferences
 {
-    NSDictionary * dict = [preferences toDictionary];
-    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
-    NSString* jsonString = [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+    NSString *jsonString = [LOXUtil toJson:[preferences toDictionary]];
 
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.updateSettings(%@)", jsonString];
     [_webView stringByEvaluatingJavaScriptFromString:callString];
