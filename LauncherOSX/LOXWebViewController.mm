@@ -122,10 +122,6 @@
         [dict setObject:locationDict forKey:@"openPageRequest"];
     }
 
-    if(_preferences) {
-        [dict setObject:[_preferences toDictionary] forKey:@"settings"];
-    }
-
     NSString *json = [LOXUtil toJson:dict];
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", json];
 
@@ -140,6 +136,8 @@
     _preferences = preferences;
     [_preferences retain];
     [_preferences registerChangeObserver:self];
+
+    [self updateSettings:_preferences];
 }
 
 - (void)clear
