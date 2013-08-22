@@ -12,6 +12,8 @@
 @interface LOXMediaOverlay : NSObject
 
 @property(nonatomic, readonly) NSArray *smilModels;
+@property(nonatomic, copy) NSString *duration;
+@property(nonatomic, copy) NSString *narrator;
 
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage;
 

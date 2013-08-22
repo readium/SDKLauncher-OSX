@@ -99,11 +99,12 @@
 
         _mediaOverlay = [[LOXMediaOverlay alloc] initWithSdkPackage:_sdkPackage];
 
-        auto propList = _sdkPackage->PropertiesMatching("narrator", "media");
+        auto propList = _sdkPackage->PropertiesMatching("duration", "media");
 
         for(auto iter = propList.begin(); iter != propList.end(); iter++) {
 
             auto prop = iter;
+
 
         }
     }
