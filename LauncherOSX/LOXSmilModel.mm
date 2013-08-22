@@ -12,6 +12,7 @@
 @implementation LOXSmilModel {
 
     NSMutableArray *_children;
+
 }
 
 @synthesize childern = _children;
@@ -46,6 +47,7 @@
     [dict setObject:self.href forKey:@"href"];
     [dict setObject:self.smilVersion forKey:@"smilVersion"];
     [dict setObject:self.childern forKey:@"children"];
+    [dict setObject:self.duration forKeyedSubscript:@"duration"];
 
     return dict;
 }

@@ -27,7 +27,6 @@
 #import "LOXTemporaryFileStorage.h"
 #import "LOXUtil.h"
 #import "LOXToc.h"
-#import "LOXSmilModel.h"
 #import "LOXMediaOverlay.h"
 
 
@@ -99,6 +98,15 @@
         }
 
         _mediaOverlay = [[LOXMediaOverlay alloc] initWithSdkPackage:_sdkPackage];
+
+        auto propList = _sdkPackage->PropertiesMatching("duration", "media");
+
+        for(auto iter = propList.begin(); iter != propList.end(); iter++) {
+
+            auto prop = iter;
+
+
+        }
     }
     
     return self;

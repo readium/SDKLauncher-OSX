@@ -12,6 +12,10 @@
 #import "LOXSMILParser.h"
 
 
+@interface LOXMediaOverlay ()
+- (NSString *)getProperty:(NSString *)name fromPropertyHolder:(std::shared_ptr<ePub3::PropertyHolder>)sdkPropertyHolder;
+@end
+
 @implementation LOXMediaOverlay {
 
     NSMutableArray *_smilModels;
@@ -26,6 +30,9 @@
     if(self) {
 
         _smilModels = [[NSMutableArray array] retain];
+        self.duration = [self getProperty:@"duration" fromPropertyHolder: sdkPackage];
+        self.narrator = [self getProperty:@"narrator" fromPropertyHolder: sdkPackage];
+
 
         [self parseSmilsFromSdkPackage:sdkPackage];
 
@@ -44,12 +51,26 @@
 
         auto mediaType = item->MediaType();
         if(mediaType == "application/smil+xml") {
-            LOXSmilModel * mediaOverlay = [self createMediaOverlayForItem:item fromSdkPackage:sdkPackage];
-            if(mediaOverlay) {
-                [_smilModels addObject:mediaOverlay];
+
+            LOXSmilModel * smilModel = [self createMediaOverlayForItem:item fromSdkPackage:sdkPackage];
+            if(smilModel) {
+
+                smilModel.duration = [self getProperty:@"duration" fromPropertyHolder:item];
+
+                [_smilModels addObject:smilModel];
             }
         }
     }
+}
+
+- (NSString *)getProperty:(NSString *)name fromPropertyHolder:(std::shared_ptr<ePub3::PropertyHolder>)sdkPropertyHolder
+{
+    auto prop = sdkPropertyHolder->PropertyMatching([name UTF8String], "media");
+    if(prop != nullptr) {
+        return [NSString stringWithUTF8String: prop->Value().c_str()];
+    }
+
+    return @"";
 }
 
 - (LOXSmilModel *)createMediaOverlayForItem:(ePub3::ManifestItemPtr) item fromSdkPackage:(ePub3::PackagePtr)sdkPackage
@@ -98,6 +119,8 @@
     }
 
     [dict setObject:smilDictionaries forKey:@"smil_models"];
+    [dict setObject:self.duration forKeyedSubscript:@"duration"];
+    [dict setObject:self.narrator forKeyedSubscript:@"narrator"];
 
     return dict;
 }
