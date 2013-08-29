@@ -45,6 +45,8 @@
 
 - (void)onOpenPage:(NSString *)currentPaginationInfo;
 
+- (bool)isMediaOverlayAvailable;
+
 -(void)setStyles:(NSArray *)styles;
 
 - (void)onReaderInitialized;
@@ -79,4 +81,6 @@
 -(void)observePreferences:(LOXPreferences *)preferences;
 
 - (void)resetStyles;
+
+- (void)toggleMediaOverlay;
 @end

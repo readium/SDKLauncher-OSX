@@ -35,6 +35,8 @@
 #import "LOXPageNumberTextController.h"
 #import "LOXPreferencesController.h"
 #import "LOXUtil.h"
+#import "LOXMediaOverlay.h"
+#import "LOXMediaOverlayController.h"
 
 using namespace ePub3;
 

@@ -215,6 +215,15 @@
         }
 }
 
+-(bool)isMediaOverlayAvailable
+{
+    NSString* callString = @"ReadiumSDK.reader.isMediaOverlayAvailable()";
+
+    NSString *result = [_webView stringByEvaluatingJavaScriptFromString:callString];
+
+    return [result boolValue];
+}
+
 -(void)setStyles:(NSArray *)styles
 {
     NSMutableArray *arr = [NSMutableArray array];
@@ -357,4 +366,11 @@
     WebScriptObject* script = [_webView windowScriptObject];
     [script evaluateWebScript: @"ReadiumSDK.reader.clearStyles()"];
 }
+
+- (void)toggleMediaOverlay
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.toggleMediaOverlay()"];
+}
+
 @end

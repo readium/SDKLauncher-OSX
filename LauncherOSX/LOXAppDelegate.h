@@ -33,8 +33,13 @@
 @class LOXSpineItem;
 @class LOXCurrentPagesInfo;
 @class LOXPreferencesController;
+@class LOXMediaOverlay;
+@class LOXMediaOverlayController;
 
+//events
 NSString *const LOXPageChangedEvent = @"PageChangedEvent";
+NSString *const LOXMediaOverlayStatusChangedEvent = @"LOXMediaOverlayStatusChangedEvent";
+
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate>
 
@@ -50,6 +55,7 @@ NSString *const LOXPageChangedEvent = @"PageChangedEvent";
 @property (assign) IBOutlet LOXTocViewController *tocViewController;
 @property (assign) IBOutlet LOXPageNumberTextController *pageNumController;
 @property (assign) IBOutlet LOXPreferencesController *preferencesController;
+@property (assign) IBOutlet LOXMediaOverlayController *mediaOverlayController;
 
 @property (nonatomic, readonly) LOXCurrentPagesInfo *currentPagesInfo;
 

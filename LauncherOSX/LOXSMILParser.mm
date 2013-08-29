@@ -10,7 +10,12 @@
 #import "LOXSmilModel.h"
 
 
+
 @interface LOXSMILParser ()
+- (NSNumber *)parseTimestamp:(NSString *)timestamp;
+
+- (NSString *)substringFromString:(NSString *)string withSuffix:(NSString *)suffix;
+
 - (void)pushItem:(NSDictionary *)item;
 @end
 
@@ -67,6 +72,7 @@ didStartElement:(NSString *)elementName
     for(NSString *key in keys) {
 
         NSString *propName;
+        NSObject *propValue;
 
         if([key isEqualToString:@"epub:textref"]) {
             propName = @"textref";
@@ -78,12 +84,69 @@ didStartElement:(NSString *)elementName
             propName = [[key copy] autorelease];
         }
 
-        item[propName] = attributeDict[key];
+        if([key isEqualToString:@"clipBegin"] || [key isEqualToString:@"clipEnd"]) {
+            propValue = [self parseTimestamp:attributeDict[key]];
+        }
+        else {
+            propValue = [[attributeDict[key] copy] autorelease];
+        }
+
+        item[propName] = propValue;
     }
 
     [self pushItem:item];
 
 
+}
+
+- (NSNumber *)parseTimestamp:(NSString *)timestamp
+{
+    double hours = 0;
+    double minutes = 0;
+    double seconds = 0;
+
+    NSString *valString;
+    if((valString = [self substringFromString:timestamp withSuffix:@"min"]) ) {
+        minutes = [valString doubleValue];
+    }
+    else if((valString = [self substringFromString:timestamp withSuffix:@"ms"])) {
+        seconds = [valString doubleValue] * 1000;
+    }
+    else if((valString = [self substringFromString:timestamp withSuffix:@"s"])) {
+        seconds = [valString doubleValue];
+    }
+    else if((valString = [self substringFromString:timestamp withSuffix:@"h"])) {
+        hours = [valString doubleValue];
+    }
+    else {
+
+        NSArray* tokens = [timestamp componentsSeparatedByString:@":"];
+        if(tokens.count > 0) {
+            seconds = [tokens[tokens.count - 1] doubleValue];
+        }
+
+        if(tokens.count > 1) {
+            minutes = [tokens[tokens.count - 2] doubleValue];
+        }
+
+        if(tokens.count > 2) {
+            hours = [tokens[tokens.count - 3] doubleValue];
+        }
+
+    }
+
+    return [NSNumber numberWithDouble: hours * 3600 + minutes * 60 + seconds ];
+}
+
+-(NSString *)substringFromString:(NSString *)string withSuffix:(NSString *)suffix
+{
+    NSRange range = [string rangeOfString:suffix];
+
+    if(range.location == NSNotFound) {
+       return nil;
+    }
+
+    return [string substringToIndex:range.location];
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
