@@ -54,7 +54,9 @@
             }
         }
         else {
-            [book setValue:dict[key] forKey:key];
+            if([book respondsToSelector:NSSelectorFromString(key)]) {
+                [book setValue:dict[key] forKey:key];
+            }
         }
 
     }
