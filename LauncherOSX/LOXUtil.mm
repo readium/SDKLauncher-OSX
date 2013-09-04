@@ -37,4 +37,19 @@
     return val ? val : defaultValue;
 }
 
++(void)reportError:(NSString *)error
+{
+    NSLog(@"%@", error);
+
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert setMessageText:error];
+    [alert runModal];
+}
+
++(NSString *)toJson:(id)object
+{
+    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil];
+    return [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+}
+
 @end

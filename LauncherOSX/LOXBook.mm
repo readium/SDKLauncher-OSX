@@ -22,6 +22,7 @@
 
 @property (retain, nonatomic, readwrite) NSArray *bookmarks;
 
+
 @end
 
 @implementation LOXBook {
@@ -42,15 +43,20 @@
     for(id key in dict.allKeys) {
 
         if([@"bookmarks" isEqualToString:key]) {
-
             for (NSDictionary * bmDict in dict[key]) {
                 [book addBookmark:[LOXBookmark bookmarkFromDictionary:bmDict]];
             }
-
+        }
+        else if([@"lastOpenPage" isEqualToString:key]) {
+            NSDictionary *bookmarkDict = dict[key];
+            if(bookmarkDict) {
+                book.lastOpenPage = [LOXBookmark bookmarkFromDictionary:dict[key]];
+            }
         }
         else {
-
-            [book setValue:dict[key] forKey:key];
+            if([book respondsToSelector:NSSelectorFromString(key)]) {
+                [book setValue:dict[key] forKey:key];
+            }
         }
 
     }
@@ -66,12 +72,19 @@
         [bookmarks addObject:[bookmark toDictionary]];
     }
 
-    return @{   @"filePath"       : self.filePath,
-                @"packageId"      : self.packageId,
-                @"name"           : self.name,
-                @"dateCreated"    : self.dateCreated,
-                @"dateOpened"     : self.dateOpened,
-                @"bookmarks"      : bookmarks };
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+
+    [dict setObject:self.filePath forKey:@"filePath"];
+    [dict setObject:self.packageId forKey:@"packageId"];
+    [dict setObject:self.name forKey:@"name"];
+    [dict setObject:self.dateCreated forKey:@"dateCreated"];
+    [dict setObject:self.dateOpened forKey:@"dateOpened"];
+    [dict setObject:bookmarks forKey:@"bookmarks"];
+    if(self.lastOpenPage) {
+        [dict setObject:[self.lastOpenPage toDictionary] forKey:@"lastOpenPage"];
+    }
+
+    return dict;
 }
 
 -(id)init

@@ -27,6 +27,8 @@
 @property (nonatomic, retain) NSString * filePath;
 @property (nonatomic, retain, readonly) NSArray *bookmarks;
 
+@property (nonatomic, retain) LOXBookmark *lastOpenPage;
+
 @property(nonatomic, retain) NSDate* dateCreated;
 @property(nonatomic, retain) NSDate* dateOpened;
 @property(nonatomic, retain) NSString *packageId;

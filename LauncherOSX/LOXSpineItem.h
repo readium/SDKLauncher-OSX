@@ -41,6 +41,7 @@ namespace ePub3 {
 @property(nonatomic, readonly) NSString *href;
 @property(nonatomic, readonly) NSString *page_spread;
 @property(nonatomic, readonly) NSString *rendition_layout;
+@property(nonatomic, readonly) NSString *mediaOverlayId;
 
 - (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage *)package;
 

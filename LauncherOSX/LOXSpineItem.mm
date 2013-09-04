@@ -66,6 +66,9 @@
             _rendition_layout = [NSString stringWithUTF8String: layoutProp->Value().c_str()];
         }
 
+        auto mediaOverlayString = _sdkSpineItem->ManifestItem()->MediaOverlayID();
+        _mediaOverlayId = [NSString stringWithUTF8String: mediaOverlayString.c_str()];
+
         [_rendition_layout retain];
 
     }
@@ -82,6 +85,7 @@
     [dict setObject:_idref forKey:@"idref"];
     [dict setObject:_page_spread forKey:@"page_spread"];
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
+    [dict setObject:_mediaOverlayId forKey:@"media_overlay_id"];
 
     return dict;
 }

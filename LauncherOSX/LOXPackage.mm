@@ -27,6 +27,7 @@
 #import "LOXTemporaryFileStorage.h"
 #import "LOXUtil.h"
 #import "LOXToc.h"
+#import "LOXMediaOverlay.h"
 
 
 @interface LOXPackage ()
@@ -45,6 +46,7 @@
 
     ePub3::PackagePtr _sdkPackage;
     LOXTemporaryFileStorage *_storage;
+
 }
 
 @synthesize spine = _spine;
@@ -53,6 +55,8 @@
 @synthesize toc = _toc;
 @synthesize rendition_layout = _rendition_layout;
 @synthesize rootDirectory = _rootDirectory;
+@synthesize mediaOverlay = _mediaOverlay;
+
 
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage {
 
@@ -93,6 +97,16 @@
             spineItem = spineItem->Next();
         }
 
+        _mediaOverlay = [[LOXMediaOverlay alloc] initWithSdkPackage:_sdkPackage];
+
+        auto propList = _sdkPackage->PropertiesMatching("duration", "media");
+
+        for(auto iter = propList.begin(); iter != propList.end(); iter++) {
+
+            auto prop = iter;
+
+
+        }
     }
     
     return self;
@@ -116,6 +130,7 @@
     [_title release];
     [_rendition_layout release];
     [_rootDirectory release];
+    [_mediaOverlay release];
     [super dealloc];
 }
 
@@ -241,10 +256,11 @@
     [dict setObject:_rootDirectory forKey:@"rootUrl"];
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
     [dict setObject:[_spine toDictionary] forKey:@"spine"];
+    [dict setObject:[_mediaOverlay toDictionary] forKey:@"media_overlay"];
+
 
     return dict;
 }
-
 
 
 @end

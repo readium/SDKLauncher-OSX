@@ -8,14 +8,77 @@
 
 #import "LOXPreferencesController.h"
 #import "LOXPreferences.h"
+#import "LOXSampleStylesProvider.h"
+#import "LOXCSSStyle.h"
+#import "LOXWebViewController.h"
+#import "LOXCSSParser.h"
+#import "LOXUtil.h"
+
+@interface LOXPreferencesController ()
+- (LOXCSSStyle *)selectedStyle;
+
+- (void)updateStylesUI;
+@end
 
 @implementation LOXPreferencesController {
     LOXPreferences *_preferences;
+    LOXSampleStylesProvider *_stylesProvider;
 }
 
-- (IBAction)onClose:(id)sender {
+- (IBAction)onClose:(id)sender
+{
     [self closeSheet];
 }
+
+- (IBAction)onApplyStyle:(id)sender
+{
+    LOXCSSStyle *style = [self selectedStyle];
+    if(!style) {
+        return;
+    }
+
+    NSString* block = [self.styleCtrl string];
+    NSError *error = NULL;
+    NSDictionary *declarations = [LOXCSSParser parseDeclarationsString:block error:&error];
+
+    if(error) {
+
+        NSString* msg = [NSString stringWithFormat:@"Parsing error: %@", error.localizedDescription];
+        [LOXUtil reportError:msg];
+
+        return;
+    }
+
+    style.declarationsBlock = block;
+    style.declarations = declarations;
+
+    [self.webViewController setStyles:[NSArray arrayWithObject:style]];
+}
+
+-(LOXCSSStyle *)selectedStyle
+{
+    int ix = [self.selectorsCtrl indexOfSelectedItem];
+    if(ix == -1) {
+        return nil;
+    }
+
+    return [_stylesProvider styleForIndex:ix];
+}
+
+- (IBAction)selectorSelected:(id)sender
+{
+    LOXCSSStyle *style = [self selectedStyle];
+
+    if(style) {
+        [self.styleCtrl setString: style.declarationsBlock];;
+    }
+}
+
+- (IBAction)clearStyles:(id)sender
+{
+    [self.webViewController resetStyles];
+}
+
 
 - (void)showPreferences:(LOXPreferences *)preferences
 {
@@ -25,6 +88,7 @@
 
     _preferences = preferences;
     [_preferences retain];
+
 
     //Make sure that in nib file "Visible at launch" property set to false
     //otherwise sheet il not be attached to the window
@@ -36,9 +100,26 @@
        didEndSelector:nil
           contextInfo:nil];
 
+    [self updateStylesUI];
+
 }
 
+-(void)updateStylesUI
+{
+    [_stylesProvider release];
+    _stylesProvider = [[LOXSampleStylesProvider alloc] init];
+    [_stylesProvider retain];
 
+    [self.selectorsCtrl removeAllItems];
+
+    for(LOXCSSStyle *style in [_stylesProvider styles]) {
+        [self.selectorsCtrl addItemWithTitle:style.selector];
+    }
+
+    [self.selectorsCtrl selectItemAtIndex:0];
+
+    [self selectorSelected: self];
+}
 
 - (void)closeSheet
 {
@@ -55,6 +136,7 @@
 
 - (void)dealloc {
     [_preferences release];
+    [_stylesProvider release];
     [super dealloc];
 }
 

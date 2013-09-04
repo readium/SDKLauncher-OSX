@@ -25,6 +25,7 @@
 #import "LOXPackage.h"
 #import "LOXCurrentPagesInfo.h"
 #import "LOXOpenPageInfo.h"
+#import "LOXAppDelegate.h"
 
 
 @interface LOXSpineViewController ()

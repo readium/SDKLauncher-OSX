@@ -34,8 +34,11 @@
 #import "LOXCurrentPagesInfo.h"
 #import "LOXPageNumberTextController.h"
 #import "LOXPreferencesController.h"
+#import "LOXUtil.h"
 
 using namespace ePub3;
+
+FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
 
 @interface LOXAppDelegate ()
 
@@ -44,7 +47,7 @@ using namespace ePub3;
 
 - (LOXBook *)findOrCreateBookForCurrentPackageWithPath:(NSString *)path;
 
-- (void)reportError:(NSString *)error;
+- (void)onPageChanged:(id)onPageChanged;
 
 - (bool)openDocumentWithPath:(NSString *)path;
 
@@ -96,6 +99,24 @@ using namespace ePub3;
 
     [self.webViewController observePreferences:_userData.preferences];
 
+    self.preferencesController.webViewController = self.webViewController;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onPageChanged:)
+                                                 name:LOXPageChangedEvent
+                                               object:nil];
+
+}
+
+- (void)onPageChanged:(id)onPageChanged
+{
+    LOXBookmark *bookmark = [self createBookmark];
+
+    if(bookmark) {
+
+        bookmark.title = @"lastOpenPage";
+        _currentBook.lastOpenPage = bookmark;
+    }
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
@@ -139,19 +160,19 @@ using namespace ePub3;
 
         [self.window setTitle:[path lastPathComponent]];
 
-        [self.webViewController openPackage:_package];
+        [self.webViewController openPackage:_package onPage:_currentBook.lastOpenPage];
 
         return YES;
     }
     catch (NSException *e) {
-        [self reportError:[e reason]];
+        [LOXUtil reportError:[e reason]];
     }
     catch (std::exception& e) {
         auto msg = e.what();
-        [self reportError:[NSString stringWithUTF8String:msg]];
+        [LOXUtil reportError:[NSString stringWithUTF8String:msg]];
     }
     catch (...) {
-        [self reportError:@"unknown exceprion"];
+        [LOXUtil reportError:@"unknown exceprion"];
     }
 
     return NO;
@@ -178,14 +199,7 @@ using namespace ePub3;
     return [self openDocumentWithPath:filename];
 }
 
-- (void)reportError:(NSString *)error
-{
-    NSLog(@"%@", error);
 
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-    [alert setMessageText:error];
-    [alert runModal];
-}
 
 
 - (NSString *)selectFile
@@ -217,7 +231,6 @@ using namespace ePub3;
 
 - (LOXBookmark *)createBookmark
 {
-    NSInteger n = _currentBook.bookmarks.count + 1;
 
     LOXBookmark *bookmark = [self.webViewController createBookmark];
     if(!bookmark) {
@@ -229,8 +242,7 @@ using namespace ePub3;
         return nil;
     }
 
-    bookmark.title = [NSString stringWithFormat:@"Bookmark #%li", n];
-    bookmark.basePath = spineItem.href;
+     bookmark.basePath = spineItem.href;
     bookmark.spineItemCFI = [_package getCfiForSpineItem: spineItem];
 
     return bookmark;

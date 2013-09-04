@@ -13,39 +13,35 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
 
 
-#import <Foundation/Foundation.h>
-
-@class LOXOpenPageInfo;
+#import "LOXCSSStyle.h"
 
 
+@implementation LOXCSSStyle {
 
+}
 
-@interface LOXCurrentPagesInfo : NSObject
+- (id)initWithSelector:(NSString *)selector declarationsBlock:(NSString *)declarations
+{
+    self = [super init];
+    if(self) {
+        self.selector = selector;
+        self.declarationsBlock = declarations;
+         }
 
+    return self;
+}
 
-@property (nonatomic, readonly) NSArray *openPages;
-@property (nonatomic) bool isFixedLayout;
-@property (nonatomic) int spineItemCount;
-@property (nonatomic, retain) NSString* pageProgressionDirection;
+- (NSDictionary *)toDictionary
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
+    [dict setObject:self.selector forKey:@"selector"];
+    [dict setObject:self.declarations forKey:@"declarations"];
 
-- (void)fromDictionary:(NSDictionary *)dict;
+    return dict;
+}
 
-- (bool)canGoNext;
-
-- (bool)canGoLeft;
-
-- (bool)canGoRight;
-
-- (bool)canGoPrev;
-
-- (LOXOpenPageInfo *)firstOpenPage;
-
-- (NSArray *)getPageNumbers;
-
-- (bool)isOpen;
-
-- (int)getPageCount;
 @end

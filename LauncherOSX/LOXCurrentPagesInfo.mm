@@ -20,8 +20,6 @@
 #import "LOXUtil.h"
 
 
-FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
-
 @interface LOXCurrentPagesInfo ()
 - (void)reset;
 @end
@@ -62,8 +60,6 @@ FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
 
     }
 
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:LOXPageChangedEvent object:self];
 }
 
 

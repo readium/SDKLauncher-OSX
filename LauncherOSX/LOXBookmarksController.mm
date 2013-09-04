@@ -158,6 +158,14 @@
 - (IBAction)addBookmark:(id)sender
 {
     LOXBookmark * bookmark = [self.mainController createBookmark];
+
+    if(!bookmark) {
+        return;
+    }
+
+    NSInteger n = _book.bookmarks.count + 1;
+    bookmark.title = [NSString stringWithFormat:@"Bookmark #%li", n];
+
     [self.bookmarkEditController editBookmark:bookmark];
 }
 

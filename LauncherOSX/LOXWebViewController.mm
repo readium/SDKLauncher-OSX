@@ -25,6 +25,9 @@
 #import "LOXCurrentPagesInfo.h"
 #import "LOXBookmark.h"
 #import "LOXPreferences.h"
+#import "LOXAppDelegate.h"
+#import "LOXCSSStyle.h"
+#import "LOXUtil.h"
 
 
 @interface LOXWebViewController ()
@@ -104,17 +107,24 @@
 }
 
 
--(void)openPackage:(LOXPackage *)package
+-(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
 {
     [_package release];
     _package = package;
     [_package retain];
 
-    NSDictionary * dict = [_package toDictionary];
-    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
-    NSString* jsonString = [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
-    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", jsonString];
+    [dict setObject:[_package toDictionary] forKey:@"package"];
+
+    if(bookmark) {
+        NSDictionary *locationDict = [[[NSDictionary alloc] initWithObjectsAndKeys:bookmark.idref, @"idref", bookmark.contentCFI, @"elementCfi", nil] autorelease];
+        [dict setObject:locationDict forKey:@"openPageRequest"];
+    }
+
+    NSString *json = [LOXUtil toJson:dict];
+    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", json];
+
     [_webView stringByEvaluatingJavaScriptFromString:callString];
 }
 
@@ -154,7 +164,7 @@
 //this allows JavaScript to call the -logJavaScriptString: method
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
 {
-    if( sel == @selector(onOpenPage:) || sel == @selector(onReaderInitialized)) {
+    if( sel == @selector(onOpenPage:) || sel == @selector(onReaderInitialized) || sel == @selector(onSettingsApplied)) {
 
         return NO;
     }
@@ -170,6 +180,9 @@
     }
     else if(sel == @selector(onReaderInitialized)) {
         return @"onReaderInitialized";
+    }
+    else if(sel == @selector(onSettingsApplied)) {
+        return @"onSettingsApplied";
     }
 
     return nil;
@@ -198,9 +211,23 @@
         else {
 
             [self.currentPagesInfo fromDictionary:dict];
+            [[NSNotificationCenter defaultCenter] postNotificationName:LOXPageChangedEvent object:self];
         }
 }
 
+-(void)setStyles:(NSArray *)styles
+{
+    NSMutableArray *arr = [NSMutableArray array];
+
+    for(LOXCSSStyle *style in styles) {
+        [arr addObject:[style toDictionary]];
+    }
+
+    NSString* jsonDecl = [LOXUtil toJson: arr];
+
+    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setStyles(%@)", jsonDecl];
+    [_webView stringByEvaluatingJavaScriptFromString:callString];
+}
 
 - (void)onReaderInitialized
 {
@@ -217,9 +244,7 @@
 
 -(void)updateSettings:(LOXPreferences *)preferences
 {
-    NSDictionary * dict = [preferences toDictionary];
-    NSData* encodedData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
-    NSString* jsonString = [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+    NSString *jsonString = [LOXUtil toJson:[preferences toDictionary]];
 
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.updateSettings(%@)", jsonString];
     [_webView stringByEvaluatingJavaScriptFromString:callString];
@@ -322,4 +347,14 @@
 }
 
 
+-(void)onSettingsApplied
+{
+    NSLog(@"Settings has been applied to the reader");
+}
+
+- (void)resetStyles
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.clearStyles()"];
+}
 @end
