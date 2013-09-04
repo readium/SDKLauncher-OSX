@@ -18,9 +18,9 @@
 
 ReadiumSDK.HostAppFeedback = function() {
 
-    ReadiumSDK.on("ReaderInitialized", function(){
-        ReadiumSDK.reader.on("PaginationChanged", this.onPaginationChanged, this);
-        ReadiumSDK.reader.on("SettingsApplied", this.onSettingsApplied, this);
+    ReadiumSDK.on(ReadiumSDK.Events.READER_INITIALIZED, function(){
+        ReadiumSDK.reader.on(ReadiumSDK.Events.PAGINATION_CHANGED, this.onPaginationChanged, this);
+        ReadiumSDK.reader.on(ReadiumSDK.Events.SETTINGS_ALLIED, this.onSettingsApplied, this);
 
         window.LauncherUI.onReaderInitialized();
 
