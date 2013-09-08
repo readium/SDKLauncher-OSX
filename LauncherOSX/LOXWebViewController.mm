@@ -19,6 +19,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#import <WebKit/WebKit.h>
 #import "LOXWebViewController.h"
 #import "LOXPackage.h"
 #import "LOXSpineItem.h"
@@ -164,7 +165,10 @@
 //this allows JavaScript to call the -logJavaScriptString: method
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
 {
-    if( sel == @selector(onOpenPage:) || sel == @selector(onReaderInitialized) || sel == @selector(onSettingsApplied)) {
+    if(        sel == @selector(onOpenPage:)
+            || sel == @selector(onReaderInitialized)
+            || sel == @selector(onSettingsApplied)
+            || sel == @selector(onMediaOverlayStatusChanged:)){
 
         return NO;
     }
@@ -184,6 +188,9 @@
     else if(sel == @selector(onSettingsApplied)) {
         return @"onSettingsApplied";
     }
+    else if(sel == @selector(onMediaOverlayStatusChanged:)) {
+        return @"onMediaOverlayStatusChanged";
+    }
 
     return nil;
 }
@@ -200,19 +207,34 @@
 - (void)onOpenPage:(NSString*) currentPaginationInfo
 {
 
-        NSData* data = [currentPaginationInfo dataUsingEncoding:NSUTF8StringEncoding];
+    NSData* data = [currentPaginationInfo dataUsingEncoding:NSUTF8StringEncoding];
 
-        NSError *e = nil;
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
+    NSError *e = nil;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
 
-        if (!dict) {
-            NSLog(@"Error parsing JSON: %@", e);
-        }
-        else {
+    if (e) {
+        NSLog(@"Error parsing JSON: %@", e);
+        return;
+    }
 
-            [self.currentPagesInfo fromDictionary:dict];
-            [[NSNotificationCenter defaultCenter] postNotificationName:LOXPageChangedEvent object:self];
-        }
+    [self.currentPagesInfo fromDictionary:dict];
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOXPageChangedEvent object:self];
+
+}
+
+- (void)onMediaOverlayStatusChanged:(NSString*) status
+{
+    NSData* data = [status dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSError *e = nil;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
+
+    if (e) {
+        NSLog(@"Error parsing JSON: %@", e);
+        return;
+    }
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOXMediaOverlayStatusChangedEvent object:self userInfo:dict];
 }
 
 -(bool)isMediaOverlayAvailable

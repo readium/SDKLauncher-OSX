@@ -13,6 +13,7 @@
 		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
 		850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9416A6320200619C3C /* LOXSpineViewController.mm */; };
 		850B1A9816A6320200619C3C /* LOXWebViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9616A6320200619C3C /* LOXWebViewController.mm */; };
+		851FFCFE17DCFBF90090BA3C /* green_dot_big.png in Resources */ = {isa = PBXBuildFile; fileRef = 851FFCFD17DCFBF90090BA3C /* green_dot_big.png */; };
 		855CFDB61696200B00AD311E /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 855CFDB51696200B00AD311E /* WebKit.framework */; };
 		855CFE4B169B912300AD311E /* LOXePubSdkApi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CFE4A169B912300AD311E /* LOXePubSdkApi.mm */; };
 		855CFEE8169DFA3E00AD311E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 855CFEE7169DFA3D00AD311E /* libz.dylib */; };
@@ -132,6 +133,7 @@
 		850B1A9416A6320200619C3C /* LOXSpineViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXSpineViewController.mm; sourceTree = "<group>"; };
 		850B1A9516A6320200619C3C /* LOXWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXWebViewController.h; sourceTree = "<group>"; };
 		850B1A9616A6320200619C3C /* LOXWebViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXWebViewController.mm; sourceTree = "<group>"; };
+		851FFCFD17DCFBF90090BA3C /* green_dot_big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green_dot_big.png; sourceTree = "<group>"; };
 		855CFDB51696200B00AD311E /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		855CFE49169B912300AD311E /* LOXePubSdkApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXePubSdkApi.h; sourceTree = "<group>"; };
 		855CFE4A169B912300AD311E /* LOXePubSdkApi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXePubSdkApi.mm; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 		552FC46A16F39AD0000E73BA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				851FFCFD17DCFBF90090BA3C /* green_dot_big.png */,
 				552FC46516F39AB5000E73BA /* icon.icns */,
 				AD8C8CF4C1B651BDFFE50D28 /* sample_styles.css */,
 				AD8C807DDEA3670EF1F8052E /* ico_rate.png */,
@@ -526,6 +529,7 @@
 				85ADCFF417B45CB5009F224E /* static in Resources */,
 				AD8C83FC6397F6AECC59F1FF /* ico_rate.png in Resources */,
 				AD8C880A9CBF3B579B85F659 /* ico_tts.png in Resources */,
+				851FFCFE17DCFBF90090BA3C /* green_dot_big.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

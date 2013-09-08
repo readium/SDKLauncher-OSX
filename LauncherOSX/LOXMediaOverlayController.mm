@@ -35,6 +35,13 @@
                                                  name:LOXPageChangedEvent
                                                object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onMediaOverlayStatusChanged:)
+                                                 name:LOXMediaOverlayStatusChangedEvent
+                                               object:nil];
+
+    [self.playIndicator setHidden:YES];
+
     [self updateIU];
 }
 
@@ -53,6 +60,13 @@
 
     [self.webViewController toggleMediaOverlay];
 
+}
+
+-(void)onMediaOverlayStatusChanged:(NSNotification*) notification
+{
+    NSDictionary *dict = [notification userInfo];
+    NSNumber* isPlaying = dict[@"isPlaying"];
+    [self.playIndicator setHidden: ![isPlaying boolValue]];
 }
 
 

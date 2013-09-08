@@ -21,6 +21,7 @@ ReadiumSDK.HostAppFeedback = function() {
     ReadiumSDK.on(ReadiumSDK.Events.READER_INITIALIZED, function(){
         ReadiumSDK.reader.on(ReadiumSDK.Events.PAGINATION_CHANGED, this.onPaginationChanged, this);
         ReadiumSDK.reader.on(ReadiumSDK.Events.SETTINGS_ALLIED, this.onSettingsApplied, this);
+        ReadiumSDK.reader.on(ReadiumSDK.Events.MEDIA_OVERLAY_STATUS_CHANGED, this.onMediaOverlayStatusChanged, this);
 
         window.LauncherUI.onReaderInitialized();
 
@@ -40,6 +41,13 @@ ReadiumSDK.HostAppFeedback = function() {
             window.LauncherUI.onSettingsApplied();
         }
     };
+
+    this.onMediaOverlayStatusChanged = function(status) {
+
+        if(window.LauncherUI) {
+            window.LauncherUI.onMediaOverlayStatusChanged(JSON.stringify(status));
+        }
+    }
 
 }();
 

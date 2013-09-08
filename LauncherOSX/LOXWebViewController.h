@@ -33,6 +33,7 @@
 @class LOXBookmark;
 @class LOXPreferences;
 @class LOXCSSStyle;
+@class WebView;
 
 
 @interface LOXWebViewController : NSObject<LOXSpineViewControllerDelegate> {
@@ -44,6 +45,8 @@
 - (void) clear;
 
 - (void)onOpenPage:(NSString *)currentPaginationInfo;
+
+- (void)onMediaOverlayStatusChanged:(NSString*) isPlaying;
 
 - (bool)isMediaOverlayAvailable;
 
