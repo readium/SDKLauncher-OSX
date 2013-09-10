@@ -119,8 +119,8 @@
     }
 
     [dict setObject:smilDictionaries forKey:@"smil_models"];
-    [dict setObject:self.duration forKeyedSubscript:@"duration"];
-    [dict setObject:self.narrator forKeyedSubscript:@"narrator"];
+    [dict setObject:self.duration forKey:@"duration"];
+    [dict setObject:self.narrator forKey:@"narrator"];
 
     return dict;
 }

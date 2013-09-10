@@ -11,7 +11,7 @@
 
 @interface LOXSmilModel : NSObject
 
-@property (nonatomic, readonly) NSArray *childern;
+@property (nonatomic, readonly) NSArray *children;
 @property (nonatomic, copy) NSString *href;
 @property (nonatomic, copy) NSString *id;
 @property (nonatomic, copy) NSString *smilVersion;
