@@ -31,12 +31,89 @@
 
         _smilModels = [[NSMutableArray array] retain];
         self.duration = [self getProperty:@"duration" fromPropertyHolder: sdkPackage];
+        self.durationMilliseconds = [self parseSmilClockValueToMilliseconds: self.duration fromSdkPackage: sdkPackage];
         self.narrator = [self getProperty:@"narrator" fromPropertyHolder: sdkPackage];
 
 
         [self parseSmilsFromSdkPackage:sdkPackage];
 
     }
+
+    // TESTS
+    // http://www.w3.org/TR/SMIL3/smil-timing.html#Timing-ClockValueSyntax
+    
+    NSInteger time = 0;
+    NSString* str = @"";
+    
+    // --- Full clock values
+    
+    // 2 hours, 30 minutes and 3 seconds
+    // =2*60*60*1000+30*60*1000+3*1000+0
+    str = @"02:30:03";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 9003000);
+    
+    // 50 hours, 10 seconds and 250 milliseconds
+    // =50*60*60*1000+0*60*1000+10*1000+250
+    str = @"50:00:10.25";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 180010250);
+    
+    // --- Partial clock values
+    
+    // 2 minutes and 33 seconds
+    // =0*60*60*1000+2*60*1000+33*1000+0
+    str = @"02:33";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 153000);
+    
+    // 10.5 seconds = 10 seconds and 500 milliseconds
+    // =0*60*60*1000+0*60*1000+10*1000+500
+    str = @"00:10.5";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 10500);
+    
+    // --- Timecount values
+    
+    // 3.2 hours = 3 hours and 12 minutes
+    // =3*60*60*1000+12*60*1000+0*1000+0
+    str = @"3.2h";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 11520000);
+    
+    // 45 minutes
+    // =0*60*60*1000+45*60*1000+0*1000+0
+    str = @"45min";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 2700000);
+    
+    // 30 seconds
+    // =0*60*60*1000+0*60*1000+30*1000+0
+    str = @"30s";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 30000);
+    
+    // 5 milliseconds
+    str = @"5ms";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 5);
+    
+    // 12 seconds and 467 milliseconds
+    // =0*60*60*1000+0*60*1000+12*1000+467
+    str = @"12.467";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 12467);
+    
+    // 500 milliseconds
+    str = @"00.5s";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 500);
+    
+    // 5 milliseconds
+    str = @"00:00.005";
+    time = [self parseSmilClockValueToMilliseconds: str fromSdkPackage: sdkPackage];
+    NSLog(@"ASSERT: %ld", (long) 5);
+    
 
     return self;
 }
@@ -56,10 +133,29 @@
             if(smilModel) {
 
                 smilModel.duration = [self getProperty:@"duration" fromPropertyHolder:item];
+                smilModel.durationMilliseconds = [self parseSmilClockValueToMilliseconds: smilModel.duration fromSdkPackage: sdkPackage];
 
                 [_smilModels addObject:smilModel];
             }
         }
+    }
+}
+
+- (NSInteger) parseSmilClockValueToMilliseconds:(NSString *)smilTime fromSdkPackage: (ePub3::PackagePtr)sdkPackage
+{
+    //ePub3::PackagePtr
+    //std::shared_ptr<ePub3::Package>
+    @try
+    {
+        NSLog(@"SMIL Clock Value String: %@", smilTime);
+        
+        NSInteger milliseconds = sdkPackage->ParseSmilClockValueToMilliseconds([smilTime UTF8String]);
+        
+        NSLog(@"SMIL Clock Value Milliseconds: %ld", (long) milliseconds);
+    }
+    @catch(NSException *ex)
+    {
+        NSLog(@"Error: %@", ex);
     }
 }
 
@@ -119,8 +215,9 @@
     }
 
     [dict setObject:smilDictionaries forKey:@"smil_models"];
-    [dict setObject:self.duration forKeyedSubscript:@"duration"];
-    [dict setObject:self.narrator forKeyedSubscript:@"narrator"];
+    [dict setObject:self.duration forKey:@"duration"];
+    //[dict setObject:self.durationMilliseconds forKey:@"durationMilliseconds"];
+    [dict setObject:self.narrator forKey:@"narrator"];
 
     return dict;
 }
