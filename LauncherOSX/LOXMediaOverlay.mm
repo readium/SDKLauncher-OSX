@@ -33,8 +33,11 @@
     if(self) {
 
         _smilModels = [[NSMutableArray array] retain];
-        self.duration = [self getProperty:@"duration" fromPropertyHolder: sdkPackage];
-        self.durationMilliseconds = ePub3::ParseSmilClockValueToMilliseconds([self.duration UTF8String]);
+
+        auto duration = [self getProperty:@"duration" fromPropertyHolder: sdkPackage];
+        self.duration = [NSNumber numberWithDouble: ePub3::ParseSmilClockValueToSeconds([duration UTF8String])];
+        NSLog(@"=== TOTAL MO DURATION: %s => %ldms", [duration UTF8String], (long) floor([self.duration doubleValue] * 1000.0));
+
         self.narrator = [self getProperty:@"narrator" fromPropertyHolder: sdkPackage];
 
 
@@ -59,8 +62,10 @@
             LOXSmilModel * smilModel = [self createMediaOverlayForItem:item fromSdkPackage:sdkPackage];
             if(smilModel) {
 
-                smilModel.duration = [self getProperty:@"duration" fromPropertyHolder:item];
-                smilModel.durationMilliseconds = ePub3::ParseSmilClockValueToMilliseconds([smilModel.duration UTF8String]);
+                auto duration = [self getProperty:@"duration" fromPropertyHolder:item];
+                smilModel.duration = [NSNumber numberWithDouble: ePub3::ParseSmilClockValueToSeconds([duration UTF8String])];
+                NSLog(@"=== [%s] DURATION: %s => %ldms", item->Href().c_str(), [duration UTF8String], (long) floor([smilModel.duration doubleValue] * 1000.0));
+
                 [_smilModels addObject:smilModel];
             }
         }
