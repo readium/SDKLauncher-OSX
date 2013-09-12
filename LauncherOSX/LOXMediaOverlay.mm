@@ -34,6 +34,21 @@
 
         _smilModels = [[NSMutableArray array] retain];
 
+        //self.narrator = [self getProperty:@"narrator" fromPropertyHolder: sdkPackage];
+
+        auto narrator = ePub3::MediaOverlaysMetadata::GetNarrator(sdkPackage);
+        self.narrator = narrator == nullptr ? @"" : [NSString stringWithUTF8String: narrator->c_str()];
+        NSLog(@"=== NARRATOR: [%s]", [self.narrator UTF8String]);
+
+        auto activeClass = ePub3::MediaOverlaysMetadata::GetActiveClass(sdkPackage);
+        self.activeClass = activeClass == nullptr ? @"" : [NSString stringWithUTF8String: activeClass->c_str()];
+        NSLog(@"=== ACTIVE-CLASS: [%s]", [self.activeClass UTF8String]);
+
+        auto playbackActiveClass = ePub3::MediaOverlaysMetadata::GetPlaybackActiveClass(sdkPackage);
+        self.playbackActiveClass = playbackActiveClass == nullptr ? @"" : [NSString stringWithUTF8String: playbackActiveClass->c_str()];
+        NSLog(@"=== PLAYBACK-ACTIVE-CLASS: [%s]", [self.playbackActiveClass UTF8String]);
+
+
         //auto duration = [self getProperty:@"duration" fromPropertyHolder: sdkPackage];
 
         auto metadata = ePub3::MediaOverlaysMetadata::GetDuration(sdkPackage);
@@ -42,12 +57,6 @@
         self.duration = [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
         NSLog(@"=== TOTAL MO DURATION: %s => %ldms", [duration UTF8String], (long) floor([self.duration doubleValue] * 1000.0));
 
-
-
-        //self.narrator = [self getProperty:@"narrator" fromPropertyHolder: sdkPackage];
-
-        auto narrator = ePub3::MediaOverlaysMetadata::GetNarrator(sdkPackage);
-        self.narrator = narrator == nullptr ? @"" : [NSString stringWithUTF8String: narrator->c_str()];
 
 
         [self parseSmilsFromSdkPackage:sdkPackage];
@@ -155,9 +164,14 @@
     }
 
     [dict setObject:smilDictionaries forKey:@"smil_models"];
+
     [dict setObject:self.duration forKey:@"duration"];
-    //[dict setObject:self.durationMilliseconds forKey:@"durationMilliseconds"];
+
     [dict setObject:self.narrator forKey:@"narrator"];
+
+    [dict setObject:self.activeClass forKey:@"activeClass"];
+
+    [dict setObject:self.playbackActiveClass forKey:@"playbackActiveClass"];
 
     return dict;
 }
