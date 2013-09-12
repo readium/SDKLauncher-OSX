@@ -12,11 +12,11 @@
 #import "LOXSMILParser.h"
 
 #import <ePub3/media-overlays_smil_utils.h>
-//#import "media-overlays_smil_utils.h"
+
 
 
 @interface LOXMediaOverlay ()
-- (NSString *)getProperty:(NSString *)name fromPropertyHolder:(std::shared_ptr<ePub3::PropertyHolder>)sdkPropertyHolder;
+//- (NSString *)getProperty:(NSString *)name fromPropertyHolder:(std::shared_ptr<ePub3::PropertyHolder>)sdkPropertyHolder;
 @end
 
 @implementation LOXMediaOverlay {
@@ -34,11 +34,20 @@
 
         _smilModels = [[NSMutableArray array] retain];
 
-        auto duration = [self getProperty:@"duration" fromPropertyHolder: sdkPackage];
-        self.duration = [NSNumber numberWithDouble: ePub3::ParseSmilClockValueToSeconds([duration UTF8String])];
+        //auto duration = [self getProperty:@"duration" fromPropertyHolder: sdkPackage];
+
+        auto metadata = ePub3::MediaOverlaysMetadata::GetDuration(sdkPackage);
+        NSString* duration = metadata == nullptr ? @"" : [NSString stringWithUTF8String: metadata->c_str()];
+
+        self.duration = [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
         NSLog(@"=== TOTAL MO DURATION: %s => %ldms", [duration UTF8String], (long) floor([self.duration doubleValue] * 1000.0));
 
-        self.narrator = [self getProperty:@"narrator" fromPropertyHolder: sdkPackage];
+
+
+        //self.narrator = [self getProperty:@"narrator" fromPropertyHolder: sdkPackage];
+
+        auto narrator = ePub3::MediaOverlaysMetadata::GetNarrator(sdkPackage);
+        self.narrator = narrator == nullptr ? @"" : [NSString stringWithUTF8String: narrator->c_str()];
 
 
         [self parseSmilsFromSdkPackage:sdkPackage];
@@ -50,6 +59,8 @@
 
 - (void)parseSmilsFromSdkPackage:(ePub3::PackagePtr)sdkPackage
 {
+    double accumulatedDuration = 0.0;
+
     auto manifestTable =  sdkPackage->Manifest();
 
     for(auto iter = manifestTable.begin(); iter != manifestTable.end(); iter++) {
@@ -61,17 +72,32 @@
 
             LOXSmilModel * smilModel = [self createMediaOverlayForItem:item fromSdkPackage:sdkPackage];
             if(smilModel) {
+                //auto duration = [self getProperty:@"duration" fromPropertyHolder:item];
 
-                auto duration = [self getProperty:@"duration" fromPropertyHolder:item];
-                smilModel.duration = [NSNumber numberWithDouble: ePub3::ParseSmilClockValueToSeconds([duration UTF8String])];
+                auto metadata = ePub3::MediaOverlaysMetadata::GetDuration(item);
+                NSString* duration = metadata == nullptr ? @"" : [NSString stringWithUTF8String: metadata->c_str()];
+
+                smilModel.duration = [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
                 NSLog(@"=== [%s] DURATION: %s => %ldms", item->Href().c_str(), [duration UTF8String], (long) floor([smilModel.duration doubleValue] * 1000.0));
+
+                accumulatedDuration += [smilModel.duration doubleValue];
 
                 [_smilModels addObject:smilModel];
             }
         }
     }
+
+    if (accumulatedDuration != [self.duration doubleValue])
+    {
+        NSLog(@"=== DURATION SUMMED != TOTAL (%ldms != %ldms)", (long)(accumulatedDuration * 1000.0), (long) floor([self.duration doubleValue] * 1000.0));
+    }
+    else
+    {
+        NSLog(@"=== DURATION SUM CHECK OKAY.");
+    }
 }
 
+/*
 - (NSString *)getProperty:(NSString *)name fromPropertyHolder:(std::shared_ptr<ePub3::PropertyHolder>)sdkPropertyHolder
 {
     auto prop = sdkPropertyHolder->PropertyMatching([name UTF8String], "media");
@@ -81,6 +107,7 @@
 
     return @"";
 }
+*/
 
 - (LOXSmilModel *)createMediaOverlayForItem:(ePub3::ManifestItemPtr) item fromSdkPackage:(ePub3::PackagePtr)sdkPackage
 {
