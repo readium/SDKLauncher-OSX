@@ -676,6 +676,7 @@
 					"${SRCROOT}/Objective-Zip/**",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/**";
 				WRAPPER_EXTENSION = app;
@@ -694,6 +695,7 @@
 					"${SRCROOT}/Objective-Zip/**",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/**";
 				WRAPPER_EXTENSION = app;

@@ -15,7 +15,7 @@
 
 }
 
-@synthesize childern = _children;
+@synthesize children = _children;
 
 -(id)init
 {
@@ -46,8 +46,9 @@
     [dict setObject:self.id forKey:@"id"];
     [dict setObject:self.href forKey:@"href"];
     [dict setObject:self.smilVersion forKey:@"smilVersion"];
-    [dict setObject:self.childern forKey:@"children"];
-    [dict setObject:self.duration forKeyedSubscript:@"duration"];
+    [dict setObject:self.children forKey:@"children"];
+    [dict setObject:self.duration forKey:@"duration"];
+    //[dict setObject:self.durationMilliseconds forKey:@"durationMilliseconds"];
 
     return dict;
 }
