@@ -36,25 +36,32 @@
 
         //self.narrator = [self getProperty:@"narrator" fromPropertyHolder: sdkPackage];
 
-        auto narrator = ePub3::MediaOverlaysMetadata::GetNarrator(sdkPackage);
-        self.narrator = narrator == nullptr ? @"" : [NSString stringWithUTF8String: narrator->c_str()];
+        auto narrator = sdkPackage->MediaOverlays_Narrator();
+        self.narrator = [NSString stringWithUTF8String: narrator.c_str()];
         NSLog(@"=== NARRATOR: [%s]", [self.narrator UTF8String]);
 
-        auto activeClass = ePub3::MediaOverlaysMetadata::GetActiveClass(sdkPackage);
-        self.activeClass = activeClass == nullptr ? @"" : [NSString stringWithUTF8String: activeClass->c_str()];
+        auto activeClass = sdkPackage->MediaOverlays_ActiveClass();
+        self.activeClass = [NSString stringWithUTF8String: activeClass.c_str()];
         NSLog(@"=== ACTIVE-CLASS: [%s]", [self.activeClass UTF8String]);
 
-        auto playbackActiveClass = ePub3::MediaOverlaysMetadata::GetPlaybackActiveClass(sdkPackage);
-        self.playbackActiveClass = playbackActiveClass == nullptr ? @"" : [NSString stringWithUTF8String: playbackActiveClass->c_str()];
+        auto playbackActiveClass = sdkPackage->MediaOverlays_PlaybackActiveClass();
+        self.playbackActiveClass = [NSString stringWithUTF8String: playbackActiveClass.c_str()];
         NSLog(@"=== PLAYBACK-ACTIVE-CLASS: [%s]", [self.playbackActiveClass UTF8String]);
 
 
         //auto duration = [self getProperty:@"duration" fromPropertyHolder: sdkPackage];
 
-        auto metadata = ePub3::MediaOverlaysMetadata::GetDuration(sdkPackage);
-        NSString* duration = metadata == nullptr ? @"" : [NSString stringWithUTF8String: metadata->c_str()];
+        auto metadata = sdkPackage->MediaOverlays_DurationTotal();
+        NSString* duration = [NSString stringWithUTF8String: metadata.c_str()];
+        if (metadata.empty())
+        {
+            self.duration = [NSNumber numberWithDouble: 0.0];
+        }
+        else
+        {
+            self.duration = [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
+        }
 
-        self.duration = [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
         NSLog(@"=== TOTAL MO DURATION: %s => %ldms", [duration UTF8String], (long) floor([self.duration doubleValue] * 1000.0));
 
 
@@ -83,10 +90,17 @@
             if(smilModel) {
                 //auto duration = [self getProperty:@"duration" fromPropertyHolder:item];
 
-                auto metadata = ePub3::MediaOverlaysMetadata::GetDuration(item);
-                NSString* duration = metadata == nullptr ? @"" : [NSString stringWithUTF8String: metadata->c_str()];
+                auto metadata = sdkPackage->MediaOverlays_DurationItem(item);
+                NSString* duration = [NSString stringWithUTF8String: metadata.c_str()];
+                if (metadata.empty())
+                {
+                    smilModel.duration = [NSNumber numberWithDouble: 0.0];
+                }
+                else
+                {
+                    smilModel.duration = [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
+                }
 
-                smilModel.duration = [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
                 NSLog(@"=== [%s] DURATION: %s => %ldms", item->Href().c_str(), [duration UTF8String], (long) floor([smilModel.duration doubleValue] * 1000.0));
 
                 accumulatedDuration += [smilModel.duration doubleValue];
