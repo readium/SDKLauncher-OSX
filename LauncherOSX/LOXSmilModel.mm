@@ -48,7 +48,6 @@
     [dict setObject:self.smilVersion forKey:@"smilVersion"];
     [dict setObject:self.children forKey:@"children"];
     [dict setObject:self.duration forKey:@"duration"];
-    //[dict setObject:self.durationMilliseconds forKey:@"durationMilliseconds"];
 
     return dict;
 }

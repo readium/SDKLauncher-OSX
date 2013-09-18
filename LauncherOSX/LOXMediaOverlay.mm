@@ -32,141 +32,188 @@
 
     if(self) {
 
-        _smilModels = [[NSMutableArray array] retain];
+        auto ePubSmilModel = sdkPackage->MediaOverlaysSmilModel();
 
-        //self.narrator = [self getProperty:@"narrator" fromPropertyHolder: sdkPackage];
-
-        auto narrator = sdkPackage->MediaOverlays_Narrator();
+        auto narrator = ePubSmilModel->Narrator(); //sdkPackage->MediaOverlays_Narrator();
         self.narrator = [NSString stringWithUTF8String: narrator.c_str()];
         NSLog(@"=== NARRATOR: [%s]", [self.narrator UTF8String]);
 
-        auto activeClass = sdkPackage->MediaOverlays_ActiveClass();
+        auto activeClass = ePubSmilModel->ActiveClass(); //sdkPackage->MediaOverlays_ActiveClass();
         self.activeClass = [NSString stringWithUTF8String: activeClass.c_str()];
         NSLog(@"=== ACTIVE-CLASS: [%s]", [self.activeClass UTF8String]);
 
-        auto playbackActiveClass = sdkPackage->MediaOverlays_PlaybackActiveClass();
+        auto playbackActiveClass = ePubSmilModel->PlaybackActiveClass(); //sdkPackage->MediaOverlays_PlaybackActiveClass();
         self.playbackActiveClass = [NSString stringWithUTF8String: playbackActiveClass.c_str()];
         NSLog(@"=== PLAYBACK-ACTIVE-CLASS: [%s]", [self.playbackActiveClass UTF8String]);
 
+        self.duration = [NSNumber numberWithDouble: ePubSmilModel->DurationMillisecondsTotal() / 1000.0];
+        NSLog(@"=== TOTAL MO DURATION: %ldms", (long) floor([self.duration doubleValue] * 1000.0));
 
-        //auto duration = [self getProperty:@"duration" fromPropertyHolder: sdkPackage];
+        _smilModels = [[NSMutableArray array] retain];
 
-        auto metadata = sdkPackage->MediaOverlays_DurationTotal();
-        NSString* duration = [NSString stringWithUTF8String: metadata.c_str()];
-        if (metadata.empty())
+        auto count = ePubSmilModel->GetSmilCount();
+        for (int i = 0; i < count; i++)
         {
-            self.duration = [NSNumber numberWithDouble: 0.0];
+            auto smilData = ePubSmilModel->GetSmil(i);
+
+            LOXSmilModel * smil = [[LOXSmilModel alloc] init];
+
+            smil.smilVersion = [NSString stringWithUTF8String: "3.0"];
+
+            smil.duration = [NSNumber numberWithDouble: smilData->DurationMilliseconds() / 1000.0];
+
+            auto item = smilData->ManifestItem();
+
+            smil.id = [NSString stringWithUTF8String:item->Identifier().c_str()];
+            smil.href = [NSString stringWithUTF8String:item->Href().c_str()];
+
+            NSLog(@"=== smil.id: [%s]", [smil.id UTF8String]);
+            NSLog(@"=== smil.href: [%s]", [smil.href UTF8String]);
+
+            auto seq = smilData->Body();
+
+            NSMutableDictionary *smilItem = [self parseTree_Sequence: seq];
+
+            [smil addItem:smilItem];
+
+            [_smilModels addObject:smil];
         }
-        else
-        {
-            self.duration = [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
-        }
-
-        NSLog(@"=== TOTAL MO DURATION: %s => %ldms", [duration UTF8String], (long) floor([self.duration doubleValue] * 1000.0));
-
-
-
-        [self parseSmilsFromSdkPackage:sdkPackage];
-
     }
 
     return self;
 }
 
-- (void)parseSmilsFromSdkPackage:(ePub3::PackagePtr)sdkPackage
+- (NSMutableDictionary *) parseTree_Text:(ePub3::SMILData::Text*)node
 {
-    double accumulatedDuration = 0.0;
+    NSMutableDictionary *smilItem = [NSMutableDictionary dictionary];
 
-    auto manifestTable =  sdkPackage->Manifest();
+    smilItem[@"nodeType"] = [NSString stringWithUTF8String: node->Name().c_str()];
 
-    for(auto iter = manifestTable.begin(); iter != manifestTable.end(); iter++) {
+    std::string str("");
+    str.append(node->_src_file.c_str());
+    if (!node->_src_fragmentID.empty())
+    {
+        str.append("#");
+        str.append(node->_src_fragmentID.c_str());
+    }
 
-        auto item = iter->second;
+    smilItem[@"src"] = [NSString stringWithUTF8String: str.c_str()];
 
-        auto mediaType = item->MediaType();
-        if(mediaType == "application/smil+xml") {
+//    NSMutableArray *children = [NSMutableArray array];
+//    smilItem[@"children"] = children;
 
-            LOXSmilModel * smilModel = [self createMediaOverlayForItem:item fromSdkPackage:sdkPackage];
-            if(smilModel) {
-                //auto duration = [self getProperty:@"duration" fromPropertyHolder:item];
+    return smilItem;
+}
 
-                auto metadata = sdkPackage->MediaOverlays_DurationItem(item);
-                NSString* duration = [NSString stringWithUTF8String: metadata.c_str()];
-                if (metadata.empty())
-                {
-                    smilModel.duration = [NSNumber numberWithDouble: 0.0];
-                }
-                else
-                {
-                    smilModel.duration = [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
-                }
+- (NSMutableDictionary *) parseTree_Audio:(ePub3::SMILData::Audio*)node
+{
+    NSMutableDictionary *smilItem = [NSMutableDictionary dictionary];
 
-                NSLog(@"=== [%s] DURATION: %s => %ldms", item->Href().c_str(), [duration UTF8String], (long) floor([smilModel.duration doubleValue] * 1000.0));
+    smilItem[@"nodeType"] = [NSString stringWithUTF8String: node->Name().c_str()];
 
-                accumulatedDuration += [smilModel.duration doubleValue];
+    std::string str("");
+    str.append(node->_src_file.c_str());
+    if (!node->_src_fragmentID.empty())
+    {
+        str.append("#");
+        str.append(node->_src_fragmentID.c_str());
+    }
 
-                [_smilModels addObject:smilModel];
-            }
+    smilItem[@"src"] = [NSString stringWithUTF8String: str.c_str()];
+
+    smilItem[@"clipBegin"] = [NSNumber numberWithDouble: node->_clipBeginMilliseconds / 1000.0];
+    smilItem[@"clipEnd"] = [NSNumber numberWithDouble: node->_clipEndMilliseconds / 1000.0];
+
+
+//    NSMutableArray *children = [NSMutableArray array];
+//    smilItem[@"children"] = children;
+
+    return smilItem;
+}
+
+- (NSMutableDictionary *) parseTree_Parallel:(ePub3::SMILData::Parallel*)node
+{
+    NSMutableDictionary *smilItem = [NSMutableDictionary dictionary];
+
+    smilItem[@"nodeType"] = [NSString stringWithUTF8String: node->Name().c_str()];
+
+    std::string str("");
+    str.append(node->_textref_file.c_str());
+    if (!node->_textref_fragmentID.empty())
+    {
+        str.append("#");
+        str.append(node->_textref_fragmentID.c_str());
+    }
+
+    smilItem[@"textref"] = [NSString stringWithUTF8String: str.c_str()];
+
+    smilItem[@"epubtype"] = [NSString stringWithUTF8String: node->_type.c_str()];
+
+    NSMutableArray *children = [NSMutableArray array];
+
+    NSMutableDictionary *text = [self parseTree_Text: node->_text];
+    [children addObject:text];
+
+    NSMutableDictionary *audio = [self parseTree_Audio: node->_audio];
+    [children addObject:audio];
+
+    smilItem[@"children"] = children;
+
+    return smilItem;
+}
+
+- (NSMutableDictionary *) parseTree_Sequence:(const ePub3::SMILData::Sequence*)node
+{
+    NSMutableDictionary *smilItem = [NSMutableDictionary dictionary];
+
+    smilItem[@"nodeType"] = [NSString stringWithUTF8String: node->Name().c_str()];
+
+    std::string str("");
+    str.append(node->_textref_file.c_str());
+    if (!node->_textref_fragmentID.empty())
+    {
+        str.append("#");
+        str.append(node->_textref_fragmentID.c_str());
+    }
+
+    smilItem[@"textref"] = [NSString stringWithUTF8String: str.c_str()];
+
+    smilItem[@"epub:type"] = [NSString stringWithUTF8String: node->_type.c_str()];
+
+    NSMutableArray *children = [NSMutableArray array];
+
+    for (int i = 0; i < node->_children.size(); i++)
+    {
+        ePub3::SMILData::TimeContainer *container = node->_children[i];
+
+        //const ePub3::SMILData::Sequence *seq = dynamic_cast<ePub3::SMILData::Sequence *>(container);
+        //if (seq != nullptr)
+        if ([[NSString stringWithUTF8String:container->Name().c_str()] isEqualToString:@"seq"])
+        {
+            NSMutableDictionary *seqx = [self parseTree_Sequence: (ePub3::SMILData::Sequence *)container];
+            [children addObject:seqx];
+            continue;
         }
+
+        //const ePub3::SMILData::Parallel *par = dynamic_cast<ePub3::SMILData::Parallel *>(container);
+        //if (par != nullptr)
+        if ([[NSString stringWithUTF8String: container->Name().c_str()] isEqualToString:@"par"])
+        {
+            NSMutableDictionary *parx = [self parseTree_Parallel: (ePub3::SMILData::Parallel *)container];
+            [children addObject:parx];
+            continue;
+        }
+
+        throw std::invalid_argument("WTF?");
     }
 
-    if (accumulatedDuration != [self.duration doubleValue])
+    if ([children count] != 0)
     {
-        NSLog(@"=== DURATION SUMMED != TOTAL (%ldms != %ldms)", (long)(accumulatedDuration * 1000.0), (long) floor([self.duration doubleValue] * 1000.0));
-    }
-    else
-    {
-        NSLog(@"=== DURATION SUM CHECK OKAY.");
-    }
-}
-
-/*
-- (NSString *)getProperty:(NSString *)name fromPropertyHolder:(std::shared_ptr<ePub3::PropertyHolder>)sdkPropertyHolder
-{
-    auto prop = sdkPropertyHolder->PropertyMatching([name UTF8String], "media");
-    if(prop != nullptr) {
-        return [NSString stringWithUTF8String: prop->Value().c_str()];
+        smilItem[@"children"] = children;
     }
 
-    return @"";
+    return smilItem;
 }
-*/
-
-- (LOXSmilModel *)createMediaOverlayForItem:(ePub3::ManifestItemPtr) item fromSdkPackage:(ePub3::PackagePtr)sdkPackage
-{
-    NSData *data = [self dataFromItem:item fromSdkPackage:sdkPackage];
-
-    LOXSMILParser *parser = [[LOXSMILParser alloc] initWithData:data];
-
-    LOXSmilModel *mediaOverlay = [[[parser parse] retain] autorelease];
-    mediaOverlay.id = [NSString stringWithUTF8String:item->Identifier().c_str()];
-    mediaOverlay.href = [NSString stringWithUTF8String:item->Href().c_str()];
-
-    [parser release];
-
-    return mediaOverlay;
-
-}
-
--(NSData *)dataFromItem:(ePub3::ManifestItemPtr) item fromSdkPackage:(ePub3::PackagePtr)sdkPackage
-{
-
-    auto reader = sdkPackage->ReaderForRelativePath(item->Href());
-
-    char buffer[1024];
-
-    NSMutableData * data = [NSMutableData data];
-
-    ssize_t readBytes = reader->read(buffer, 1024);
-
-    while (readBytes > 0) {
-        [data appendBytes:buffer length:(NSUInteger) readBytes];
-        readBytes = reader->read(buffer, 1024);
-    }
-
-    return data;
-}
-
 
 - (NSDictionary *)toDictionary {
 
@@ -191,6 +238,9 @@
 }
 
 - (void)dealloc {
+    for(LOXSmilModel *mo in _smilModels) {
+        [mo release];
+    }
     [_smilModels release];
     [super dealloc];
 }

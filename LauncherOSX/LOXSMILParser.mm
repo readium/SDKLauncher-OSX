@@ -72,7 +72,7 @@ didStartElement:(NSString *)elementName
             propName = @"textref";
         }
         else if([key isEqualToString:@"epub:type"]) {
-            propName = @"epub:type";
+            propName = @"epubtype";
         }
         else {
             propName = [[key copy] autorelease];
