@@ -9,7 +9,6 @@
 #import <ePub3/package.h>
 #import "LOXMediaOverlay.h"
 #import "LOXSmilModel.h"
-#import "LOXSMILParser.h"
 
 #import <ePub3/media-overlays_smil_utils.h>
 
@@ -36,18 +35,18 @@
 
         auto narrator = ePubSmilModel->Narrator(); //sdkPackage->MediaOverlays_Narrator();
         self.narrator = [NSString stringWithUTF8String: narrator.c_str()];
-        NSLog(@"=== NARRATOR: [%s]", [self.narrator UTF8String]);
+        //NSLog(@"=== NARRATOR: [%s]", [self.narrator UTF8String]);
 
         auto activeClass = ePubSmilModel->ActiveClass(); //sdkPackage->MediaOverlays_ActiveClass();
         self.activeClass = [NSString stringWithUTF8String: activeClass.c_str()];
-        NSLog(@"=== ACTIVE-CLASS: [%s]", [self.activeClass UTF8String]);
+        //NSLog(@"=== ACTIVE-CLASS: [%s]", [self.activeClass UTF8String]);
 
         auto playbackActiveClass = ePubSmilModel->PlaybackActiveClass(); //sdkPackage->MediaOverlays_PlaybackActiveClass();
         self.playbackActiveClass = [NSString stringWithUTF8String: playbackActiveClass.c_str()];
-        NSLog(@"=== PLAYBACK-ACTIVE-CLASS: [%s]", [self.playbackActiveClass UTF8String]);
+        //NSLog(@"=== PLAYBACK-ACTIVE-CLASS: [%s]", [self.playbackActiveClass UTF8String]);
 
         self.duration = [NSNumber numberWithDouble: ePubSmilModel->DurationMillisecondsTotal() / 1000.0];
-        NSLog(@"=== TOTAL MO DURATION: %ldms", (long) floor([self.duration doubleValue] * 1000.0));
+        //NSLog(@"=== TOTAL MO DURATION: %ldms", (long) floor([self.duration doubleValue] * 1000.0));
 
         _smilModels = [[NSMutableArray array] retain];
 
@@ -67,8 +66,8 @@
             smil.id = [NSString stringWithUTF8String:item->Identifier().c_str()];
             smil.href = [NSString stringWithUTF8String:item->Href().c_str()];
 
-            NSLog(@"=== smil.id: [%s]", [smil.id UTF8String]);
-            NSLog(@"=== smil.href: [%s]", [smil.href UTF8String]);
+            //NSLog(@"=== smil.id: [%s]", [smil.id UTF8String]);
+            //NSLog(@"=== smil.href: [%s]", [smil.href UTF8String]);
 
             auto seq = smilData->Body();
 
@@ -178,7 +177,7 @@
 
     smilItem[@"textref"] = [NSString stringWithUTF8String: str.c_str()];
 
-    smilItem[@"epub:type"] = [NSString stringWithUTF8String: node->_type.c_str()];
+    smilItem[@"epubtype"] = [NSString stringWithUTF8String: node->_type.c_str()];
 
     NSMutableArray *children = [NSMutableArray array];
 
