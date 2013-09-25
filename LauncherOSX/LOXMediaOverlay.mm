@@ -9,6 +9,7 @@
 #import <ePub3/package.h>
 #import "LOXMediaOverlay.h"
 #import "LOXSmilModel.h"
+#include "media-overlays_smil_data.h"
 
 #import <ePub3/media-overlays_smil_utils.h>
 
@@ -82,18 +83,20 @@
     return self;
 }
 
-- (NSMutableDictionary *) parseTree_Text:(ePub3::SMILData::Text*)node
+- (NSMutableDictionary *) parseTree_Text:(const ePub3::SMILData::Text*)node
 {
     NSMutableDictionary *smilItem = [NSMutableDictionary dictionary];
 
     smilItem[@"nodeType"] = [NSString stringWithUTF8String: node->Name().c_str()];
 
+//NSLog(@"=== nodeType: [%s]", [smilItem[@"nodeType"] UTF8String]);
+
     std::string str("");
-    str.append(node->_src_file.c_str());
-    if (!node->_src_fragmentID.empty())
+    str.append(node->SrcFile().c_str());
+    if (!node->SrcFragmentId().empty())
     {
         str.append("#");
-        str.append(node->_src_fragmentID.c_str());
+        str.append(node->SrcFragmentId().c_str());
     }
 
     smilItem[@"src"] = [NSString stringWithUTF8String: str.c_str()];
@@ -104,24 +107,26 @@
     return smilItem;
 }
 
-- (NSMutableDictionary *) parseTree_Audio:(ePub3::SMILData::Audio*)node
+- (NSMutableDictionary *) parseTree_Audio:(const ePub3::SMILData::Audio*)node
 {
     NSMutableDictionary *smilItem = [NSMutableDictionary dictionary];
 
     smilItem[@"nodeType"] = [NSString stringWithUTF8String: node->Name().c_str()];
 
+//NSLog(@"=== nodeType: [%s]", [smilItem[@"nodeType"] UTF8String]);
+
     std::string str("");
-    str.append(node->_src_file.c_str());
-    if (!node->_src_fragmentID.empty())
+    str.append(node->SrcFile().c_str());
+    if (!node->SrcFragmentId().empty())
     {
         str.append("#");
-        str.append(node->_src_fragmentID.c_str());
+        str.append(node->SrcFragmentId().c_str());
     }
 
     smilItem[@"src"] = [NSString stringWithUTF8String: str.c_str()];
 
-    smilItem[@"clipBegin"] = [NSNumber numberWithDouble: node->_clipBeginMilliseconds / 1000.0];
-    smilItem[@"clipEnd"] = [NSNumber numberWithDouble: node->_clipEndMilliseconds / 1000.0];
+    smilItem[@"clipBegin"] = [NSNumber numberWithDouble: node->ClipBeginMilliseconds() / 1000.0];
+    smilItem[@"clipEnd"] = [NSNumber numberWithDouble: node->ClipEndMilliseconds() / 1000.0];
 
 
 //    NSMutableArray *children = [NSMutableArray array];
@@ -136,25 +141,35 @@
 
     smilItem[@"nodeType"] = [NSString stringWithUTF8String: node->Name().c_str()];
 
+//NSLog(@"=== nodeType: [%s]", [smilItem[@"nodeType"] UTF8String]);
+
     std::string str("");
-    str.append(node->_textref_file.c_str());
-    if (!node->_textref_fragmentID.empty())
+    str.append(node->TextRefFile().c_str());
+    if (!node->TextRefFragmentId().empty())
     {
         str.append("#");
-        str.append(node->_textref_fragmentID.c_str());
+        str.append(node->TextRefFragmentId().c_str());
     }
 
     smilItem[@"textref"] = [NSString stringWithUTF8String: str.c_str()];
 
-    smilItem[@"epubtype"] = [NSString stringWithUTF8String: node->_type.c_str()];
+    smilItem[@"epubtype"] = [NSString stringWithUTF8String: node->Type().c_str()];
 
     NSMutableArray *children = [NSMutableArray array];
 
-    NSMutableDictionary *text = [self parseTree_Text: node->_text];
-    [children addObject:text];
+    auto textMedia = node->Text();
+    if (textMedia != nullptr && textMedia->IsText())
+    {
+        NSMutableDictionary *text = [self parseTree_Text: textMedia];
+        [children addObject:text];
+    }
 
-    NSMutableDictionary *audio = [self parseTree_Audio: node->_audio];
-    [children addObject:audio];
+    auto audioMedia = node->Audio();
+    if (audioMedia != nullptr && audioMedia->IsAudio())
+    {
+        NSMutableDictionary *audio = [self parseTree_Audio: audioMedia];
+        [children addObject:audio];
+    }
 
     smilItem[@"children"] = children;
 
@@ -167,27 +182,31 @@
 
     smilItem[@"nodeType"] = [NSString stringWithUTF8String: node->Name().c_str()];
 
+//NSLog(@"=== nodeType: [%s]", [smilItem[@"nodeType"] UTF8String]);
+
     std::string str("");
-    str.append(node->_textref_file.c_str());
-    if (!node->_textref_fragmentID.empty())
+    str.append(node->TextRefFile().c_str());
+    if (!node->TextRefFragmentId().empty())
     {
         str.append("#");
-        str.append(node->_textref_fragmentID.c_str());
+        str.append(node->TextRefFragmentId().c_str());
     }
 
     smilItem[@"textref"] = [NSString stringWithUTF8String: str.c_str()];
 
-    smilItem[@"epubtype"] = [NSString stringWithUTF8String: node->_type.c_str()];
+    smilItem[@"epubtype"] = [NSString stringWithUTF8String: node->Type().c_str()];
 
     NSMutableArray *children = [NSMutableArray array];
 
-    for (int i = 0; i < node->_children.size(); i++)
+    auto count = node->GetChildrenCount();
+    for (int i = 0; i < count; i++)
     {
-        ePub3::SMILData::TimeContainer *container = node->_children[i];
+        const ePub3::SMILData::TimeContainer *container = node->GetChild(i);
 
         //const ePub3::SMILData::Sequence *seq = dynamic_cast<ePub3::SMILData::Sequence *>(container);
         //if (seq != nullptr)
-        if ([[NSString stringWithUTF8String:container->Name().c_str()] isEqualToString:@"seq"])
+        //if ([[NSString stringWithUTF8String:container->Name().c_str()] isEqualToString:@"seq"])
+        if (container->IsSequence())
         {
             NSMutableDictionary *seqx = [self parseTree_Sequence: (ePub3::SMILData::Sequence *)container];
             [children addObject:seqx];
@@ -196,7 +215,8 @@
 
         //const ePub3::SMILData::Parallel *par = dynamic_cast<ePub3::SMILData::Parallel *>(container);
         //if (par != nullptr)
-        if ([[NSString stringWithUTF8String: container->Name().c_str()] isEqualToString:@"par"])
+        //if ([[NSString stringWithUTF8String: container->Name().c_str()] isEqualToString:@"par"])
+        if (container->IsParallel())
         {
             NSMutableDictionary *parx = [self parseTree_Parallel: (ePub3::SMILData::Parallel *)container];
             [children addObject:parx];
