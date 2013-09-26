@@ -91,10 +91,15 @@
 
 //NSLog(@"=== nodeType: [%s]", [smilItem[@"nodeType"] UTF8String]);
 
+
+    smilItem[@"srcFile"] = [NSString stringWithUTF8String: node->SrcFile().c_str()];
+
     std::string str("");
     str.append(node->SrcFile().c_str());
     if (!node->SrcFragmentId().empty())
     {
+        smilItem[@"srcFragmentId"] = [NSString stringWithUTF8String: node->SrcFragmentId().c_str()];
+
         str.append("#");
         str.append(node->SrcFragmentId().c_str());
     }
