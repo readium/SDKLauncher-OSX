@@ -26,8 +26,12 @@
 @property (assign) IBOutlet LOXWebViewController* webViewController;
 
 @property (assign) IBOutlet NSButton *toggleMediaOverlayButton;
+@property (assign) IBOutlet NSButton *nextMediaOverlayButton;
+@property (assign) IBOutlet NSButton *previousMediaOverlayButton;
 @property (assign) IBOutlet NSImageView *playIndicator;
 
 - (IBAction)onToggleMediaOverlayClick:(id)sender;
+- (IBAction)onNextMediaOverlayClick:(id)sender;
+- (IBAction)onPreviousMediaOverlayClick:(id)sender;
 
 @end

@@ -86,4 +86,7 @@
 - (void)resetStyles;
 
 - (void)toggleMediaOverlay;
+- (void)nextMediaOverlay;
+- (void)previousMediaOverlay;
+
 @end

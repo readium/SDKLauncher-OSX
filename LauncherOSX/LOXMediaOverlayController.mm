@@ -62,6 +62,20 @@
 
 }
 
+- (IBAction)onNextMediaOverlayClick:(id)sender
+{
+    
+    [self.webViewController nextMediaOverlay];
+    
+}
+
+- (IBAction)onPreviousMediaOverlayClick:(id)sender
+{
+    
+    [self.webViewController previousMediaOverlay];
+    
+}
+
 -(void)onMediaOverlayStatusChanged:(NSNotification*) notification
 {
     NSDictionary *dict = [notification userInfo];

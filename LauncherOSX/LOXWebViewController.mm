@@ -395,4 +395,15 @@
     [script evaluateWebScript: @"ReadiumSDK.reader.toggleMediaOverlay()"];
 }
 
+- (void)nextMediaOverlay
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.nextMediaOverlay()"];
+}
+- (void)previousMediaOverlay
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.previousMediaOverlay()"];
+}
+
 @end
