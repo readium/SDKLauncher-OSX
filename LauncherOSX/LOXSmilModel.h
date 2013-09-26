@@ -15,7 +15,7 @@
 @property (nonatomic, copy) NSString *href;
 @property (nonatomic, copy) NSString *id;
 @property (nonatomic, copy) NSString *smilVersion;
-@property (nonatomic, copy) NSString *duration;
+@property (nonatomic, copy) NSNumber *duration;
 
 
 - (void)addItem:(NSDictionary *)item;
