@@ -22,9 +22,10 @@
 
         self.fontSize = [NSNumber numberWithInt:100];
         self.isSyntheticSpread = [NSNumber numberWithBool:YES];
+        self.mediaOverlaysSkipSkippables = [NSNumber numberWithBool:NO];
         self.columnGap = [NSNumber numberWithInt:20];
 
-        _observableProperties = [NSArray arrayWithObjects:@"fontSize",@"isSyntheticSpread",@"columnGap",nil];
+        _observableProperties = [NSArray arrayWithObjects:@"fontSize",@"isSyntheticSpread",@"columnGap",@"mediaOverlaysSkipSkippables",nil];
         [_observableProperties retain];
     }
 
@@ -47,7 +48,8 @@
 -(NSDictionary *) toDictionary
 {
     return @{  @"fontSize": self.fontSize,
-               @"isSyntheticSpread": self.isSyntheticSpread,
+            @"isSyntheticSpread": self.isSyntheticSpread,
+            @"mediaOverlaysSkipSkippables": self.mediaOverlaysSkipSkippables,
                @"columnGap": self.columnGap};
 }
 

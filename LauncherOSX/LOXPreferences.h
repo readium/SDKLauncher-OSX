@@ -16,7 +16,7 @@
 @property (nonatomic, retain) NSNumber *isSyntheticSpread;
 @property (nonatomic, retain) NSNumber *fontSize;
 @property (nonatomic, retain) NSNumber *columnGap;
-
+@property (nonatomic, retain) NSNumber *mediaOverlaysSkipSkippables;
 
 - (id)initWithDictionary:(NSDictionary *)dict;
 
