@@ -423,6 +423,8 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{714, 13}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="921443378">
@@ -449,6 +451,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{502, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="736543241"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
@@ -479,6 +482,8 @@
 											<int key="NSvFlags">268</int>
 											<string key="NSFrame">{{-7, -10}, {219, 446}}</string>
 											<reference key="NSSuperview" ref="700688380"/>
+											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView" ref="591154175"/>
 											<string key="NSReuseIdentifierKey">_NS:9</string>
 											<array class="NSMutableArray" key="NSTabViewItems">
 												<object class="NSTabViewItem" id="55051363">
@@ -668,6 +673,7 @@
 																				<int key="NSvFlags">256</int>
 																				<string key="NSFrameSize">{196, 398}</string>
 																				<reference key="NSSuperview" ref="988282876"/>
+																				<reference key="NSWindow"/>
 																				<reference key="NSNextKeyView" ref="999519564"/>
 																				<string key="NSReuseIdentifierKey">_NS:13</string>
 																				<bool key="NSEnabled">YES</bool>
@@ -726,6 +732,7 @@
 																		</array>
 																		<string key="NSFrame">{{1, 1}, {196, 398}}</string>
 																		<reference key="NSSuperview" ref="589722507"/>
+																		<reference key="NSWindow"/>
 																		<reference key="NSNextKeyView" ref="647721531"/>
 																		<string key="NSReuseIdentifierKey">_NS:11</string>
 																		<reference key="NSDocView" ref="647721531"/>
@@ -737,6 +744,7 @@
 																		<int key="NSvFlags">-2147483392</int>
 																		<string key="NSFrame">{{224, 17}, {15, 102}}</string>
 																		<reference key="NSSuperview" ref="589722507"/>
+																		<reference key="NSWindow"/>
 																		<reference key="NSNextKeyView" ref="494152415"/>
 																		<string key="NSReuseIdentifierKey">_NS:58</string>
 																		<reference key="NSTarget" ref="589722507"/>
@@ -748,6 +756,7 @@
 																		<int key="NSvFlags">-2147483392</int>
 																		<string key="NSFrame">{{1, 389}, {196, 15}}</string>
 																		<reference key="NSSuperview" ref="589722507"/>
+																		<reference key="NSWindow"/>
 																		<reference key="NSNextKeyView" ref="847228729"/>
 																		<string key="NSReuseIdentifierKey">_NS:60</string>
 																		<int key="NSsFlags">1</int>
@@ -758,6 +767,7 @@
 																</array>
 																<string key="NSFrameSize">{198, 400}</string>
 																<reference key="NSSuperview" ref="591154175"/>
+																<reference key="NSWindow"/>
 																<reference key="NSNextKeyView" ref="988282876"/>
 																<string key="NSReuseIdentifierKey">_NS:9</string>
 																<int key="NSsFlags">133682</int>
@@ -769,6 +779,7 @@
 														</array>
 														<string key="NSFrame">{{10, 33}, {199, 400}}</string>
 														<reference key="NSSuperview" ref="1008337707"/>
+														<reference key="NSWindow"/>
 														<reference key="NSNextKeyView" ref="589722507"/>
 														<string key="NSReuseIdentifierKey">_NS:28</string>
 													</object>
@@ -789,6 +800,7 @@
 									</array>
 									<string key="NSFrameSize">{205, 430}</string>
 									<reference key="NSSuperview" ref="943940271"/>
+									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="1008337707"/>
 									<string key="NSReuseIdentifierKey">_NS:11</string>
 									<string key="NSClassName">NSView</string>
@@ -819,6 +831,7 @@
 											</set>
 											<string key="NSFrameSize">{555, 430}</string>
 											<reference key="NSSuperview" ref="847228729"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView"/>
 											<string key="NSReuseIdentifierKey">_NS:9</string>
 											<string key="FrameName"/>
@@ -837,6 +850,7 @@
 									</array>
 									<string key="NSFrame">{{215, 0}, {555, 430}}</string>
 									<reference key="NSSuperview" ref="943940271"/>
+									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="705941750"/>
 									<string key="NSReuseIdentifierKey">_NS:13</string>
 									<string key="NSClassName">NSView</string>
@@ -844,6 +858,7 @@
 							</array>
 							<string key="NSFrame">{{20, 61}, {770, 430}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="700688380"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSIsVertical">YES</bool>
@@ -854,6 +869,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{586, 18}, {74, 22}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="993777637"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
@@ -884,6 +900,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{659, 21}, {64, 15}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="838258766"/>
 							<string key="NSReuseIdentifierKey">_NS:1535</string>
 							<bool key="NSEnabled">YES</bool>
@@ -903,6 +920,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{331, 8}, {36, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="432554450"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
@@ -938,7 +956,8 @@
 							</set>
 							<string key="NSFrame">{{360, 20}, {18, 16}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
-							<reference key="NSNextKeyView" ref="288884514"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="961869411"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="181457980">
@@ -961,7 +980,8 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{373, 11}, {51, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
-							<reference key="NSNextKeyView" ref="1065586653"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="288884514"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="394049758">
@@ -984,7 +1004,8 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{288, 11}, {51, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
-							<reference key="NSNextKeyView" ref="961869411"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="1065586653"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="867819734">
@@ -1002,9 +1023,34 @@
 								<int key="NSPeriodicInterval">25</int>
 							</object>
 						</object>
+						<object class="NSButton" id="541406735">
+							<reference key="NSNextResponder" ref="439893737"/>
+							<int key="NSvFlags">268</int>
+							<string key="NSFrame">{{222, 10}, {61, 32}}</string>
+							<reference key="NSSuperview" ref="439893737"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="840605240"/>
+							<string key="NSReuseIdentifierKey">_NS:9</string>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="528027934">
+								<int key="NSCellFlags">67108864</int>
+								<int key="NSCellFlags2">134217728</int>
+								<string key="NSContents">esc</string>
+								<reference key="NSSupport" ref="295640629"/>
+								<string key="NSCellIdentifier">_NS:9</string>
+								<reference key="NSControlView" ref="541406735"/>
+								<int key="NSButtonFlags">-2038284288</int>
+								<int key="NSButtonFlags2">129</int>
+								<string key="NSAlternateContents"/>
+								<string key="NSKeyEquivalent"/>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
+							</object>
+						</object>
 					</array>
 					<string key="NSFrameSize">{810, 511}</string>
 					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="943940271"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1280, 778}}</string>
@@ -1523,6 +1569,22 @@
 						<reference key="destination" ref="840605240"/>
 					</object>
 					<int key="connectionID">1270</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">escapeMediaOverlayButton</string>
+						<reference key="source" ref="200013593"/>
+						<reference key="destination" ref="541406735"/>
+					</object>
+					<int key="connectionID">1284</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">onEscapeMediaOverlayClick:</string>
+						<reference key="source" ref="200013593"/>
+						<reference key="destination" ref="541406735"/>
+					</object>
+					<int key="connectionID">1285</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2078,6 +2140,54 @@
 								<float key="scoringTypeFloat">9</float>
 								<int key="contentType">3</int>
 							</object>
+							<object class="IBNSLayoutConstraint" id="382281466">
+								<reference key="firstItem" ref="439893737"/>
+								<int key="firstAttribute">4</int>
+								<int key="relation">0</int>
+								<reference key="secondItem" ref="541406735"/>
+								<int key="secondAttribute">4</int>
+								<float key="multiplier">1</float>
+								<object class="IBLayoutConstant" key="constant">
+									<double key="value">18</double>
+								</object>
+								<float key="priority">1000</float>
+								<reference key="containingView" ref="439893737"/>
+								<int key="scoringType">3</int>
+								<float key="scoringTypeFloat">9</float>
+								<int key="contentType">3</int>
+							</object>
+							<object class="IBNSLayoutConstraint" id="283646609">
+								<reference key="firstItem" ref="541406735"/>
+								<int key="firstAttribute">10</int>
+								<int key="relation">0</int>
+								<reference key="secondItem" ref="432554450"/>
+								<int key="secondAttribute">10</int>
+								<float key="multiplier">1</float>
+								<object class="IBLayoutConstant" key="constant">
+									<double key="value">0.0</double>
+								</object>
+								<float key="priority">1000</float>
+								<reference key="containingView" ref="439893737"/>
+								<int key="scoringType">6</int>
+								<float key="scoringTypeFloat">24</float>
+								<int key="contentType">2</int>
+							</object>
+							<object class="IBNSLayoutConstraint" id="118354553">
+								<reference key="firstItem" ref="541406735"/>
+								<int key="firstAttribute">5</int>
+								<int key="relation">0</int>
+								<reference key="secondItem" ref="439893737"/>
+								<int key="secondAttribute">5</int>
+								<float key="multiplier">1</float>
+								<object class="IBLayoutConstant" key="constant">
+									<double key="value">228</double>
+								</object>
+								<float key="priority">1000</float>
+								<reference key="containingView" ref="439893737"/>
+								<int key="scoringType">3</int>
+								<float key="scoringTypeFloat">9</float>
+								<int key="contentType">3</int>
+							</object>
 							<object class="IBNSLayoutConstraint" id="95516097">
 								<reference key="firstItem" ref="943940271"/>
 								<int key="firstAttribute">5</int>
@@ -2133,6 +2243,7 @@
 							<reference ref="1065586653"/>
 							<reference ref="840605240"/>
 							<reference ref="961869411"/>
+							<reference ref="541406735"/>
 						</array>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -2462,22 +2573,6 @@
 						<reference key="object" ref="993777637"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="716737061"/>
-							<object class="IBNSLayoutConstraint" id="256364650">
-								<reference key="firstItem" ref="993777637"/>
-								<int key="firstAttribute">8</int>
-								<int key="relation">0</int>
-								<nil key="secondItem"/>
-								<int key="secondAttribute">0</int>
-								<float key="multiplier">1</float>
-								<object class="IBLayoutConstant" key="constant">
-									<double key="value">15</double>
-								</object>
-								<float key="priority">1000</float>
-								<reference key="containingView" ref="993777637"/>
-								<int key="scoringType">3</int>
-								<float key="scoringTypeFloat">9</float>
-								<int key="contentType">1</int>
-							</object>
 							<object class="IBNSLayoutConstraint" id="1040039132">
 								<reference key="firstItem" ref="993777637"/>
 								<int key="firstAttribute">7</int>
@@ -2999,11 +3094,6 @@
 						<reference key="parent" ref="439893737"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">1257</int>
-						<reference key="object" ref="256364650"/>
-						<reference key="parent" ref="993777637"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">1259</int>
 						<reference key="object" ref="209804977"/>
 						<reference key="parent" ref="439893737"/>
@@ -3042,6 +3132,55 @@
 						<int key="objectID">1268</int>
 						<reference key="object" ref="957675625"/>
 						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1271</int>
+						<reference key="object" ref="541406735"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="528027934"/>
+							<object class="IBNSLayoutConstraint" id="974703515">
+								<reference key="firstItem" ref="541406735"/>
+								<int key="firstAttribute">8</int>
+								<int key="relation">0</int>
+								<nil key="secondItem"/>
+								<int key="secondAttribute">0</int>
+								<float key="multiplier">1</float>
+								<object class="IBLayoutConstant" key="constant">
+									<double key="value">20</double>
+								</object>
+								<float key="priority">1000</float>
+								<reference key="containingView" ref="541406735"/>
+								<int key="scoringType">3</int>
+								<float key="scoringTypeFloat">9</float>
+								<int key="contentType">1</int>
+							</object>
+						</array>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1272</int>
+						<reference key="object" ref="528027934"/>
+						<reference key="parent" ref="541406735"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1280</int>
+						<reference key="object" ref="118354553"/>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1281</int>
+						<reference key="object" ref="283646609"/>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1282</int>
+						<reference key="object" ref="382281466"/>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1283</int>
+						<reference key="object" ref="974703515"/>
+						<reference key="parent" ref="541406735"/>
 					</object>
 				</array>
 			</object>
@@ -3123,7 +3262,6 @@
 				<string key="125.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1253.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1254.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="1257.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1259.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="126.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1260.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3133,6 +3271,16 @@
 				<string key="1266.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1267.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1268.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<array key="1271.IBNSViewMetadataConstraints">
+					<reference ref="974703515"/>
+				</array>
+				<boolean value="NO" key="1271.IBNSViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
+				<string key="1271.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1272.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1280.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1281.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1282.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1283.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="129.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="130.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="131.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3156,6 +3304,9 @@
 					<reference ref="550799483"/>
 					<reference ref="433045493"/>
 					<reference ref="95516097"/>
+					<reference ref="118354553"/>
+					<reference ref="283646609"/>
+					<reference ref="382281466"/>
 					<reference ref="358367837"/>
 					<reference ref="991389444"/>
 					<reference ref="209804977"/>
@@ -3240,9 +3391,8 @@
 				<string key="848.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="849.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="862.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<array key="874.IBNSViewMetadataConstraints">
+				<array class="NSMutableArray" key="874.IBNSViewMetadataConstraints">
 					<reference ref="1040039132"/>
-					<reference ref="256364650"/>
 				</array>
 				<boolean value="NO" key="874.IBNSViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
 				<string key="874.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3264,9 +3414,424 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1270</int>
+			<int key="maxID">1285</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXAppDelegate</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="openDocument:">id</string>
+						<string key="showPreferences:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="openDocument:">
+							<string key="name">openDocument:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showPreferences:">
+							<string key="name">showPreferences:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="bookmarksController">LOXBookmarksController</string>
+						<string key="mediaOverlayController">LOXMediaOverlayController</string>
+						<string key="pageNumController">LOXPageNumberTextController</string>
+						<string key="preferencesController">LOXPreferencesController</string>
+						<string key="preferencesMenu">NSMenuItem</string>
+						<string key="spineViewController">LOXSpineViewController</string>
+						<string key="tocViewController">LOXTocViewController</string>
+						<string key="webViewController">LOXWebViewController</string>
+						<string key="window">NSWindow</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="bookmarksController">
+							<string key="name">bookmarksController</string>
+							<string key="candidateClassName">LOXBookmarksController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="mediaOverlayController">
+							<string key="name">mediaOverlayController</string>
+							<string key="candidateClassName">LOXMediaOverlayController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="pageNumController">
+							<string key="name">pageNumController</string>
+							<string key="candidateClassName">LOXPageNumberTextController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="preferencesController">
+							<string key="name">preferencesController</string>
+							<string key="candidateClassName">LOXPreferencesController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="preferencesMenu">
+							<string key="name">preferencesMenu</string>
+							<string key="candidateClassName">NSMenuItem</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="spineViewController">
+							<string key="name">spineViewController</string>
+							<string key="candidateClassName">LOXSpineViewController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="tocViewController">
+							<string key="name">tocViewController</string>
+							<string key="candidateClassName">LOXTocViewController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="webViewController">
+							<string key="name">webViewController</string>
+							<string key="candidateClassName">LOXWebViewController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="window">
+							<string key="name">window</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXAppDelegate.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXBookmarkEditController</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="onCancel:">id</string>
+						<string key="onOK:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="onCancel:">
+							<string key="name">onCancel:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="onOK:">
+							<string key="name">onOK:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="bookmarksController">LOXBookmarksController</string>
+						<string key="cancelButton">NSButton</string>
+						<string key="nameText">NSTextField</string>
+						<string key="okButton">NSButton</string>
+						<string key="sheet">NSWindow</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="bookmarksController">
+							<string key="name">bookmarksController</string>
+							<string key="candidateClassName">LOXBookmarksController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="cancelButton">
+							<string key="name">cancelButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="nameText">
+							<string key="name">nameText</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="okButton">
+							<string key="name">okButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="sheet">
+							<string key="name">sheet</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXBookmarkEditController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXBookmarksController</string>
+					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">addBookmark:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">addBookmark:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">addBookmark:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="addBookmarkMenuItem">NSMenuItem</string>
+						<string key="bookmarkEditController">LOXBookmarkEditController</string>
+						<string key="bookmarksMenu">NSMenu</string>
+						<string key="mainController">LOXAppDelegate</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="addBookmarkMenuItem">
+							<string key="name">addBookmarkMenuItem</string>
+							<string key="candidateClassName">NSMenuItem</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="bookmarkEditController">
+							<string key="name">bookmarkEditController</string>
+							<string key="candidateClassName">LOXBookmarkEditController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="bookmarksMenu">
+							<string key="name">bookmarksMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="mainController">
+							<string key="name">mainController</string>
+							<string key="candidateClassName">LOXAppDelegate</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXBookmarksController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXMediaOverlayController</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="onEscapeMediaOverlayClick:">id</string>
+						<string key="onNextMediaOverlayClick:">id</string>
+						<string key="onPreviousMediaOverlayClick:">id</string>
+						<string key="onToggleMediaOverlayClick:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="onEscapeMediaOverlayClick:">
+							<string key="name">onEscapeMediaOverlayClick:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="onNextMediaOverlayClick:">
+							<string key="name">onNextMediaOverlayClick:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="onPreviousMediaOverlayClick:">
+							<string key="name">onPreviousMediaOverlayClick:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="onToggleMediaOverlayClick:">
+							<string key="name">onToggleMediaOverlayClick:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="escapeMediaOverlayButton">NSButton</string>
+						<string key="nextMediaOverlayButton">NSButton</string>
+						<string key="playIndicator">NSImageView</string>
+						<string key="previousMediaOverlayButton">NSButton</string>
+						<string key="toggleMediaOverlayButton">NSButton</string>
+						<string key="webViewController">LOXWebViewController</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="escapeMediaOverlayButton">
+							<string key="name">escapeMediaOverlayButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="nextMediaOverlayButton">
+							<string key="name">nextMediaOverlayButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="playIndicator">
+							<string key="name">playIndicator</string>
+							<string key="candidateClassName">NSImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="previousMediaOverlayButton">
+							<string key="name">previousMediaOverlayButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="toggleMediaOverlayButton">
+							<string key="name">toggleMediaOverlayButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="webViewController">
+							<string key="name">webViewController</string>
+							<string key="candidateClassName">LOXWebViewController</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXMediaOverlayController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXPageNumberTextController</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="pageCountCtrl">NSTextField</string>
+						<string key="pageNumberCtrl">NSTextField</string>
+						<string key="webViewController">LOXWebViewController</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="pageCountCtrl">
+							<string key="name">pageCountCtrl</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="pageNumberCtrl">
+							<string key="name">pageNumberCtrl</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="webViewController">
+							<string key="name">webViewController</string>
+							<string key="candidateClassName">LOXWebViewController</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXPageNumberTextController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXPreferencesController</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="clearStyles:">id</string>
+						<string key="onApplyStyle:">id</string>
+						<string key="onClose:">id</string>
+						<string key="selectorSelected:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="clearStyles:">
+							<string key="name">clearStyles:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="onApplyStyle:">
+							<string key="name">onApplyStyle:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="onClose:">
+							<string key="name">onClose:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="selectorSelected:">
+							<string key="name">selectorSelected:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="selectorsCtrl">NSPopUpButton</string>
+						<string key="sheet">NSWindow</string>
+						<string key="styleCtrl">NSTextView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="selectorsCtrl">
+							<string key="name">selectorsCtrl</string>
+							<string key="candidateClassName">NSPopUpButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="sheet">
+							<string key="name">sheet</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="styleCtrl">
+							<string key="name">styleCtrl</string>
+							<string key="candidateClassName">NSTextView</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXPreferencesController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXSpineViewController</string>
+					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">_tableView</string>
+						<string key="NS.object.0">NSTableView</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">_tableView</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">_tableView</string>
+							<string key="candidateClassName">NSTableView</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXSpineViewController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXTocView</string>
+					<string key="superclassName">NSOutlineView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXTocView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXTocViewController</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="_appDelegate">LOXAppDelegate</string>
+						<string key="_outlineView">NSOutlineView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="_appDelegate">
+							<string key="name">_appDelegate</string>
+							<string key="candidateClassName">LOXAppDelegate</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="_outlineView">
+							<string key="name">_outlineView</string>
+							<string key="candidateClassName">NSOutlineView</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXTocViewController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LOXWebViewController</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="onLeftPageClick:">id</string>
+						<string key="onRightPageClick:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="onLeftPageClick:">
+							<string key="name">onLeftPageClick:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="onRightPageClick:">
+							<string key="name">onRightPageClick:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="_webView">WebView</string>
+						<string key="appDelegate">LOXAppDelegate</string>
+						<string key="leftPageButton">NSButton</string>
+						<string key="rightPageButton">NSButton</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="_webView">
+							<string key="name">_webView</string>
+							<string key="candidateClassName">WebView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="appDelegate">
+							<string key="name">appDelegate</string>
+							<string key="candidateClassName">LOXAppDelegate</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="leftPageButton">
+							<string key="name">leftPageButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rightPageButton">
+							<string key="name">rightPageButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LOXWebViewController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSLayoutConstraint</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/NSLayoutConstraint.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>

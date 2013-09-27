@@ -88,5 +88,6 @@
 - (void)toggleMediaOverlay;
 - (void)nextMediaOverlay;
 - (void)previousMediaOverlay;
+- (void)escapeMediaOverlay;
 
 @end

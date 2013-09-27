@@ -405,5 +405,10 @@
     WebScriptObject* script = [_webView windowScriptObject];
     [script evaluateWebScript: @"ReadiumSDK.reader.previousMediaOverlay()"];
 }
+- (void)escapeMediaOverlay
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.escapeMediaOverlay()"];
+}
 
 @end

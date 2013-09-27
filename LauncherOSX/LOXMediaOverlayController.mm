@@ -71,9 +71,15 @@
 
 - (IBAction)onPreviousMediaOverlayClick:(id)sender
 {
-    
+
     [self.webViewController previousMediaOverlay];
-    
+
+}
+- (IBAction)onEscapeMediaOverlayClick:(id)sender
+{
+
+    [self.webViewController escapeMediaOverlay];
+
 }
 
 -(void)onMediaOverlayStatusChanged:(NSNotification*) notification
