@@ -38,7 +38,8 @@
 
 using namespace ePub3;
 
-FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
+//FOUNDATION_EXPORT
+extern NSString *const LOXPageChangedEvent;
 
 @interface LOXAppDelegate ()
 
