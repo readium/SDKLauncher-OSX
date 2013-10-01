@@ -37,7 +37,15 @@
     if(self) {
 
         for (id key in dict.allKeys) {
-            [self setValue:dict[key] forKey:key];
+            
+            @try
+            {
+                [self setValue:dict[key] forKey:key];
+            }
+            @catch(NSException *ex)
+            {
+                NSLog(@"Error: %@", ex);
+            }
         }
     }
 
