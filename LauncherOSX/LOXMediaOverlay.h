@@ -12,6 +12,10 @@
 @interface LOXMediaOverlay : NSObject
 
 @property(nonatomic, readonly) NSArray *smilModels;
+
+@property(nonatomic, readonly) NSArray *skippables;
+@property(nonatomic, readonly) NSArray *escapables;
+
 @property (nonatomic, copy) NSNumber *duration;
 @property(nonatomic, copy) NSString *narrator;
 @property(nonatomic, copy) NSString *activeClass;

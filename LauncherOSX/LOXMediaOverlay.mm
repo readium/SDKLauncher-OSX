@@ -22,9 +22,15 @@
 @implementation LOXMediaOverlay {
 
     NSMutableArray *_smilModels;
+
+    NSMutableArray *_skippables;
+    NSMutableArray *_escapables;
 }
 
 @synthesize smilModels = _smilModels;
+
+@synthesize skippables = _skippables;
+@synthesize escapables = _escapables;
 
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage
 {
@@ -51,7 +57,25 @@
 
         _smilModels = [[NSMutableArray array] retain];
 
-        auto count = ePubSmilModel->GetSmilCount();
+
+        _skippables = [[NSMutableArray array] retain];
+        auto count = ePubSmilModel->GetSkippablesCount();
+        for (int i = 0; i < count; i++)
+        {
+            auto str = ePubSmilModel->GetSkippable(i);
+            [_skippables addObject:[NSString stringWithUTF8String: str.c_str()]];
+        }
+
+        _escapables = [[NSMutableArray array] retain];
+        count = ePubSmilModel->GetEscapablesCount();
+        for (int i = 0; i < count; i++)
+        {
+            auto str = ePubSmilModel->GetEscapable(i);
+            [_escapables addObject:[NSString stringWithUTF8String: str.c_str()]];
+        }
+
+
+        count = ePubSmilModel->GetSmilCount();
         for (int i = 0; i < count; i++)
         {
             auto smilData = ePubSmilModel->GetSmil(i);
@@ -250,6 +274,9 @@
 
     [dict setObject:smilDictionaries forKey:@"smil_models"];
 
+    [dict setObject:self.skippables forKey:@"skippables"];
+    [dict setObject:self.escapables forKey:@"escapables"];
+
     [dict setObject:self.duration forKey:@"duration"];
 
     [dict setObject:self.narrator forKey:@"narrator"];
@@ -266,6 +293,10 @@
         [mo release];
     }
     [_smilModels release];
+
+    [_skippables release];
+    [_escapables release];
+
     [super dealloc];
 }
 @end
