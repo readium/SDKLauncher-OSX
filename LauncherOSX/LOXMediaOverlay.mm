@@ -125,6 +125,10 @@
             //NSLog(@"=== smil.href: [%s]", [smil.href UTF8String]);
 
             auto seq = smilData->Body();
+            if (seq == nullptr)
+            {
+                //throw std::invalid_argument("WTF?");
+            }
 
             NSMutableDictionary *smilItem = [self parseTree_Sequence: seq];
 
