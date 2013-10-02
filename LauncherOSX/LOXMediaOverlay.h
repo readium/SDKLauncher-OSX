@@ -7,7 +7,7 @@
 
 
 #import <Foundation/Foundation.h>
-
+#include <ePub3/package.h>
 
 @interface LOXMediaOverlay : NSObject
 
@@ -24,4 +24,8 @@
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage;
 
 - (NSDictionary *)toDictionary;
+
++ (NSString *) defaultEscapables;
++ (NSString *) defaultSkippables;
+
 @end

@@ -17,6 +17,12 @@
 @property (nonatomic, retain) NSNumber *fontSize;
 @property (nonatomic, retain) NSNumber *columnGap;
 @property (nonatomic, retain) NSNumber *mediaOverlaysSkipSkippables;
+@property (nonatomic, retain) NSNumber *mediaOverlaysEscapeEscapables;
+@property (nonatomic, retain) NSString *mediaOverlaysSkippables;
+@property (nonatomic, retain) NSString *mediaOverlaysEscapables;
+
+- (void)updateMediaOverlaysSkippables:(NSString *)str;
+- (void)updateMediaOverlaysEscapables:(NSString *)str;
 
 - (id)initWithDictionary:(NSDictionary *)dict;
 

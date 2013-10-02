@@ -246,6 +246,27 @@
     return [result boolValue];
 }
 
+/*
+-(void)setMediaOverlayEscapables:(NSString *)str
+{
+    //NSMutableArray *arr = [NSMutableArray array];
+    //NSString* jsonDecl = [LOXUtil toJson: arr];
+    
+    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setMediaOverlayEscapables(%@)", str];
+    [_webView stringByEvaluatingJavaScriptFromString:callString];
+}
+
+
+-(void)setMediaOverlaySkippables:(NSString *)str
+{
+    //NSMutableArray *arr = [NSMutableArray array];
+    //NSString* jsonDecl = [LOXUtil toJson: arr];
+    
+    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setMediaOverlaySkippables(%@)", str];
+    [_webView stringByEvaluatingJavaScriptFromString:callString];
+}
+*/
+
 -(void)setStyles:(NSArray *)styles
 {
     NSMutableArray *arr = [NSMutableArray array];

@@ -10,6 +10,7 @@
 #import "LOXMediaOverlay.h"
 #import "LOXSmilModel.h"
 #include "media-overlays_smil_data.h"
+#include "media-overlays_smil_model.h"
 
 #import <ePub3/media-overlays_smil_utils.h>
 
@@ -31,6 +32,35 @@
 
 @synthesize skippables = _skippables;
 @synthesize escapables = _escapables;
+
+
++ (NSString *) defaultEscapables
+{
+    NSMutableArray* arr = [[NSMutableArray array] retain];
+    
+    auto count = ePub3::MediaOverlaysSmilModel::GetEscapablesCount();
+    for (int i = 0; i < count; i++)
+    {
+        auto str = ePub3::MediaOverlaysSmilModel::GetEscapable(i);
+        [arr addObject:[NSString stringWithUTF8String: str.c_str()]];
+    }
+    
+    return [arr componentsJoinedByString:@", "];
+}
+
++ (NSString *) defaultSkippables
+{
+    NSMutableArray* arr = [[NSMutableArray array] retain];
+    
+    auto count = ePub3::MediaOverlaysSmilModel::GetSkippablesCount();
+    for (int i = 0; i < count; i++)
+    {
+        auto str = ePub3::MediaOverlaysSmilModel::GetSkippable(i);
+        [arr addObject:[NSString stringWithUTF8String: str.c_str()]];
+    }
+    
+    return [arr componentsJoinedByString:@", "];
+}
 
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage
 {
@@ -59,18 +89,18 @@
 
 
         _skippables = [[NSMutableArray array] retain];
-        auto count = ePubSmilModel->GetSkippablesCount();
+        auto count = ePub3::MediaOverlaysSmilModel::GetSkippablesCount();
         for (int i = 0; i < count; i++)
         {
-            auto str = ePubSmilModel->GetSkippable(i);
+            auto str = ePub3::MediaOverlaysSmilModel::GetSkippable(i);
             [_skippables addObject:[NSString stringWithUTF8String: str.c_str()]];
         }
 
         _escapables = [[NSMutableArray array] retain];
-        count = ePubSmilModel->GetEscapablesCount();
+        count = ePub3::MediaOverlaysSmilModel::GetEscapablesCount();
         for (int i = 0; i < count; i++)
         {
-            auto str = ePubSmilModel->GetEscapable(i);
+            auto str = ePub3::MediaOverlaysSmilModel::GetEscapable(i);
             [_escapables addObject:[NSString stringWithUTF8String: str.c_str()]];
         }
 
