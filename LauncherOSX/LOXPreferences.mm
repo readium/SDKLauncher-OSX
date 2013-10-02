@@ -23,14 +23,31 @@
         self.fontSize = [NSNumber numberWithInt:100];
         self.isSyntheticSpread = [NSNumber numberWithBool:YES];
         self.mediaOverlaysSkipSkippables = [NSNumber numberWithBool:NO];
+        self.mediaOverlaysEscapeEscapables = [NSNumber numberWithBool:YES];
+        self.mediaOverlaysSkippables = [NSString stringWithUTF8String:""];
+        self.mediaOverlaysEscapables = [NSString stringWithUTF8String:""];
         self.columnGap = [NSNumber numberWithInt:20];
 
-        _observableProperties = [NSArray arrayWithObjects:@"fontSize",@"isSyntheticSpread",@"columnGap",@"mediaOverlaysSkipSkippables",nil];
+        _observableProperties = [NSArray arrayWithObjects:@"fontSize",@"isSyntheticSpread",@"columnGap",@"mediaOverlaysSkipSkippables",@"mediaOverlaysEscapeEscapables",@"mediaOverlaysSkippables",@"mediaOverlaysEscapables",nil];
         [_observableProperties retain];
     }
 
     return self;
 }
+
+
+- (void)updateMediaOverlaysSkippables:(NSString *)str
+{
+    //self.mediaOverlaysSkippables = [NSString stringWithString:str];
+    [self setMediaOverlaysSkippables:[NSString stringWithString:str]];
+}
+
+- (void)updateMediaOverlaysEscapables:(NSString *)str
+{
+    //self.mediaOverlaysEscapables = [NSString stringWithString:str];
+    [self setMediaOverlaysEscapables:[NSString stringWithString:str]];
+}
+
 
 -(id)initWithDictionary:(NSDictionary *)dict
 {
@@ -48,8 +65,11 @@
 -(NSDictionary *) toDictionary
 {
     return @{  @"fontSize": self.fontSize,
-            @"isSyntheticSpread": self.isSyntheticSpread,
-            @"mediaOverlaysSkipSkippables": self.mediaOverlaysSkipSkippables,
+               @"isSyntheticSpread": self.isSyntheticSpread,
+               @"mediaOverlaysSkipSkippables": self.mediaOverlaysSkipSkippables,
+               @"mediaOverlaysEscapeEscapables": self.mediaOverlaysEscapeEscapables,
+               @"mediaOverlaysSkippables": self.mediaOverlaysSkippables,
+               @"mediaOverlaysEscapables": self.mediaOverlaysEscapables,
                @"columnGap": self.columnGap};
 }
 

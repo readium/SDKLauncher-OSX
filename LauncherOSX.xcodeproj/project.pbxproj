@@ -160,7 +160,7 @@
 		85ADCFF317B45CB5009F224E /* static */ = {isa = PBXFileReference; lastKnownFileType = folder; name = static; path = "readium-shared-js/static"; sourceTree = "<group>"; };
 		85C2219E1795C607004B8E1E /* PreferencesDlg.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PreferencesDlg.xib; sourceTree = "<group>"; };
 		85C221A01795C67C004B8E1E /* LOXPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXPreferencesController.h; sourceTree = "<group>"; };
-		85C221A11795C67C004B8E1E /* LOXPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXPreferencesController.m; sourceTree = "<group>"; };
+		85C221A11795C67C004B8E1E /* LOXPreferencesController.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = LOXPreferencesController.m; sourceTree = "<group>"; };
 		85DC402E179074660044849D /* host_app_feedback.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = host_app_feedback.js; path = LauncherOSX/ReaderScripts/host_app_feedback.js; sourceTree = "<group>"; };
 		85F74E6116C32A9900D29953 /* LOXPageNumberTextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXPageNumberTextController.h; sourceTree = "<group>"; };
 		85F74E6216C32A9900D29953 /* LOXPageNumberTextController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXPageNumberTextController.mm; sourceTree = "<group>"; };

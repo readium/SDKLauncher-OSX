@@ -10,6 +10,7 @@
 #import "LOXMediaOverlay.h"
 #import "LOXSmilModel.h"
 #include "media-overlays_smil_data.h"
+#include "media-overlays_smil_model.h"
 
 #import <ePub3/media-overlays_smil_utils.h>
 
@@ -22,9 +23,44 @@
 @implementation LOXMediaOverlay {
 
     NSMutableArray *_smilModels;
+
+    NSMutableArray *_skippables;
+    NSMutableArray *_escapables;
 }
 
 @synthesize smilModels = _smilModels;
+
+@synthesize skippables = _skippables;
+@synthesize escapables = _escapables;
+
+
++ (NSString *) defaultEscapables
+{
+    NSMutableArray* arr = [[NSMutableArray array] retain];
+    
+    auto count = ePub3::MediaOverlaysSmilModel::GetEscapablesCount();
+    for (int i = 0; i < count; i++)
+    {
+        auto str = ePub3::MediaOverlaysSmilModel::GetEscapable(i);
+        [arr addObject:[NSString stringWithUTF8String: str.c_str()]];
+    }
+    
+    return [arr componentsJoinedByString:@", "];
+}
+
++ (NSString *) defaultSkippables
+{
+    NSMutableArray* arr = [[NSMutableArray array] retain];
+    
+    auto count = ePub3::MediaOverlaysSmilModel::GetSkippablesCount();
+    for (int i = 0; i < count; i++)
+    {
+        auto str = ePub3::MediaOverlaysSmilModel::GetSkippable(i);
+        [arr addObject:[NSString stringWithUTF8String: str.c_str()]];
+    }
+    
+    return [arr componentsJoinedByString:@", "];
+}
 
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage
 {
@@ -51,7 +87,25 @@
 
         _smilModels = [[NSMutableArray array] retain];
 
-        auto count = ePubSmilModel->GetSmilCount();
+
+        _skippables = [[NSMutableArray array] retain];
+        auto count = ePub3::MediaOverlaysSmilModel::GetSkippablesCount();
+        for (int i = 0; i < count; i++)
+        {
+            auto str = ePub3::MediaOverlaysSmilModel::GetSkippable(i);
+            [_skippables addObject:[NSString stringWithUTF8String: str.c_str()]];
+        }
+
+        _escapables = [[NSMutableArray array] retain];
+        count = ePub3::MediaOverlaysSmilModel::GetEscapablesCount();
+        for (int i = 0; i < count; i++)
+        {
+            auto str = ePub3::MediaOverlaysSmilModel::GetEscapable(i);
+            [_escapables addObject:[NSString stringWithUTF8String: str.c_str()]];
+        }
+
+
+        count = ePubSmilModel->GetSmilCount();
         for (int i = 0; i < count; i++)
         {
             auto smilData = ePubSmilModel->GetSmil(i);
@@ -71,6 +125,10 @@
             //NSLog(@"=== smil.href: [%s]", [smil.href UTF8String]);
 
             auto seq = smilData->Body();
+            if (seq == nullptr)
+            {
+                //throw std::invalid_argument("WTF?");
+            }
 
             NSMutableDictionary *smilItem = [self parseTree_Sequence: seq];
 
@@ -250,6 +308,9 @@
 
     [dict setObject:smilDictionaries forKey:@"smil_models"];
 
+    [dict setObject:self.skippables forKey:@"skippables"];
+    [dict setObject:self.escapables forKey:@"escapables"];
+
     [dict setObject:self.duration forKey:@"duration"];
 
     [dict setObject:self.narrator forKey:@"narrator"];
@@ -266,6 +327,10 @@
         [mo release];
     }
     [_smilModels release];
+
+    [_skippables release];
+    [_escapables release];
+
     [super dealloc];
 }
 @end

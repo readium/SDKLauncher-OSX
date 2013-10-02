@@ -14,6 +14,8 @@
 #import "LOXCSSParser.h"
 #import "LOXUtil.h"
 
+#import "LOXMediaOverlay.h"
+
 @interface LOXPreferencesController ()
 - (LOXCSSStyle *)selectedStyle;
 
@@ -28,6 +30,44 @@
 - (IBAction)onClose:(id)sender
 {
     [self closeSheet];
+}
+
+- (IBAction)applySkippables:(id)sender
+{
+    NSString* str = [self.moSkippablesCtrl string];
+    //[self.webViewController setMediaOverlaySkippables:str];
+    
+    [_preferences updateMediaOverlaysSkippables: str];
+}
+
+- (IBAction)resetSkippables:(id)sender
+{
+    NSString* list = [LOXMediaOverlay defaultSkippables];
+    [self.moSkippablesCtrl setString:list];
+    
+    NSString* str = [NSString stringWithUTF8String:""];
+    //[self.webViewController setMediaOverlaySkippables:str];
+    
+    [_preferences updateMediaOverlaysSkippables: str];
+}
+
+- (IBAction)applyEscapables:(id)sender
+{
+    NSString* str = [self.moEscapablesCtrl string];
+    //[self.webViewController setMediaOverlayEscapables:str];
+    
+    [_preferences updateMediaOverlaysEscapables: str];
+}
+
+- (IBAction)resetEscapables:(id)sender
+{
+    NSString* list = [LOXMediaOverlay defaultEscapables];
+    [self.moEscapablesCtrl setString:list];
+    
+    NSString* str = [NSString stringWithUTF8String:""];
+    //[self.webViewController setMediaOverlayEscapables:str];
+
+    [_preferences updateMediaOverlaysEscapables: str];
 }
 
 - (IBAction)onApplyStyle:(id)sender
@@ -101,7 +141,26 @@
           contextInfo:nil];
 
     [self updateStylesUI];
-
+    
+    if ([[[_preferences mediaOverlaysSkippables] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
+    {
+        NSString* list1 = [LOXMediaOverlay defaultSkippables];
+        [self.moSkippablesCtrl setString:list1];
+    }
+    else
+    {
+        [self.moSkippablesCtrl setString:[_preferences mediaOverlaysSkippables]];
+    }
+    
+    if ([[[_preferences mediaOverlaysEscapables] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
+    {
+        NSString* list2 = [LOXMediaOverlay defaultEscapables];
+        [self.moEscapablesCtrl setString:list2];
+    }
+    else
+    {
+        [self.moEscapablesCtrl setString:[_preferences mediaOverlaysEscapables]];
+    }
 }
 
 -(void)updateStylesUI
