@@ -184,7 +184,7 @@ extern NSString *const LOXPageChangedEvent;
 
 - (LOXBook *)findOrCreateBookForCurrentPackageWithPath:(NSString *)path
 {
-    LOXBook * book = [_userData findBookWithId:_package.packageId];
+    LOXBook * book = [_userData findBookWithId:_package.packageId fileName:[path lastPathComponent]];
 
     if(!book) {
         book = [[[LOXBook alloc] init] autorelease];

@@ -29,9 +29,7 @@
 
 - (void)save;
 
-- (LOXBook *)findBookWithId:(NSString *)packageId;
-
-- (LOXBook *)findBookForPath:(NSString *)path;
+- (LOXBook *)findBookWithId:(NSString *)packageId fileName:(NSString*)fileName;
 
 
 - (void)addBook:(LOXBook *)book;
