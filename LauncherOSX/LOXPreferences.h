@@ -25,6 +25,8 @@
 - (void)updateMediaOverlaysSkippables:(NSString *)str;
 - (void)updateMediaOverlaysEscapables:(NSString *)str;
 
+- (void)doNotUpdateView:(NSString*)keyPath;
+
 - (id)initWithDictionary:(NSDictionary *)dict;
 
 - (NSDictionary *)toDictionary;

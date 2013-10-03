@@ -289,9 +289,9 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if(object == _preferences) {
+        [_preferences doNotUpdateView: keyPath];
         [self updateSettings:_preferences];
     }
-
 }
 
 -(void)updateSettings:(LOXPreferences *)preferences

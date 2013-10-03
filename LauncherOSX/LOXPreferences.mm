@@ -12,7 +12,25 @@
 @implementation LOXPreferences {
 
     NSArray *_observableProperties;
+    bool doNotUpdateView;
+}
 
+- (void)doNotUpdateView:(NSString*)keyPath
+{
+    //[keyPath hasPrefix:@"mediaOverlays"]
+    if ([keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysSkipSkippables))]
+            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEscapeEscapables))]
+            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEnableClick))]
+            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEscapables))]
+            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysSkippables))]
+    )
+    {
+        doNotUpdateView = YES;
+    }
+    else
+    {
+        doNotUpdateView = NO;
+    }
 }
 
 - (id)init
@@ -29,7 +47,18 @@
         self.mediaOverlaysEnableClick = [NSNumber numberWithBool:YES];
         self.columnGap = [NSNumber numberWithInt:20];
 
-        _observableProperties = [NSArray arrayWithObjects:@"fontSize",@"isSyntheticSpread",@"columnGap",@"mediaOverlaysSkipSkippables",@"mediaOverlaysEscapeEscapables",@"mediaOverlaysSkippables",@"mediaOverlaysEscapables",@"mediaOverlaysEnableClick",nil];
+        doNotUpdateView = NO;
+
+        _observableProperties = [NSArray arrayWithObjects:
+                NSStringFromSelector(@selector(fontSize)),
+                        NSStringFromSelector(@selector(isSyntheticSpread)),
+                        NSStringFromSelector(@selector(columnGap)),
+                        NSStringFromSelector(@selector(mediaOverlaysSkipSkippables)),
+                        NSStringFromSelector(@selector(mediaOverlaysEscapeEscapables)),
+                        NSStringFromSelector(@selector(mediaOverlaysSkippables)),
+                        NSStringFromSelector(@selector(mediaOverlaysEscapables)),
+                        NSStringFromSelector(@selector(mediaOverlaysEnableClick)),
+                        nil];
         [_observableProperties retain];
     }
 
@@ -56,7 +85,14 @@
     if(self) {
 
         for (id key in dict.allKeys) {
-            [self setValue:dict[key] forKey:key];
+            @try
+            {
+                [self setValue:dict[key] forKey:key];
+            }
+            @catch(NSException *ex)
+            {
+                NSLog(@"Error: %@", ex);
+            }
         }
     }
 
@@ -65,14 +101,20 @@
 
 -(NSDictionary *) toDictionary
 {
-    return @{  @"fontSize": self.fontSize,
-               @"isSyntheticSpread": self.isSyntheticSpread,
-               @"mediaOverlaysSkipSkippables": self.mediaOverlaysSkipSkippables,
-               @"mediaOverlaysEscapeEscapables": self.mediaOverlaysEscapeEscapables,
-               @"mediaOverlaysSkippables": self.mediaOverlaysSkippables,
-               @"mediaOverlaysEscapables": self.mediaOverlaysEscapables,
-               @"mediaOverlaysEnableClick": self.mediaOverlaysEnableClick,
-               @"columnGap": self.columnGap};
+    NSNumber* _doNotUpdateView = [NSNumber numberWithBool:doNotUpdateView];
+    doNotUpdateView = NO;
+
+    return @{
+            NSStringFromSelector(@selector(fontSize)): self.fontSize,
+            NSStringFromSelector(@selector(isSyntheticSpread)): self.isSyntheticSpread,
+            NSStringFromSelector(@selector(mediaOverlaysSkipSkippables)): self.mediaOverlaysSkipSkippables,
+            NSStringFromSelector(@selector(mediaOverlaysEscapeEscapables)): self.mediaOverlaysEscapeEscapables,
+            NSStringFromSelector(@selector(mediaOverlaysSkippables)): self.mediaOverlaysSkippables,
+            NSStringFromSelector(@selector(mediaOverlaysEscapables)): self.mediaOverlaysEscapables,
+            NSStringFromSelector(@selector(mediaOverlaysEnableClick)): self.mediaOverlaysEnableClick,
+            NSStringFromSelector(@selector(columnGap)): self.columnGap,
+            NSStringFromSelector(@selector(doNotUpdateView)): _doNotUpdateView
+    };
 }
 
 -(void)registerChangeObserver:(NSObject *)observer
