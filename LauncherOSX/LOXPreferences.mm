@@ -12,7 +12,7 @@
 @implementation LOXPreferences {
 
     NSArray *_observableProperties;
-    bool doNotUpdateView;
+    bool _doNotUpdateView;
 }
 
 - (void)doNotUpdateView:(NSString*)keyPath
@@ -23,13 +23,15 @@
             || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEnableClick))]
             || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEscapables))]
             || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysSkippables))]
+            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysRate))]
+            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysVolume))]
     )
     {
-        doNotUpdateView = YES;
+        _doNotUpdateView = YES;
     }
     else
     {
-        doNotUpdateView = NO;
+        _doNotUpdateView = NO;
     }
 }
 
@@ -46,8 +48,10 @@
         self.mediaOverlaysEscapables = [NSString stringWithUTF8String:""];
         self.mediaOverlaysEnableClick = [NSNumber numberWithBool:YES];
         self.columnGap = [NSNumber numberWithInt:20];
+        self.mediaOverlaysRate = [NSNumber numberWithInt:1];
+        self.mediaOverlaysVolume = [NSNumber numberWithInt:100];
 
-        doNotUpdateView = NO;
+        _doNotUpdateView = NO;
 
         _observableProperties = [NSArray arrayWithObjects:
                 NSStringFromSelector(@selector(fontSize)),
@@ -58,6 +62,8 @@
                         NSStringFromSelector(@selector(mediaOverlaysSkippables)),
                         NSStringFromSelector(@selector(mediaOverlaysEscapables)),
                         NSStringFromSelector(@selector(mediaOverlaysEnableClick)),
+                        NSStringFromSelector(@selector(mediaOverlaysRate)),
+                        NSStringFromSelector(@selector(mediaOverlaysVolume)),
                         nil];
         [_observableProperties retain];
     }
@@ -101,8 +107,8 @@
 
 -(NSDictionary *) toDictionary
 {
-    NSNumber* _doNotUpdateView = [NSNumber numberWithBool:doNotUpdateView];
-    doNotUpdateView = NO;
+    NSNumber* doNotUpdateView = [NSNumber numberWithBool:_doNotUpdateView];
+    _doNotUpdateView = NO;
 
     return @{
             NSStringFromSelector(@selector(fontSize)): self.fontSize,
@@ -112,8 +118,10 @@
             NSStringFromSelector(@selector(mediaOverlaysSkippables)): self.mediaOverlaysSkippables,
             NSStringFromSelector(@selector(mediaOverlaysEscapables)): self.mediaOverlaysEscapables,
             NSStringFromSelector(@selector(mediaOverlaysEnableClick)): self.mediaOverlaysEnableClick,
+            NSStringFromSelector(@selector(mediaOverlaysRate)): self.mediaOverlaysRate,
+            NSStringFromSelector(@selector(mediaOverlaysVolume)): self.mediaOverlaysVolume,
             NSStringFromSelector(@selector(columnGap)): self.columnGap,
-            NSStringFromSelector(@selector(doNotUpdateView)): _doNotUpdateView
+            NSStringFromSelector(@selector(doNotUpdateView)): doNotUpdateView
     };
 }
 

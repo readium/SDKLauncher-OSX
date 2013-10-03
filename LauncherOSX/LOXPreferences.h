@@ -21,6 +21,8 @@
 @property (nonatomic, retain) NSString *mediaOverlaysSkippables;
 @property (nonatomic, retain) NSString *mediaOverlaysEscapables;
 @property (nonatomic, retain) NSNumber *mediaOverlaysEnableClick;
+@property (nonatomic, retain) NSNumber *mediaOverlaysRate;
+@property (nonatomic, retain) NSNumber *mediaOverlaysVolume;
 
 - (void)updateMediaOverlaysSkippables:(NSString *)str;
 - (void)updateMediaOverlaysEscapables:(NSString *)str;
