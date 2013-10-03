@@ -26,9 +26,10 @@
         self.mediaOverlaysEscapeEscapables = [NSNumber numberWithBool:YES];
         self.mediaOverlaysSkippables = [NSString stringWithUTF8String:""];
         self.mediaOverlaysEscapables = [NSString stringWithUTF8String:""];
+        self.mediaOverlaysEnableClick = [NSNumber numberWithBool:YES];
         self.columnGap = [NSNumber numberWithInt:20];
 
-        _observableProperties = [NSArray arrayWithObjects:@"fontSize",@"isSyntheticSpread",@"columnGap",@"mediaOverlaysSkipSkippables",@"mediaOverlaysEscapeEscapables",@"mediaOverlaysSkippables",@"mediaOverlaysEscapables",nil];
+        _observableProperties = [NSArray arrayWithObjects:@"fontSize",@"isSyntheticSpread",@"columnGap",@"mediaOverlaysSkipSkippables",@"mediaOverlaysEscapeEscapables",@"mediaOverlaysSkippables",@"mediaOverlaysEscapables",@"mediaOverlaysEnableClick",nil];
         [_observableProperties retain];
     }
 
@@ -70,6 +71,7 @@
                @"mediaOverlaysEscapeEscapables": self.mediaOverlaysEscapeEscapables,
                @"mediaOverlaysSkippables": self.mediaOverlaysSkippables,
                @"mediaOverlaysEscapables": self.mediaOverlaysEscapables,
+               @"mediaOverlaysEnableClick": self.mediaOverlaysEnableClick,
                @"columnGap": self.columnGap};
 }
 
