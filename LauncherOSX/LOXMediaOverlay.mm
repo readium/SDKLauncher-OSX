@@ -118,6 +118,8 @@
 
             auto item = smilData->ManifestItem();
 
+            smil.spineItemId = [NSString stringWithUTF8String:smilData->SpineItemIdentifier().c_str()];
+
             smil.id = [NSString stringWithUTF8String:item->Identifier().c_str()];
             smil.href = [NSString stringWithUTF8String:item->Href().c_str()];
 
