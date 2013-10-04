@@ -414,6 +414,16 @@
     [script evaluateWebScript: @"ReadiumSDK.reader.clearStyles()"];
 }
 
+
+- (void)mediaOverlaysOpenContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef forward:(double) offset
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+
+    NSString* sourceRefParam = sourceRef ? sourceRef : @"";
+
+    [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.mediaOverlaysOpenContentUrl(\"%@\", \"%@\", %f)", contentRef, sourceRefParam, offset]];
+}
+
 - (void)toggleMediaOverlay
 {
     WebScriptObject* script = [_webView windowScriptObject];

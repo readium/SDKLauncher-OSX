@@ -91,6 +91,7 @@
 
 - (void)resetStyles;
 
+- (void)mediaOverlaysOpenContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef forward:(double) offset;
 - (void)toggleMediaOverlay;
 - (void)nextMediaOverlay;
 - (void)previousMediaOverlay;

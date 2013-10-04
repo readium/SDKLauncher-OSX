@@ -21,29 +21,35 @@
 #import "LOXPackage.h"
 //#import <ePub3/package.h>
 
+#include "media-overlays_smil_data.h"
+#include "media-overlays_smil_model.h"
+
+#import <ePub3/media-overlays_smil_utils.h>
+
 @interface LOXMediaOverlayController ()
 - (void)updateIU;
 @end
 
-@implementation LOXMediaOverlayController {
+@implementation LOXMediaOverlayController
+{
     NSNumber *_timeScrobbler;
 }
 
-- (NSNumber*) timeScrobbler
+- (NSNumber *)timeScrobbler
 {
-    NSLog(@"GET timeScrobbler: %lf", [_timeScrobbler doubleValue]);
+    //NSLog(@"GET timeScrobbler: %lf", [_timeScrobbler doubleValue]);
 
     return _timeScrobbler;
 }
 
-- (void) setTimeScrobbler:(NSNumber*)timeScrub
+- (void)setTimeScrobbler:(NSNumber *)timeScrub
 {
-    NSLog(@"SET timeScrobbler: %lf", [timeScrub doubleValue]);
+    //NSLog(@"SET timeScrobbler: %lf", [timeScrub doubleValue]);
 
-    if ( _timeScrobbler && [timeScrub isEqualToNumber:_timeScrobbler] )
+    if (_timeScrobbler && [timeScrub isEqualToNumber:_timeScrobbler])
         return;
 
-    if ( _timeScrobbler )
+    if (_timeScrobbler)
         [_timeScrobbler release];
 
     _timeScrobbler = [timeScrub retain];
@@ -66,11 +72,11 @@
     }
 
     uint32_t total = mo->TotalClipDurationMilliseconds();
-    uint32_t timeMs = (uint32_t)(total * ([_timeScrobbler doubleValue] / 100.0));
+    uint32_t timeMs = (uint32_t) (total * ([_timeScrobbler doubleValue] / 100.0));
 
-    NSLog(@"=== TIME SCRUB: %ldms / %ldms", (long) timeMs, (long) total);
+    //NSLog(@"=== TIME SCRUB: %ldms / %ldms (==%ldms)", (long) timeMs, (long) total, (long) mo->DurationMillisecondsTotal());
 
-    const ePub3::SMILData::Parallel* par = mo->ParallelAt(timeMs);
+    const ePub3::SMILData::Parallel *par = mo->ParallelAt(timeMs);
     if (par == nullptr)
     {
         return;
@@ -90,12 +96,33 @@
         textSrc.append("#");
         textSrc.append(par->Text()->SrcFragmentId().c_str());
     }
+    //NSLog(@"*** PAR TEXT: %s", textSrc.c_str());
 
-    //reader.openContentUrl(_smilIterator.currentPar.text.src, _smilIterator.smil.href, self);
-    [self.webViewController openContentUrl:[NSString stringWithUTF8String: textSrc.c_str()] fromSourceFileUrl:[NSString stringWithUTF8String: smilSrc.c_str()]];
+    uint32_t smilDataOffset = 0;
+    for (std::vector<ePub3::SMILDataPtr>::size_type i = 0; i < mo->GetSmilCount(); i++)
+    {
+        ePub3::SMILDataPtr smilData = mo->GetSmil(i);
+        if (smilData == par->SmilData())
+        {
+            break;
+        }
+        smilDataOffset += smilData->TotalClipDurationMilliseconds();
+    }
+
+    uint32_t offset = smilDataOffset;
+    if (par->ClipOffset(offset))
+    {
+        //NSLog(@"=== PAR OUTER OFFSET: %ldms", (long) offset);
+        offset = timeMs - offset;
+    }
+
+    //NSLog(@"=== PAR INNER OFFSET: %ldms", (long) offset);
+
+    double offsetS = offset / 1000.0;
+    [self.webViewController mediaOverlaysOpenContentUrl:[NSString stringWithUTF8String:textSrc.c_str()] fromSourceFileUrl:[NSString stringWithUTF8String:smilSrc.c_str()] forward: offsetS];
 }
 
--(void) awakeFromNib
+- (void)awakeFromNib
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onPageChanged:)
@@ -119,9 +146,9 @@
     [self updateIU];
 }
 
--(void)updateIU
+- (void)updateIU
 {
-    [self.toggleMediaOverlayButton setEnabled: self.webViewController.isMediaOverlayAvailable];
+    [self.toggleMediaOverlayButton setEnabled:self.webViewController.isMediaOverlayAvailable];
 }
 
 - (IBAction)onToggleMediaOverlayClick:(id)sender
@@ -133,9 +160,9 @@
 
 - (IBAction)onNextMediaOverlayClick:(id)sender
 {
-    
+
     [self.webViewController nextMediaOverlay];
-    
+
 }
 
 - (IBAction)onPreviousMediaOverlayClick:(id)sender
@@ -144,6 +171,7 @@
     [self.webViewController previousMediaOverlay];
 
 }
+
 - (IBAction)onEscapeMediaOverlayClick:(id)sender
 {
 
@@ -151,11 +179,11 @@
 
 }
 
--(void)onMediaOverlayStatusChanged:(NSNotification*) notification
+- (void)onMediaOverlayStatusChanged:(NSNotification *)notification
 {
     NSDictionary *dict = [notification userInfo];
-    NSNumber* isPlaying = dict[@"isPlaying"];
-    [self.playIndicator setHidden: ![isPlaying boolValue]];
+    NSNumber *isPlaying = dict[@"isPlaying"];
+    [self.playIndicator setHidden:![isPlaying boolValue]];
 }
 
 
