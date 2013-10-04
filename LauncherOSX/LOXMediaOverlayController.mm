@@ -33,6 +33,7 @@
 @implementation LOXMediaOverlayController
 {
     NSNumber *_timeScrobbler;
+    bool skipTimeScrobbler;
 }
 
 - (NSNumber *)timeScrobbler
@@ -53,6 +54,12 @@
         [_timeScrobbler release];
 
     _timeScrobbler = [timeScrub retain];
+
+    if (skipTimeScrobbler)
+    {
+        skipTimeScrobbler = false;
+        return;
+    }
 
     if (self.webViewController == nil)
     {
@@ -138,6 +145,8 @@
 
     [self updateIU];
 
+    skipTimeScrobbler = false;
+
     [self setTimeScrobbler:[NSNumber numberWithDouble:0]];
 }
 
@@ -182,8 +191,86 @@
 - (void)onMediaOverlayStatusChanged:(NSNotification *)notification
 {
     NSDictionary *dict = [notification userInfo];
-    NSNumber *isPlaying = dict[@"isPlaying"];
-    [self.playIndicator setHidden:![isPlaying boolValue]];
+    if (dict == nil)
+    {
+        return;
+    }
+    NSNumber *isPlaying = [dict objectForKey:@"isPlaying"];//dict[@"isPlaying"];
+    if (isPlaying != nil)
+    {
+        [self.playIndicator setHidden:![isPlaying boolValue]];
+    }
+
+    NSNumber *playPosition = [dict objectForKey:@"playPosition"];
+    NSNumber *parIndex = [dict objectForKey:@"parIndex"];
+    NSNumber *smilIndex = [dict objectForKey:@"smilIndex"];
+    if (playPosition != nil && parIndex != nil && smilIndex != nil)
+    {
+        if (self.webViewController == nil)
+        {
+            return;
+        }
+
+        ePub3::PackagePtr package = [[self.webViewController loxPackage] sdkPackage];
+        if (package == nullptr)
+        {
+            return;
+        }
+
+        ePub3::MediaOverlaysSmilModelPtr mo = package->MediaOverlaysSmilModel();
+        if (mo == nullptr)
+        {
+            return;
+        }
+
+        std::vector<ePub3::SMILDataPtr>::size_type j = (std::vector<ePub3::SMILDataPtr>::size_type)floor([smilIndex doubleValue]);
+        if (j < 0 && j >= mo->GetSmilCount())
+        {
+            return;
+        }
+
+        uint32_t smilDataOffset = 0;
+        for (std::vector<ePub3::SMILDataPtr>::size_type i = 0; i < j; i++)
+        {
+            ePub3::SMILDataPtr sd = mo->GetSmil(i);
+            smilDataOffset += sd->TotalClipDurationMilliseconds();
+        }
+
+        uint32_t k = (uint32_t)floor([parIndex doubleValue]);
+        if (k < 0)
+        {
+            return;
+        }
+
+        ePub3::SMILDataPtr smilData = mo->GetSmil(j);
+
+        const ePub3::SMILData::Parallel *par = smilData->NthParallel(k);
+        if (par == nullptr)
+        {
+            return;
+        }
+
+        uint32_t playPositionMS = (uint32_t)floor([playPosition doubleValue] * 1000.0);
+
+        uint32_t offset = smilDataOffset + playPositionMS;
+        if (!par->ClipOffset(offset))
+        {
+            return;
+        }
+
+
+
+        uint32_t total = mo->TotalClipDurationMilliseconds();
+
+        double percent = ((double)offset / (double)total) * 100.0;
+
+        //NSLog(@"=== TIME SCRUB [%f%] %ldms / %ldms (==%ldms)", percent, (long) offset, (long) total, (long) mo->DurationMillisecondsTotal());
+
+
+        skipTimeScrobbler = true;
+        [self setTimeScrobbler: [NSNumber numberWithDouble:percent]];
+        //[self.timeScrobbler initWithDouble: playPosition];
+    }
 }
 
 
