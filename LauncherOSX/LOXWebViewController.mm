@@ -50,6 +50,10 @@
     LOXPreferences *_preferences;
 }
 
+- (LOXPackage *) loxPackage
+{
+    return _package;
+}
 
 - (void)awakeFromNib
 {

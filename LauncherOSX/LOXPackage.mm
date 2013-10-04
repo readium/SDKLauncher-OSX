@@ -264,5 +264,9 @@
     return dict;
 }
 
+-(ePub3::PackagePtr) sdkPackage
+{
+    return _sdkPackage;
+}
 
 @end

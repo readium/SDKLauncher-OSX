@@ -35,6 +35,7 @@
 
 
 - (NSDictionary *)toDictionary;
+- (ePub3::PackagePtr) sdkPackage;
 
 @property(nonatomic, readonly) LOXSpine *spine;
 @property(nonatomic, readonly) NSString *title;

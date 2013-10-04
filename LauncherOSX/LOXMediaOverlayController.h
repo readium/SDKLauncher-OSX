@@ -31,6 +31,8 @@
 @property (assign) IBOutlet NSButton *escapeMediaOverlayButton;
 @property (assign) IBOutlet NSImageView *playIndicator;
 
+@property (nonatomic, retain) NSNumber *timeScrobbler;
+
 - (IBAction)onToggleMediaOverlayClick:(id)sender;
 - (IBAction)onNextMediaOverlayClick:(id)sender;
 - (IBAction)onPreviousMediaOverlayClick:(id)sender;

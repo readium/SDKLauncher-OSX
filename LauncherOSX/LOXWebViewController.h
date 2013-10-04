@@ -41,6 +41,7 @@
 @private
     IBOutlet WebView *_webView;
 }
+- (LOXPackage *) loxPackage;
 
 - (void) clear;
 
