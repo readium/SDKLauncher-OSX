@@ -429,7 +429,6 @@
 							<string key="NSFrame">{{714, 8}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="921443378">
@@ -1096,7 +1095,7 @@
 											<string key="NSReuseIdentifierKey">_NS:9</string>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSSliderCell" key="NSCell" id="297600958">
-												<int key="NSCellFlags">-2080374784</int>
+												<int key="NSCellFlags">-2080112384</int>
 												<int key="NSCellFlags2">0</int>
 												<string key="NSContents"/>
 												<string key="NSCellIdentifier">_NS:9</string>
@@ -1212,9 +1211,6 @@
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
-			<object class="NSCustomObject" id="278416864">
-				<string key="NSClassName">LOXBookmarkEditController</string>
-			</object>
 			<object class="NSCustomObject" id="703955208">
 				<string key="NSClassName">LOXSpineViewController</string>
 			</object>
@@ -1241,6 +1237,9 @@
 			</object>
 			<object class="NSCustomObject" id="474714891">
 				<string key="NSClassName">LOXBookmarksController</string>
+			</object>
+			<object class="NSCustomObject" id="278416864">
+				<string key="NSClassName">LOXBookmarkEditController</string>
 			</object>
 			<object class="NSUserDefaultsController" id="886339393">
 				<bool key="NSSharedInstance">YES</bool>
@@ -1743,6 +1742,14 @@
 						<reference key="destination" ref="961869411"/>
 					</object>
 					<int key="connectionID">1242</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">timeScrobblerValueChanged:</string>
+						<reference key="source" ref="200013593"/>
+						<reference key="destination" ref="868945970"/>
+					</object>
+					<int key="connectionID">1820</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -4033,7 +4040,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1819</int>
+			<int key="maxID">1820</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

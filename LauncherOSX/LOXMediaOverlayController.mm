@@ -33,7 +33,32 @@
 @implementation LOXMediaOverlayController
 {
     NSNumber *_timeScrobbler;
-    bool skipTimeScrobbler;
+    //bool skipTimeScrobblerUpdates;
+    //bool skipTimeScrobbler;
+}
+
+- (IBAction)timeScrobblerValueChanged:(id)sender {
+    NSEvent *event = [[NSApplication sharedApplication] currentEvent];
+    BOOL startingDrag = event.type == NSLeftMouseDown || event.type == NSKeyUp;
+    BOOL endingDrag = event.type == NSLeftMouseUp || event.type == NSKeyDown;
+    BOOL dragging = event.type == NSLeftMouseDragged;
+
+    NSAssert(startingDrag || endingDrag || dragging, @"unexpected event type caused slider change: %@", event);
+
+    if (startingDrag) {
+        //NSLog(@"slider value started changing");
+     //   skipTimeScrobblerUpdates = true;
+    }
+
+    //NSLog(@"slider value: %f", [sender doubleValue]);
+    //skipTimeScrobblerUpdates = true;
+
+    if (endingDrag) {
+        //NSLog(@"slider value stopped changing");
+      //  skipTimeScrobblerUpdates = false;
+
+        [self updateView];
+    }
 }
 
 - (NSNumber *)timeScrobbler
@@ -54,12 +79,24 @@
         [_timeScrobbler release];
 
     _timeScrobbler = [timeScrub retain];
+//
+//    if (skipTimeScrobbler)
+//    {
+//        skipTimeScrobbler = false;
+//        return;
+//    }
 
-    if (skipTimeScrobbler)
-    {
-        skipTimeScrobbler = false;
-        return;
-    }
+//    if (skipTimeScrobblerUpdates)
+//    {
+//        return;
+//    }
+
+    //[self updateView];
+}
+
+-(void) updateView
+{
+    //NSLog(@"updateView");
 
     if (self.webViewController == nil)
     {
@@ -145,7 +182,8 @@
 
     [self updateIU];
 
-    skipTimeScrobbler = false;
+    //skipTimeScrobbler = false;
+    //skipTimeScrobblerUpdates = false;
 
     [self setTimeScrobbler:[NSNumber numberWithDouble:0]];
 }
@@ -265,9 +303,13 @@
         double percent = ((double)offset / (double)total) * 100.0;
 
         //NSLog(@"=== TIME SCRUB [%f%] %ldms / %ldms (==%ldms)", percent, (long) offset, (long) total, (long) mo->DurationMillisecondsTotal());
+//
+//        if (skipTimeScrobblerUpdates)
+//        {
+//            return;
+//        }
 
-
-        skipTimeScrobbler = true;
+//        skipTimeScrobbler = true;
         [self setTimeScrobbler: [NSNumber numberWithDouble:percent]];
         //[self.timeScrobbler initWithDouble: playPosition];
     }
