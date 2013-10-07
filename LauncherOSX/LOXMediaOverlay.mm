@@ -82,7 +82,7 @@
         self.playbackActiveClass = [NSString stringWithUTF8String: playbackActiveClass.c_str()];
         //NSLog(@"=== PLAYBACK-ACTIVE-CLASS: [%s]", [self.playbackActiveClass UTF8String]);
 
-        self.duration = [NSNumber numberWithDouble: ePubSmilModel->DurationMillisecondsTotal() / 1000.0];
+        self.duration = [NSNumber numberWithDouble: ePubSmilModel->DurationMilliseconds_Metadata() / 1000.0];
         //NSLog(@"=== TOTAL MO DURATION: %ldms", (long) floor([self.duration doubleValue] * 1000.0));
 
         _smilModels = [[NSMutableArray array] retain];
@@ -114,11 +114,11 @@
 
             smil.smilVersion = [NSString stringWithUTF8String: "3.0"];
 
-            smil.duration = [NSNumber numberWithDouble: smilData->DurationMilliseconds() / 1000.0];
+            smil.duration = [NSNumber numberWithDouble: smilData->DurationMilliseconds_Metadata() / 1000.0];
 
-            auto item = smilData->ManifestItem();
+            auto item = smilData->SmilManifestItem();
 
-            smil.spineItemId = [NSString stringWithUTF8String:smilData->SpineItemIdentifier().c_str()];
+            smil.spineItemId = [NSString stringWithUTF8String:smilData->XhtmlSpineItem()->Idref().c_str()];
 
             smil.id = [NSString stringWithUTF8String:item->Identifier().c_str()];
             smil.href = [NSString stringWithUTF8String:item->Href().c_str()];

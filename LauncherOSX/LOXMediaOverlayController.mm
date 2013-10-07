@@ -115,23 +115,19 @@
         return;
     }
 
-    uint32_t total = mo->TotalClipDurationMilliseconds();
-    uint32_t timeMs = (uint32_t) (total * ([_timeScrobbler doubleValue] / 100.0));
+    uint32_t smilIndex = 0;
+    uint32_t parIndex = 0;
+    uint32_t milliseconds = 0;
+    const ePub3::SMILData::Parallel *par = nullptr;
+    ePub3::SMILDataPtr smilData = nullptr;
+    mo->PercentToPosition([_timeScrobbler doubleValue], smilData, smilIndex, par, parIndex, milliseconds);
 
-    //NSLog(@"=== TIME SCRUB: %ldms / %ldms (==%ldms)", (long) timeMs, (long) total, (long) mo->DurationMillisecondsTotal());
-
-    const ePub3::SMILData::Parallel *par = mo->ParallelAt(timeMs);
-    if (par == nullptr)
+    if (par == nullptr || par->Text() == nullptr || smilData == nullptr)
     {
         return;
     }
 
-    if (par->Text() == nullptr)
-    {
-        return;
-    }
-
-    const ePub3::string & smilSrc = par->SmilData()->ManifestItem()->Href();
+    const ePub3::string & smilSrc = smilData->SmilManifestItem()->Href(); //par->SmilData()
 
     std::string textSrc("");
     textSrc.append(par->Text()->SrcFile().c_str());
@@ -142,27 +138,7 @@
     }
     //NSLog(@"*** PAR TEXT: %s", textSrc.c_str());
 
-    uint32_t smilDataOffset = 0;
-    for (std::vector<ePub3::SMILDataPtr>::size_type i = 0; i < mo->GetSmilCount(); i++)
-    {
-        ePub3::SMILDataPtr smilData = mo->GetSmil(i);
-        if (smilData == par->SmilData())
-        {
-            break;
-        }
-        smilDataOffset += smilData->TotalClipDurationMilliseconds();
-    }
-
-    uint32_t offset = smilDataOffset;
-    if (par->ClipOffset(offset))
-    {
-        //NSLog(@"=== PAR OUTER OFFSET: %ldms", (long) offset);
-        offset = timeMs - offset;
-    }
-
-    //NSLog(@"=== PAR INNER OFFSET: %ldms", (long) offset);
-
-    double offsetS = offset / 1000.0;
+    double offsetS = milliseconds / 1000.0;
     [self.webViewController mediaOverlaysOpenContentUrl:[NSString stringWithUTF8String:textSrc.c_str()] fromSourceFileUrl:[NSString stringWithUTF8String:smilSrc.c_str()] forward: offsetS];
 }
 
@@ -261,49 +237,17 @@
             return;
         }
 
-        std::vector<ePub3::SMILDataPtr>::size_type j = (std::vector<ePub3::SMILDataPtr>::size_type)floor([smilIndex doubleValue]);
-        if (j < 0 && j >= mo->GetSmilCount())
-        {
-            return;
-        }
-
-        uint32_t smilDataOffset = 0;
-        for (std::vector<ePub3::SMILDataPtr>::size_type i = 0; i < j; i++)
-        {
-            ePub3::SMILDataPtr sd = mo->GetSmil(i);
-            smilDataOffset += sd->TotalClipDurationMilliseconds();
-        }
-
-        uint32_t k = (uint32_t)floor([parIndex doubleValue]);
-        if (k < 0)
-        {
-            return;
-        }
-
-        ePub3::SMILDataPtr smilData = mo->GetSmil(j);
-
-        const ePub3::SMILData::Parallel *par = smilData->NthParallel(k);
-        if (par == nullptr)
-        {
-            return;
-        }
-
+        uint32_t smilIndex_ = (uint32_t)floor([smilIndex doubleValue]);
+        uint32_t parIndex_ = (uint32_t)floor([parIndex doubleValue]);
         uint32_t playPositionMS = (uint32_t)floor([playPosition doubleValue] * 1000.0);
 
-        uint32_t offset = smilDataOffset + playPositionMS;
-        if (!par->ClipOffset(offset))
+        double percent = mo->PositionToPercent(smilIndex_, parIndex_, playPositionMS);
+
+        if (percent < 0)
         {
             return;
         }
 
-
-
-        uint32_t total = mo->TotalClipDurationMilliseconds();
-
-        double percent = ((double)offset / (double)total) * 100.0;
-
-        //NSLog(@"=== TIME SCRUB [%f%] %ldms / %ldms (==%ldms)", percent, (long) offset, (long) total, (long) mo->DurationMillisecondsTotal());
-//
 //        if (skipTimeScrobblerUpdates)
 //        {
 //            return;
