@@ -53,11 +53,6 @@
 
 -(void)setStyles:(NSArray *)styles;
 
-/*
--(void)setMediaOverlaySkippables:(NSString *)str;
--(void)setMediaOverlayEscapables:(NSString *)str;
-*/
-
 - (void)onReaderInitialized;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;

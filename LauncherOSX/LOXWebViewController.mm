@@ -128,6 +128,8 @@
     }
 
     NSString *json = [LOXUtil toJson:dict];
+    //NSLog(@"%@", json);
+
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", json];
 
     [_webView stringByEvaluatingJavaScriptFromString:callString];
@@ -250,27 +252,6 @@
     return [result boolValue];
 }
 
-/*
--(void)setMediaOverlayEscapables:(NSString *)str
-{
-    //NSMutableArray *arr = [NSMutableArray array];
-    //NSString* jsonDecl = [LOXUtil toJson: arr];
-    
-    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setMediaOverlayEscapables(%@)", str];
-    [_webView stringByEvaluatingJavaScriptFromString:callString];
-}
-
-
--(void)setMediaOverlaySkippables:(NSString *)str
-{
-    //NSMutableArray *arr = [NSMutableArray array];
-    //NSString* jsonDecl = [LOXUtil toJson: arr];
-    
-    NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setMediaOverlaySkippables(%@)", str];
-    [_webView stringByEvaluatingJavaScriptFromString:callString];
-}
-*/
-
 -(void)setStyles:(NSArray *)styles
 {
     NSMutableArray *arr = [NSMutableArray array];
@@ -280,6 +261,7 @@
     }
 
     NSString* jsonDecl = [LOXUtil toJson: arr];
+    //NSLog(@"%@", jsonDecl);
 
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setStyles(%@)", jsonDecl];
     [_webView stringByEvaluatingJavaScriptFromString:callString];
@@ -301,6 +283,7 @@
 -(void)updateSettings:(LOXPreferences *)preferences
 {
     NSString *jsonString = [LOXUtil toJson:[preferences toDictionary]];
+    //NSLog(@"%@", jsonString);
 
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.updateSettings(%@)", jsonString];
     [_webView stringByEvaluatingJavaScriptFromString:callString];
