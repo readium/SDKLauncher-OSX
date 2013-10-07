@@ -91,6 +91,7 @@
     if(self) {
 
         for (id key in dict.allKeys) {
+            
             @try
             {
                 [self setValue:dict[key] forKey:key];
