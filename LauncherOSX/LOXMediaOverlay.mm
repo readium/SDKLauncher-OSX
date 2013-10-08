@@ -208,16 +208,6 @@
 
 //NSLog(@"=== nodeType: [%s]", [smilItem[@"nodeType"] UTF8String]);
 
-    std::string str("");
-    str.append(node->TextRefFile().c_str());
-    if (!node->TextRefFragmentId().empty())
-    {
-        str.append("#");
-        str.append(node->TextRefFragmentId().c_str());
-    }
-
-    smilItem[@"textref"] = [NSString stringWithUTF8String: str.c_str()];
-
     smilItem[@"epubtype"] = [NSString stringWithUTF8String: node->Type().c_str()];
 
     NSMutableArray *children = [NSMutableArray array];
