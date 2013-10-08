@@ -300,35 +300,35 @@ https://developer.apple.com/library/mac/documentation/userexperience/conceptual/
         return;
     }
 
-    NSError* error = [[NSError alloc]init];
-    NSDictionary* dic = [_speech objectForProperty:NSSpeechStatusProperty error: &error];
-    //NSSpeechStatusOutputPaused  NSSpeechStatusOutputBusy
+//    if (self.webViewController != nil)
+//    {
+//        //[self updateSettings: [[[self.webViewController appDelegate] preferencesController] preferences]];
+//        [self updateSettings: [self.webViewController appDelegate].getPreferences];
+//    }
 
-    NSNumber* yes = [NSNumber numberWithBool:YES];
-
-    if ([_speech isSpeaking] || [[dic valueForKey:NSSpeechStatusOutputPaused] isEqual:yes] || [[dic valueForKey:NSSpeechStatusOutputBusy] isEqual:yes])
+    NSString *tts = [dict objectForKey:@"tts"];//dict[@"tts"];
+    if (tts != nil)
     {
-        _skipTTSEnd = true;
+        NSError* error = [[NSError alloc]init];
+        NSDictionary* dic = [_speech objectForProperty:NSSpeechStatusProperty error: &error];
+        //NSSpeechStatusOutputPaused  NSSpeechStatusOutputBusy
+
+        NSNumber* yes = [NSNumber numberWithBool:YES];
+
+        if ([_speech isSpeaking] || [[dic valueForKey:NSSpeechStatusOutputPaused] isEqual:yes] || [[dic valueForKey:NSSpeechStatusOutputBusy] isEqual:yes])
+        {
+            _skipTTSEnd = true;
 
 //            NSLog(@"SPEECH STOP");
-        [_speech stopSpeaking];
+            [_speech stopSpeaking];
 
 //        while([_speech isSpeaking]) //[NSSpeechSynthesizer isAnyApplicationSpeaking]
 //        {
 ////                NSLog(@"SPEECH WAIT...");
 //            usleep( 250 );
 //        }
-    }
+        }
 
-    if (self.webViewController != nil)
-    {
-        //[self updateSettings: [[[self.webViewController appDelegate] preferencesController] preferences]];
-        [self updateSettings: [self.webViewController appDelegate].getPreferences];
-    }
-
-    NSString *tts = [dict objectForKey:@"tts"];//dict[@"tts"];
-    if (tts != nil)
-    {
 //        NSLog(@"SPEECH SPEAK: %@", tts);
         [_speech startSpeakingString: tts];
     }
