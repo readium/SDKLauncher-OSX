@@ -47,7 +47,10 @@
 
 - (void)onOpenPage:(NSString *)currentPaginationInfo;
 
-- (void)onMediaOverlayStatusChanged:(NSString*) isPlaying;
+- (void)onMediaOverlayStatusChanged:(NSString*) status;
+
+- (void)onMediaOverlayTTSSpeak:(NSString*) tts;
+- (void)onMediaOverlayTTSStop;
 
 - (bool)isMediaOverlayAvailable;
 
@@ -91,5 +94,6 @@
 - (void)nextMediaOverlay;
 - (void)previousMediaOverlay;
 - (void)escapeMediaOverlay;
+- (void)ttsEndedMediaOverlay;
 
 @end

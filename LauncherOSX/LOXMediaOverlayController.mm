@@ -15,6 +15,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 
+#import <AppKit/AppKit.h>
+
 #import "LOXMediaOverlayController.h"
 #import "LOXWebViewController.h"
 #import "LOXAppDelegate.h"
@@ -35,6 +37,9 @@
     NSNumber *_timeScrobbler;
     //bool skipTimeScrobblerUpdates;
     //bool skipTimeScrobbler;
+
+    NSSpeechSynthesizer *_speech;
+    bool _skipTTSEnd;
 }
 
 - (IBAction)timeScrobblerValueChanged:(id)sender {
@@ -154,6 +159,16 @@
                                                  name:LOXMediaOverlayStatusChangedEvent
                                                object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onMediaOverlayTTSSpeak:)
+                                                 name:LOXMediaOverlayTTSSpeakEvent
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onMediaOverlayTTSStop:)
+                                                 name:LOXMediaOverlayTTSStopEvent
+                                               object:nil];
+
     [self.playIndicator setHidden:YES];
 
     [self updateIU];
@@ -200,6 +215,97 @@
 
     [self.webViewController escapeMediaOverlay];
 
+}
+
+- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        _skipTTSEnd = false;
+
+        _speech = [[NSSpeechSynthesizer alloc] init];
+        [_speech setDelegate:self];
+
+        //NSString *voice = @"Bruce";
+        //NSSpeechSynthesizer *speech = [[NSSpeechSynthesizer alloc] initWithVoice: [NSString stringWithFormat:@"com.apple.speech.synthesis.voice.%@", voice]];
+
+        //[_speech release];
+    }
+    return self;
+}
+
+/*
+https://developer.apple.com/library/mac/documentation/userexperience/conceptual/SpeechSynthesisProgrammingGuide/Introduction/Introduction.html
+*/
+- (void)onMediaOverlayTTSSpeak:(NSNotification *)notification
+{
+    NSDictionary *dict = [notification userInfo];
+    if (dict == nil)
+    {
+        return;
+    }
+
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_5
+    [_speech setRate: 300];
+    [_speech setVolume:1.0];
+#endif
+
+    NSString *tts = [dict objectForKey:@"tts"];//dict[@"tts"];
+    if (tts != nil)
+    {
+        NSError* error = [[NSError alloc]init];
+        NSDictionary* dic = [_speech objectForProperty:NSSpeechStatusProperty error: &error];
+        //NSSpeechStatusOutputPaused  NSSpeechStatusOutputBusy
+
+        NSNumber* yes = [NSNumber numberWithBool:YES];
+
+        if ([_speech isSpeaking] || [[dic valueForKey:NSSpeechStatusOutputPaused] isEqual:yes] || [[dic valueForKey:NSSpeechStatusOutputBusy] isEqual:yes])
+        {
+            _skipTTSEnd = true;
+
+//            NSLog(@"SPEECH STOP");
+            [_speech stopSpeaking];
+
+            while([_speech isSpeaking]) //[NSSpeechSynthesizer isAnyApplicationSpeaking]
+            {
+//                NSLog(@"SPEECH WAIT...");
+                usleep( 250 );
+            }
+        }
+
+//        NSLog(@"SPEECH SPEAK: %@", tts);
+        [_speech startSpeakingString: tts];
+    }
+    else
+    {
+//        NSLog(@"SPEECH CONTINUE");
+        [_speech continueSpeaking];
+    }
+}
+- (void)speechSynthesizer:(NSSpeechSynthesizer *)sender didFinishSpeaking:(BOOL)finishedSpeaking
+{
+//    NSLog(@"SPEECH ENDED");
+
+    if (_skipTTSEnd)
+    {
+//        NSLog(@"SPEECH END SKIPPED");
+
+        _skipTTSEnd = false;
+        return;
+    }
+    if (self.webViewController == nil)
+    {
+        return;
+    }
+
+    [self.webViewController ttsEndedMediaOverlay];
+}
+
+- (void)onMediaOverlayTTSStop:(NSNotification *)notification
+{
+//    NSLog(@"SPEECH PAUSE");
+    [_speech pauseSpeakingAtBoundary: NSSpeechImmediateBoundary];
 }
 
 - (void)onMediaOverlayStatusChanged:(NSNotification *)notification

@@ -174,7 +174,10 @@
     if(        sel == @selector(onOpenPage:)
             || sel == @selector(onReaderInitialized)
             || sel == @selector(onSettingsApplied)
-            || sel == @selector(onMediaOverlayStatusChanged:)){
+            || sel == @selector(onMediaOverlayStatusChanged:)
+            || sel == @selector(onMediaOverlayTTSSpeak:)
+            || sel == @selector(onMediaOverlayTTSStop)
+            ){
 
         return NO;
     }
@@ -196,6 +199,12 @@
     }
     else if(sel == @selector(onMediaOverlayStatusChanged:)) {
         return @"onMediaOverlayStatusChanged";
+    }
+    else if(sel == @selector(onMediaOverlayTTSSpeak:)) {
+        return @"onMediaOverlayTTSSpeak";
+    }
+    else if(sel == @selector(onMediaOverlayTTSStop:)) {
+        return @"onMediaOverlayTTSStop";
     }
 
     return nil;
@@ -226,6 +235,26 @@
     [self.currentPagesInfo fromDictionary:dict];
     [[NSNotificationCenter defaultCenter] postNotificationName:LOXPageChangedEvent object:self];
 
+}
+
+- (void)onMediaOverlayTTSStop
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOXMediaOverlayTTSStopEvent object:self userInfo:nil];
+}
+
+- (void)onMediaOverlayTTSSpeak:(NSString*) tts
+{
+    NSData* data = [tts dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSError *e = nil;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
+
+    if (e) {
+        NSLog(@"Error parsing JSON: %@", e);
+        return;
+    }
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOXMediaOverlayTTSSpeakEvent object:self userInfo:dict];
 }
 
 - (void)onMediaOverlayStatusChanged:(NSString*) status
@@ -427,6 +456,11 @@
 {
     WebScriptObject* script = [_webView windowScriptObject];
     [script evaluateWebScript: @"ReadiumSDK.reader.escapeMediaOverlay()"];
+}
+- (void)ttsEndedMediaOverlay
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.ttsEndedMediaOverlay()"];
 }
 
 @end

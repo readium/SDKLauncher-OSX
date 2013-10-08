@@ -39,6 +39,8 @@
 //events
 NSString *const LOXPageChangedEvent = @"PageChangedEvent";
 NSString *const LOXMediaOverlayStatusChangedEvent = @"LOXMediaOverlayStatusChangedEvent";
+NSString *const LOXMediaOverlayTTSSpeakEvent = @"LOXMediaOverlayTTSSpeakEvent";
+NSString *const LOXMediaOverlayTTSStopEvent = @"LOXMediaOverlayTTSStopEvent";
 
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate>
