@@ -17,11 +17,12 @@
 
 
 #import <Foundation/Foundation.h>
+#import "LOXPreferences.h"
 
 @class LOXWebViewController;
 
 
-@interface LOXMediaOverlayController : NSObject
+@interface LOXMediaOverlayController : NSObject<NSSpeechSynthesizerDelegate>
 
 @property (assign) IBOutlet LOXWebViewController* webViewController;
 
@@ -37,5 +38,7 @@
 - (IBAction)onNextMediaOverlayClick:(id)sender;
 - (IBAction)onPreviousMediaOverlayClick:(id)sender;
 - (IBAction)onEscapeMediaOverlayClick:(id)sender;
+
+-(void)updateSettings:(LOXPreferences *)preferences;
 
 @end

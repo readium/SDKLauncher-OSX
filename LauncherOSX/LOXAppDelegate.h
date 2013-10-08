@@ -64,6 +64,8 @@ NSString *const LOXMediaOverlayTTSStopEvent = @"LOXMediaOverlayTTSStopEvent";
 - (IBAction)openDocument:(id)sender;
 - (IBAction)showPreferences:(id)sender;
 
+- (LOXPreferences *)getPreferences;
+
 - (LOXBookmark*)createBookmark;
 
 - (void)openBookmark:(LOXBookmark *)bookmark;

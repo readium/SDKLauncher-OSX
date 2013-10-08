@@ -25,6 +25,8 @@
 
 #include "media-overlays_smil_data.h"
 #include "media-overlays_smil_model.h"
+#import "LOXPreferencesController.h"
+#import "LOXPreferences.h"
 
 #import <ePub3/media-overlays_smil_utils.h>
 
@@ -227,12 +229,64 @@
         _speech = [[NSSpeechSynthesizer alloc] init];
         [_speech setDelegate:self];
 
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_5
+        [_speech setRate: 200]; //180-220 WPM
+        [_speech setVolume: 1.0];
+#endif
+
         //NSString *voice = @"Bruce";
         //NSSpeechSynthesizer *speech = [[NSSpeechSynthesizer alloc] initWithVoice: [NSString stringWithFormat:@"com.apple.speech.synthesis.voice.%@", voice]];
 
         //[_speech release];
     }
     return self;
+}
+
+-(void)updateSettings:(LOXPreferences *)preferences
+{
+
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_5
+
+
+    NSNumber * vol = preferences.mediaOverlaysVolume;
+    double vol_ = [vol doubleValue] / 100.0;
+    //NSLog(@"SPEECH SETTING VOLUME: %f", vol_);
+    [_speech setVolume: vol_];
+
+    NSNumber * rate = [preferences mediaOverlaysRate];
+    double rate_ = 200 * [rate doubleValue];
+
+    //NSLog(@"SPEECH SETTING RATE: %f", rate_);
+    [_speech setRate: rate_];
+
+//    double currentRate = [_speech rate];
+//    if (currentRate != rate_)
+//    {
+//        bool wasSpeaking = [_speech isSpeaking];
+//
+//        if (wasSpeaking)
+//        {
+//            NSLog(@"SPEECH SETTING PAUSE");
+//            [_speech pauseSpeakingAtBoundary: NSSpeechWordBoundary];
+//
+//            //        while([_speech isSpeaking]) //[NSSpeechSynthesizer isAnyApplicationSpeaking]
+//            //        {
+//            //            NSLog(@"SPEECH SETTING WAIT...");
+//            //            usleep(200);
+//            //        }
+//        }
+//
+//        //NSLog(@"SPEECH SETTING RATE: %f", rate_);
+//        [_speech setRate: rate_];
+//
+//        if (wasSpeaking)
+//        {
+//            NSLog(@"SPEECH SETTING RESUME");
+//            [_speech continueSpeaking];
+//        }
+//    }
+
+#endif
 }
 
 /*
@@ -246,34 +300,35 @@ https://developer.apple.com/library/mac/documentation/userexperience/conceptual/
         return;
     }
 
-#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_5
-    [_speech setRate: 300];
-    [_speech setVolume:1.0];
-#endif
+    NSError* error = [[NSError alloc]init];
+    NSDictionary* dic = [_speech objectForProperty:NSSpeechStatusProperty error: &error];
+    //NSSpeechStatusOutputPaused  NSSpeechStatusOutputBusy
+
+    NSNumber* yes = [NSNumber numberWithBool:YES];
+
+    if ([_speech isSpeaking] || [[dic valueForKey:NSSpeechStatusOutputPaused] isEqual:yes] || [[dic valueForKey:NSSpeechStatusOutputBusy] isEqual:yes])
+    {
+        _skipTTSEnd = true;
+
+//            NSLog(@"SPEECH STOP");
+        [_speech stopSpeaking];
+
+//        while([_speech isSpeaking]) //[NSSpeechSynthesizer isAnyApplicationSpeaking]
+//        {
+////                NSLog(@"SPEECH WAIT...");
+//            usleep( 250 );
+//        }
+    }
+
+    if (self.webViewController != nil)
+    {
+        //[self updateSettings: [[[self.webViewController appDelegate] preferencesController] preferences]];
+        [self updateSettings: [self.webViewController appDelegate].getPreferences];
+    }
 
     NSString *tts = [dict objectForKey:@"tts"];//dict[@"tts"];
     if (tts != nil)
     {
-        NSError* error = [[NSError alloc]init];
-        NSDictionary* dic = [_speech objectForProperty:NSSpeechStatusProperty error: &error];
-        //NSSpeechStatusOutputPaused  NSSpeechStatusOutputBusy
-
-        NSNumber* yes = [NSNumber numberWithBool:YES];
-
-        if ([_speech isSpeaking] || [[dic valueForKey:NSSpeechStatusOutputPaused] isEqual:yes] || [[dic valueForKey:NSSpeechStatusOutputBusy] isEqual:yes])
-        {
-            _skipTTSEnd = true;
-
-//            NSLog(@"SPEECH STOP");
-            [_speech stopSpeaking];
-
-            while([_speech isSpeaking]) //[NSSpeechSynthesizer isAnyApplicationSpeaking]
-            {
-//                NSLog(@"SPEECH WAIT...");
-                usleep( 250 );
-            }
-        }
-
 //        NSLog(@"SPEECH SPEAK: %@", tts);
         [_speech startSpeakingString: tts];
     }
@@ -285,11 +340,11 @@ https://developer.apple.com/library/mac/documentation/userexperience/conceptual/
 }
 - (void)speechSynthesizer:(NSSpeechSynthesizer *)sender didFinishSpeaking:(BOOL)finishedSpeaking
 {
-//    NSLog(@"SPEECH ENDED");
+    //NSLog(@"SPEECH ENDED");
 
     if (_skipTTSEnd)
     {
-//        NSLog(@"SPEECH END SKIPPED");
+        //NSLog(@"SPEECH END SKIPPED");
 
         _skipTTSEnd = false;
         return;

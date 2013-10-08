@@ -29,6 +29,7 @@
 #import "LOXAppDelegate.h"
 #import "LOXCSSStyle.h"
 #import "LOXUtil.h"
+#import "LOXMediaOverlayController.h"
 
 
 @interface LOXWebViewController ()
@@ -203,7 +204,7 @@
     else if(sel == @selector(onMediaOverlayTTSSpeak:)) {
         return @"onMediaOverlayTTSSpeak";
     }
-    else if(sel == @selector(onMediaOverlayTTSStop:)) {
+    else if(sel == @selector(onMediaOverlayTTSStop)) {
         return @"onMediaOverlayTTSStop";
     }
 
@@ -311,6 +312,8 @@
 
 -(void)updateSettings:(LOXPreferences *)preferences
 {
+    [[self.appDelegate mediaOverlayController] updateSettings: preferences];
+
     NSString *jsonString = [LOXUtil toJson:[preferences toDictionary]];
     //NSLog(@"%@", jsonString);
 

@@ -69,6 +69,11 @@ extern NSString *const LOXPageChangedEvent;
 
 @synthesize currentPagesInfo = _currentPagesInfo;
 
+- (LOXPreferences *)getPreferences
+{
+    return _userData.preferences;
+}
+
 - (id)init
 {
     self = [super init];
