@@ -29,6 +29,7 @@
 #import "LOXToc.h"
 #import "LOXMediaOverlay.h"
 
+#import <ePub3/utilities/byte_stream.h>
 
 @interface LOXPackage ()
 
@@ -38,7 +39,7 @@
 
 - (void)copyTitleFromNavElement:(ePub3::NavigationElementPtr)element toEntry:(LOXTocEntry *)entry;
 
-- (void)saveContentOfReader:(ePub3::unique_ptr<ePub3::ArchiveReader>&)reader toPath:(NSString *)path;
+- (void)saveContentOfReader:(std::unique_ptr<ePub3::ByteStream>&)reader toPath:(NSString *)path;
 
 @end
 
@@ -208,7 +209,11 @@
     NSString * relativePath = [_storage relativePathFromFullPath:path];
 
     std::string str([relativePath UTF8String]);
-    auto reader = _sdkPackage->ReaderForRelativePath(str);
+
+    // DEPRECATED (use ByteStream instead)
+    //ePub3::unique_ptr<ePub3::ArchiveReader>& reader = _sdkPackage->ReaderForRelativePath(str);
+
+    std::unique_ptr<ePub3::ByteStream> reader = _sdkPackage->ReadStreamForRelativePath(_sdkPackage->BasePath() + str);
 
     if(reader == NULL){
         NSLog(@"No archive found for path %@", relativePath);
@@ -218,17 +223,15 @@
     [self saveContentOfReader:reader toPath: path];
 }
 
-- (void)saveContentOfReader:(ePub3::unique_ptr<ePub3::ArchiveReader>&)reader toPath:(NSString *)path
+- (void)saveContentOfReader: (std::unique_ptr<ePub3::ByteStream> &) reader toPath:(NSString *)path
 {
-    char buffer[1024];
+    uint8_t buffer[1024];
 
     NSMutableData * data = [NSMutableData data];
 
-    ssize_t readBytes = reader->read(buffer, 1024);
-
-    while (readBytes > 0) {
+    ssize_t readBytes = 0;
+    while ((readBytes  = reader->ReadBytes(buffer, 1024)) > 0) {
         [data appendBytes:buffer length:(NSUInteger) readBytes];
-        readBytes = reader->read(buffer, 1024);
     }
 
     [_storage saveData:data  toPaht:path];
