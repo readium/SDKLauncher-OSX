@@ -39,7 +39,7 @@
 
 - (void)copyTitleFromNavElement:(ePub3::NavigationElementPtr)element toEntry:(LOXTocEntry *)entry;
 
-- (void)saveContentOfReader:(std::unique_ptr<ePub3::ByteStream>&)reader toPath:(NSString *)path;
+//- (void)saveContentOfReader:(std::unique_ptr<ePub3::ByteStream>&)reader toPath:(NSString *)path;
 
 @end
 
@@ -194,7 +194,6 @@
 
 }
 
-
 -(void)prepareResourceWithPath:(NSString *)path
 {
 
@@ -270,6 +269,11 @@
 -(ePub3::PackagePtr) sdkPackage
 {
     return _sdkPackage;
+}
+
+-(LOXTemporaryFileStorage *) storage
+{
+    return _storage;
 }
 
 @end

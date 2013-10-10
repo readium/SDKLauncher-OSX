@@ -20,9 +20,12 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #import <WebKit/WebKit.h>
-#import <WebKit/WebResourceLoadDelegate.h>
+
 #import "LOXSpineViewController.h"
+
+#import <WebKit/WebResourceLoadDelegate.h>
 
 @class LOXePubSdkApi;
 @class LOXPageNumberTextController;

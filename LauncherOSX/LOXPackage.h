@@ -17,6 +17,7 @@
 
 #import <Foundation/Foundation.h>
 #import <ePub3/package.h>
+#import "LOXTemporaryFileStorage.h"
 
 @class LOXSpine;
 @class LOXSpineItem;
@@ -36,6 +37,7 @@
 
 - (NSDictionary *)toDictionary;
 - (ePub3::PackagePtr) sdkPackage;
+-(LOXTemporaryFileStorage *) storage;
 
 @property(nonatomic, readonly) LOXSpine *spine;
 @property(nonatomic, readonly) NSString *title;
