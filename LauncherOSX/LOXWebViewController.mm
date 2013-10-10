@@ -31,7 +31,7 @@
 #import "LOXUtil.h"
 #import "LOXMediaOverlayController.h"
 #import "PackageResourceServer.h"
-#import "HTMLUtil.h"
+//#import "HTMLUtil.h"
 #import "EPubURLProtocol.h"
 #import "EPubURLProtocolBridge.h"
 #import "RDPackageResource.h"
@@ -398,6 +398,11 @@
         return request;
     }
 
+    if (request.URL == nil)
+    {
+        return request;
+    }
+
     NSString *scheme = request.URL.scheme;
 
     if (scheme == nil)
@@ -432,8 +437,8 @@
             || [ext caseInsensitiveCompare: @"webm"] == NSOrderedSame
             )
     {
-        NSString * str = [NSString stringWithFormat:@"http://localhost:%d/%@/%@",
-                                                    kSDKLauncherPackageResourceServerPort, _package.packageUUID, path];
+        NSString * str = [[NSString stringWithFormat:@"http://localhost:%d/%@/%@",
+                                                    kSDKLauncherPackageResourceServerPort, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
         NSURL *url = [NSURL URLWithString:str];
 
         NSLog(@"***** REQ URL %@", url);
@@ -449,7 +454,7 @@
         return request;
     }
 
-    NSString * str = [NSString stringWithFormat:@"%@://%@/%@", kSDKLauncherWebViewSDKProtocol, _package.packageUUID, path];
+    NSString * str = [[NSString stringWithFormat:@"%@://%@/%@", kSDKLauncherWebViewSDKProtocol, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:str];
 
     NSLog(@"===== REQ URL %@", url);
@@ -626,7 +631,7 @@
 
 - (void)onProtocolBridgeNeedsResponse:(NSNotification *)notification {
     NSURL *url = [notification.userInfo objectForKey:@"url"];
-    NSString *s = url.absoluteString;
+    NSString *s = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *prefix = [kSDKLauncherWebViewSDKProtocol stringByAppendingString:@"://"];
 
     if (s == nil || ![s hasPrefix:prefix] || s.length == prefix.length) {
@@ -676,60 +681,60 @@
         bridge.currentData = data;
     }
 }
-
 //
-// Converts the given HTML data to a string.  The character set and encoding are assumed to be
-// UTF-8, UTF-16BE, or UTF-16LE.
+////
+//// Converts the given HTML data to a string.  The character set and encoding are assumed to be
+//// UTF-8, UTF-16BE, or UTF-16LE.
+////
+//- (NSString *)htmlFromData:(NSData *)data {
+//    if (data == nil || data.length == 0) {
+//        return nil;
+//    }
 //
-- (NSString *)htmlFromData:(NSData *)data {
-    if (data == nil || data.length == 0) {
-        return nil;
-    }
-
-    NSString *html = nil;
-    UInt8 *bytes = (UInt8 *)data.bytes;
-
-    if (data.length >= 3) {
-        if (bytes[0] == 0xFE && bytes[1] == 0xFF) {
-            html = [[NSString alloc] initWithData:data
-                                         encoding:NSUTF16BigEndianStringEncoding];
-        }
-        else if (bytes[0] == 0xFF && bytes[1] == 0xFE) {
-            html = [[NSString alloc] initWithData:data
-                                         encoding:NSUTF16LittleEndianStringEncoding];
-        }
-        else if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
-            html = [[NSString alloc] initWithData:data
-                                         encoding:NSUTF8StringEncoding];
-        }
-        else if (bytes[0] == 0x00) {
-            // There's a very high liklihood of this being UTF-16BE, just without the BOM.
-            html = [[NSString alloc] initWithData:data
-                                         encoding:NSUTF16BigEndianStringEncoding];
-        }
-        else if (bytes[1] == 0x00) {
-            // There's a very high liklihood of this being UTF-16LE, just without the BOM.
-            html = [[NSString alloc] initWithData:data
-                                         encoding:NSUTF16LittleEndianStringEncoding];
-        }
-        else {
-            html = [[NSString alloc] initWithData:data
-                                         encoding:NSUTF8StringEncoding];
-
-            if (html == nil) {
-                html = [[NSString alloc] initWithData:data
-                                             encoding:NSUTF16BigEndianStringEncoding];
-
-                if (html == nil) {
-                    html = [[NSString alloc] initWithData:data
-                                                 encoding:NSUTF16LittleEndianStringEncoding];
-                }
-            }
-        }
-    }
-
-    return [html autorelease];
-}
+//    NSString *html = nil;
+//    UInt8 *bytes = (UInt8 *)data.bytes;
+//
+//    if (data.length >= 3) {
+//        if (bytes[0] == 0xFE && bytes[1] == 0xFF) {
+//            html = [[NSString alloc] initWithData:data
+//                                         encoding:NSUTF16BigEndianStringEncoding];
+//        }
+//        else if (bytes[0] == 0xFF && bytes[1] == 0xFE) {
+//            html = [[NSString alloc] initWithData:data
+//                                         encoding:NSUTF16LittleEndianStringEncoding];
+//        }
+//        else if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
+//            html = [[NSString alloc] initWithData:data
+//                                         encoding:NSUTF8StringEncoding];
+//        }
+//        else if (bytes[0] == 0x00) {
+//            // There's a very high liklihood of this being UTF-16BE, just without the BOM.
+//            html = [[NSString alloc] initWithData:data
+//                                         encoding:NSUTF16BigEndianStringEncoding];
+//        }
+//        else if (bytes[1] == 0x00) {
+//            // There's a very high liklihood of this being UTF-16LE, just without the BOM.
+//            html = [[NSString alloc] initWithData:data
+//                                         encoding:NSUTF16LittleEndianStringEncoding];
+//        }
+//        else {
+//            html = [[NSString alloc] initWithData:data
+//                                         encoding:NSUTF8StringEncoding];
+//
+//            if (html == nil) {
+//                html = [[NSString alloc] initWithData:data
+//                                             encoding:NSUTF16BigEndianStringEncoding];
+//
+//                if (html == nil) {
+//                    html = [[NSString alloc] initWithData:data
+//                                                 encoding:NSUTF16LittleEndianStringEncoding];
+//                }
+//            }
+//        }
+//    }
+//
+//    return [html autorelease];
+//}
 
 -(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
 {

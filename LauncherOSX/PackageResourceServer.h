@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define kSDKLauncherPackageResourceServerPort 8080
+
 @class AsyncSocket;
 @class LOXPackage;
 
