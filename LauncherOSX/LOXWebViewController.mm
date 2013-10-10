@@ -405,18 +405,13 @@
         return request;
     }
 
-    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame)
-    {
-        return request;
-    }
-
-    if ([scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] == NSOrderedSame)
+    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame
+            && [scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] != NSOrderedSame)
     {
         return request;
     }
 
     NSString *path = request.URL.path;
-
     if (path == nil)
     {
         return request;
@@ -426,10 +421,38 @@
         path = [path substringFromIndex:1];
     }
 
+    auto ext = [path pathExtension];
+    if ([ext caseInsensitiveCompare: @"mp3"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"mp4"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"wav"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"ogg"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"ogv"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"mov"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"avi"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"webm"] == NSOrderedSame
+            )
+    {
+        NSString * str = [NSString stringWithFormat:@"http://localhost:%d/%@/%@",
+                                                    kSDKLauncherPackageResourceServerPort, _package.packageUUID, path];
+        NSURL *url = [NSURL URLWithString:str];
+
+        NSLog(@"***** REQ URL %@", url);
+
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [newRequest setURL: url];
+        return newRequest;
+    }
+
+    if ([scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] == NSOrderedSame)
+    {
+        NSLog(@"----- REQ URL %@", request.URL);
+        return request;
+    }
+
     NSString * str = [NSString stringWithFormat:@"%@://%@/%@", kSDKLauncherWebViewSDKProtocol, _package.packageUUID, path];
     NSURL *url = [NSURL URLWithString:str];
 
-    NSLog(@"----- REQUEST URL %@", url);
+    NSLog(@"===== REQ URL %@", url);
 
     NSMutableURLRequest *newRequest = [request mutableCopy];
     [newRequest setURL: url];
