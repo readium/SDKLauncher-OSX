@@ -12,6 +12,10 @@
 #import <CommonCrypto/CommonHMAC.h>
 #import "RDPackageResource.h"
 
+#import <SystemConfiguration/SCDynamicStore.h>
+
+#import <IOKit/IOKitLib.h>
+
 
 static NSString *m_basePath = nil;
 static NSData *m_key = nil;
@@ -23,6 +27,8 @@ static NSData *m_key = nil;
 - (NSString *)hexStringFromData:(NSData *)data;
 - (NSData *)sha1:(NSData *)data;
 - (void)trim;
+
++(NSString *)serialNumber;
 
 @end
 
@@ -364,6 +370,28 @@ static NSData *m_key = nil;
 }
 
 
++ (NSString *)serialNumber
+{
+    io_service_t platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"));
+    CFStringRef serialNumberAsCFString = NULL;
+    if (platformExpert)
+    {
+        serialNumberAsCFString = IORegistryEntryCreateCFProperty(platformExpert,
+                CFSTR(kIOPlatformSerialNumberKey),
+                kCFAllocatorDefault, 0);
+        IOObjectRelease(platformExpert);
+    }
+
+    NSString *serialNumberAsNSString = nil;
+    if (serialNumberAsCFString)
+    {
+        serialNumberAsNSString = [NSString stringWithString:(NSString *)serialNumberAsCFString];
+        CFRelease(serialNumberAsCFString);
+    }
+
+    return serialNumberAsNSString;
+}
+
 + (void)initialize {
 	m_basePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,
 		NSUserDomainMask, YES) objectAtIndex:0];
@@ -371,20 +399,21 @@ static NSData *m_key = nil;
 	m_basePath = [m_basePath retain];
 
 
-    CFUUIDRef uuid = CFUUIDCreate(NULL);
-    auto uidStr = (NSString *)CFUUIDCreateString(NULL, uuid);
-    CFRelease(uuid);
+    NSString *uuid = [self serialNumber];
 
-    //m_key = [uidStr dataUsingEncoding:NSUnicodeStringEncoding allowLossyConversion:NO];
+    //m_key = [uuid dataUsingEncoding:NSUnicodeStringEncoding allowLossyConversion:NO];
 
-    NSUInteger numberOfBytes = [uidStr lengthOfBytesUsingEncoding:NSUnicodeStringEncoding];
+    //NSMutableData* data = [NSMutableData dataWithLength: kCCKeySizeAES128];
+
+    NSUInteger numberOfBytes = [uuid lengthOfBytesUsingEncoding:NSUnicodeStringEncoding];
     void *buffer = malloc(numberOfBytes);
     NSUInteger usedLength = 0;
-    NSRange range = NSMakeRange(0, [uidStr length]);
-    BOOL result = [uidStr getBytes:buffer maxLength:numberOfBytes usedLength:&usedLength encoding:NSUnicodeStringEncoding options:0 range:range remainingRange:NULL];
-    m_key = [[NSData alloc] initWithBytes:buffer length:sizeof(numberOfBytes)];
+    NSRange range = NSMakeRange(0, [uuid length]);
+    BOOL result = [uuid getBytes:buffer maxLength:numberOfBytes usedLength:&usedLength encoding:NSUnicodeStringEncoding options:0 range:range remainingRange:NULL];
+    m_key = [[NSData alloc] initWithBytes:buffer length:kCCKeySizeAES128]; //sizeof(buffer) numberOfBytes
     free(buffer);
 
+    NSAssert(m_key.length == kCCKeySizeAES128, @"m_key invalid size");
 
     //uuid_t bytes;
     //[[UIDevice currentDevice].identifierForVendor getUUIDBytes:bytes];

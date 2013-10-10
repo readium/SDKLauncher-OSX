@@ -145,6 +145,11 @@
 
         _sdkPackage = sdkPackage;
 
+        if (m_packageUUID != nil)
+        {
+            [m_packageUUID release];
+        }
+
         CFUUIDRef uuid = CFUUIDCreate(NULL);
         m_packageUUID = (NSString *)CFUUIDCreateString(NULL, uuid);
         CFRelease(uuid);

@@ -39,6 +39,7 @@
 		A250D164A480EFAA1C1E953C /* AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D2D2931FEC8EA4FA765D /* AsyncSocket.m */; };
 		A250D5E01BBAE6876869D474 /* RDPackageResource.mm in Sources */ = {isa = PBXBuildFile; fileRef = A250D033A80FCFDDBF9337EE /* RDPackageResource.mm */; };
 		A250D6F351218999A79808CC /* PackageResourceCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D458BAE752C208241D53 /* PackageResourceCache.m */; };
+		A250D732AF1F0DA9FD3CD96A /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A250D39B570A41271E334B32 /* IOKit.framework */; };
 		A250D739FDAC1D47C72066A7 /* EPubURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D86ACD75F01DE9023942 /* EPubURLProtocol.m */; };
 		A250D79222D8B28AC27B2BC3 /* HTMLUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D4F4FA0E48CFA5A65E84 /* HTMLUtil.m */; };
 		A250D86DEAB503D112DB34FA /* EPubURLProtocolBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A250DD1D218F6B54ED059FE2 /* EPubURLProtocolBridge.m */; };
@@ -174,6 +175,7 @@
 		A250D033A80FCFDDBF9337EE /* RDPackageResource.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RDPackageResource.mm; sourceTree = "<group>"; };
 		A250D0C005F7A5D686FFDB18 /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncSocket.h; sourceTree = "<group>"; };
 		A250D2D2931FEC8EA4FA765D /* AsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSocket.m; sourceTree = "<group>"; };
+		A250D39B570A41271E334B32 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		A250D458BAE752C208241D53 /* PackageResourceCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PackageResourceCache.m; sourceTree = "<group>"; };
 		A250D4C9D6CACD35912BAF87 /* PackageResourceServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackageResourceServer.h; sourceTree = "<group>"; };
 		A250D4F4FA0E48CFA5A65E84 /* HTMLUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLUtil.m; sourceTree = "<group>"; };
@@ -244,6 +246,7 @@
 				855CFDB61696200B00AD311E /* WebKit.framework in Frameworks */,
 				8597D61216824655000FAAAF /* Cocoa.framework in Frameworks */,
 				AD8C8489BFE9EF51568CC65D /* CoreData.framework in Frameworks */,
+				A250D732AF1F0DA9FD3CD96A /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +317,7 @@
 				8597D61116824655000FAAAF /* Cocoa.framework */,
 				8597D61316824655000FAAAF /* Other Frameworks */,
 				AD8C8579F49901F4DF1AEECE /* CoreData.framework */,
+				A250D39B570A41271E334B32 /* IOKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

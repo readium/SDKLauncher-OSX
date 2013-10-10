@@ -360,7 +360,7 @@
 
 
 - (void)onSocket:(AsyncSocket *)sock willDisconnectWithError:(NSError *)err {
-	NSLog(@"The socket disconnected with an error! %@", err);
+//	NSLog(@"The socket disconnected with an error! %@", err);
 }
 
 

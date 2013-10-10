@@ -11,6 +11,7 @@
 @class RDPackageResource;
 
 @interface PackageResourceCache : NSObject {
+
 }
 
 - (void)addResource:(RDPackageResource *)resource;
