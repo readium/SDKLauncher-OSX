@@ -17,36 +17,46 @@
 
 #import <Foundation/Foundation.h>
 #import <ePub3/package.h>
-#import "LOXTemporaryFileStorage.h"
+//#import "LOXTemporaryFileStorage.h"
+#import "RDPackageResource.h"
 
 @class LOXSpine;
 @class LOXSpineItem;
-@class LOXTemporaryFileStorage;
+//@class LOXTemporaryFileStorage;
 @class LOXToc;
 @class LOXMediaOverlay;
 
 
-@interface LOXPackage : NSObject
+@interface LOXPackage : NSObject<RDPackageResourceDelegate> {
+    @private NSString *m_packageUUID;
+    @private NSMutableSet *m_relativePathsThatAreHTML;
+    @private NSMutableSet *m_relativePathsThatAreNotHTML;
+}
 
 -(id)initWithSdkPackage:(ePub3::PackagePtr) sdkPackage;
 
-- (void)prepareResourceWithPath:(NSString *)path;
+//- (void)prepareResourceWithPath:(NSString *)path;
 
 - (NSString *)getCfiForSpineItem:(LOXSpineItem *)spineItem;
 
 
 - (NSDictionary *)toDictionary;
 - (ePub3::PackagePtr) sdkPackage;
--(LOXTemporaryFileStorage *) storage;
+//-(LOXTemporaryFileStorage *) storage;
 
+@property (nonatomic, readonly) NSString *packageUUID;
 @property(nonatomic, readonly) LOXSpine *spine;
 @property(nonatomic, readonly) NSString *title;
 @property(nonatomic, readonly) NSString *packageId;
 @property(nonatomic, readonly) LOXToc *toc;
 @property(nonatomic, readonly) NSString *rendition_layout;
-@property(nonatomic, readonly) NSString *rootDirectory;
+//@property(nonatomic, readonly) NSString *rootDirectory;
 
 @property(nonatomic, readonly) LOXMediaOverlay *mediaOverlay;
 
+
+// Returns the resource at the given relative path or nil if it doesn't exist.  The isHTML out
+// parameter returns whether or not the resource is HTML.
+- (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath isHTML:(BOOL *)isHTML;
 
 @end

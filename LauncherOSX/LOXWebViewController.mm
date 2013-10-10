@@ -30,10 +30,13 @@
 #import "LOXCSSStyle.h"
 #import "LOXUtil.h"
 #import "LOXMediaOverlayController.h"
-
+#import "PackageResourceServer.h"
+#import "HTMLUtil.h"
+#import "EPubURLProtocol.h"
+#import "EPubURLProtocolBridge.h"
+#import "RDPackageResource.h"
 #import <ePub3/utilities/byte_stream.h>
-
-#import "LOXTemporaryFileStorage.h"
+//#import "LOXTemporaryFileStorage.h"
 
 
 @interface LOXWebViewController ()
@@ -47,333 +50,333 @@
 - (void)updateUI;
 
 @end
-
-@interface ReadiumNSURLProtocol : NSURLProtocol //<NSURLConnectionDataDelegate> //NSURLConnectionDelegate
-{
-
-}
-
-+ (void) package:(LOXPackage *)package;
-
-@end
-
-
-@interface ReadiumNSURLProtocol ()
-    //@property (nonatomic, strong) NSURLConnection *connexion;
-    //@property (retain) NSURLConnection *connexion;
-@end
-
-
-
-@implementation ReadiumNSURLProtocol
-
-static NSDictionary *_mimeExtensions;
-+ (void) initialize;
-{
-    if (_mimeExtensions == nil)
-    {
-        NSLog(@"INIT MIMETYPES");
-        _mimeExtensions=[[NSDictionary alloc] initWithObjectsAndKeys:
-//            @"image/jpeg", @"jpeg",
-//            @"image/jpeg", @"jpg",
-//            @"image/tiff", @"tiff",
-//            @"image/png", @"png",
-//                    @"image/gif", @"gif",
-                    @"video/ogg", @"ogv",
-                    @"video/mov", @"mov",
-                    @"video/webm", @"webm",
-                    @"audio/mpeg", @"mp3",
-                        @"audio/mp4", @"mp4",
-//                    @"audio/wav", @"wav",
-//            @"text/css", @"css",
-//                    @"text/html", @"html",
-//                    @"text/html", @"xhtml",
-//                        @"text/xml", @"xml",
-//                        @"text/svg", @"svg",
-            nil];
-    }
-}
-
-+ (NSDictionary *) mimeExtensions
-{
-    return _mimeExtensions;
-}
-
-LOXPackage * _package;
-
-+ (void) package:(LOXPackage *)package
-{
-    _package = package;
-}
 //
-//static NSMutableSet *requests = nil;
-//
-//+ (NSMutableSet *)requests
+//@interface ReadiumNSURLProtocol : NSURLProtocol //<NSURLConnectionDataDelegate> //NSURLConnectionDelegate
 //{
-//    return [[requests retain] autorelease];
+//
 //}
 //
-//+ (void)setRequests:(NSMutableSet *)newRequests
+//+ (void) package:(LOXPackage *)package;
+//
+//@end
+//
+//
+//@interface ReadiumNSURLProtocol ()
+//    //@property (nonatomic, strong) NSURLConnection *connexion;
+//    //@property (retain) NSURLConnection *connexion;
+//@end
+//
+//
+//
+//@implementation ReadiumNSURLProtocol
+//
+//static NSDictionary *_mimeExtensions;
+//+ (void) initialize;
 //{
-//    if ( requests != newRequests ) {
-//        [requests release];
-//        requests = [newRequests retain];
-//    }
-//}
-//
-//+ (BOOL)hasRequest:(NSURLRequest *)request
-//{
-//    return [requests containsObject:request];
-//}
-//
-//+ (void)addRequest:(NSURLRequest *)request
-//{
-//    //  lazily instantiate set
-//    if ( requests == nil )
-//        [[self class] setRequests:[NSMutableSet set]];
-//
-//    //  add request
-//    [requests addObject:request];
-//}
-//
-//+ (void)removeRequest:(NSURLRequest *)request
-//{
-//    //  remove request
-//    [requests removeObject:request];
-//
-//    //  minimize memory footprint
-//    if ( [requests count] == 0 )
-//        [[self class] setRequests:nil];
-//}
-//
-//-(id)initWithRequest:(NSURLRequest *)request
-//      cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id
-//<NSURLProtocolClient>)client
-//{
-//    //  call super
-//    self = [super initWithRequest:request
-//                   cachedResponse:cachedResponse
-//                           client:client];
-//
-//    if ( self ) {
-//        //  register the request
-//        [[self class] addRequest:request];
-//    }
-//    return self;
-//}
-//
-//- (void)dealloc
-//{
-//    //  unregister the request
-//    [[self class] removeRequest:[self request]];
-//    [super dealloc];
-//}
-
-+ (BOOL)canInitWithRequest:(NSURLRequest *)request
-{
-    //NSString *path = request.URL.path;
-//
-//    if ( [[self class] hasRequest:request] )
+//    if (_mimeExtensions == nil)
 //    {
-//        //NSLog(@"init NO %@", path);
-//        return NO;
+//        NSLog(@"INIT MIMETYPES");
+//        _mimeExtensions=[[NSDictionary alloc] initWithObjectsAndKeys:
+////            @"image/jpeg", @"jpeg",
+////            @"image/jpeg", @"jpg",
+////            @"image/tiff", @"tiff",
+////            @"image/png", @"png",
+////                    @"image/gif", @"gif",
+//                    @"video/ogg", @"ogv",
+//                    @"video/mov", @"mov",
+//                    @"video/webm", @"webm",
+//                    @"audio/mpeg", @"mp3",
+//                        @"audio/mp4", @"mp4",
+////                    @"audio/wav", @"wav",
+////            @"text/css", @"css",
+////                    @"text/html", @"html",
+////                    @"text/html", @"xhtml",
+////                        @"text/xml", @"xml",
+////                        @"text/svg", @"svg",
+//            nil];
 //    }
-
-    auto yep = [NSURLProtocol propertyForKey:@"READIUM" inRequest:request];
-    if (yep)
-    {
-        NSLog(@"init YES %@", request.URL);
-        return YES;
-    }
-
+//}
 //
-//    if ([request.URL.scheme caseInsensitiveCompare: @"readium"] == NSOrderedSame)
+//+ (NSDictionary *) mimeExtensions
+//{
+//    return _mimeExtensions;
+//}
+//
+//LOXPackage * _package;
+//
+//+ (void) package:(LOXPackage *)package
+//{
+//    _package = package;
+//}
+////
+////static NSMutableSet *requests = nil;
+////
+////+ (NSMutableSet *)requests
+////{
+////    return [[requests retain] autorelease];
+////}
+////
+////+ (void)setRequests:(NSMutableSet *)newRequests
+////{
+////    if ( requests != newRequests ) {
+////        [requests release];
+////        requests = [newRequests retain];
+////    }
+////}
+////
+////+ (BOOL)hasRequest:(NSURLRequest *)request
+////{
+////    return [requests containsObject:request];
+////}
+////
+////+ (void)addRequest:(NSURLRequest *)request
+////{
+////    //  lazily instantiate set
+////    if ( requests == nil )
+////        [[self class] setRequests:[NSMutableSet set]];
+////
+////    //  add request
+////    [requests addObject:request];
+////}
+////
+////+ (void)removeRequest:(NSURLRequest *)request
+////{
+////    //  remove request
+////    [requests removeObject:request];
+////
+////    //  minimize memory footprint
+////    if ( [requests count] == 0 )
+////        [[self class] setRequests:nil];
+////}
+////
+////-(id)initWithRequest:(NSURLRequest *)request
+////      cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id
+////<NSURLProtocolClient>)client
+////{
+////    //  call super
+////    self = [super initWithRequest:request
+////                   cachedResponse:cachedResponse
+////                           client:client];
+////
+////    if ( self ) {
+////        //  register the request
+////        [[self class] addRequest:request];
+////    }
+////    return self;
+////}
+////
+////- (void)dealloc
+////{
+////    //  unregister the request
+////    [[self class] removeRequest:[self request]];
+////    [super dealloc];
+////}
+//
+//+ (BOOL)canInitWithRequest:(NSURLRequest *)request
+//{
+//    //NSString *path = request.URL.path;
+////
+////    if ( [[self class] hasRequest:request] )
+////    {
+////        //NSLog(@"init NO %@", path);
+////        return NO;
+////    }
+//
+//    auto yep = [NSURLProtocol propertyForKey:@"READIUM" inRequest:request];
+//    if (yep)
 //    {
+//        NSLog(@"init YES %@", request.URL);
 //        return YES;
 //    }
-
-    NSLog(@"init NO %@", request.URL);
-    return NO;
-}
-
-+ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request{
-    return request;
-}
-
-- (void)startLoading
-{
-    //NSMutableURLRequest *newRequest = [self.request mutableCopy];
-    //[newRequest setValue:@"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36 Kifi/1.0f" forHTTPHeaderField:@"User-Agent"];
-    //[NSURLProtocol setProperty:@YES forKey:@"UserAgentSet" inRequest:newRequest];
-
-//    NSURLConnectionDelegate *delegate = [[[NSURLConnectionDelegate alloc]
-//            initWithSuccessHandler:^(NSData *response) {
-//                // …
-//            }] autorelease];
-
-
-    NSLog(@"Main thread %@", ([NSThread isMainThread] ? @"Yes" : @" No"));
 //
-//    id connection = [[NSURLConnection alloc] initWithRequest:[self request]
-//                                                    delegate:self startImmediately:NO];
-//    //self.connexion = [connection autorelease];
-//    self.connexion = connection;
-
-//    NSURLConnection *conn = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self] autorelease];
+////
+////    if ([request.URL.scheme caseInsensitiveCompare: @"readium"] == NSOrderedSame)
+////    {
+////        return YES;
+////    }
 //
-//    self.connexion = [NSURLConnection connectionWithRequest:self.request delegate:self];
-//    [self.connexion start];
-
-
-    NSString *path = self.request.URL.path;
-    NSLog(@"startLoading %@", path);
-
-//    NSURL *fileUrl = [NSURL fileURLWithPath:path];
-//    NSURLRequest *theFileReq = [[[NSURLRequest alloc] initWithURL:fileUrl cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval:0.01]autorelease];
-//    NSURLResponse *response = nil;
-//    NSError *error = nil;
-//    NSData *data = [NSURLConnection sendSynchronousRequest:theFileReq returningResponse:&response error:&error];
-//    if (error != nil)
-//    {
-//        NSLog(@"error %@", error);
-//    }
-//    if (response != nil)
-//    {
-//        NSString *mimeType = [response MIMEType];
-//        NSLog(@"mimeType %@", mimeType);
-//    }
-
-//
-//    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:self.request.URL
-//                                                  cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval:2.0];
-//
-////    NSURLConnection *conn = [NSURLConnection connectionWithRequest:request delegate:self];
-//
-//    NSURLConnection * con = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately: NO];
-//
-//    //[con scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
-//    //[con scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-//
-//    [con start];
-//
-//    [request release];
-
-
-    NSString * relativePath = [[_package storage] relativePathFromFullPath: path];
-    std::string str([relativePath UTF8String]);
-
-    std::unique_ptr<ePub3::ByteStream> byteStream = [_package sdkPackage]->ReadStreamForRelativePath([_package sdkPackage]->BasePath() + str);
-    if(byteStream == NULL)
-    {
-        NSLog(@"No archive found for path %@", relativePath);
-        [[self client] URLProtocolDidFinishLoading:self];
-        [self stopLoading];
-        return;
-    }
-
-
-    //NSInteger* length = [NSInteger numberWithInt: byteStream->BytesAvailable()];
-    ssize_t length = byteStream->BytesAvailable();
-
-    NSLog(@"BYTES: %d", length);
-
-    auto ext = [[relativePath pathExtension] lowercaseString];
-
-    auto mime = [_mimeExtensions objectForKey:ext];
-    if (mime == nil)
-    {
-        mime = @"text/html";
-    }
-
-    NSURLResponse *response_ =[[NSURLResponse alloc] initWithURL:self.request.URL
-                                                      MIMEType: mime
-                                         expectedContentLength: length
-                                              textEncodingName:nil];
-
-    [[self client] URLProtocol:self didReceiveResponse:response_ cacheStoragePolicy:NSURLCacheStorageNotAllowed];
-
-//    if ([ext caseInsensitiveCompare: @"mp3"] == NSOrderedSame
-//            || [ext caseInsensitiveCompare: @"mp4"] == NSOrderedSame)
-//    {
-//        [[self client] URLProtocol:self didReceiveResponse:response_ cacheStoragePolicy:NSURLCacheStorageAllowed];
-//    }
-//    else
-//    {
-//        [[self client] URLProtocol:self didReceiveResponse:response_ cacheStoragePolicy:NSURLCacheStorageNotAllowed];
-//    }
-
-
-    uint8_t buffer[1024];
-    ssize_t readBytes = 0;
-    ssize_t sumBytes = 0;
-    while ((readBytes  = byteStream->ReadBytes(buffer, 1024)) > 0)
-    {
-        sumBytes+=readBytes;
-        [[self client] URLProtocol:self didLoadData: [NSData dataWithBytes: buffer length: readBytes]];
-    }
-    byteStream->Close();
-
-    NSLog(@"BYTESUM: %d", sumBytes);
-
-    [self.client URLProtocolDidFinishLoading:self];
-}
-
-- (void)stopLoading
-{
-    NSLog(@"STOP LOAD");
-
-    //[self.connexion cancel];
-    //self.connexion = nil;
-
-//    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
-//    [NSURLCache setSharedURLCache:sharedCache];
-//    [sharedCache release];
-}
-//
-//- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-//{
-//    NSLog(@"didReceiveResponse");
-//
-//    //[self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
-//
-////    NSString *path = self.request.URL.path;
-////    NSLog(@"didReceiveResponse %@", path);
-//
-//    //NSString *mime = [response MIMEType];
-//    //int length_ = [response expectedContentLength];
+//    NSLog(@"init NO %@", request.URL);
+//    return NO;
 //}
 //
-//
-//- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-//{
-//    //NSLog(@"FAIL");
-//    NSLog(@"FAIL %@", error);
-//
-//    //[self.client URLProtocol:self didFailWithError:error];
-//    //self.connection = nil;
+//+ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request{
+//    return request;
 //}
 //
-//
-//- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
+//- (void)startLoading
 //{
-//    return nil;
-//}
+//    //NSMutableURLRequest *newRequest = [self.request mutableCopy];
+//    //[newRequest setValue:@"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36 Kifi/1.0f" forHTTPHeaderField:@"User-Agent"];
+//    //[NSURLProtocol setProperty:@YES forKey:@"UserAgentSet" inRequest:newRequest];
 //
-///*
-//-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-//{
-//    [self.client URLProtocol:self didLoadData:data];
-//}
+////    NSURLConnectionDelegate *delegate = [[[NSURLConnectionDelegate alloc]
+////            initWithSuccessHandler:^(NSData *response) {
+////                // …
+////            }] autorelease];
 //
 //
-//- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-//{
+//    NSLog(@"Main thread %@", ([NSThread isMainThread] ? @"Yes" : @" No"));
+////
+////    id connection = [[NSURLConnection alloc] initWithRequest:[self request]
+////                                                    delegate:self startImmediately:NO];
+////    //self.connexion = [connection autorelease];
+////    self.connexion = connection;
+//
+////    NSURLConnection *conn = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self] autorelease];
+////
+////    self.connexion = [NSURLConnection connectionWithRequest:self.request delegate:self];
+////    [self.connexion start];
+//
+//
+//    NSString *path = self.request.URL.path;
+//    NSLog(@"startLoading %@", path);
+//
+////    NSURL *fileUrl = [NSURL fileURLWithPath:path];
+////    NSURLRequest *theFileReq = [[[NSURLRequest alloc] initWithURL:fileUrl cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval:0.01]autorelease];
+////    NSURLResponse *response = nil;
+////    NSError *error = nil;
+////    NSData *data = [NSURLConnection sendSynchronousRequest:theFileReq returningResponse:&response error:&error];
+////    if (error != nil)
+////    {
+////        NSLog(@"error %@", error);
+////    }
+////    if (response != nil)
+////    {
+////        NSString *mimeType = [response MIMEType];
+////        NSLog(@"mimeType %@", mimeType);
+////    }
+//
+////
+////    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:self.request.URL
+////                                                  cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval:2.0];
+////
+//////    NSURLConnection *conn = [NSURLConnection connectionWithRequest:request delegate:self];
+////
+////    NSURLConnection * con = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately: NO];
+////
+////    //[con scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+////    //[con scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+////
+////    [con start];
+////
+////    [request release];
+//
+//
+//    NSString * relativePath = [[_package storage] relativePathFromFullPath: path];
+//    std::string str([relativePath UTF8String]);
+//
+//    std::unique_ptr<ePub3::ByteStream> byteStream = [_package sdkPackage]->ReadStreamForRelativePath([_package sdkPackage]->BasePath() + str);
+//    if(byteStream == NULL)
+//    {
+//        NSLog(@"No archive found for path %@", relativePath);
+//        [[self client] URLProtocolDidFinishLoading:self];
+//        [self stopLoading];
+//        return;
+//    }
+//
+//
+//    //NSInteger* length = [NSInteger numberWithInt: byteStream->BytesAvailable()];
+//    ssize_t length = byteStream->BytesAvailable();
+//
+//    NSLog(@"BYTES: %d", length);
+//
+//    auto ext = [[relativePath pathExtension] lowercaseString];
+//
+//    auto mime = [_mimeExtensions objectForKey:ext];
+//    if (mime == nil)
+//    {
+//        mime = @"text/html";
+//    }
+//
+//    NSURLResponse *response_ =[[NSURLResponse alloc] initWithURL:self.request.URL
+//                                                      MIMEType: mime
+//                                         expectedContentLength: length
+//                                              textEncodingName:nil];
+//
+//    [[self client] URLProtocol:self didReceiveResponse:response_ cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+//
+////    if ([ext caseInsensitiveCompare: @"mp3"] == NSOrderedSame
+////            || [ext caseInsensitiveCompare: @"mp4"] == NSOrderedSame)
+////    {
+////        [[self client] URLProtocol:self didReceiveResponse:response_ cacheStoragePolicy:NSURLCacheStorageAllowed];
+////    }
+////    else
+////    {
+////        [[self client] URLProtocol:self didReceiveResponse:response_ cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+////    }
+//
+//
+//    uint8_t buffer[1024];
+//    ssize_t readBytes = 0;
+//    ssize_t sumBytes = 0;
+//    while ((readBytes  = byteStream->ReadBytes(buffer, 1024)) > 0)
+//    {
+//        sumBytes+=readBytes;
+//        [[self client] URLProtocol:self didLoadData: [NSData dataWithBytes: buffer length: readBytes]];
+//    }
+//    byteStream->Close();
+//
+//    NSLog(@"BYTESUM: %d", sumBytes);
+//
 //    [self.client URLProtocolDidFinishLoading:self];
-//    self.connection = nil;
 //}
-//*/
-
-@end
+//
+//- (void)stopLoading
+//{
+//    NSLog(@"STOP LOAD");
+//
+//    //[self.connexion cancel];
+//    //self.connexion = nil;
+//
+////    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
+////    [NSURLCache setSharedURLCache:sharedCache];
+////    [sharedCache release];
+//}
+////
+////- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+////{
+////    NSLog(@"didReceiveResponse");
+////
+////    //[self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+////
+//////    NSString *path = self.request.URL.path;
+//////    NSLog(@"didReceiveResponse %@", path);
+////
+////    //NSString *mime = [response MIMEType];
+////    //int length_ = [response expectedContentLength];
+////}
+////
+////
+////- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+////{
+////    //NSLog(@"FAIL");
+////    NSLog(@"FAIL %@", error);
+////
+////    //[self.client URLProtocol:self didFailWithError:error];
+////    //self.connection = nil;
+////}
+////
+////
+////- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
+////{
+////    return nil;
+////}
+////
+/////*
+////-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+////{
+////    [self.client URLProtocol:self didLoadData:data];
+////}
+////
+////
+////- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+////{
+////    [self.client URLProtocolDidFinishLoading:self];
+////    self.connection = nil;
+////}
+////*/
+//
+//@end
 
 
 @implementation LOXWebViewController {
@@ -383,106 +386,150 @@ LOXPackage * _package;
     LOXPreferences *_preferences;
 }
 
+
 - (NSURLRequest *)webView:(WebView *)sender
                  resource:(id)identifier
           willSendRequest:(NSURLRequest *)request
          redirectResponse:(NSURLResponse *)redirectResponse
            fromDataSource:(WebDataSource *)dataSource
 {
-
-//    NSString *path_ = request.URL.path;
-//    //NSString *path_ = [[request URL] path];
-//    [_package prepareResourceWithPath: path_];
-//    return request;
-
-
-
-
-
-
-
-
-    for(NSString *s in [dataSource subresources])
-    {
-        NSLog(@"resource : %@",s);
-    }
-
     if (_package == nil)
     {
-        NSLog(@"PACK NULL %@", request.URL);
         return request;
     }
-//
-//    if ([request.URL.scheme caseInsensitiveCompare: @"readium"] == NSOrderedSame)
-//    {
-//        NSLog(@"READIUM %@", request.URL);
-//        return request;
-//    }
-//
 
-    bool isFileScheme = [request.URL.scheme caseInsensitiveCompare: @"file"] == NSOrderedSame;
-    bool isReadiumScheme = [request.URL.scheme caseInsensitiveCompare: @"readium"] == NSOrderedSame;
-    if (!isFileScheme
-            && !isReadiumScheme)
+    NSString *scheme = request.URL.scheme;
+
+    if (scheme == nil)
     {
-        NSLog(@"NOT FILE %@", request.URL);
+        return request;
+    }
+
+    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame)
+    {
+        return request;
+    }
+
+    if ([scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] == NSOrderedSame)
+    {
         return request;
     }
 
     NSString *path = request.URL.path;
-    //NSString *path = [[request URL] path];
 
-
-    NSLog(@"willSendRequest? %@", request.URL);
-
-    NSString * relativePath = [[_package storage] relativePathFromFullPath: path];
-    std::string rel([relativePath UTF8String]);
-
-    bool can = [_package sdkPackage]->CanReadStreamForRelativePath([_package sdkPackage]->BasePath() + rel);
-    if (!can)
+    if (path == nil)
     {
-        NSLog(@"NOT CAN %@", request.URL);
-
-        NSString * str = [@"file://" stringByAppendingString:path];
-        NSURL *url = [NSURL URLWithString:str];
-        auto req = [NSURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval: 5];
-
-        return req;
+        return request;
     }
 
-
-    auto ext = [[relativePath pathExtension] lowercaseString];
-
-    auto mime = [[ReadiumNSURLProtocol mimeExtensions] objectForKey:ext];
-
-    if (mime == nil)
-    {
-        NSLog(@"-- TEMP RES %@", path);
-
-        [_package prepareResourceWithPath: path];
-
-        NSString * str = [@"file://" stringByAppendingString:path];
-        NSURL *url = [NSURL URLWithString:str];
-        auto req = [NSURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageAllowed timeoutInterval: 5];
-
-        return req;
+    if ([path hasPrefix:@"/"]) {
+        path = [path substringFromIndex:1];
     }
 
-    NSLog(@"ReadIum %@", request.URL);
-
-    //NSURLRequest *theFileReq = [[[NSURLRequest alloc] initWithURL:fileUrl cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval:0.01]autorelease];
-
-
-    NSString * str = [@"readium://" stringByAppendingString:path];
-
-    NSLog(@"----- willSendRequest %@", str);
-
+    NSString * str = [NSString stringWithFormat:@"%@://%@/%@", kSDKLauncherWebViewSDKProtocol, _package.packageUUID, path];
     NSURL *url = [NSURL URLWithString:str];
-    auto req = [NSURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval: 5];
 
-    [NSURLProtocol setProperty:@YES forKey:@"READIUM" inRequest: req];
-    return req;
+    NSLog(@"----- REQUEST URL %@", url);
+
+    NSMutableURLRequest *newRequest = [request mutableCopy];
+    [newRequest setURL: url];
+    return newRequest;
 }
+//
+//- (NSURLRequest *)webView:(WebView *)sender
+//                 resource:(id)identifier
+//          willSendRequest:(NSURLRequest *)request
+//         redirectResponse:(NSURLResponse *)redirectResponse
+//           fromDataSource:(WebDataSource *)dataSource
+//{
+//
+////    NSString *path_ = request.URL.path;
+////    //NSString *path_ = [[request URL] path];
+////    [_package prepareResourceWithPath: path_];
+////    return request;
+//
+//
+//    for(NSString *s in [dataSource subresources])
+//    {
+//        NSLog(@"resource : %@",s);
+//    }
+//
+//    if (_package == nil)
+//    {
+//        NSLog(@"PACK NULL %@", request.URL);
+//        return request;
+//    }
+////
+////    if ([request.URL.scheme caseInsensitiveCompare: @"readium"] == NSOrderedSame)
+////    {
+////        NSLog(@"READIUM %@", request.URL);
+////        return request;
+////    }
+////
+//
+//    bool isFileScheme = [request.URL.scheme caseInsensitiveCompare: @"file"] == NSOrderedSame;
+//    bool isReadiumScheme = [request.URL.scheme caseInsensitiveCompare: @"readium"] == NSOrderedSame;
+//    if (!isFileScheme
+//            && !isReadiumScheme)
+//    {
+//        NSLog(@"NOT FILE %@", request.URL);
+//        return request;
+//    }
+//
+//    NSString *path = request.URL.path;
+//    //NSString *path = [[request URL] path];
+//
+//
+//    NSLog(@"willSendRequest? %@", request.URL);
+//
+//    NSString * relativePath = [[_package storage] relativePathFromFullPath: path];
+//    std::string rel([relativePath UTF8String]);
+//
+//    bool can = [_package sdkPackage]->CanReadStreamForRelativePath([_package sdkPackage]->BasePath() + rel);
+//    if (!can)
+//    {
+//        NSLog(@"NOT CAN %@", request.URL);
+//
+//        NSString * str = [@"file://" stringByAppendingString:path];
+//        NSURL *url = [NSURL URLWithString:str];
+//        auto req = [NSURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval: 5];
+//
+//        return req;
+//    }
+//
+//
+//    auto ext = [[relativePath pathExtension] lowercaseString];
+//
+//    auto mime = [[ReadiumNSURLProtocol mimeExtensions] objectForKey:ext];
+//
+//    if (mime == nil)
+//    {
+//        NSLog(@"-- TEMP RES %@", path);
+//
+//        [_package prepareResourceWithPath: path];
+//
+//        NSString * str = [@"file://" stringByAppendingString:path];
+//        NSURL *url = [NSURL URLWithString:str];
+//        auto req = [NSURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageAllowed timeoutInterval: 5];
+//
+//        return req;
+//    }
+//
+//    NSLog(@"ReadIum %@", request.URL);
+//
+//    //NSURLRequest *theFileReq = [[[NSURLRequest alloc] initWithURL:fileUrl cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval:0.01]autorelease];
+//
+//
+//    NSString * str = [@"readium://" stringByAppendingString:path];
+//
+//    NSLog(@"----- willSendRequest %@", str);
+//
+//    NSURL *url = [NSURL URLWithString:str];
+//    auto req = [NSURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval: 5];
+//
+//    [NSURLProtocol setProperty:@YES forKey:@"READIUM" inRequest: req];
+//    return req;
+//}
 
 - (LOXPackage *) loxPackage
 {
@@ -491,15 +538,23 @@ LOXPackage * _package;
 
 - (void)awakeFromNib
 {
-    [NSURLProtocol registerClass:[ReadiumNSURLProtocol class]];
+    //[NSURLProtocol registerClass:[ReadiumNSURLProtocol class]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
+    [NSURLProtocol registerClass:[EPubURLProtocol class]];
+
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver:self
                                              selector:@selector(onPageChanged:)
                                                  name:LOXPageChangedEvent
                                                object:nil];
 
+    [nc addObserver:self selector:@selector(onProtocolBridgeNeedsResponse:)
+               name:kSDKLauncherEPubURLProtocolBridgeNeedsResponse object:nil];
+
     NSString* html = [self loadHtmlTemplate];
     NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
+
     [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
 }
 
@@ -546,6 +601,112 @@ LOXPackage * _package;
     return htmlTemplate;
 }
 
+- (void)onProtocolBridgeNeedsResponse:(NSNotification *)notification {
+    NSURL *url = [notification.userInfo objectForKey:@"url"];
+    NSString *s = url.absoluteString;
+    NSString *prefix = [kSDKLauncherWebViewSDKProtocol stringByAppendingString:@"://"];
+
+    if (s == nil || ![s hasPrefix:prefix] || s.length == prefix.length) {
+        return;
+    }
+
+    s = [s substringFromIndex:prefix.length];
+    NSRange range = [s rangeOfString:@"/"];
+
+    if (range.location == NSNotFound) {
+        return;
+    }
+
+    NSString *packageUUID = [s substringToIndex:range.location];
+
+    if (![packageUUID isEqualToString:_package.packageUUID]) {
+        return;
+    }
+
+    s = [s substringFromIndex:packageUUID.length];
+
+    if (![s hasPrefix:@"/"]) {
+        return;
+    }
+
+    NSString *relativePath = [s substringFromIndex:1];
+    BOOL isHTML = NO;
+    NSData *data = [_package resourceAtRelativePath:relativePath isHTML:&isHTML].data;
+    EPubURLProtocolBridge *bridge = notification.object;
+
+//    if (isHTML) {
+//        NSString *html = nil;
+//
+//            html = [HTMLUtil
+//                    htmlByReplacingMediaURLsInHTML:[self htmlFromData:data]
+//                                      relativePath:relativePath
+//                                       packageUUID:_package.packageUUID];
+//
+//            //html = [HTMLUtil readerHTML];
+//
+//        if (html != nil && html.length > 0) {
+//            data = [html dataUsingEncoding:NSUTF8StringEncoding];
+//        }
+//    }
+
+    if (data != nil) {
+        bridge.currentData = data;
+    }
+}
+
+//
+// Converts the given HTML data to a string.  The character set and encoding are assumed to be
+// UTF-8, UTF-16BE, or UTF-16LE.
+//
+- (NSString *)htmlFromData:(NSData *)data {
+    if (data == nil || data.length == 0) {
+        return nil;
+    }
+
+    NSString *html = nil;
+    UInt8 *bytes = (UInt8 *)data.bytes;
+
+    if (data.length >= 3) {
+        if (bytes[0] == 0xFE && bytes[1] == 0xFF) {
+            html = [[NSString alloc] initWithData:data
+                                         encoding:NSUTF16BigEndianStringEncoding];
+        }
+        else if (bytes[0] == 0xFF && bytes[1] == 0xFE) {
+            html = [[NSString alloc] initWithData:data
+                                         encoding:NSUTF16LittleEndianStringEncoding];
+        }
+        else if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
+            html = [[NSString alloc] initWithData:data
+                                         encoding:NSUTF8StringEncoding];
+        }
+        else if (bytes[0] == 0x00) {
+            // There's a very high liklihood of this being UTF-16BE, just without the BOM.
+            html = [[NSString alloc] initWithData:data
+                                         encoding:NSUTF16BigEndianStringEncoding];
+        }
+        else if (bytes[1] == 0x00) {
+            // There's a very high liklihood of this being UTF-16LE, just without the BOM.
+            html = [[NSString alloc] initWithData:data
+                                         encoding:NSUTF16LittleEndianStringEncoding];
+        }
+        else {
+            html = [[NSString alloc] initWithData:data
+                                         encoding:NSUTF8StringEncoding];
+
+            if (html == nil) {
+                html = [[NSString alloc] initWithData:data
+                                             encoding:NSUTF16BigEndianStringEncoding];
+
+                if (html == nil) {
+                    html = [[NSString alloc] initWithData:data
+                                                 encoding:NSUTF16LittleEndianStringEncoding];
+                }
+            }
+        }
+    }
+
+    return [html autorelease];
+}
 
 -(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
 {
@@ -553,7 +714,13 @@ LOXPackage * _package;
     _package = package;
     [_package retain];
 
-    [ReadiumNSURLProtocol package:_package];
+    //[ReadiumNSURLProtocol package:_package];
+
+    if (m_resourceServer != nil)
+    {
+        [m_resourceServer release];
+    }
+    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package];
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
@@ -778,6 +945,7 @@ LOXPackage * _package;
     [_baseUrlPath release];
     [_preferences removeChangeObserver:self];
     [_preferences release];
+    [m_resourceServer release];
 
     [super dealloc];
 }

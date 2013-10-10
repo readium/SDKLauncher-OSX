@@ -37,12 +37,13 @@
 @class LOXPreferences;
 @class LOXCSSStyle;
 @class WebView;
-
+@class PackageResourceServer;
 
 @interface LOXWebViewController : NSObject<LOXSpineViewControllerDelegate> {
 
 @private
     IBOutlet WebView *_webView;
+    @private PackageResourceServer *m_resourceServer;
 }
 - (LOXPackage *) loxPackage;
 

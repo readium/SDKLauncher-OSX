@@ -36,6 +36,13 @@
 		85C221A21795C67C004B8E1E /* LOXPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85C221A11795C67C004B8E1E /* LOXPreferencesController.m */; };
 		85DC4030179074CE0044849D /* host_app_feedback.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 85DC402E179074660044849D /* host_app_feedback.js */; };
 		85F74E6316C32A9900D29953 /* LOXPageNumberTextController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85F74E6216C32A9900D29953 /* LOXPageNumberTextController.mm */; };
+		A250D164A480EFAA1C1E953C /* AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D2D2931FEC8EA4FA765D /* AsyncSocket.m */; };
+		A250D5E01BBAE6876869D474 /* RDPackageResource.mm in Sources */ = {isa = PBXBuildFile; fileRef = A250D033A80FCFDDBF9337EE /* RDPackageResource.mm */; };
+		A250D6F351218999A79808CC /* PackageResourceCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D458BAE752C208241D53 /* PackageResourceCache.m */; };
+		A250D739FDAC1D47C72066A7 /* EPubURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D86ACD75F01DE9023942 /* EPubURLProtocol.m */; };
+		A250D79222D8B28AC27B2BC3 /* HTMLUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D4F4FA0E48CFA5A65E84 /* HTMLUtil.m */; };
+		A250D86DEAB503D112DB34FA /* EPubURLProtocolBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A250DD1D218F6B54ED059FE2 /* EPubURLProtocolBridge.m */; };
+		A250D9ABB23991A12DD5804B /* PackageResourceServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A250DD60BF5DB25EC732A173 /* PackageResourceServer.mm */; };
 		AD8C810A0BAB1FA3DE565736 /* LOXCSSStyle.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C83EF79530E06DC222D53 /* LOXCSSStyle.mm */; };
 		AD8C812AEAEAF14E13663208 /* LOXOpenPageInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C8F030432B065A7CE8578 /* LOXOpenPageInfo.mm */; };
 		AD8C8325C67F7C7C8A97E7F1 /* LOXMediaOverlay.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C86618BE15CA8D585C982 /* LOXMediaOverlay.mm */; };
@@ -164,6 +171,20 @@
 		85DC402E179074660044849D /* host_app_feedback.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = host_app_feedback.js; path = LauncherOSX/ReaderScripts/host_app_feedback.js; sourceTree = "<group>"; };
 		85F74E6116C32A9900D29953 /* LOXPageNumberTextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXPageNumberTextController.h; sourceTree = "<group>"; };
 		85F74E6216C32A9900D29953 /* LOXPageNumberTextController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXPageNumberTextController.mm; sourceTree = "<group>"; };
+		A250D033A80FCFDDBF9337EE /* RDPackageResource.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RDPackageResource.mm; sourceTree = "<group>"; };
+		A250D0C005F7A5D686FFDB18 /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncSocket.h; sourceTree = "<group>"; };
+		A250D2D2931FEC8EA4FA765D /* AsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSocket.m; sourceTree = "<group>"; };
+		A250D458BAE752C208241D53 /* PackageResourceCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PackageResourceCache.m; sourceTree = "<group>"; };
+		A250D4C9D6CACD35912BAF87 /* PackageResourceServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackageResourceServer.h; sourceTree = "<group>"; };
+		A250D4F4FA0E48CFA5A65E84 /* HTMLUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLUtil.m; sourceTree = "<group>"; };
+		A250D4FC8C4FF479E7A23B9C /* PackageResourceCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackageResourceCache.h; sourceTree = "<group>"; };
+		A250D72D175389456124D2B3 /* EPubURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPubURLProtocol.h; sourceTree = "<group>"; };
+		A250D86ACD75F01DE9023942 /* EPubURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPubURLProtocol.m; sourceTree = "<group>"; };
+		A250DB0DD4746DF18C3F2E02 /* RDPackageResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDPackageResource.h; sourceTree = "<group>"; };
+		A250DD1D218F6B54ED059FE2 /* EPubURLProtocolBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPubURLProtocolBridge.m; sourceTree = "<group>"; };
+		A250DD60BF5DB25EC732A173 /* PackageResourceServer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PackageResourceServer.mm; sourceTree = "<group>"; };
+		A250DE76F82D9A2B20ADF536 /* HTMLUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLUtil.h; sourceTree = "<group>"; };
+		A250DF5CDB126BC8C1A7650F /* EPubURLProtocolBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPubURLProtocolBridge.h; sourceTree = "<group>"; };
 		AD8C804CD9F5C44C2FD3839C /* LOXSmilModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSmilModel.h; sourceTree = "<group>"; };
 		AD8C807DDEA3670EF1F8052E /* ico_rate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ico_rate.png; path = Resources/ico_rate.png; sourceTree = "<group>"; };
 		AD8C80D1982D46C86A4BEB37 /* LOXTemporaryFileStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTemporaryFileStorage.h; sourceTree = "<group>"; };
@@ -321,6 +342,7 @@
 				AD8C872729A8092A25A2BAE4 /* ViewControllers */,
 				AD8C845FB63B644105903B79 /* Views */,
 				85C2219E1795C607004B8E1E /* PreferencesDlg.xib */,
+				A250D23B175D03DBBBCD0E09 /* AssetData */,
 			);
 			path = LauncherOSX;
 			sourceTree = "<group>";
@@ -336,6 +358,27 @@
 				8578F14816D4095F003914EB /* Model.xcdatamodeld */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A250D23B175D03DBBBCD0E09 /* AssetData */ = {
+			isa = PBXGroup;
+			children = (
+				A250D0C005F7A5D686FFDB18 /* AsyncSocket.h */,
+				A250D2D2931FEC8EA4FA765D /* AsyncSocket.m */,
+				A250D4FC8C4FF479E7A23B9C /* PackageResourceCache.h */,
+				A250D458BAE752C208241D53 /* PackageResourceCache.m */,
+				A250D4C9D6CACD35912BAF87 /* PackageResourceServer.h */,
+				A250DD60BF5DB25EC732A173 /* PackageResourceServer.mm */,
+				A250DB0DD4746DF18C3F2E02 /* RDPackageResource.h */,
+				A250D033A80FCFDDBF9337EE /* RDPackageResource.mm */,
+				A250DE76F82D9A2B20ADF536 /* HTMLUtil.h */,
+				A250D4F4FA0E48CFA5A65E84 /* HTMLUtil.m */,
+				A250D72D175389456124D2B3 /* EPubURLProtocol.h */,
+				A250D86ACD75F01DE9023942 /* EPubURLProtocol.m */,
+				A250DF5CDB126BC8C1A7650F /* EPubURLProtocolBridge.h */,
+				A250DD1D218F6B54ED059FE2 /* EPubURLProtocolBridge.m */,
+			);
+			name = AssetData;
 			sourceTree = "<group>";
 		};
 		AD8C8352A678DFED6EB3CEBF /* Model */ = {
@@ -583,6 +626,13 @@
 				AD8C8F72D3753ECAFD09485C /* LOXSmilModel.mm in Sources */,
 				AD8C8325C67F7C7C8A97E7F1 /* LOXMediaOverlay.mm in Sources */,
 				AD8C83F1876FF6AE1984FF9E /* LOXMediaOverlayController.mm in Sources */,
+				A250D164A480EFAA1C1E953C /* AsyncSocket.m in Sources */,
+				A250D6F351218999A79808CC /* PackageResourceCache.m in Sources */,
+				A250D9ABB23991A12DD5804B /* PackageResourceServer.mm in Sources */,
+				A250D5E01BBAE6876869D474 /* RDPackageResource.mm in Sources */,
+				A250D79222D8B28AC27B2BC3 /* HTMLUtil.m in Sources */,
+				A250D739FDAC1D47C72066A7 /* EPubURLProtocol.m in Sources */,
+				A250D86DEAB503D112DB34FA /* EPubURLProtocolBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -22,7 +22,7 @@
 
 
 
-@class LOXTemporaryFileStorage;
+//@class LOXTemporaryFileStorage;
 @class LOXToc;
 @class LOXSpineItem;
 @class LOXSpine;
