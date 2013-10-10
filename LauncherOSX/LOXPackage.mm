@@ -24,7 +24,6 @@
 #import "LOXPackage.h"
 #import "LOXSpine.h"
 #import "LOXSpineItem.h"
-//#import "LOXTemporaryFileStorage.h"
 #import "LOXUtil.h"
 #import "LOXToc.h"
 #import "LOXMediaOverlay.h"
@@ -48,8 +47,6 @@
 @implementation LOXPackage {
 
     ePub3::PackagePtr _sdkPackage;
-    //LOXTemporaryFileStorage *_storage;
-
 }
 
 @synthesize packageUUID = m_packageUUID;
@@ -233,12 +230,6 @@
     [super dealloc];
 }
 
-//
-//- (LOXTemporaryFileStorage *)createStorageForPackage:(ePub3::PackagePtr)package
-//{
-//    NSString *packageBasePath = [NSString stringWithUTF8String:package->BasePath().c_str()];
-//    return [[[LOXTemporaryFileStorage alloc] initWithUUID:[LOXUtil uuid] forBasePath:packageBasePath] autorelease];
-//}
 
 - (LOXToc*)getToc
 {
@@ -369,9 +360,5 @@
     return _sdkPackage;
 }
 
-//-(LOXTemporaryFileStorage *) storage
-//{
-//    return _storage;
-//}
 
 @end

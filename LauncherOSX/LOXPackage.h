@@ -17,12 +17,10 @@
 
 #import <Foundation/Foundation.h>
 #import <ePub3/package.h>
-//#import "LOXTemporaryFileStorage.h"
 #import "RDPackageResource.h"
 
 @class LOXSpine;
 @class LOXSpineItem;
-//@class LOXTemporaryFileStorage;
 @class LOXToc;
 @class LOXMediaOverlay;
 
@@ -42,7 +40,6 @@
 
 - (NSDictionary *)toDictionary;
 - (ePub3::PackagePtr) sdkPackage;
-//-(LOXTemporaryFileStorage *) storage;
 
 @property (nonatomic, readonly) NSString *packageUUID;
 @property(nonatomic, readonly) LOXSpine *spine;

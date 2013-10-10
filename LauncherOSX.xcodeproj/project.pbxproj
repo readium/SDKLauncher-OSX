@@ -41,7 +41,6 @@
 		A250D6F351218999A79808CC /* PackageResourceCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D458BAE752C208241D53 /* PackageResourceCache.m */; };
 		A250D732AF1F0DA9FD3CD96A /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A250D39B570A41271E334B32 /* IOKit.framework */; };
 		A250D739FDAC1D47C72066A7 /* EPubURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D86ACD75F01DE9023942 /* EPubURLProtocol.m */; };
-		A250D79222D8B28AC27B2BC3 /* HTMLUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D4F4FA0E48CFA5A65E84 /* HTMLUtil.m */; };
 		A250D86DEAB503D112DB34FA /* EPubURLProtocolBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A250DD1D218F6B54ED059FE2 /* EPubURLProtocolBridge.m */; };
 		A250D9ABB23991A12DD5804B /* PackageResourceServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A250DD60BF5DB25EC732A173 /* PackageResourceServer.mm */; };
 		AD8C810A0BAB1FA3DE565736 /* LOXCSSStyle.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C83EF79530E06DC222D53 /* LOXCSSStyle.mm */; };
@@ -63,7 +62,6 @@
 		AD8C8B777241C74E9F43FBC1 /* LOXTocEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C874F5D988F316B2F82AC /* LOXTocEntry.m */; };
 		AD8C8C250F0834BD0A00705A /* LOXPreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C8AEAB8B5247A5B9A5850 /* LOXPreferences.mm */; };
 		AD8C8D0C7929CFD9F068D423 /* LOXBookmarksController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C8D529AEBFEB697DDD1A6 /* LOXBookmarksController.mm */; };
-		AD8C8DEDA920FC142B70BEFD /* LOXTemporaryFileStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C844D86553834F8FA6218 /* LOXTemporaryFileStorage.m */; };
 		AD8C8E1A55DF37104794CB0B /* LOXBookmark.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C88680CC24FB32FFF24CF /* LOXBookmark.mm */; };
 		AD8C8F72D3753ECAFD09485C /* LOXSmilModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C8894A046205698F938E5 /* LOXSmilModel.mm */; };
 		AD8C8FB20BF45E76CCD9576D /* LOXCurrentPagesInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = AD8C80E8161AE8C307CBD84B /* LOXCurrentPagesInfo.mm */; };
@@ -178,18 +176,15 @@
 		A250D39B570A41271E334B32 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		A250D458BAE752C208241D53 /* PackageResourceCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PackageResourceCache.m; sourceTree = "<group>"; };
 		A250D4C9D6CACD35912BAF87 /* PackageResourceServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackageResourceServer.h; sourceTree = "<group>"; };
-		A250D4F4FA0E48CFA5A65E84 /* HTMLUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLUtil.m; sourceTree = "<group>"; };
 		A250D4FC8C4FF479E7A23B9C /* PackageResourceCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackageResourceCache.h; sourceTree = "<group>"; };
 		A250D72D175389456124D2B3 /* EPubURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPubURLProtocol.h; sourceTree = "<group>"; };
 		A250D86ACD75F01DE9023942 /* EPubURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPubURLProtocol.m; sourceTree = "<group>"; };
 		A250DB0DD4746DF18C3F2E02 /* RDPackageResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDPackageResource.h; sourceTree = "<group>"; };
 		A250DD1D218F6B54ED059FE2 /* EPubURLProtocolBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPubURLProtocolBridge.m; sourceTree = "<group>"; };
 		A250DD60BF5DB25EC732A173 /* PackageResourceServer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PackageResourceServer.mm; sourceTree = "<group>"; };
-		A250DE76F82D9A2B20ADF536 /* HTMLUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLUtil.h; sourceTree = "<group>"; };
 		A250DF5CDB126BC8C1A7650F /* EPubURLProtocolBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPubURLProtocolBridge.h; sourceTree = "<group>"; };
 		AD8C804CD9F5C44C2FD3839C /* LOXSmilModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXSmilModel.h; sourceTree = "<group>"; };
 		AD8C807DDEA3670EF1F8052E /* ico_rate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ico_rate.png; path = Resources/ico_rate.png; sourceTree = "<group>"; };
-		AD8C80D1982D46C86A4BEB37 /* LOXTemporaryFileStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTemporaryFileStorage.h; sourceTree = "<group>"; };
 		AD8C80DFC213AC00E000BD2C /* LOXTocView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXTocView.h; sourceTree = "<group>"; };
 		AD8C80E8161AE8C307CBD84B /* LOXCurrentPagesInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXCurrentPagesInfo.mm; sourceTree = "<group>"; };
 		AD8C8165356AF475E4C582D5 /* LOXCSSStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXCSSStyle.h; sourceTree = "<group>"; };
@@ -206,7 +201,6 @@
 		AD8C83EF79530E06DC222D53 /* LOXCSSStyle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXCSSStyle.mm; sourceTree = "<group>"; };
 		AD8C841541DD1EF439C84D0E /* LOXCurrentPagesInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXCurrentPagesInfo.h; sourceTree = "<group>"; };
 		AD8C842F70081FB730F15DFC /* LOXUserData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXUserData.mm; sourceTree = "<group>"; };
-		AD8C844D86553834F8FA6218 /* LOXTemporaryFileStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOXTemporaryFileStorage.m; sourceTree = "<group>"; };
 		AD8C846121F8B998C2C9CF6F /* ico_tts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ico_tts.png; path = Resources/ico_tts.png; sourceTree = "<group>"; };
 		AD8C84A9A8317F4A33CF8E3F /* LOXTocViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXTocViewController.mm; sourceTree = "<group>"; };
 		AD8C84B7191C8676F84497C7 /* LOXBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXBookmark.h; sourceTree = "<group>"; };
@@ -375,8 +369,6 @@
 				A250DD60BF5DB25EC732A173 /* PackageResourceServer.mm */,
 				A250DB0DD4746DF18C3F2E02 /* RDPackageResource.h */,
 				A250D033A80FCFDDBF9337EE /* RDPackageResource.mm */,
-				A250DE76F82D9A2B20ADF536 /* HTMLUtil.h */,
-				A250D4F4FA0E48CFA5A65E84 /* HTMLUtil.m */,
 				A250D72D175389456124D2B3 /* EPubURLProtocol.h */,
 				A250D86ACD75F01DE9023942 /* EPubURLProtocol.m */,
 				A250DF5CDB126BC8C1A7650F /* EPubURLProtocolBridge.h */,
@@ -425,8 +417,6 @@
 			children = (
 				850B1A8C16A631E800619C3C /* LOXUtil.h */,
 				850B1A8D16A631E800619C3C /* LOXUtil.mm */,
-				AD8C844D86553834F8FA6218 /* LOXTemporaryFileStorage.m */,
-				AD8C80D1982D46C86A4BEB37 /* LOXTemporaryFileStorage.h */,
 				AD8C8F410069609045A3F696 /* LOXSampleStylesProvider.mm */,
 				AD8C8AF2AB844074F32F3B5F /* LOXSampleStylesProvider.h */,
 				AD8C83B00F9FB913F1AA9F05 /* LOXCSSParser.mm */,
@@ -605,7 +595,6 @@
 				850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */,
 				850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */,
 				850B1A9816A6320200619C3C /* LOXWebViewController.mm in Sources */,
-				AD8C8DEDA920FC142B70BEFD /* LOXTemporaryFileStorage.m in Sources */,
 				85F74E6316C32A9900D29953 /* LOXPageNumberTextController.mm in Sources */,
 				8578F14A16D4095F003914EB /* Model.xcdatamodeld in Sources */,
 				AD8C8D0C7929CFD9F068D423 /* LOXBookmarksController.mm in Sources */,
@@ -634,7 +623,6 @@
 				A250D6F351218999A79808CC /* PackageResourceCache.m in Sources */,
 				A250D9ABB23991A12DD5804B /* PackageResourceServer.mm in Sources */,
 				A250D5E01BBAE6876869D474 /* RDPackageResource.mm in Sources */,
-				A250D79222D8B28AC27B2BC3 /* HTMLUtil.m in Sources */,
 				A250D739FDAC1D47C72066A7 /* EPubURLProtocol.m in Sources */,
 				A250D86DEAB503D112DB34FA /* EPubURLProtocolBridge.m in Sources */,
 			);
