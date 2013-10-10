@@ -32,7 +32,7 @@
 #import <ePub3/utilities/byte_stream.h>
 
 @interface LOXPackage () {
-    @private std::vector<std::unique_ptr<ePub3::ArchiveReader>> m_archiveReaderVector;
+    @private std::vector<std::unique_ptr<ePub3::ByteStream>> m_archiveReaderVector;
 }
 
 - (NSString *)getLayoutProperty;
@@ -65,7 +65,7 @@
 
 - (void)rdpackageResourceWillDeallocate:(RDPackageResource *)packageResource {
     for (auto i = m_archiveReaderVector.begin(); i != m_archiveReaderVector.end(); i++) {
-        if (i->get() == packageResource.archiveReader) {
+        if (i->get() == packageResource.byteStream) {
             m_archiveReaderVector.erase(i);
             return;
         }
@@ -90,20 +90,21 @@
     }
 
     ePub3::string s = ePub3::string(relativePath.UTF8String);
-    std::unique_ptr<ePub3::ArchiveReader> reader = _sdkPackage->ReaderForRelativePath(s);
 
-    if (reader == nullptr) {
-        NSLog(@"Relative path '%@' does not have an archive reader!", relativePath);
+    std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(_sdkPackage->BasePath() + s);
+
+    if (byteStream == nullptr) {
+        NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
         return nil;
     }
 
     RDPackageResource *resource = [[[RDPackageResource alloc]
             initWithDelegate:self
-               archiveReader:reader.get()
+            byteStream:byteStream.get()
                 relativePath:relativePath] autorelease];
 
     if (resource != nil) {
-        m_archiveReaderVector.push_back(std::move(reader));
+        m_archiveReaderVector.push_back(std::move(byteStream));
     }
 
     // Determine if the data represents HTML.
