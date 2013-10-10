@@ -67,6 +67,8 @@ static NSData *m_key = nil;
 		return;
 	}
 
+    NSLog(@"RES: %@", relativePath);
+    
 	[self trim];
 
 	NSString *path = [self absolutePathForRelativePath:relativePath];
