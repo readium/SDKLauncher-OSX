@@ -71,6 +71,7 @@
 							<string key="NSFrame">{{475, 8}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="834381363"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSHuggingPriority">{250, 750}</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="830175470">
@@ -103,6 +104,7 @@
 							<string key="NSFrame">{{13, 41}, {545, 375}}</string>
 							<reference key="NSSuperview" ref="834381363"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="287425960"/>
 							<array class="NSMutableArray" key="NSTabViewItems">
 								<object class="NSTabViewItem" id="194446473">
 									<string key="NSIdentifier">1</string>
@@ -417,7 +419,6 @@
 												<object class="NSPSMatrix" key="NSFrameMatrix"/>
 												<string key="NSFrame">{{218, 210}, {19, 27}}</string>
 												<reference key="NSSuperview" ref="426237357"/>
-												<reference key="NSNextKeyView" ref="706485046"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSStepperCell" key="NSCell" id="595425937">
 													<int key="NSCellFlags">786464</int>
@@ -564,7 +565,7 @@
 																<string key="NSFrameSize">{171, 111}</string>
 																<reference key="NSSuperview" ref="515668579"/>
 																<reference key="NSWindow"/>
-																<reference key="NSNextKeyView" ref="267065796"/>
+																<reference key="NSNextKeyView" ref="1058300669"/>
 																<object class="NSTextContainer" key="NSTextContainer" id="197986960">
 																	<object class="NSLayoutManager" key="NSLayoutManager">
 																		<object class="NSTextStorage" key="NSTextStorage">
@@ -665,7 +666,7 @@
 												<string key="NSFrame">{{17, 189}, {188, 113}}</string>
 												<reference key="NSSuperview" ref="287425960"/>
 												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView" ref="515668579"/>
+												<reference key="NSNextKeyView" ref="267065796"/>
 												<int key="NSsFlags">133138</int>
 												<reference key="NSVScroller" ref="1058300669"/>
 												<reference key="NSHScroller" ref="267065796"/>
@@ -818,7 +819,7 @@
 																<string key="NSFrameSize">{171, 133}</string>
 																<reference key="NSSuperview" ref="123472855"/>
 																<reference key="NSWindow"/>
-																<reference key="NSNextKeyView" ref="1018937692"/>
+																<reference key="NSNextKeyView" ref="447316791"/>
 																<object class="NSTextContainer" key="NSTextContainer" id="476504275">
 																	<object class="NSLayoutManager" key="NSLayoutManager">
 																		<object class="NSTextStorage" key="NSTextStorage">
@@ -900,7 +901,7 @@
 												<string key="NSFrame">{{17, 10}, {188, 135}}</string>
 												<reference key="NSSuperview" ref="287425960"/>
 												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView" ref="123472855"/>
+												<reference key="NSNextKeyView" ref="1018937692"/>
 												<int key="NSsFlags">133138</int>
 												<reference key="NSVScroller" ref="447316791"/>
 												<reference key="NSHScroller" ref="1018937692"/>
@@ -963,7 +964,7 @@
 												<string key="NSFrame">{{289, 10}, {5, 306}}</string>
 												<reference key="NSSuperview" ref="287425960"/>
 												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView" ref="706485046"/>
+												<reference key="NSNextKeyView" ref="717375726"/>
 												<string key="NSHuggingPriority">{750, 250}</string>
 												<string key="NSOffsets">{0, 0}</string>
 												<object class="NSTextFieldCell" key="NSTitleCell">
@@ -999,7 +1000,7 @@
 													<double key="NSMinValue">0.0</double>
 													<double key="NSValue">100</double>
 													<double key="NSAltIncValue">0.0</double>
-													<int key="NSNumberOfTickMarks">20</int>
+													<int key="NSNumberOfTickMarks">11</int>
 													<int key="NSTickMarkPosition">1</int>
 													<bool key="NSAllowsTickMarkValuesOnly">YES</bool>
 													<bool key="NSVertical">NO</bool>
@@ -1039,9 +1040,9 @@
 													<reference key="NSControlView" ref="961213602"/>
 													<double key="NSMaxValue">4</double>
 													<double key="NSMinValue">0.0</double>
-													<double key="NSValue">2.1052631578947367</double>
+													<double key="NSValue">4</double>
 													<double key="NSAltIncValue">0.0</double>
-													<int key="NSNumberOfTickMarks">20</int>
+													<int key="NSNumberOfTickMarks">9</int>
 													<int key="NSTickMarkPosition">1</int>
 													<bool key="NSAllowsTickMarkValuesOnly">YES</bool>
 													<bool key="NSVertical">NO</bool>
@@ -1470,6 +1471,7 @@
 					<string key="NSFrameSize">{571, 428}</string>
 					<reference key="NSSuperview"/>
 					<reference key="NSWindow"/>
+					<reference key="NSNextKeyView" ref="706485046"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1280, 778}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
