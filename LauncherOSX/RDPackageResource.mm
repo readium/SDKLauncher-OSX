@@ -3,10 +3,12 @@
 //  SDKLauncher-iOS
 //
 //  Created by Shane Meyer on 2/28/13.
+// Modified by Daniel Weck
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
 
 #import "RDPackageResource.h"
+#include "byte_stream.h"
 #import <ePub3/archive.h>
 #import <ePub3/utilities/byte_stream.h>
 
@@ -24,6 +26,10 @@
 
 @synthesize relativePath = m_relativePath;
 
+
+- (NSData *)createChunkByReadingRange:(NSRange)range {
+   //TODO daniel m_byteStream->
+}
 
 - (NSData *)createNextChunkByReading {
     ssize_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
@@ -56,7 +62,10 @@
 
 
 - (void)dealloc {
-	[m_delegate rdpackageResourceWillDeallocate:self];
+
+    // calls Close() on ByteStream destruction
+    //m_byteStream.reset();
+    delete m_byteStream;
 
 	[m_data release];
 	[m_relativePath release];
@@ -66,10 +75,7 @@
 
 
 - (id)
-	initWithDelegate:(id <RDPackageResourceDelegate>)delegate
-
-    byteStream:(void *)byteStream
-
+	initWithByteStream:(ePub3::ByteStream*)byteStream
 	relativePath:(NSString *)relativePath
 {
 	if (byteStream == nil
@@ -79,9 +85,8 @@
 	}
 
 	if (self = [super init]) {
-        m_byteStream = (ePub3::ByteStream*)byteStream;
+        m_byteStream = byteStream;
 
-		m_delegate = delegate;
 		m_relativePath = [relativePath retain];
 	}
 

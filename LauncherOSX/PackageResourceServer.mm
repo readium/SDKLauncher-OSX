@@ -3,6 +3,7 @@
 //  SDKLauncher-iOS
 //
 //  Created by Shane Meyer on 2/28/13.
+// Modified by Daniel Weck
 //  Copyright (c) 2013 The Readium Foundation. All rights reserved.
 //
 
@@ -214,7 +215,7 @@
 			}
 
 			path = [path substringFromIndex:NSMaxRange(range)];
-			RDPackageResource *resource = [m_package resourceAtRelativePath:path isHTML:NULL];
+			RDPackageResource *resource = [m_package resourceAtRelativePath:path]; // isHTML:NULL
 
 			if (resource == nil) {
 				NSLog(@"The package resource is missing!");
@@ -254,14 +255,23 @@
 		}
 	}
 
-	int contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath:
+	int contentLength = 0;
+
+    if (m_skipCrypt)
+    {
+        contentLength = request.resource.byteStream->BytesAvailable();
+    }
+    else
+    {
+        contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath:
 		request.resource.relativePath];
 
-	if (contentLength == 0) {
-		[[PackageResourceCache shared] addResource:request.resource];
-		contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath:
-			request.resource.relativePath];
-	}
+        if (contentLength == 0) {
+            [[PackageResourceCache shared] addResource:request.resource];
+            contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath:
+                request.resource.relativePath];
+        }
+    }
 
 	NSString *commonResponseHeaders = [NSString stringWithFormat:
 		@"Date: %@\r\n"
@@ -385,8 +395,16 @@
 
 	BOOL lastChunk = (p1 == NSMaxRange(request.range));
 
-	NSData *data = [[PackageResourceCache shared] dataAtRelativePath:
-		request.resource.relativePath range:NSMakeRange(p0, p1 - p0)];
+    NSData *data = nil;
+    if (m_skipCrypt)
+    {
+        data = [request.resource createChunkByReadingRange:NSMakeRange(p0, p1 - p0)];
+    }
+    else
+    {
+        data = [[PackageResourceCache shared] dataAtRelativePath:
+                request.resource.relativePath range:NSMakeRange(p0, p1 - p0)];
+    }
 
 	if (data == nil || data.length != p1 - p0) {
 		NSLog(@"The data is empty or has the wrong length!");

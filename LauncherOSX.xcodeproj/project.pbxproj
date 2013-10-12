@@ -38,7 +38,7 @@
 		85F74E6316C32A9900D29953 /* LOXPageNumberTextController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85F74E6216C32A9900D29953 /* LOXPageNumberTextController.mm */; };
 		A250D164A480EFAA1C1E953C /* AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D2D2931FEC8EA4FA765D /* AsyncSocket.m */; };
 		A250D5E01BBAE6876869D474 /* RDPackageResource.mm in Sources */ = {isa = PBXBuildFile; fileRef = A250D033A80FCFDDBF9337EE /* RDPackageResource.mm */; };
-		A250D6F351218999A79808CC /* PackageResourceCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D458BAE752C208241D53 /* PackageResourceCache.m */; };
+		A250D6F351218999A79808CC /* PackageResourceCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = A250D458BAE752C208241D53 /* PackageResourceCache.mm */; };
 		A250D732AF1F0DA9FD3CD96A /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A250D39B570A41271E334B32 /* IOKit.framework */; };
 		A250D739FDAC1D47C72066A7 /* EPubURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A250D86ACD75F01DE9023942 /* EPubURLProtocol.m */; };
 		A250D86DEAB503D112DB34FA /* EPubURLProtocolBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A250DD1D218F6B54ED059FE2 /* EPubURLProtocolBridge.m */; };
@@ -174,7 +174,7 @@
 		A250D0C005F7A5D686FFDB18 /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncSocket.h; sourceTree = "<group>"; };
 		A250D2D2931FEC8EA4FA765D /* AsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSocket.m; sourceTree = "<group>"; };
 		A250D39B570A41271E334B32 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		A250D458BAE752C208241D53 /* PackageResourceCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PackageResourceCache.m; sourceTree = "<group>"; };
+		A250D458BAE752C208241D53 /* PackageResourceCache.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PackageResourceCache.mm; sourceTree = "<group>"; };
 		A250D4C9D6CACD35912BAF87 /* PackageResourceServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackageResourceServer.h; sourceTree = "<group>"; };
 		A250D4FC8C4FF479E7A23B9C /* PackageResourceCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackageResourceCache.h; sourceTree = "<group>"; };
 		A250D72D175389456124D2B3 /* EPubURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPubURLProtocol.h; sourceTree = "<group>"; };
@@ -364,7 +364,7 @@
 				A250D0C005F7A5D686FFDB18 /* AsyncSocket.h */,
 				A250D2D2931FEC8EA4FA765D /* AsyncSocket.m */,
 				A250D4FC8C4FF479E7A23B9C /* PackageResourceCache.h */,
-				A250D458BAE752C208241D53 /* PackageResourceCache.m */,
+				A250D458BAE752C208241D53 /* PackageResourceCache.mm */,
 				A250D4C9D6CACD35912BAF87 /* PackageResourceServer.h */,
 				A250DD60BF5DB25EC732A173 /* PackageResourceServer.mm */,
 				A250DB0DD4746DF18C3F2E02 /* RDPackageResource.h */,
@@ -620,7 +620,7 @@
 				AD8C8325C67F7C7C8A97E7F1 /* LOXMediaOverlay.mm in Sources */,
 				AD8C83F1876FF6AE1984FF9E /* LOXMediaOverlayController.mm in Sources */,
 				A250D164A480EFAA1C1E953C /* AsyncSocket.m in Sources */,
-				A250D6F351218999A79808CC /* PackageResourceCache.m in Sources */,
+				A250D6F351218999A79808CC /* PackageResourceCache.mm in Sources */,
 				A250D9ABB23991A12DD5804B /* PackageResourceServer.mm in Sources */,
 				A250D5E01BBAE6876869D474 /* RDPackageResource.mm in Sources */,
 				A250D739FDAC1D47C72066A7 /* EPubURLProtocol.m in Sources */,

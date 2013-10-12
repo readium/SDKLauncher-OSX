@@ -31,7 +31,7 @@
 #import <ePub3/utilities/byte_stream.h>
 
 @interface LOXPackage () {
-    @private std::vector<std::unique_ptr<ePub3::ByteStream>> m_archiveReaderVector;
+    //@private std::vector<std::unique_ptr<ePub3::ByteStream>> m_archiveReaderVector;
 }
 
 - (NSString *)getLayoutProperty;
@@ -59,22 +59,22 @@
 //@synthesize rootDirectory = _rootDirectory;
 @synthesize mediaOverlay = _mediaOverlay;
 
+//
+//- (void)rdpackageResourceWillDeallocate:(RDPackageResource *)packageResource {
+//    for (auto i = m_archiveReaderVector.begin(); i != m_archiveReaderVector.end(); i++) {
+//        if (i->get() == packageResource.byteStream) {
+//            m_archiveReaderVector.erase(i);
+//            return;
+//        }
+//    }
+//
+//    NSLog(@"The archive reader was not found!");
+//}
 
-- (void)rdpackageResourceWillDeallocate:(RDPackageResource *)packageResource {
-    for (auto i = m_archiveReaderVector.begin(); i != m_archiveReaderVector.end(); i++) {
-        if (i->get() == packageResource.byteStream) {
-            m_archiveReaderVector.erase(i);
-            return;
-        }
-    }
-
-    NSLog(@"The archive reader was not found!");
-}
-
-- (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath isHTML:(BOOL *)isHTML {
-    if (isHTML != NULL) {
-        *isHTML = NO;
-    }
+- (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath { //} isHTML:(BOOL *)isHTML {
+//    if (isHTML != NULL) {
+//        *isHTML = NO;
+//    }
 
     if (relativePath == nil || relativePath.length == 0) {
         return nil;
@@ -96,41 +96,40 @@
     }
 
     RDPackageResource *resource = [[[RDPackageResource alloc]
-            initWithDelegate:self
-            byteStream:byteStream.get()
+            initWithByteStream:byteStream.release()
                 relativePath:relativePath] autorelease];
 
-    if (resource != nil) {
-        m_archiveReaderVector.push_back(std::move(byteStream));
-    }
+//    if (resource != nil) {
+//        m_archiveReaderVector.push_back(std::move(byteStream));
+//    }
 
     // Determine if the data represents HTML.
 
-    if (isHTML != NULL) {
-        if ([m_relativePathsThatAreHTML containsObject:relativePath]) {
-            *isHTML = YES;
-        }
-        else if (![m_relativePathsThatAreNotHTML containsObject:relativePath]) {
-            ePub3::ManifestTable manifest = _sdkPackage->Manifest();
-
-            for (auto i = manifest.begin(); i != manifest.end(); i++) {
-                std::shared_ptr<ePub3::ManifestItem> item = i->second;
-
-                if (item->Href() == s) {
-                    if (item->MediaType() == "application/xhtml+xml") {
-                        [m_relativePathsThatAreHTML addObject:relativePath];
-                        *isHTML = YES;
-                    }
-
-                    break;
-                }
-            }
-
-            if (*isHTML == NO) {
-                [m_relativePathsThatAreNotHTML addObject:relativePath];
-            }
-        }
-    }
+//    if (isHTML != NULL) {
+//        if ([m_relativePathsThatAreHTML containsObject:relativePath]) {
+//            *isHTML = YES;
+//        }
+//        else if (![m_relativePathsThatAreNotHTML containsObject:relativePath]) {
+//            ePub3::ManifestTable manifest = _sdkPackage->Manifest();
+//
+//            for (auto i = manifest.begin(); i != manifest.end(); i++) {
+//                std::shared_ptr<ePub3::ManifestItem> item = i->second;
+//
+//                if (item->Href() == s) {
+//                    if (item->MediaType() == "application/xhtml+xml") {
+//                        [m_relativePathsThatAreHTML addObject:relativePath];
+//                        *isHTML = YES;
+//                    }
+//
+//                    break;
+//                }
+//            }
+//
+//            if (*isHTML == NO) {
+//                [m_relativePathsThatAreNotHTML addObject:relativePath];
+//            }
+//        }
+//    }
 
     return resource;
 }
@@ -151,9 +150,9 @@
         CFUUIDRef uuid = CFUUIDCreate(NULL);
         m_packageUUID = (NSString *)CFUUIDCreateString(NULL, uuid);
         CFRelease(uuid);
-
-        m_relativePathsThatAreHTML = [[NSMutableSet alloc] init];
-        m_relativePathsThatAreNotHTML = [[NSMutableSet alloc] init];
+//
+//        m_relativePathsThatAreHTML = [[NSMutableSet alloc] init];
+//        m_relativePathsThatAreNotHTML = [[NSMutableSet alloc] init];
 
         NSString* direction;
 
@@ -215,9 +214,9 @@
 }
 
 - (void)dealloc {
-
-    [m_relativePathsThatAreHTML release];
-    [m_relativePathsThatAreNotHTML release];
+//
+//    [m_relativePathsThatAreHTML release];
+//    [m_relativePathsThatAreNotHTML release];
 
     [_spine release];
     [_toc release];

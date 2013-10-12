@@ -3,6 +3,7 @@
 //  SDKLauncher-iOS
 //
 //  Created by Shane Meyer on 3/8/13.
+// Modified by Daniel Weck
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
 
@@ -11,22 +12,16 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonHMAC.h>
 #import "RDPackageResource.h"
-#import <SystemConfiguration/SCDynamicStore.h>
-#import <IOKit/IOKitLib.h>
-
 
 static NSString *m_basePath = nil;
 static NSData *m_key = nil;
 
-
 @interface PackageResourceCache()
 
 - (NSString *)absolutePathForRelativePath:(NSString *)relativePath;
-- (NSString *)hexStringFromData:(NSData *)data;
 - (NSData *)sha1:(NSData *)data;
-- (void)trim;
 
-+(NSString *)serialNumber;
++ (void)trim: (int)maxFilesToKeep;
 
 @end
 
@@ -39,7 +34,7 @@ static NSData *m_key = nil;
 //
 - (NSString *)absolutePathForRelativePath:(NSString *)relativePath {
 	NSData *data = [relativePath dataUsingEncoding:NSUTF8StringEncoding];
-	NSString *fileName = [self hexStringFromData:[self sha1:data]];
+	NSString *fileName = hexStringFromData([self sha1:data]);
 	NSString *ext = relativePath.pathExtension;
 
 	if (ext != nil && ext.length > 0) {
@@ -67,9 +62,9 @@ static NSData *m_key = nil;
 		return;
 	}
 
-    NSLog(@"RES: %@", relativePath);
+    NSLog(@"ADD RES: %@", relativePath);
     
-	[self trim];
+	[PackageResourceCache trim: 3];
 
 	NSString *path = [self absolutePathForRelativePath:relativePath];
 	NSFileManager *fm = [NSFileManager defaultManager];
@@ -90,30 +85,37 @@ static NSData *m_key = nil;
 			break;
 		}
 
-		size_t numBytesEncrypted = 0;
+        if (m_skipCrypt)
+        {
+            [stream write:(const uint8_t*)[chunk bytes] maxLength:[chunk length]];
+        }
+        else
+        {
+            size_t numBytesEncrypted = 0;
 
-		CCCryptorStatus cryptStatus = CCCrypt(
-			kCCEncrypt,
-			kCCAlgorithmAES128,
-			kCCOptionPKCS7Padding,
-			m_key.bytes,
-			m_key.length,
-			NULL,
-			chunk.bytes,
-			chunk.length,
-			buffer,
-			bufferSize,
-			&numBytesEncrypted);
+            CCCryptorStatus cryptStatus = CCCrypt(
+                    kCCEncrypt,
+                    kCCAlgorithmAES128,
+                    kCCOptionPKCS7Padding,
+                    m_key.bytes,
+                    m_key.length,
+                    NULL,
+                    chunk.bytes,
+                    chunk.length,
+                    buffer,
+                    bufferSize,
+                    &numBytesEncrypted);
 
-		if (cryptStatus == kCCSuccess) {
-			[stream write:buffer maxLength:numBytesEncrypted];
-		}
-		else {
-			NSLog(@"Encryption failed!");
-		}
+            if (cryptStatus == kCCSuccess) {
+                [stream write:buffer maxLength:numBytesEncrypted];
+            }
+            else {
+                NSLog(@"Encryption failed!");
+            }
+        }
 
-		[chunk release];
-	};
+        [chunk release];
+	}
 
 	[stream close];
 }
@@ -143,13 +145,18 @@ static NSData *m_key = nil;
 			return 0;
 		}
 
+        if (m_skipCrypt)
+        {
+            return fileSize;
+        }
+
 		int bufferSize = kSDKLauncherPackageResourceBufferSize + kCCBlockSizeAES128;
 		int chunkCount = (fileSize - 1) / bufferSize;
 		contentLength = chunkCount * kSDKLauncherPackageResourceBufferSize;
 
 		@autoreleasepool {
 			NSFileHandle *handle = [NSFileHandle fileHandleForReadingAtPath:path];
-			[handle seekToFileOffset:chunkCount * bufferSize];
+            [handle seekToFileOffset:chunkCount * bufferSize];
 			NSData *data = [handle readDataToEndOfFile];
 
 			if (data == nil || data.length == 0) {
@@ -157,29 +164,29 @@ static NSData *m_key = nil;
 				contentLength = 0;
 			}
 			else {
-				UInt8 buffer[bufferSize];
-				size_t numBytesDecrypted = 0;
+                UInt8 buffer[bufferSize];
+                size_t numBytesDecrypted = 0;
 
-				CCCryptorStatus cryptStatus = CCCrypt(
-					kCCDecrypt,
-					kCCAlgorithmAES128,
-					kCCOptionPKCS7Padding,
-					m_key.bytes,
-					m_key.length,
-					NULL,
-					data.bytes,
-					data.length,
-					buffer,
-					bufferSize,
-					&numBytesDecrypted);
+                CCCryptorStatus cryptStatus = CCCrypt(
+                        kCCDecrypt,
+                        kCCAlgorithmAES128,
+                        kCCOptionPKCS7Padding,
+                        m_key.bytes,
+                        m_key.length,
+                        NULL,
+                        data.bytes,
+                        data.length,
+                        buffer,
+                        bufferSize,
+                        &numBytesDecrypted);
 
-				if (cryptStatus == kCCSuccess) {
-					contentLength += numBytesDecrypted;
-				}
-				else {
-					NSLog(@"Decryption failed!");
-					contentLength = 0;
-				}
+                if (cryptStatus == kCCSuccess) {
+                    contentLength += numBytesDecrypted;
+                }
+                else {
+                    NSLog(@"Decryption failed!");
+                    contentLength = 0;
+                }
 			}
 		}
 	}
@@ -188,10 +195,10 @@ static NSData *m_key = nil;
 }
 
 
-- (NSData *)dataAtRelativePath:(NSString *)relativePath {
-	NSRange range = NSMakeRange(0, [self contentLengthAtRelativePath:relativePath]);
-	return [self dataAtRelativePath:relativePath range:range];
-}
+//- (NSData *)dataAtRelativePath:(NSString *)relativePath {
+//	NSRange range = NSMakeRange(0, [self contentLengthAtRelativePath:relativePath]);
+//	return [self dataAtRelativePath:relativePath range:range];
+//}
 
 
 //
@@ -220,123 +227,137 @@ static NSData *m_key = nil;
 	if (attributes != nil) {
 		int chunkIndexFirst = range.location / kSDKLauncherPackageResourceBufferSize;
 
-		int chunkIndexLast = NSMaxRange(range);
-		chunkIndexLast = (chunkIndexLast - 1) / kSDKLauncherPackageResourceBufferSize;
+		int chunkIndexLast = (NSMaxRange(range) - 1) / kSDKLauncherPackageResourceBufferSize;
 
 		int bufferSize = kSDKLauncherPackageResourceBufferSize + kCCBlockSizeAES128;
+
 		int fileSize = attributes.fileSize;
+
+        if (m_skipCrypt)
+        {
+            NSAssert(fileSize == contentLength, @"mismatch file size / content length");
+        }
 
 		@autoreleasepool {
 
 			// Decrypt and append the appropriate amount of data from the first chunk.
 
 			NSFileHandle *handle = [NSFileHandle fileHandleForReadingAtPath:path];
-			[handle seekToFileOffset:chunkIndexFirst * bufferSize];
-			int bytesToRead = MIN(bufferSize, fileSize - chunkIndexFirst * bufferSize);
+
+            int offset = chunkIndexFirst * bufferSize;
+			[handle seekToFileOffset: m_skipCrypt ? range.location : offset];
+
+			int bytesToRead = m_skipCrypt ? range.length : MIN(bufferSize, fileSize - offset);
 			NSData *dataFirst = [handle readDataOfLength:bytesToRead];
 
 			if (dataFirst == nil || dataFirst.length == 0) {
 				NSLog(@"Could not read the first chunk of data!");
 				return nil;
 			}
+            if (m_skipCrypt)
+            {
+                [md appendData:dataFirst];
+            }
+            else
+            {
+                UInt8 buffer[bufferSize];
+                size_t numBytesDecrypted = 0;
 
-			UInt8 buffer[bufferSize];
-			size_t numBytesDecrypted = 0;
+                CCCryptorStatus cryptStatus = CCCrypt(
+                    kCCDecrypt,
+                    kCCAlgorithmAES128,
+                    kCCOptionPKCS7Padding,
+                    m_key.bytes,
+                    m_key.length,
+                    NULL,
+                    dataFirst.bytes,
+                    dataFirst.length,
+                    buffer,
+                    bufferSize,
+                    &numBytesDecrypted);
 
-			CCCryptorStatus cryptStatus = CCCrypt(
-				kCCDecrypt,
-				kCCAlgorithmAES128,
-				kCCOptionPKCS7Padding,
-				m_key.bytes,
-				m_key.length,
-				NULL,
-				dataFirst.bytes,
-				dataFirst.length,
-				buffer,
-				bufferSize,
-				&numBytesDecrypted);
+                if (cryptStatus == kCCSuccess) {
+                    dataFirst = [NSData dataWithBytes:buffer length:numBytesDecrypted];
+                }
+                else {
+                    NSLog(@"Decryption failed!");
+                    return nil;
+                }
 
-			if (cryptStatus == kCCSuccess) {
-				dataFirst = [NSData dataWithBytes:buffer length:numBytesDecrypted];
-			}
-			else {
-				NSLog(@"Decryption failed!");
-				return nil;
-			}
+                int i0 = range.location % kSDKLauncherPackageResourceBufferSize;
+                int i1 = MIN(i0 + range.length, dataFirst.length);
+                [md appendData:[dataFirst subdataWithRange:NSMakeRange(i0, i1 - i0)]];
 
-			int i0 = range.location % kSDKLauncherPackageResourceBufferSize;
-			int i1 = MIN(i0 + range.length, dataFirst.length);
-			[md appendData:[dataFirst subdataWithRange:NSMakeRange(i0, i1 - i0)]];
+                // Decrypt and append data from the middle chunks.
 
-			// Decrypt and append data from the middle chunks.
+                for (int i = chunkIndexFirst + 1; i < chunkIndexLast; i++) {
+                    NSData *dataMid = [handle readDataOfLength:bufferSize];
 
-			for (int i = chunkIndexFirst + 1; i < chunkIndexLast; i++) {
-				NSData *dataMid = [handle readDataOfLength:bufferSize];
+                    if (dataMid == nil || dataMid.length == 0) {
+                        NSLog(@"Could not read a middle chunk of data!");
+                        return nil;
+                    }
 
-				if (dataMid == nil || dataMid.length == 0) {
-					NSLog(@"Could not read a middle chunk of data!");
-					return nil;
-				}
+                    cryptStatus = CCCrypt(
+                        kCCDecrypt,
+                        kCCAlgorithmAES128,
+                        kCCOptionPKCS7Padding,
+                        m_key.bytes,
+                        m_key.length,
+                        NULL,
+                        dataMid.bytes,
+                        dataMid.length,
+                        buffer,
+                        bufferSize,
+                        &numBytesDecrypted);
 
-				cryptStatus = CCCrypt(
-					kCCDecrypt,
-					kCCAlgorithmAES128,
-					kCCOptionPKCS7Padding,
-					m_key.bytes,
-					m_key.length,
-					NULL,
-					dataMid.bytes,
-					dataMid.length,
-					buffer,
-					bufferSize,
-					&numBytesDecrypted);
+                    if (cryptStatus == kCCSuccess) {
+                        [md appendBytes:buffer length:numBytesDecrypted];
+                    }
+                    else {
+                        NSLog(@"Decryption failed!");
+                        return nil;
+                    }
+                }
 
-				if (cryptStatus == kCCSuccess) {
-					[md appendBytes:buffer length:numBytesDecrypted];
-				}
-				else {
-					NSLog(@"Decryption failed!");
-					return nil;
-				}
-			}
+                // Decrypt and append the appropriate amount of data from the last chunk.
 
-			// Decrypt and append the appropriate amount of data from the last chunk.
+                if (chunkIndexFirst == chunkIndexLast) {
+                    // There's only one chunk of data.
+                }
+                else {
+                    bytesToRead = MIN(bufferSize, fileSize - chunkIndexLast * bufferSize);
+                    NSData *dataLast = [handle readDataOfLength:bytesToRead];
 
-			if (chunkIndexFirst == chunkIndexLast) {
-				// There's only one chunk of data.
-			}
-			else {
-				bytesToRead = MIN(bufferSize, fileSize - chunkIndexLast * bufferSize);
-				NSData *dataLast = [handle readDataOfLength:bytesToRead];
+                    if (dataLast == nil || dataLast.length == 0) {
+                        NSLog(@"Could not read the last chunk of data!");
+                        return nil;
+                    }
 
-				if (dataLast == nil || dataLast.length == 0) {
-					NSLog(@"Could not read the last chunk of data!");
-					return nil;
-				}
+                    cryptStatus = CCCrypt(
+                        kCCDecrypt,
+                        kCCAlgorithmAES128,
+                        kCCOptionPKCS7Padding,
+                        m_key.bytes,
+                        m_key.length,
+                        NULL,
+                        dataLast.bytes,
+                        dataLast.length,
+                        buffer,
+                        bufferSize,
+                        &numBytesDecrypted);
 
-				cryptStatus = CCCrypt(
-					kCCDecrypt,
-					kCCAlgorithmAES128,
-					kCCOptionPKCS7Padding,
-					m_key.bytes,
-					m_key.length,
-					NULL,
-					dataLast.bytes,
-					dataLast.length,
-					buffer,
-					bufferSize,
-					&numBytesDecrypted);
-
-				if (cryptStatus == kCCSuccess) {
-					dataLast = [NSData dataWithBytes:buffer length:
-						MIN(numBytesDecrypted, range.length - md.length)];
-					[md appendData:dataLast];
-				}
-				else {
-					NSLog(@"Decryption failed!");
-					return nil;
-				}
-			}
+                    if (cryptStatus == kCCSuccess) {
+                        dataLast = [NSData dataWithBytes:buffer length:
+                            MIN(numBytesDecrypted, range.length - md.length)];
+                        [md appendData:dataLast];
+                    }
+                    else {
+                        NSLog(@"Decryption failed!");
+                        return nil;
+                    }
+                }
+            }
 		}
 	}
 
@@ -346,116 +367,6 @@ static NSData *m_key = nil;
 	}
 
 	return md;
-}
-
-
-- (NSString *)hexStringFromData:(NSData *)data {
-	if (data == nil) {
-		return nil;
-	}
-
-	UInt8 *bytes = (UInt8 *)data.bytes;
-	NSMutableString *ms = [NSMutableString stringWithCapacity:2 * data.length];
-
-	for (int i = 0; i < data.length; i++) {
-		unichar chars[] = { bytes[i] >> 4, bytes[i] & 0xF };
-		chars[0] += (chars[0] < 10 ? '0' : ('A' - 10));
-		chars[1] += (chars[1] < 10 ? '0' : ('A' - 10));
-		NSString *s = [[NSString alloc] initWithCharacters:chars length:2];
-		[ms appendString:s];
-		[s release];
-	}
-
-	return ms;
-}
-
-
-+ (NSString *)serialNumber
-{
-    io_service_t platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"));
-    CFStringRef serialNumberAsCFString = NULL;
-    if (platformExpert)
-    {
-        serialNumberAsCFString = IORegistryEntryCreateCFProperty(platformExpert,
-                CFSTR(kIOPlatformSerialNumberKey),
-                kCFAllocatorDefault, 0);
-        IOObjectRelease(platformExpert);
-    }
-
-    NSString *serialNumberAsNSString = nil;
-    if (serialNumberAsCFString)
-    {
-        serialNumberAsNSString = [NSString stringWithString:(NSString *)serialNumberAsCFString];
-        CFRelease(serialNumberAsCFString);
-    }
-
-    return serialNumberAsNSString;
-}
-
-NSData * GetMACAddress( void )
-{
-    kern_return_t           kr          = KERN_SUCCESS;
-    CFMutableDictionaryRef  matching    = NULL;
-    io_iterator_t           iterator    = IO_OBJECT_NULL;
-    io_object_t             service     = IO_OBJECT_NULL;
-    CFDataRef               result      = NULL;
-
-    matching = IOBSDNameMatching( kIOMasterPortDefault, 0, "en0" );
-    if ( matching == NULL )
-    {
-        fprintf( stderr, "IOBSDNameMatching() returned empty dictionary\n" );
-        return ( NULL );
-    }
-
-    kr = IOServiceGetMatchingServices( kIOMasterPortDefault, matching, &iterator );
-    if ( kr != KERN_SUCCESS )
-    {
-        fprintf( stderr, "IOServiceGetMatchingServices() returned %d\n", kr );
-        return ( NULL );
-    }
-
-    while ( (service = IOIteratorNext(iterator)) != IO_OBJECT_NULL )
-    {
-        io_object_t parent = IO_OBJECT_NULL;
-
-        kr = IORegistryEntryGetParentEntry( service, kIOServicePlane, &parent );
-        if ( kr == KERN_SUCCESS )
-        {
-            if ( result != NULL )
-                CFRelease( result );
-
-            result = IORegistryEntryCreateCFProperty( parent, CFSTR("IOMACAddress"), kCFAllocatorDefault, 0 );
-            IOObjectRelease( parent );
-        }
-        else
-        {
-            fprintf( stderr, "IORegistryGetParentEntry returned %d\n", kr );
-        }
-
-        IOObjectRelease( service );
-    }
-
-    return ( (NSData *)NSMakeCollectable(result) );
-}
-
-NSString * GetMACAddressDisplayString( void )
-{
-    NSData * macData = GetMACAddress();
-    if ( [macData length] == 0 )
-        return ( nil );
-
-    const UInt8 *bytes = [macData bytes];
-
-    NSMutableString * result = [NSMutableString string];
-    for ( NSUInteger i = 0; i < [macData length]; i++ )
-    {
-        if ( [result length] != 0 )
-            [result appendFormat: @":%02hhx", bytes[i]];
-        else
-            [result appendFormat: @"%02hhx", bytes[i]];
-    }
-
-    return ( [[result copy] autorelease] );
 }
 
 + (void)initialize {
@@ -485,6 +396,12 @@ NSString * GetMACAddressDisplayString( void )
     //uuid_t bytes;
     //[[UIDevice currentDevice].identifierForVendor getUUIDBytes:bytes];
 	//m_key = [[NSData alloc] initWithBytes:bytes length:sizeof(bytes)];
+
+    if (m_skipCrypt)
+    {
+        //flush cache
+        [PackageResourceCache trim: 0];
+    }
 }
 
 
@@ -520,7 +437,7 @@ NSString * GetMACAddressDisplayString( void )
 //
 // Removes old files from the cache, preserving the ones most recently added.
 //
-- (void)trim {
++ (void)trim:(int)maxFilesToKeep {
 	NSMutableArray *pairs = [NSMutableArray array];
 	NSFileManager *fm = [NSFileManager defaultManager];
 
@@ -546,8 +463,6 @@ NSString * GetMACAddressDisplayString( void )
 	// It's unlikely that there will be very many media resources needed at the same time by
 	// a package.  For that reason, and since media resources tend to be large (taking up space
 	// on the device), we can keep the max files pretty small.
-
-	const int maxFilesToKeep = 3;
 
 	while (pairs.count > maxFilesToKeep) {
 		NSArray *pair = [pairs objectAtIndex:0];

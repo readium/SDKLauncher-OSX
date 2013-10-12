@@ -47,6 +47,8 @@
 
 - (void)updateUI;
 
+- (RDPackageResource*)resourceForUrl:(NSURL*) url;
+
 @end
 
 
@@ -98,8 +100,8 @@
     }
 
     auto ext = [path pathExtension];
-    if ([ext caseInsensitiveCompare: @"mp3"] == NSOrderedSame
-            || [ext caseInsensitiveCompare: @"mp4"] == NSOrderedSame
+    if ([ext caseInsensitiveCompare: @"mp4"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"mp3"] == NSOrderedSame
             || [ext caseInsensitiveCompare: @"aiff"] == NSOrderedSame
             || [ext caseInsensitiveCompare: @"wav"] == NSOrderedSame
             || [ext caseInsensitiveCompare: @"ogg"] == NSOrderedSame
@@ -204,40 +206,53 @@
     return htmlTemplate;
 }
 
-- (void)onProtocolBridgeNeedsResponse:(NSNotification *)notification {
-    NSURL *url = [notification.userInfo objectForKey:@"url"];
+- (RDPackageResource*)resourceForUrl:(NSURL*) url {
     NSString *s = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *prefix = [kSDKLauncherWebViewSDKProtocol stringByAppendingString:@"://"];
 
     if (s == nil || ![s hasPrefix:prefix] || s.length == prefix.length) {
-        return;
+        return nil;
     }
 
     s = [s substringFromIndex:prefix.length];
     NSRange range = [s rangeOfString:@"/"];
 
     if (range.location == NSNotFound) {
-        return;
+        return nil;
     }
 
     NSString *packageUUID = [s substringToIndex:range.location];
 
     if (![packageUUID isEqualToString:_package.packageUUID]) {
-        return;
+        return nil;
     }
 
     s = [s substringFromIndex:packageUUID.length];
 
     if (![s hasPrefix:@"/"]) {
-        return;
+        return nil;
     }
 
     NSString *relativePath = [s substringFromIndex:1];
-    BOOL isHTML = NO;
-    NSData *data = [_package resourceAtRelativePath:relativePath isHTML:&isHTML].data;
-    EPubURLProtocolBridge *bridge = notification.object;
+    //BOOL isHTML = NO;
+    RDPackageResource* res = [_package resourceAtRelativePath:relativePath]; // isHTML:&isHTML
+
+    return res;
+}
+
+- (void)onProtocolBridgeNeedsResponse:(NSNotification *)notification {
+    NSURL *url = [notification.userInfo objectForKey:@"url"];
+
+    RDPackageResource* res = [self resourceForUrl: url];
+    if (res == nil)
+    {
+        return;
+    }
+
+    NSData *data = res.data;
 
     if (data != nil) {
+        EPubURLProtocolBridge *bridge = notification.object;
         bridge.currentData = data;
     }
 }

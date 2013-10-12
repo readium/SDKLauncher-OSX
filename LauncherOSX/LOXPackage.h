@@ -25,10 +25,10 @@
 @class LOXMediaOverlay;
 
 
-@interface LOXPackage : NSObject<RDPackageResourceDelegate> {
+@interface LOXPackage : NSObject { //<RDPackageResourceDelegate>
     @private NSString *m_packageUUID;
-    @private NSMutableSet *m_relativePathsThatAreHTML;
-    @private NSMutableSet *m_relativePathsThatAreNotHTML;
+//    @private NSMutableSet *m_relativePathsThatAreHTML;
+//    @private NSMutableSet *m_relativePathsThatAreNotHTML;
 }
 
 -(id)initWithSdkPackage:(ePub3::PackagePtr) sdkPackage;
@@ -54,6 +54,6 @@
 
 // Returns the resource at the given relative path or nil if it doesn't exist.  The isHTML out
 // parameter returns whether or not the resource is HTML.
-- (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath isHTML:(BOOL *)isHTML;
+- (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath; // isHTML:(BOOL *)isHTML;
 
 @end
