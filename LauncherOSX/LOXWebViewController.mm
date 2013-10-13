@@ -234,8 +234,7 @@
     }
 
     NSString *relativePath = [s substringFromIndex:1];
-    //BOOL isHTML = NO;
-    RDPackageResource* res = [_package resourceAtRelativePath:relativePath]; // isHTML:&isHTML
+    RDPackageResource* res = [_package resourceAtRelativePath:relativePath];
 
     return res;
 }

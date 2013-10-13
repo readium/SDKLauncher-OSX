@@ -14,6 +14,8 @@
 @class AsyncSocket;
 @class LOXPackage;
 
+static const BOOL m_skipCache = true;
+
 @interface PackageResourceServer : NSObject {
 	@private AsyncSocket *m_mainSocket;
 	@private LOXPackage *m_package;

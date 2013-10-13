@@ -13,6 +13,7 @@
 #define kSDKLauncherPackageResourceBufferSize 4096
 
 @class RDPackageResource;
+@class LOXPackage;
 
 @interface RDPackageResource : NSObject {
 	@private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
@@ -21,6 +22,7 @@
 }
 
 @property (nonatomic, readonly) ePub3::ByteStream* byteStream;
+@property (nonatomic, readonly) std::size_t bytesCount;
 
 // The content of the resource in its entirety.  If you call this, don't call
 // createNextChunkByReading.
@@ -33,7 +35,7 @@
 // you call this, don't call the data property.
 - (NSData *)createNextChunkByReading;
 
-- (NSData *)createChunkByReadingRange:(NSRange)range;
+- (NSData *)createChunkByReadingRange:(NSRange)range package:(LOXPackage *)package;
 
 // Creates an instance using the given C++ object.
 - (id)

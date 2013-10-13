@@ -397,7 +397,7 @@ static NSData *m_key = nil;
     //[[UIDevice currentDevice].identifierForVendor getUUIDBytes:bytes];
 	//m_key = [[NSData alloc] initWithBytes:bytes length:sizeof(bytes)];
 
-    if (m_skipCrypt)
+    if (true || m_skipCrypt)
     {
         //flush cache
         [PackageResourceCache trim: 0];

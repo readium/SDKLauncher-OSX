@@ -18,6 +18,7 @@
 // PackageRequest
 //
 
+const static int m_socketTimeout = 10;
 
 @interface PackageRequest : NSObject {
 	@private int m_byteCountWrittenSoFar;
@@ -124,6 +125,7 @@
 
 
 - (void)onSocket:(AsyncSocket *)sock didAcceptNewSocket:(AsyncSocket *)newSocket {
+NSLog(@"SOCK %@", newSocket);
 	PackageRequest *request = [[[PackageRequest alloc] init] autorelease];
 	request.socket = newSocket;
 	[m_requests addObject:request];
@@ -131,7 +133,7 @@
 
 
 - (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port {
-	[sock readDataWithTimeout:60 tag:0];
+	[sock readDataWithTimeout:m_socketTimeout tag:0];
 }
 
 
@@ -215,7 +217,7 @@
 			}
 
 			path = [path substringFromIndex:NSMaxRange(range)];
-			RDPackageResource *resource = [m_package resourceAtRelativePath:path]; // isHTML:NULL
+			RDPackageResource *resource = [m_package resourceAtRelativePath:path];
 
 			if (resource == nil) {
 				NSLog(@"The package resource is missing!");
@@ -257,9 +259,9 @@
 
 	int contentLength = 0;
 
-    if (m_skipCrypt)
+    if (m_skipCache)
     {
-        contentLength = request.resource.byteStream->BytesAvailable();
+        contentLength = request.resource.bytesCount;
     }
     else
     {
@@ -268,6 +270,7 @@
 
         if (contentLength == 0) {
             [[PackageResourceCache shared] addResource:request.resource];
+
             contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath:
                 request.resource.relativePath];
         }
@@ -321,7 +324,10 @@
 		int p0 = s0.intValue;
 		int p1 = s1.intValue;
 
-		request.range = NSMakeRange(p0, p1 + 1 - p0);
+        int length = p1 + 1 - p0;
+        request.range = NSMakeRange(p0, length);
+
+NSLog(@"[%@] [%d , %d] (%d) / %d", request.resource.relativePath, p0, p1, request.range.length, contentLength);
 
 		NSMutableString *ms = [NSMutableString stringWithCapacity:512];
 		[ms appendString:@"HTTP/1.1 206 Partial Content\r\n"];
@@ -330,9 +336,11 @@
 		[ms appendFormat:@"Content-Range: bytes %d-%d/%d\r\n", p0, p1, contentLength];
 		[ms appendString:@"\r\n"];
 
-		[sock writeData:[ms dataUsingEncoding:NSUTF8StringEncoding] withTimeout:60 tag:0];
+		[sock writeData:[ms dataUsingEncoding:NSUTF8StringEncoding] withTimeout:m_socketTimeout tag:0];
 	}
 	else {
+        NSLog(@"Entire HTTP file");
+
 		request.range = NSMakeRange(0, contentLength);
 
 		NSMutableString *ms = [NSMutableString stringWithCapacity:512];
@@ -341,7 +349,7 @@
 		[ms appendFormat:@"Content-Length: %d\r\n", request.range.length];
 		[ms appendString:@"\r\n"];
 
-		[sock writeData:[ms dataUsingEncoding:NSUTF8StringEncoding] withTimeout:60 tag:0];
+		[sock writeData:[ms dataUsingEncoding:NSUTF8StringEncoding] withTimeout:m_socketTimeout tag:0];
 	}
 
 	[self writeNextResponseChunkForRequest:request];
@@ -374,6 +382,7 @@
 
 
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock {
+NSLog(@"~SOCK %@", sock);
 	for (PackageRequest *request in m_requests) {
 		if (request.socket == sock) {
 			[[sock retain] autorelease];
@@ -395,15 +404,19 @@
 
 	BOOL lastChunk = (p1 == NSMaxRange(request.range));
 
+    auto range = NSMakeRange(p0, p1 - p0);
+
+NSLog(@">> [%@] [%d , %d] (%d) ... %d", request.resource.relativePath, p0, p1, range.length, request.byteCountWrittenSoFar);
+
     NSData *data = nil;
-    if (m_skipCrypt)
+    if (m_skipCache)
     {
-        data = [request.resource createChunkByReadingRange:NSMakeRange(p0, p1 - p0)];
+        data = [request.resource createChunkByReadingRange:range package:m_package];
     }
     else
     {
         data = [[PackageResourceCache shared] dataAtRelativePath:
-                request.resource.relativePath range:NSMakeRange(p0, p1 - p0)];
+                request.resource.relativePath range:range];
     }
 
 	if (data == nil || data.length != p1 - p0) {
@@ -412,7 +425,7 @@
 	}
 	else {
 		request.byteCountWrittenSoFar += (p1 - p0);
-		[request.socket writeData:data withTimeout:60 tag:0];
+		[request.socket writeData:data withTimeout:m_socketTimeout tag:0];
 
 		if (lastChunk) {
 			[request.socket disconnectAfterWriting];

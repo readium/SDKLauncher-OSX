@@ -11,9 +11,12 @@
 #include "byte_stream.h"
 #import <ePub3/archive.h>
 #import <ePub3/utilities/byte_stream.h>
+#import "LOXPackage.h"
 
 @interface RDPackageResource() {
-	@private ePub3::ByteStream* m_byteStream;
+@private ePub3::ByteStream* m_byteStream;
+@private int m_bytesRead;
+@private std::size_t m_bytesCount;
 }
 
 @end
@@ -23,16 +26,120 @@
 
 
 @synthesize byteStream = m_byteStream;
-
+@synthesize bytesCount = m_bytesCount;
 @synthesize relativePath = m_relativePath;
 
 
-- (NSData *)createChunkByReadingRange:(NSRange)range {
-   //TODO daniel m_byteStream->
+- (NSData *)createChunkByReadingRange:(NSRange)range package:(LOXPackage *)package {
+
+    if (range.length == 0) {
+        return [NSData data];
+    }
+
+NSLog(@"ByteStream Range %@", m_relativePath);
+
+    if (m_bytesRead > 0)
+    {
+NSLog(@"=== ByteStream READALREADY %d", m_bytesRead);
+    }
+
+    if (m_byteStream == nullptr || range.location < m_bytesRead)
+    {
+        if (m_byteStream != nullptr)
+        {
+            delete m_byteStream;
+        }
+
+NSLog(@"=== ByteStream RESET");
+
+        ePub3::string s = ePub3::string(m_relativePath.UTF8String);
+        m_byteStream = package.sdkPackage->ReadStreamForRelativePath(package.sdkPackage->BasePath() + s).release();
+        m_bytesCount = m_byteStream->BytesAvailable();
+        m_bytesRead = 0;
+    }
+
+NSLog(@"ByteStream COUNT: %d", m_bytesCount);
+
+    if (NSMaxRange(range) > m_bytesCount) {
+        NSLog(@"The requested data range is out of bounds!");
+        return nil;
+    }
+
+    int bytesToSkip = range.location - m_bytesRead;
+
+NSLog(@"ByteStream SKIP: %d", bytesToSkip);
+
+    int bufSize = sizeof(m_buffer);
+
+    std::size_t count = 0;
+
+    if (bytesToSkip > 0)
+    {
+        if (bytesToSkip <= bufSize)
+        {
+            count = m_byteStream->ReadBytes(m_buffer, bytesToSkip);
+        }
+        else
+        {
+            count = 0;
+
+            int nFullBuffers = floor(bytesToSkip / (double)bufSize);
+            for (int i = 0; i < nFullBuffers; i++)
+            {
+                count += m_byteStream->ReadBytes(m_buffer, bufSize);
+            }
+
+            int remainder = bytesToSkip - (nFullBuffers * bufSize);
+            if (remainder > 0)
+            {
+                count += m_byteStream->ReadBytes(m_buffer, remainder);
+            }
+        }
+    }
+    m_bytesRead += count;
+    NSAssert(count == bytesToSkip, @"bytes skip mismatch??");
+
+    int bytesToRead = range.length;
+
+NSLog(@"ByteStream READ: %d", bytesToRead);
+
+
+    NSMutableData *md = [NSMutableData dataWithCapacity:bytesToRead];
+
+    count = 0;
+    if (bytesToRead <= bufSize)
+    {
+        count = m_byteStream->ReadBytes(m_buffer, bytesToRead);
+        [md appendBytes:m_buffer length:count];
+    }
+    else
+    {
+        count = 0;
+        int nFullBuffers = floor(bytesToRead / (double)bufSize);
+        for (int i = 0; i < nFullBuffers; i++)
+        {
+            std::size_t read = m_byteStream->ReadBytes(m_buffer, bufSize);
+            count += read;
+            [md appendBytes:m_buffer length:read];
+        }
+
+        int remainder = bytesToRead - (nFullBuffers * bufSize);
+        if (remainder > 0)
+        {
+            std::size_t read = m_byteStream->ReadBytes(m_buffer, remainder);
+            count += read;
+            [md appendBytes:m_buffer length:read];
+        }
+    }
+    m_bytesRead += count;
+    NSAssert(count == bytesToRead, @"bytes skip mismatch??");
+
+    return md;
 }
 
 - (NSData *)createNextChunkByReading {
-    ssize_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
+    std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
+    m_bytesRead += count;
 
 	return (count == 0) ? nil : [[NSData alloc] initWithBytes:m_buffer length:count];
 }
@@ -64,8 +171,10 @@
 - (void)dealloc {
 
     // calls Close() on ByteStream destruction
-    //m_byteStream.reset();
-    delete m_byteStream;
+    if (m_byteStream != nullptr)
+    {
+        delete m_byteStream;
+    }
 
 	[m_data release];
 	[m_relativePath release];
@@ -86,8 +195,11 @@
 
 	if (self = [super init]) {
         m_byteStream = byteStream;
-
+        m_bytesCount = m_byteStream->BytesAvailable();
+        m_bytesRead = 0;
 		m_relativePath = [relativePath retain];
+
+NSLog(@"INIT ByteStream: %@ (%d)", m_relativePath, m_bytesCount);
 	}
 
 	return self;

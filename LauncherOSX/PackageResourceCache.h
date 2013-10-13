@@ -14,10 +14,7 @@
 
 @class RDPackageResource;
 
-// if set to true => no need to cache local file (+ encrypt them), just fetch byte ranges from ZIP ByteStream
-// but...ByteStream currenty not seekable, so...
 static const BOOL m_skipCrypt = false;
-
 
 static NSString * hexStringFromData(NSData *data) {
     if (data == nil)
