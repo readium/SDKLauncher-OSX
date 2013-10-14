@@ -55,5 +55,6 @@
 // Returns the resource at the given relative path or nil if it doesn't exist.  The isHTML out
 // parameter returns whether or not the resource is HTML.
 - (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath; // isHTML:(BOOL *)isHTML;
+- (NSString *) resourceRelativePath:(NSString *)urlAbsolutePath;
 
 @end

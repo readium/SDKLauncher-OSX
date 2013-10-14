@@ -112,7 +112,8 @@
             )
     {
         NSString * str = [[NSString stringWithFormat:@"http://localhost:%d/%@/%@",
-                                                    kSDKLauncherPackageResourceServerPort, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+                        [m_resourceServer serverPort],
+                        _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
         NSURL *url = [NSURL URLWithString:str];
 
         NSLog(@"***** REQ URL %@", url);

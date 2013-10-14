@@ -8,6 +8,8 @@
 # import <Foundation/Foundation.h>
 # import <dispatch/dispatch.h>
 
+#define DEBUGLOG true
+
 # define USING_MRR (!__has_feature(objc_arc))
 
 # if defined(OS_OBJECT_USE_OBJC) && OS_OBJECT_USE_OBJC

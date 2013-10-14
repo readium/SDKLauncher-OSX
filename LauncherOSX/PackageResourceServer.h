@@ -9,8 +9,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define kSDKLauncherPackageResourceServerPort 8080
-
 @class LOXPackage;
 @class RDPackageResource;
 
@@ -39,6 +37,7 @@ static const BOOL m_skipCache = true;
 
 @interface PackageResourceServer : NSObject {
 @private LOXPackage *m_package;
+@private int m_kSDKLauncherPackageResourceServerPort;
 
 #ifdef USE_SIMPLE_HTTP_SERVER
     AQHTTPServer * m_server;
@@ -49,5 +48,7 @@ static const BOOL m_skipCache = true;
 }
 
 - (id)initWithPackage:(LOXPackage *)package;
+
+- (int) serverPort;
 
 @end
