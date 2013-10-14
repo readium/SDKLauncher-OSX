@@ -15,8 +15,11 @@
 
 @interface RDPackageResource() {
 @private ePub3::ByteStream* m_byteStream;
+@private NSString *m_relativePath;
 @private int m_bytesRead;
 @private std::size_t m_bytesCount;
+@private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
+@private NSData *m_data;
 }
 
 @end

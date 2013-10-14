@@ -31,10 +31,17 @@ RDPackageResource * m_resource;
     m_package = package;
     m_resource = [resource retain];
 
-    NSLog(@"LOXHTTPResponseOperation: ", m_resource.relativePath);
+    if (m_debugAssetStream)
+    {
+        NSLog(@"LOXHTTPResponseOperation: %@", m_resource.relativePath);
+        NSLog(@"LOXHTTPResponseOperation: %d", m_resource.bytesCount);
+    }
+
 }
 
 - (void)dealloc {
+    NSLog(@"DEALLOC LOXHTTPResponseOperation: %@", m_resource.relativePath);
+    NSLog(@"DEALLOC LOXHTTPResponseOperation: %@", self);
     [m_resource release];
     [super dealloc];
 }
@@ -87,7 +94,7 @@ RDPackageResource * m_resource;
 
 - (NSData *) readDataFromByteRange: (DDRange) range
 {
-    [m_resource createChunkByReadingRange:NSRangeFromDDRange(range) package:m_package];
+    return [m_resource createChunkByReadingRange:NSRangeFromDDRange(range) package:m_package];
 }
 
 @end
@@ -113,7 +120,13 @@ static LOXPackage * m_LOXHTTPConnection_package;
         return nil;
     }
 
-    NSLog(@"%@", url);
+    NSLog(@"responseOperationForRequest: %@", url);
+
+    NSString * scheme = [url scheme];
+    if (scheme == nil || [scheme caseInsensitiveCompare: @"fake"] == NSOrderedSame)
+    {
+        return nil;
+    }
 
     NSString * path = [url path];
     if (path == nil)
@@ -143,6 +156,7 @@ static LOXPackage * m_LOXHTTPConnection_package;
 
     LOXHTTPResponseOperation * op = [[LOXHTTPResponseOperation alloc] initWithRequest: request socket: self.socket ranges: ranges forConnection: self];
     [op initialiseData:m_LOXHTTPConnection_package resource:resource];
+
 #if USING_MRR
     [op autorelease];
 #endif

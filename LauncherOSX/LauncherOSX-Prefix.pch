@@ -8,7 +8,7 @@
 
 #endif
 
-#define USE_SIMPLE_HTTP_SERVER
+//#define USE_SIMPLE_HTTP_SERVER
 
 //
 // Prefix header for all source files of the 'SimpleHTTPServer' target in the 'SimpleHTTPServer' project

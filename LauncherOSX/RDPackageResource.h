@@ -18,9 +18,6 @@ static const BOOL m_debugAssetStream = true;
 @class LOXPackage;
 
 @interface RDPackageResource : NSObject {
-	@private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
-	@private NSData *m_data;
-	@private NSString *m_relativePath;
 }
 
 @property (nonatomic, readonly) ePub3::ByteStream* byteStream;
