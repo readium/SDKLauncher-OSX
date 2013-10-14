@@ -12,9 +12,9 @@
 #import <SystemConfiguration/SCDynamicStore.h>
 #import <IOKit/IOKitLib.h>
 
-@class RDPackageResource;
-
 static const BOOL m_skipCrypt = false;
+
+@class RDPackageResource;
 
 static NSString * hexStringFromData(NSData *data) {
     if (data == nil)

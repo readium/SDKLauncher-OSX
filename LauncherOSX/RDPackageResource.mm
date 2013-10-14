@@ -36,11 +36,15 @@
         return [NSData data];
     }
 
-NSLog(@"ByteStream Range %@", m_relativePath);
 
-    if (m_bytesRead > 0)
+    if (m_debugAssetStream)
     {
-NSLog(@"=== ByteStream READALREADY %d", m_bytesRead);
+        NSLog(@"ByteStream Range %@", m_relativePath);
+
+        if (m_bytesRead > 0)
+        {
+            NSLog(@"=== ByteStream READALREADY %d", m_bytesRead);
+        }
     }
 
     if (m_byteStream == nullptr || range.location < m_bytesRead)
@@ -50,7 +54,10 @@ NSLog(@"=== ByteStream READALREADY %d", m_bytesRead);
             delete m_byteStream;
         }
 
-NSLog(@"=== ByteStream RESET");
+        if (m_debugAssetStream)
+        {
+            NSLog(@"=== ByteStream RESET");
+        }
 
         ePub3::string s = ePub3::string(m_relativePath.UTF8String);
         m_byteStream = package.sdkPackage->ReadStreamForRelativePath(package.sdkPackage->BasePath() + s).release();
@@ -58,7 +65,10 @@ NSLog(@"=== ByteStream RESET");
         m_bytesRead = 0;
     }
 
-NSLog(@"ByteStream COUNT: %d", m_bytesCount);
+    if (m_debugAssetStream)
+    {
+        NSLog(@"ByteStream COUNT: %d", m_bytesCount);
+    }
 
     if (NSMaxRange(range) > m_bytesCount) {
         NSLog(@"The requested data range is out of bounds!");
@@ -67,7 +77,10 @@ NSLog(@"ByteStream COUNT: %d", m_bytesCount);
 
     int bytesToSkip = range.location - m_bytesRead;
 
-NSLog(@"ByteStream SKIP: %d", bytesToSkip);
+    if (m_debugAssetStream)
+    {
+        NSLog(@"ByteStream SKIP: %d", bytesToSkip);
+    }
 
     int bufSize = sizeof(m_buffer);
 
@@ -101,7 +114,10 @@ NSLog(@"ByteStream SKIP: %d", bytesToSkip);
 
     int bytesToRead = range.length;
 
-NSLog(@"ByteStream READ: %d", bytesToRead);
+    if (m_debugAssetStream)
+    {
+        NSLog(@"ByteStream READ: %d", bytesToRead);
+    }
 
 
     NSMutableData *md = [NSMutableData dataWithCapacity:bytesToRead];
@@ -199,7 +215,10 @@ NSLog(@"ByteStream READ: %d", bytesToRead);
         m_bytesRead = 0;
 		m_relativePath = [relativePath retain];
 
-NSLog(@"INIT ByteStream: %@ (%d)", m_relativePath, m_bytesCount);
+        if (m_debugAssetStream)
+        {
+            NSLog(@"INIT ByteStream: %@ (%d)", m_relativePath, m_bytesCount);
+        }
 	}
 
 	return self;

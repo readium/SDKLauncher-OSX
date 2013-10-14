@@ -125,7 +125,12 @@ const static int m_socketTimeout = 60;
 
 
 - (void)onSocket:(AsyncSocket *)sock didAcceptNewSocket:(AsyncSocket *)newSocket {
-NSLog(@"SOCK %@", newSocket);
+
+    if (m_debugAssetStream)
+    {
+        NSLog(@"SOCK %@", newSocket);
+    }
+
 	PackageRequest *request = [[[PackageRequest alloc] init] autorelease];
 	request.socket = newSocket;
 	[m_requests addObject:request];
@@ -327,7 +332,10 @@ NSLog(@"SOCK %@", newSocket);
         int length = p1 + 1 - p0;
         request.range = NSMakeRange(p0, length);
 
-NSLog(@"[%@] [%d , %d] (%d) / %d", request.resource.relativePath, p0, p1, request.range.length, contentLength);
+        if (m_debugAssetStream)
+        {
+            NSLog(@"[%@] [%d , %d] (%d) / %d", request.resource.relativePath, p0, p1, request.range.length, contentLength);
+        }
 
 		NSMutableString *ms = [NSMutableString stringWithCapacity:512];
 		[ms appendString:@"HTTP/1.1 206 Partial Content\r\n"];
@@ -339,7 +347,10 @@ NSLog(@"[%@] [%d , %d] (%d) / %d", request.resource.relativePath, p0, p1, reques
 		[sock writeData:[ms dataUsingEncoding:NSUTF8StringEncoding] withTimeout:m_socketTimeout tag:0];
 	}
 	else {
-        NSLog(@"Entire HTTP file");
+        if (m_debugAssetStream)
+        {
+            NSLog(@"Entire HTTP file");
+        }
 
 		request.range = NSMakeRange(0, contentLength);
 
@@ -377,13 +388,20 @@ NSLog(@"[%@] [%d , %d] (%d) / %d", request.resource.relativePath, p0, p1, reques
 
 
 - (void)onSocket:(AsyncSocket *)sock willDisconnectWithError:(NSError *)err {
-    NSLog(@"SOCK-ERR %@", sock);
+    if (m_debugAssetStream)
+    {
+        NSLog(@"SOCK-ERR %@", sock);
+    }
 	NSLog(@"The socket disconnected with an error! %@", err);
 }
 
 
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock {
-NSLog(@"~SOCK %@", sock);
+
+    if (m_debugAssetStream)
+    {
+        NSLog(@"~SOCK %@", sock);
+    }
 	for (PackageRequest *request in m_requests) {
 		if (request.socket == sock) {
 			[[sock retain] autorelease];
@@ -407,7 +425,10 @@ NSLog(@"~SOCK %@", sock);
 
     auto range = NSMakeRange(p0, p1 - p0);
 
-NSLog(@">> [%@] [%d , %d] (%d) ... %d", request.resource.relativePath, p0, p1, range.length, request.byteCountWrittenSoFar);
+    if (m_debugAssetStream)
+    {
+        NSLog(@">> [%@] [%d , %d] (%d) ... %d", request.resource.relativePath, p0, p1, range.length, request.byteCountWrittenSoFar);
+    }
 
     NSData *data = nil;
     if (m_skipCache)

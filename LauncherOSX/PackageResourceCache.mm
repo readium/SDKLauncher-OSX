@@ -62,7 +62,16 @@ static NSData *m_key = nil;
 		return;
 	}
 
-    NSLog(@"ADD RES: %@", relativePath);
+    if (m_debugAssetStream)
+    {
+        NSLog(@"ADD RES: %@", relativePath);
+
+        if (!m_skipCrypt)
+        {
+            NSLog(@"ENCRYPT");
+        }
+
+    }
     
 	[PackageResourceCache trim: 3];
 
@@ -260,6 +269,11 @@ static NSData *m_key = nil;
             }
             else
             {
+                if (m_debugAssetStream)
+                {
+                    NSLog(@"DECRYPT");
+                }
+
                 UInt8 buffer[bufferSize];
                 size_t numBytesDecrypted = 0;
 
