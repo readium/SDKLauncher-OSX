@@ -18,7 +18,7 @@
 // PackageRequest
 //
 
-const static int m_socketTimeout = 10;
+const static int m_socketTimeout = 60;
 
 @interface PackageRequest : NSObject {
 	@private int m_byteCountWrittenSoFar;
@@ -377,6 +377,7 @@ NSLog(@"[%@] [%d , %d] (%d) / %d", request.resource.relativePath, p0, p1, reques
 
 
 - (void)onSocket:(AsyncSocket *)sock willDisconnectWithError:(NSError *)err {
+    NSLog(@"SOCK-ERR %@", sock);
 	NSLog(@"The socket disconnected with an error! %@", err);
 }
 
