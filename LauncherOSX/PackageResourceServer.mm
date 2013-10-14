@@ -7,17 +7,118 @@
 //  Copyright (c) 2013 The Readium Foundation. All rights reserved.
 //
 
-#import "PackageResourceServer.h"
+#ifdef USE_SIMPLE_HTTP_SERVER
+#import "AQHTTPServer.h"
+#else
 #import "AsyncSocket.h"
+#endif
+
+#import "PackageResourceServer.h"
 #import "PackageResourceCache.h"
 #import "LOXPackage.h"
 #import "RDPackageResource.h"
 
 
-//
-// PackageRequest
-//
+#ifdef USE_SIMPLE_HTTP_SERVER
 
+@implementation LOXHTTPResponseOperation
+
+LOXPackage * m_package;
+RDPackageResource * m_resource;
+
+- (void)initialiseData:(LOXPackage *)package resource:(RDPackageResource *)resource
+{
+    m_package = package;
+    m_resource = resource;
+}
+
+- (void)dealloc {
+    [m_resource release];
+    [super dealloc];
+}
+
+- (NSUInteger) statusCodeForItemAtPath: (NSString *) rootRelativePath
+{
+    NSString * path = [[[_connection.documentRoot URLByAppendingPathComponent: rootRelativePath] absoluteURL] path];
+    NSString * method = CFBridgingRelease(CFHTTPMessageCopyRequestMethod(_request));
+    BOOL isDir = NO;
+
+    if ( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDir] == NO )
+    {
+        // Resource Not Found
+        return ( 404 );
+    }
+    else if ( isDir || [method caseInsensitiveCompare: @"DELETE"] == NSOrderedSame )
+    {
+        // Not Permitted
+        return ( 403 );
+    }
+    else if ( _ranges != nil )
+    {
+        return ( 206 );
+    }
+
+    return ( 200 );
+}
+
+- (UInt64) sizeOfItemAtPath: (NSString *) rootRelativePath
+{
+    return 0;
+}
+
+- (NSString *) etagForItemAtPath: (NSString *) path
+{
+    return nil;
+}
+
+- (NSInputStream *) inputStreamForItemAtPath: (NSString *) rootRelativePath
+{
+    return nil;
+}
+
+- (id<AQRandomAccessFile>) randomAccessFileForItemAtPath: (NSString *) rootRelativePath
+{
+    return nil;
+}
+
+@end
+
+@implementation LOXHTTPConnection
+
+static LOXPackage * m_LOXHTTPConnection_package;
++ (void)setPackage:(LOXPackage *)package
+{
+    m_LOXHTTPConnection_package = package;
+}
+
+- (AQHTTPResponseOperation *) responseOperationForRequest: (CFHTTPMessageRef) request
+{
+    NSString * path = [(NSURL *)CFBridgingRelease(CFHTTPMessageCopyRequestURL(request)) path];
+
+    RDPackageResource *resource = [m_LOXHTTPConnection_package resourceAtRelativePath:path];
+    if (resource == nil)
+    {
+        NSLog(@"The package resource is missing!");
+        return nil;
+    }
+
+
+    NSString * rangeHeader = CFBridgingRelease(CFHTTPMessageCopyHeaderFieldValue(request, CFSTR("Range")));
+    NSArray * ranges = nil;
+    if ( rangeHeader != nil )
+    {
+        ranges = [self parseRangeRequest: rangeHeader withContentLength: resource.bytesCount];
+    }
+
+    LOXHTTPResponseOperation * op = [[LOXHTTPResponseOperation alloc] initWithRequest: request socket: self.socket ranges: ranges forConnection: self];
+    [op initialiseData:m_LOXHTTPConnection_package resource:resource];
+#if USING_MRR
+    [op autorelease];
+#endif
+    return ( op );
+}
+@end
+#else
 const static int m_socketTimeout = 60;
 
 @interface PackageRequest : NSObject {
@@ -53,46 +154,47 @@ const static int m_socketTimeout = 60;
 
 @end
 
+#endif
 
-//
-// PackageResourceServer
-//
 
 
 @interface PackageResourceServer()
 
+
+#ifdef USE_SIMPLE_HTTP_SERVER
+
+#else
 @property (nonatomic, readonly) NSString *dateString;
 
 - (void)writeNextResponseChunkForRequest:(PackageRequest *)request;
+#endif
 
 @end
 
 
 @implementation PackageResourceServer
 
-
-- (NSString *)dateString {
-	NSDateFormatter *fmt = [[[NSDateFormatter alloc] init] autorelease];
-	[fmt setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss"];
-	[fmt setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	return [[fmt stringFromDate:[NSDate date]] stringByAppendingString:@" GMT"];
-}
-
-
 - (void)dealloc {
-	NSArray *requests = [[NSArray alloc] initWithArray:m_requests];
 
+#ifdef USE_SIMPLE_HTTP_SERVER
+    if ([m_server isListening])
+    {
+        [m_server stop];
+    }
+    [m_server release];
+#else
+	NSArray *requests = [[NSArray alloc] initWithArray:m_requests];
 	for (PackageRequest *request in requests) {
 		// Disconnecting causes onSocketDidDisconnect to be called, which removes the request
 		// from the array, which is why we iterate a copy of that array.
 		[request.socket disconnect];
 	}
-
 	[requests release];
-
 	[m_mainSocket release];
+    [m_requests release];
+#endif
+
 	[m_package release];
-	[m_requests release];
 
 	[super dealloc];
 }
@@ -106,8 +208,24 @@ const static int m_socketTimeout = 60;
 
 	if (self = [super init]) {
 		m_package = [package retain];
-		m_requests = [[NSMutableArray alloc] init];
 
+#ifdef USE_SIMPLE_HTTP_SERVER
+        NSString * port = [NSString stringWithFormat:@"%d", kSDKLauncherPackageResourceServerPort];
+        NSString * address = [@"localhost:" stringByAppendingString:port];
+        NSURL * url = [NSURL fileURLWithPath: [@"file:///" stringByAppendingString:[m_package packageUUID]]];
+
+        m_server = [[AQHTTPServer alloc] initWithAddress: address root: url];
+        NSError * error = nil;
+        if ( [m_server start: &error] == NO )
+        {
+            NSLog(@"Error starting server: %@", error);
+            [self release];
+            return nil;
+        }
+        [LOXHTTPConnection setPackage: m_package];
+        [m_server setConnectionClass:[LOXHTTPConnection class]];
+#else
+		m_requests = [[NSMutableArray alloc] init];
 		m_mainSocket = [[AsyncSocket alloc] initWithDelegate:self];
 		[m_mainSocket setRunLoopModes:@[ NSRunLoopCommonModes ]];
 
@@ -118,11 +236,21 @@ const static int m_socketTimeout = 60;
 			[self release];
 			return nil;
 		}
+#endif
 	}
 
 	return self;
 }
 
+
+#ifdef USE_SIMPLE_HTTP_SERVER
+#else
+- (NSString *)dateString {
+	NSDateFormatter *fmt = [[[NSDateFormatter alloc] init] autorelease];
+	[fmt setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss"];
+	[fmt setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+	return [[fmt stringFromDate:[NSDate date]] stringByAppendingString:@" GMT"];
+}
 
 - (void)onSocket:(AsyncSocket *)sock didAcceptNewSocket:(AsyncSocket *)newSocket {
 
@@ -454,6 +582,7 @@ const static int m_socketTimeout = 60;
 		}
 	}
 }
+#endif
 
 
 @end

@@ -11,15 +11,41 @@
 
 #define kSDKLauncherPackageResourceServerPort 8080
 
-static const BOOL m_skipCache = true;
-
-@class AsyncSocket;
 @class LOXPackage;
+@class RDPackageResource;
+
+#ifdef USE_SIMPLE_HTTP_SERVER
+
+#import "AQHTTPConnection.h"
+#import "AQHTTPResponseOperation.h"
+
+@class AQHTTPServer;
+
+@interface LOXHTTPResponseOperation : AQHTTPResponseOperation
+{
+}
+- (void)initialiseData:(LOXPackage *)package resource:(RDPackageResource *)resource;
+@end
+
+@interface LOXHTTPConnection : AQHTTPConnection
+{
+
+}
+@end
+#else
+static const BOOL m_skipCache = true;
+@class AsyncSocket;
+#endif
 
 @interface PackageResourceServer : NSObject {
+@private LOXPackage *m_package;
+
+#ifdef USE_SIMPLE_HTTP_SERVER
+    AQHTTPServer * m_server;
+#else
 	@private AsyncSocket *m_mainSocket;
-	@private LOXPackage *m_package;
 	@private NSMutableArray *m_requests;
+#endif
 }
 
 - (id)initWithPackage:(LOXPackage *)package;

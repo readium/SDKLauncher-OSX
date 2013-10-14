@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
-		850B1A5916A61F9900619C3C /* libObjective-Zip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5816A61F9900619C3C /* libObjective-Zip.a */; };
+		8305CE50180C29A400575594 /* SimpleHTTPServer.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8305CE4D180C28A500575594 /* SimpleHTTPServer.dylib */; };
+		8305CE51180C29AE00575594 /* SimpleHTTPServer.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8305CE4D180C28A500575594 /* SimpleHTTPServer.dylib */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
 		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
 		850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9416A6320200619C3C /* LOXSpineViewController.mm */; };
@@ -91,6 +92,20 @@
 			remoteGlobalIDString = AB61CE4A1694845700299BB1;
 			remoteInfo = UnitTests;
 		};
+		8305CE4C180C28A500575594 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8305CE48180C28A500575594 /* SimpleHTTPServer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 834313C5180C21490022C653;
+			remoteInfo = SimpleHTTPServer;
+		};
+		8305CE4E180C297E00575594 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8305CE48180C28A500575594 /* SimpleHTTPServer.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 834313C4180C21490022C653;
+			remoteInfo = SimpleHTTPServer;
+		};
 		8573953F172ED4880071B66C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 558E562716EF859800FCF273 /* ePub3.xcodeproj */;
@@ -121,6 +136,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8305CE51180C29AE00575594 /* SimpleHTTPServer.dylib in CopyFiles */,
 				85739532172AE0280071B66C /* ePub3.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -130,7 +146,7 @@
 /* Begin PBXFileReference section */
 		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		558E562716EF859800FCF273 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "readium-sdk/Platform/Apple/ePub3.xcodeproj"; sourceTree = "<group>"; };
-		850B1A5816A61F9900619C3C /* libObjective-Zip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libObjective-Zip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8305CE48180C28A500575594 /* SimpleHTTPServer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SimpleHTTPServer.xcodeproj; path = SimpleHTTPServer/SimpleHTTPServer.xcodeproj; sourceTree = "<group>"; };
 		850B1A5A16A61FB900619C3C /* ePub3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = ePub3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		850B1A8C16A631E800619C3C /* LOXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXUtil.h; sourceTree = "<group>"; };
 		850B1A8D16A631E800619C3C /* LOXUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXUtil.mm; sourceTree = "<group>"; };
@@ -234,8 +250,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8305CE50180C29A400575594 /* SimpleHTTPServer.dylib in Frameworks */,
 				850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */,
-				850B1A5916A61F9900619C3C /* libObjective-Zip.a in Frameworks */,
 				855CFEE8169DFA3E00AD311E /* libz.dylib in Frameworks */,
 				855CFDB61696200B00AD311E /* WebKit.framework in Frameworks */,
 				8597D61216824655000FAAAF /* Cocoa.framework in Frameworks */,
@@ -269,6 +285,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8305CE49180C28A500575594 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8305CE4D180C28A500575594 /* SimpleHTTPServer.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		8561A1E4178B6EB8007D15D3 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
@@ -284,11 +308,11 @@
 		8597D60216824655000FAAAF = {
 			isa = PBXGroup;
 			children = (
-				552FC46A16F39AD0000E73BA /* Resources */,
+				8305CE48180C28A500575594 /* SimpleHTTPServer.xcodeproj */,
 				558E562716EF859800FCF273 /* ePub3.xcodeproj */,
+				552FC46A16F39AD0000E73BA /* Resources */,
 				8561A1E4178B6EB8007D15D3 /* Scripts */,
 				850B1A5A16A61FB900619C3C /* ePub3.dylib */,
-				850B1A5816A61F9900619C3C /* libObjective-Zip.a */,
 				855CFEE7169DFA3D00AD311E /* libz.dylib */,
 				855CFDB51696200B00AD311E /* WebKit.framework */,
 				8597D61716824655000FAAAF /* LauncherOSX */,
@@ -483,6 +507,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				8305CE4F180C297E00575594 /* PBXTargetDependency */,
 				85739540172ED4880071B66C /* PBXTargetDependency */,
 			);
 			name = LauncherOSX;
@@ -514,6 +539,10 @@
 					ProductGroup = 558E562816EF859800FCF273 /* Products */;
 					ProjectRef = 558E562716EF859800FCF273 /* ePub3.xcodeproj */;
 				},
+				{
+					ProductGroup = 8305CE49180C28A500575594 /* Products */;
+					ProjectRef = 8305CE48180C28A500575594 /* SimpleHTTPServer.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -542,6 +571,13 @@
 			fileType = "compiled.mach-o.executable";
 			path = UnitTests;
 			remoteRef = 558E563116EF859800FCF273 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8305CE4D180C28A500575594 /* SimpleHTTPServer.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = SimpleHTTPServer.dylib;
+			remoteRef = 8305CE4C180C28A500575594 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -580,7 +616,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "install_name_tool -id @executable_path/../Frameworks/ePub3.dylib \"$TARGET_BUILD_DIR/ePub3.dylib\"";
+			shellScript = "install_name_tool -id @executable_path/../Frameworks/ePub3.dylib \"$TARGET_BUILD_DIR/ePub3.dylib\"\ninstall_name_tool -id @executable_path/../Frameworks/SimpleHTTPServer.dylib \"$TARGET_BUILD_DIR/SimpleHTTPServer.dylib\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -631,6 +667,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8305CE4F180C297E00575594 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SimpleHTTPServer;
+			targetProxy = 8305CE4E180C297E00575594 /* PBXContainerItemProxy */;
+		};
 		85739540172ED4880071B66C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = ePub3;
@@ -734,7 +775,7 @@
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/** \"${PROJECT_DIR}/SimpleHTTPServer\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -753,7 +794,7 @@
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/** \"${PROJECT_DIR}/SimpleHTTPServer\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
