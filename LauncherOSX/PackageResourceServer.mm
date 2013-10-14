@@ -285,7 +285,8 @@ const static int m_socketTimeout = 60;
 
 		NSError *error = nil;
 
-		if (![m_mainSocket acceptOnPort:kSDKLauncherPackageResourceServerPort error:&error]) {
+        m_kSDKLauncherPackageResourceServerPort = 8080;
+		if (![m_mainSocket acceptOnPort:m_kSDKLauncherPackageResourceServerPort error:&error]) {
 			NSLog(@"The main socket could not be created! %@", error);
 			[self release];
 			return nil;
