@@ -12,7 +12,7 @@
 
 #define kSDKLauncherPackageResourceBufferSize 4096
 
-static const BOOL m_debugAssetStream = false;
+static const BOOL m_debugAssetStream = true;
 
 @class RDPackageResource;
 @class LOXPackage;

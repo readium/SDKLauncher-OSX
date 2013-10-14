@@ -30,6 +30,8 @@ RDPackageResource * m_resource;
 {
     m_package = package;
     m_resource = [resource retain];
+
+    NSLog(@"LOXHTTPResponseOperation: ", m_resource.relativePath);
 }
 
 - (void)dealloc {
@@ -41,18 +43,11 @@ RDPackageResource * m_resource;
 {
     NSString * method = CFBridgingRelease(CFHTTPMessageCopyRequestMethod(_request));
 
-    NSString * relPath = [m_package resourceRelativePath: rootRelativePath];
-    if (relPath == nil)
+    if (m_resource == nil)
     {
         return ( 404 );
     }
-
-    RDPackageResource *resource = [m_package resourceAtRelativePath:relPath];
-    if (resource == nil)
-    {
-        return ( 404 );
-    }
-    else if ( [method caseInsensitiveCompare: @"DELETE"] == NSOrderedSame )
+    else if (method != nil && [method caseInsensitiveCompare: @"DELETE"] == NSOrderedSame )
     {
         // Not Permitted
         return ( 403 );
@@ -67,19 +62,7 @@ RDPackageResource * m_resource;
 
 - (UInt64) sizeOfItemAtPath: (NSString *) rootRelativePath
 {
-    NSString * relPath = [m_package resourceRelativePath: rootRelativePath];
-    if (relPath == nil)
-    {
-        return 0;
-    }
-
-    RDPackageResource *resource = [m_package resourceAtRelativePath:relPath];
-    if (resource == nil)
-    {
-        return 0;
-    }
-
-    return resource.bytesCount;
+    return m_resource.bytesCount;
 }
 
 - (NSString *) etagForItemAtPath: (NSString *) path
@@ -94,7 +77,17 @@ RDPackageResource * m_resource;
 
 - (id<AQRandomAccessFile>) randomAccessFileForItemAtPath: (NSString *) rootRelativePath
 {
-    return nil;
+    return self;
+}
+
+-(UInt64)length
+{
+    return m_resource.bytesCount;
+}
+
+- (NSData *) readDataFromByteRange: (DDRange) range
+{
+    [m_resource createChunkByReadingRange:NSRangeFromDDRange(range) package:m_package];
 }
 
 @end
@@ -107,21 +100,37 @@ static LOXPackage * m_LOXHTTPConnection_package;
     m_LOXHTTPConnection_package = package;
 }
 
+- (BOOL) supportsPipelinedRequests
+{
+    return YES;
+}
+
 - (AQHTTPResponseOperation *) responseOperationForRequest: (CFHTTPMessageRef) request
 {
-    NSString * path = [(NSURL *)CFBridgingRelease(CFHTTPMessageCopyRequestURL(request)) path];
+    NSURL * url = (NSURL *)CFBridgingRelease(CFHTTPMessageCopyRequestURL(request));
+    if (url == nil)
+    {
+        return nil;
+    }
+
+    NSLog(@"%@", url);
+
+    NSString * path = [url path];
+    if (path == nil)
+    {
+        return nil;
+    }
 
     NSString * relPath = [m_LOXHTTPConnection_package resourceRelativePath: path];
     if (relPath == nil)
     {
-        return nil;
+        return [super responseOperationForRequest: request];
     }
 
     RDPackageResource *resource = [m_LOXHTTPConnection_package resourceAtRelativePath:relPath];
     if (resource == nil)
     {
-        NSLog(@"The package resource is missing!");
-        return nil;
+        return [super responseOperationForRequest: request];
     }
 
 

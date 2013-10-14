@@ -19,7 +19,7 @@
 
 @class AQHTTPServer;
 
-@interface LOXHTTPResponseOperation : AQHTTPResponseOperation
+@interface LOXHTTPResponseOperation : AQHTTPResponseOperation<AQRandomAccessFile>
 {
 }
 - (void)initialiseData:(LOXPackage *)package resource:(RDPackageResource *)resource;

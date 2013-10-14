@@ -36,10 +36,10 @@
         return [NSData data];
     }
 
-
     if (m_debugAssetStream)
     {
         NSLog(@"ByteStream Range %@", m_relativePath);
+        NSLog(@"%d - %d", range.location, range.length);
 
         if (m_bytesRead > 0)
         {
@@ -177,8 +177,18 @@
 			}
 		}
 
+        if (m_debugAssetStream)
+        {
+            NSLog(@"ByteStream WHOLE read: %@", m_relativePath);
+        }
+
 		m_data = [md retain];
 	}
+
+    if (m_debugAssetStream)
+    {
+        NSLog(@"ByteStream WHOLE: %d (%@)", m_bytesCount, m_relativePath);
+    }
 
 	return m_data;
 }
