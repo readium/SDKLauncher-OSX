@@ -8,7 +8,14 @@
 
 #endif
 
-//#define USE_SIMPLE_HTTP_SERVER
+
+#define USE_SIMPLE_HTTP_SERVER true
+
+#ifdef USE_SIMPLE_HTTP_SERVER
+
+// CANNOT DO THAT :(
+//#import <SimpleHTTPServer-Prefix.pch>
+
 
 //
 // Prefix header for all source files of the 'SimpleHTTPServer' target in the 'SimpleHTTPServer' project
@@ -18,6 +25,8 @@
 
 # import <Foundation/Foundation.h>
 # import <dispatch/dispatch.h>
+
+#define DEBUGLOG false
 
 # define USING_MRR (!__has_feature(objc_arc))
 
@@ -41,4 +50,14 @@
 # define property_weak assign
 #endif
 
+#endif
+
+#endif
+
+//#if ! __has_feature(objc_arc)
+//#error This file must be compiled with ARC. Either turn on ARC for the project or use -fobjc-arc flag
+//#endif
+
+#if __has_feature(objc_arc)
+#error This file cannot be compiled with ARC. Either turn off ARC for the project or use -fno-objc-arc flag
 #endif

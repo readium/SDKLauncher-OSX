@@ -12,6 +12,8 @@
 @class LOXPackage;
 @class RDPackageResource;
 
+static const BOOL m_skipCache = true;
+
 #ifdef USE_SIMPLE_HTTP_SERVER
 
 #import "AQHTTPConnection.h"
@@ -31,7 +33,6 @@
 }
 @end
 #else
-static const BOOL m_skipCache = true;
 @class AsyncSocket;
 #endif
 

@@ -278,7 +278,7 @@
         saddr = _serverSocket4.socketAddress;
 
     if ( saddr.ss_len == 0 )
-        return ( nil );
+        return 0;
 
     uint16_t port = 0;
 
@@ -294,7 +294,7 @@
     }
     else
     {
-        return ( nil );
+        return 0;
     }
 
     return port;

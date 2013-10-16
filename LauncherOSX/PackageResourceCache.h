@@ -12,7 +12,7 @@
 #import <SystemConfiguration/SCDynamicStore.h>
 #import <IOKit/IOKitLib.h>
 
-static const BOOL m_skipCrypt = false;
+static const BOOL m_skipCrypt = true;
 
 @class RDPackageResource;
 

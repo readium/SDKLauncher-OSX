@@ -8,6 +8,7 @@
 //
 
 #ifdef USE_SIMPLE_HTTP_SERVER
+
 #import "AQHTTPServer.h"
 #else
 #import "AsyncSocket.h"
@@ -40,8 +41,11 @@ RDPackageResource * m_resource;
 }
 
 - (void)dealloc {
-    NSLog(@"DEALLOC LOXHTTPResponseOperation: %@", m_resource.relativePath);
-    NSLog(@"DEALLOC LOXHTTPResponseOperation: %@", self);
+    if (m_debugAssetStream)
+    {
+        NSLog(@"DEALLOC LOXHTTPResponseOperation: %@", m_resource.relativePath);
+        NSLog(@"DEALLOC LOXHTTPResponseOperation: %@", self);
+    }
     [m_resource release];
     [super dealloc];
 }
@@ -94,7 +98,14 @@ RDPackageResource * m_resource;
 
 - (NSData *) readDataFromByteRange: (DDRange) range
 {
-    return [m_resource createChunkByReadingRange:NSRangeFromDDRange(range) package:m_package];
+    if (m_skipCache)
+    {
+        return [m_resource createChunkByReadingRange:NSRangeFromDDRange(range) package:m_package];
+    }
+    else
+    {
+        return [[PackageResourceCache shared] dataAtRelativePath: m_resource.relativePath range:NSRangeFromDDRange(range)];
+    }
 }
 
 @end
@@ -117,22 +128,26 @@ static LOXPackage * m_LOXHTTPConnection_package;
     NSURL * url = (NSURL *)CFBridgingRelease(CFHTTPMessageCopyRequestURL(request));
     if (url == nil)
     {
-        return nil;
+        return [super responseOperationForRequest: request];
     }
 
-    NSLog(@"responseOperationForRequest: %@", url);
+    if (m_debugAssetStream)
+    {
+        NSLog(@"responseOperationForRequest: %@", url);
+    }
 
     NSString * scheme = [url scheme];
     if (scheme == nil || [scheme caseInsensitiveCompare: @"fake"] == NSOrderedSame)
     {
-        return nil;
+        return [super responseOperationForRequest: request];
     }
 
     NSString * path = [url path];
     if (path == nil)
     {
-        return nil;
+        return [super responseOperationForRequest: request];
     }
+
 
     NSString * relPath = [m_LOXHTTPConnection_package resourceRelativePath: path];
     if (relPath == nil)
@@ -146,12 +161,28 @@ static LOXPackage * m_LOXHTTPConnection_package;
         return [super responseOperationForRequest: request];
     }
 
+	int contentLength = 0;
+
+    if (m_skipCache)
+    {
+        contentLength = resource.bytesCount;
+    }
+    else
+    {
+        contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath: resource.relativePath];
+
+        if (contentLength == 0) {
+            [[PackageResourceCache shared] addResource:resource];
+
+            contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath: resource.relativePath];
+        }
+    }
 
     NSString * rangeHeader = CFBridgingRelease(CFHTTPMessageCopyHeaderFieldValue(request, CFSTR("Range")));
     NSArray * ranges = nil;
     if ( rangeHeader != nil )
     {
-        ranges = [self parseRangeRequest: rangeHeader withContentLength: resource.bytesCount];
+        ranges = [self parseRangeRequest: rangeHeader withContentLength: contentLength];
     }
 
     LOXHTTPResponseOperation * op = [[LOXHTTPResponseOperation alloc] initWithRequest: request socket: self.socket ranges: ranges forConnection: self];
