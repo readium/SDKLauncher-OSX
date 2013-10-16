@@ -87,12 +87,16 @@ static NSData *m_key = nil;
 	size_t bufferSize = kSDKLauncherPackageResourceBufferSize + kCCBlockSizeAES128;
 	UInt8 buffer[bufferSize];
 
+    UInt32 total = 0;
+
 	while (YES) {
 		NSData *chunk = [resource createNextChunkByReading];
 
 		if (chunk == nil) {
 			break;
 		}
+
+        total += [chunk length];
 
         if (m_skipCrypt)
         {
@@ -127,6 +131,8 @@ static NSData *m_key = nil;
 	}
 
 	[stream close];
+
+    NSAssert(total == [resource bytesCount], @"addResource: resource total bytes mismatch??");
 }
 
 
@@ -135,7 +141,7 @@ static NSData *m_key = nil;
 // is encrypted, we need to do some math as well as decrypt the final chunk to discover the
 // true content length.
 //
-- (int)contentLengthAtRelativePath:(NSString *)relativePath {
+- (int)contentLengthAtRelativePath:(NSString *)relativePath resource:(RDPackageResource *)resource {
 	int contentLength = 0;
 
 	if (relativePath == nil || relativePath.length == 0) {
@@ -147,7 +153,10 @@ static NSData *m_key = nil;
 	NSFileManager *fm = [NSFileManager defaultManager];
 	NSDictionary *attributes = [fm attributesOfItemAtPath:path error:nil];
 
-	if (attributes != nil) {
+    if (attributes == nil) {
+        return 0;
+    }
+	else {
 		int fileSize = attributes.fileSize;
 
 		if (fileSize == 0) {
@@ -156,6 +165,7 @@ static NSData *m_key = nil;
 
         if (m_skipCrypt)
         {
+            NSAssert(fileSize == [resource bytesCount], @"contentLengthAtRelativePath: resource total bytes mismatch??");
             return fileSize;
         }
 
@@ -205,6 +215,7 @@ static NSData *m_key = nil;
 		}
 	}
 
+    NSAssert(contentLength == [resource bytesCount], @"contentLengthAtRelativePath: resource total bytes mismatch??");
 	return contentLength;
 }
 
@@ -221,12 +232,12 @@ static NSData *m_key = nil;
 // the first chunk of data, pulling out some of its bytes, decrypting the middle chunks of
 // data, then decrypting the final chunk and pulling out some of its bytes.
 //
-- (NSData *)dataAtRelativePath:(NSString *)relativePath range:(NSRange)range {
+- (NSData *)dataAtRelativePath:(NSString *)relativePath range:(NSRange)range resource:(RDPackageResource *)resource {
 	if (range.length == 0) {
 		return [NSData data];
 	}
 
-	int contentLength = [self contentLengthAtRelativePath:relativePath];
+	int contentLength = [self contentLengthAtRelativePath:relativePath resource:resource];
 
 	if (NSMaxRange(range) > contentLength) {
 		NSLog(@"The requested data range is out of bounds!");

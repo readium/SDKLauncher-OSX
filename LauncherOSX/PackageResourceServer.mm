@@ -22,22 +22,67 @@
 
 #ifdef USE_SIMPLE_HTTP_SERVER
 
+static LOXPackage * m_LOXHTTPConnection_package;
+
+//static dispatch_semaphore_t m_byteStreamResourceLock;
+//
+//#define LOCKED(block) do {\
+//        dispatch_semaphore_wait(m_byteStreamResourceLock, DISPATCH_TIME_FOREVER);\
+//        @try {\
+//            block();\
+//        } @finally {\
+//            dispatch_semaphore_signal(m_byteStreamResourceLock);\
+//        }\
+//    } while (0);
+
+
+//[NSThread isMainThread]  ------  dispatch_get_current_queue() == dispatch_get_main_queue()
+//#define MAINQ(block) if ([NSThread isMainThread]) {\
+//NSLog(@"MAINQ - main thread");\
+//block();\
+//} else {\
+//NSLog(@"MAINQ - other thread");\
+//dispatch_sync(dispatch_get_main_queue(), block);\
+//}
+
+//
+//dispatch_sync(self.queue, ^{});
+//
+
 @implementation LOXHTTPResponseOperation
+
+//dispatch_semaphore_t    _lock;
+//@synthesize lock=_lock;
 
 LOXPackage * m_package;
 RDPackageResource * m_resource;
 
+//- (id) init
+//{
+//    self = [super init];
+//    if ( self == nil )
+//        return ( nil );
+//
+//    // create a critical section lock
+//    _lock = dispatch_semaphore_create(1);
+//
+//    return ( self );
+//}
+
 - (void)initialiseData:(LOXPackage *)package resource:(RDPackageResource *)resource
 {
-    m_package = package;
+    m_package = [package retain];
     m_resource = [resource retain];
 
     if (m_debugAssetStream)
     {
         NSLog(@"LOXHTTPResponseOperation: %@", m_resource.relativePath);
-        NSLog(@"LOXHTTPResponseOperation: %d", m_resource.bytesCount);
+        NSLog(@"LOXHTTPResponseOperation: %ld", m_resource.bytesCount);
+        NSLog(@"LOXHTTPResponseOperation: %@", self);
     }
 
+    // critical section
+    //_lock = dispatch_semaphore_create(1);
 }
 
 - (void)dealloc {
@@ -46,6 +91,16 @@ RDPackageResource * m_resource;
         NSLog(@"DEALLOC LOXHTTPResponseOperation: %@", m_resource.relativePath);
         NSLog(@"DEALLOC LOXHTTPResponseOperation: %@", self);
     }
+//
+//#if DISPATCH_USES_ARC == 0
+//    if ( _lock != NULL )
+//    {
+//        dispatch_release(_lock);
+//        _lock = NULL;
+//    }
+//#endif
+    
+    [m_package release];
     [m_resource release];
     [super dealloc];
 }
@@ -98,25 +153,38 @@ RDPackageResource * m_resource;
 
 - (NSData *) readDataFromByteRange: (DDRange) range
 {
-    if (m_skipCache)
+    if (m_debugAssetStream)
     {
-        return [m_resource createChunkByReadingRange:NSRangeFromDDRange(range) package:m_package];
+        NSLog(@"LOCK readDataFromByteRange: %@", self);
     }
-    else
+
+    __block NSData * result = nil;
+//    LOCKED(^{
+        if (m_skipCache)
+        {
+            result = [m_resource createChunkByReadingRange:NSRangeFromDDRange(range) package:m_package];
+        }
+        else
+        {
+            result = [[PackageResourceCache shared] dataAtRelativePath: m_resource.relativePath range:NSRangeFromDDRange(range) resource:m_resource];
+        }
+//    });
+
+    if (m_debugAssetStream)
     {
-        return [[PackageResourceCache shared] dataAtRelativePath: m_resource.relativePath range:NSRangeFromDDRange(range)];
+        NSLog(@"un-LOCK readDataFromByteRange: %@", self);
     }
+    return result;
 }
 
 @end
 
 @implementation LOXHTTPConnection
 
-static LOXPackage * m_LOXHTTPConnection_package;
-+ (void)setPackage:(LOXPackage *)package
-{
-    m_LOXHTTPConnection_package = package;
-}
+//+ (void)setPackage:(LOXPackage *)package
+//{
+//    m_LOXHTTPConnection_package = package;
+//}
 
 - (BOOL) supportsPipelinedRequests
 {
@@ -169,12 +237,12 @@ static LOXPackage * m_LOXHTTPConnection_package;
     }
     else
     {
-        contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath: resource.relativePath];
+        contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath: resource.relativePath resource:resource];
 
         if (contentLength == 0) {
             [[PackageResourceCache shared] addResource:resource];
 
-            contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath: resource.relativePath];
+            contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath: resource.relativePath resource:resource];
         }
     }
 
@@ -258,6 +326,16 @@ const static int m_socketTimeout = 60;
 - (void)dealloc {
 
 #ifdef USE_SIMPLE_HTTP_SERVER
+
+//#if DISPATCH_USES_ARC == 0
+//    if ( m_byteStreamResourceLock != NULL )
+//    {
+//        //dispatch_semaphore_signal(m_byteStreamResourceLock);
+//        dispatch_release(m_byteStreamResourceLock);
+//        m_byteStreamResourceLock = NULL;
+//    }
+//#endif
+
     if ([m_server isListening])
     {
         [m_server stop];
@@ -287,9 +365,15 @@ const static int m_socketTimeout = 60;
 	}
 
 	if (self = [super init]) {
+
 		m_package = [package retain];
 
 #ifdef USE_SIMPLE_HTTP_SERVER
+
+        // create a critical section lock
+//        m_byteStreamResourceLock = dispatch_semaphore_create(1);
+
+
 //        NSString * port = [NSString stringWithFormat:@"%d", kSDKLauncherPackageResourceServerPort];
 //        NSString * address = [@"localhost:" stringByAppendingString:port];
         NSString * address = @"localhost";
@@ -297,7 +381,8 @@ const static int m_socketTimeout = 60;
 
         m_server = [[AQHTTPServer alloc] initWithAddress: address root: url];
 
-        [LOXHTTPConnection setPackage: m_package];
+//        [LOXHTTPConnection setPackage: m_package];
+        m_LOXHTTPConnection_package = m_package;
         [m_server setConnectionClass:[LOXHTTPConnection class]];
 
         NSError * error = nil;
@@ -308,7 +393,7 @@ const static int m_socketTimeout = 60;
             return nil;
         }
         m_kSDKLauncherPackageResourceServerPort = [m_server serverPort];
-        NSLog([m_server serverAddress]);
+        NSLog(@"%@", [m_server serverAddress]);
 #else
 		m_requests = [[NSMutableArray alloc] init];
 		m_mainSocket = [[AsyncSocket alloc] initWithDelegate:self];
@@ -485,13 +570,13 @@ const static int m_socketTimeout = 60;
     else
     {
         contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath:
-		request.resource.relativePath];
+		request.resource.relativePath resource:request.resource];
 
         if (contentLength == 0) {
             [[PackageResourceCache shared] addResource:request.resource];
 
             contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath:
-                request.resource.relativePath];
+                request.resource.relativePath resource:request.resource];
         }
     }
 
@@ -652,7 +737,7 @@ const static int m_socketTimeout = 60;
     else
     {
         data = [[PackageResourceCache shared] dataAtRelativePath:
-                request.resource.relativePath range:range];
+                request.resource.relativePath range:range resource:request.resource];
     }
 
 	if (data == nil || data.length != p1 - p0) {

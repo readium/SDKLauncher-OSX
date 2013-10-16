@@ -12,7 +12,7 @@
 @class LOXPackage;
 @class RDPackageResource;
 
-static const BOOL m_skipCache = true;
+static const BOOL m_skipCache = false;
 
 #ifdef USE_SIMPLE_HTTP_SERVER
 
@@ -24,6 +24,7 @@ static const BOOL m_skipCache = true;
 @interface LOXHTTPResponseOperation : AQHTTPResponseOperation<AQRandomAccessFile>
 {
 }
+//@property (nonatomic, readonly) dispatch_semaphore_t lock;
 - (void)initialiseData:(LOXPackage *)package resource:(RDPackageResource *)resource;
 @end
 

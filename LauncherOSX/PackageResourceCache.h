@@ -12,7 +12,7 @@
 #import <SystemConfiguration/SCDynamicStore.h>
 #import <IOKit/IOKitLib.h>
 
-static const BOOL m_skipCrypt = true;
+static const BOOL m_skipCrypt = false;
 
 @class RDPackageResource;
 
@@ -135,9 +135,10 @@ static NSString * GetMACAddressDisplayString()
 }
 
 - (void)addResource:(RDPackageResource *)resource;
-- (int)contentLengthAtRelativePath:(NSString *)relativePath;
+- (int)contentLengthAtRelativePath:(NSString *)relativePath resource:(RDPackageResource *)resource;
 //- (NSData *)dataAtRelativePath:(NSString *)relativePath;
-- (NSData *)dataAtRelativePath:(NSString *)relativePath range:(NSRange)range;
+- (NSData *)dataAtRelativePath:(NSString *)relativePath range:(NSRange)range resource:(RDPackageResource *)resource;
+
 + (PackageResourceCache *)shared;
 
 @end

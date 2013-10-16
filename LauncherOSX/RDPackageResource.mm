@@ -16,7 +16,7 @@
 @interface RDPackageResource() {
 @private ePub3::ByteStream* m_byteStream;
 @private NSString *m_relativePath;
-@private int m_bytesRead;
+@private UInt32 m_bytesRead;
 @private std::size_t m_bytesCount;
 @private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
 @private NSData *m_data;
@@ -35,6 +35,11 @@
 
 - (NSData *)createChunkByReadingRange:(NSRange)range package:(LOXPackage *)package {
 
+    if (m_debugAssetStream)
+    {
+        NSLog(@"BYTESTREAM READ %ld", m_byteStream);
+    }
+
     if (range.length == 0) {
         return [NSData data];
     }
@@ -42,11 +47,11 @@
     if (m_debugAssetStream)
     {
         NSLog(@"ByteStream Range %@", m_relativePath);
-        NSLog(@"%d - %d", range.location, range.length);
+        NSLog(@"%ld - %ld", range.location, range.length);
 
         if (m_bytesRead > 0)
         {
-            NSLog(@"=== ByteStream READALREADY %d", m_bytesRead);
+            NSLog(@"=== ByteStream READALREADY %ld", m_bytesRead);
         }
     }
 
@@ -70,7 +75,7 @@
 
     if (m_debugAssetStream)
     {
-        NSLog(@"ByteStream COUNT: %d", m_bytesCount);
+        NSLog(@"ByteStream COUNT: %ld", m_bytesCount);
     }
 
     if (NSMaxRange(range) > m_bytesCount) {
@@ -78,11 +83,12 @@
         return nil;
     }
 
-    int bytesToSkip = range.location - m_bytesRead;
+    UInt32 bytesToSkip = range.location - m_bytesRead;
 
     if (m_debugAssetStream)
     {
-        NSLog(@"ByteStream SKIP: %d", bytesToSkip);
+        NSLog(@"TOTAL %ld", m_byteStream->BytesAvailable());
+        NSLog(@"ByteStream TO SKIP: %ld", bytesToSkip);
     }
 
     int bufSize = sizeof(m_buffer);
@@ -113,15 +119,20 @@
         }
     }
     m_bytesRead += count;
-    NSAssert(count == bytesToSkip, @"bytes skip mismatch??");
-
-    int bytesToRead = range.length;
 
     if (m_debugAssetStream)
     {
-        NSLog(@"ByteStream READ: %d", bytesToRead);
+        NSLog(@"count %ld == bytesToSkip %ld ?", count, bytesToSkip);
     }
+    NSAssert(count == bytesToSkip, @"bytes skip mismatch??");
 
+    UInt32 bytesToRead = range.length;
+
+    if (m_debugAssetStream)
+    {
+        NSLog(@"TOTAL %ld", m_byteStream->BytesAvailable());
+        NSLog(@"ByteStream TO READ: %ld", bytesToRead);
+    }
 
     NSMutableData *md = [NSMutableData dataWithCapacity:bytesToRead];
 
@@ -151,7 +162,12 @@
         }
     }
     m_bytesRead += count;
-    NSAssert(count == bytesToRead, @"bytes skip mismatch??");
+
+    if (m_debugAssetStream)
+    {
+        NSLog(@"count %ld == bytesToRead %ld ?", count, bytesToRead);
+    }
+    NSAssert(count == bytesToRead, @"bytes read mismatch??");
 
     return md;
 }
@@ -190,7 +206,7 @@
 
     if (m_debugAssetStream)
     {
-        NSLog(@"ByteStream WHOLE: %d (%@)", m_bytesCount, m_relativePath);
+        NSLog(@"ByteStream WHOLE: %ld (%@)", m_bytesCount, m_relativePath);
     }
 
 	return m_data;
@@ -202,6 +218,10 @@
     // calls Close() on ByteStream destruction
     if (m_byteStream != nullptr)
     {
+        if (m_debugAssetStream)
+        {
+            NSLog(@"BYTESTREAM DEALLOC %ld", m_byteStream);
+        }
         delete m_byteStream;
     }
 
@@ -230,7 +250,8 @@
 
         if (m_debugAssetStream)
         {
-            NSLog(@"INIT ByteStream: %@ (%d)", m_relativePath, m_bytesCount);
+            NSLog(@"INIT ByteStream: %@ (%ld)", m_relativePath, m_bytesCount);
+            NSLog(@"BYTESTREAM INIT %ld", m_byteStream);
         }
 	}
 
