@@ -54,7 +54,7 @@
         auto metadata = ePub3::MediaOverlaysMetadata::GetDuration(sdkPackage);
         NSString* duration = metadata == nullptr ? @"" : [NSString stringWithUTF8String: metadata->c_str()];
 
-        self.duration = [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
+        self.duration = [duration length] == 0 ? 0 : [NSNumber numberWithDouble: ePub3::SmilClockValuesParser::ToSeconds([duration UTF8String])];
         NSLog(@"=== TOTAL MO DURATION: %s => %ldms", [duration UTF8String], (long) floor([self.duration doubleValue] * 1000.0));
 
 
