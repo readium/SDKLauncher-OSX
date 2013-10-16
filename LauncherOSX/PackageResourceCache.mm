@@ -159,6 +159,11 @@ static NSData *m_key = nil;
             return fileSize;
         }
 
+        if (m_debugAssetStream)
+        {
+            NSLog(@"DECRYPT for content length");
+        }
+
 		int bufferSize = kSDKLauncherPackageResourceBufferSize + kCCBlockSizeAES128;
 		int chunkCount = (fileSize - 1) / bufferSize;
 		contentLength = chunkCount * kSDKLauncherPackageResourceBufferSize;
