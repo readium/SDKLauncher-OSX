@@ -316,7 +316,7 @@ dispatch_sync(dispatch_get_main_queue(), block);\
         return [super responseOperationForRequest: request];
     }
 
-	int contentLength = 0;
+    __block int contentLength = 0;
 
     if (m_skipCache)
     {
@@ -324,13 +324,15 @@ dispatch_sync(dispatch_get_main_queue(), block);\
     }
     else
     {
-        contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath: resource.relativePath resource:resource];
-
-        if (contentLength == 0) {
-            [[PackageResourceCache shared] addResource:resource];
-
+        LOCKED(^{
             contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath: resource.relativePath resource:resource];
-        }
+
+            if (contentLength == 0) {
+                [[PackageResourceCache shared] addResource:resource];
+
+                contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath: resource.relativePath resource:resource];
+            }
+        });
     }
 
     if (contentLength == 0)
