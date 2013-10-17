@@ -30,6 +30,11 @@
 #import "LOXCSSStyle.h"
 #import "LOXUtil.h"
 #import "LOXMediaOverlayController.h"
+#import "PackageResourceServer.h"
+#import "EPubURLProtocol.h"
+#import "EPubURLProtocolBridge.h"
+#import "RDPackageResource.h"
+#import <ePub3/utilities/byte_stream.h>
 
 
 @interface LOXWebViewController ()
@@ -41,14 +46,103 @@
 - (void)updateSettings:(LOXPreferences *)preferences;
 
 - (void)updateUI;
-
 @end
+
 
 @implementation LOXWebViewController {
 
     LOXPackage *_package;
     NSString* _baseUrlPath;
     LOXPreferences *_preferences;
+}
+
+
+- (NSURLRequest *)webView:(WebView *)sender
+                 resource:(id)identifier
+          willSendRequest:(NSURLRequest *)request
+         redirectResponse:(NSURLResponse *)redirectResponse
+           fromDataSource:(WebDataSource *)dataSource
+{
+    if (_package == nil)
+    {
+        return request;
+    }
+
+    if (request.URL == nil)
+    {
+        return request;
+    }
+
+    NSString *scheme = request.URL.scheme;
+
+    if (scheme == nil)
+    {
+        return request;
+    }
+
+    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame
+            && [scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] != NSOrderedSame)
+    {
+        return request;
+    }
+
+    NSString *path = request.URL.path;
+    if (path == nil)
+    {
+        return request;
+    }
+
+    if ([path hasPrefix:@"/"]) {
+        path = [path substringFromIndex:1];
+    }
+
+    auto ext = [path pathExtension];
+    if ([ext caseInsensitiveCompare: @"mp4"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"mp3"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"aiff"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"wav"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"ogg"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"ogv"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"mov"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"avi"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"webm"] == NSOrderedSame
+            )
+    {
+        NSString * str = [[NSString stringWithFormat:@"http://localhost:%d/%@/%@",
+                        [m_resourceServer serverPort],
+                        _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:str];
+
+        if (DEBUGMIN)
+        {
+            NSLog(@"***** REQ URL %@", url);
+        }
+
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [newRequest setURL: url];
+        return newRequest;
+    }
+
+    if ([scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] == NSOrderedSame)
+    {
+        if (DEBUGMIN)
+        {
+            NSLog(@"----- REQ URL %@", request.URL);
+        }
+        return request;
+    }
+
+    NSString * str = [[NSString stringWithFormat:@"%@://%@/%@", kSDKLauncherWebViewSDKProtocol, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+    NSURL *url = [NSURL URLWithString:str];
+
+    if (DEBUGMIN)
+    {
+        NSLog(@"===== REQ URL %@", url);
+    }
+
+    NSMutableURLRequest *newRequest = [request mutableCopy];
+    [newRequest setURL: url];
+    return newRequest;
 }
 
 - (LOXPackage *) loxPackage
@@ -58,14 +152,23 @@
 
 - (void)awakeFromNib
 {
+    [NSURLProtocol registerClass:[EPubURLProtocol class]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver:self
                                              selector:@selector(onPageChanged:)
                                                  name:LOXPageChangedEvent
                                                object:nil];
 
+    [nc addObserver:self selector:@selector(onProtocolBridgeNeedsResponse:)
+               name:kSDKLauncherEPubURLProtocolBridgeNeedsResponse object:nil];
+
+    self.isZipVsCache = [NSNumber numberWithBool:NO];
+
     NSString* html = [self loadHtmlTemplate];
     NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
+
     [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
 }
 
@@ -113,11 +216,39 @@
 }
 
 
+- (void)onProtocolBridgeNeedsResponse:(NSNotification *)notification {
+    NSURL *url = [notification.userInfo objectForKey:@"url"];
+
+    RDPackageResource* res = [_package resourceForUrl: url];
+    if (res == nil)
+    {
+        return;
+    }
+
+    NSData *data = [res readAllDataChunks];
+
+    if (data != nil) {
+        EPubURLProtocolBridge *bridge = notification.object;
+        bridge.currentData = data; // retained
+    }
+
+    [res release]; // was alloc'ed
+    //[res autorelease];
+    //res = nil;
+}
+
 -(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
 {
     [_package release];
     _package = package;
     [_package retain];
+
+    if (m_resourceServer != nil)
+    {
+        [m_resourceServer release];
+    }
+    BOOL zip = [self.isZipVsCache intValue] != 0;
+    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package resourcesFromZipStream_NoFileSystemEncryptedCache: zip]; //retained
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
@@ -154,20 +285,6 @@
     [script evaluateWebScript: @"ReadiumSDK.reader.reset()"];
 }
 
-
-- (NSURLRequest *)webView:(WebView *)sender
-                 resource:(id)identifier
-          willSendRequest:(NSURLRequest *)request
-         redirectResponse:(NSURLResponse *)redirectResponse
-           fromDataSource:(WebDataSource *)dataSource
-{
-
-    NSString *path = request.URL.path;
-
-    [_package prepareResourceWithPath: path];
-
-    return request;
-}
 
 //this allows JavaScript to call the -logJavaScriptString: method
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
@@ -356,6 +473,11 @@
     [_baseUrlPath release];
     [_preferences removeChangeObserver:self];
     [_preferences release];
+
+    if (m_resourceServer != nil)
+    {
+        [m_resourceServer release];
+    }
 
     [super dealloc];
 }

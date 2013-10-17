@@ -20,9 +20,12 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #import <WebKit/WebKit.h>
-#import <WebKit/WebResourceLoadDelegate.h>
+
 #import "LOXSpineViewController.h"
+
+#import <WebKit/WebResourceLoadDelegate.h>
 
 @class LOXePubSdkApi;
 @class LOXPageNumberTextController;
@@ -34,12 +37,13 @@
 @class LOXPreferences;
 @class LOXCSSStyle;
 @class WebView;
-
+@class PackageResourceServer;
 
 @interface LOXWebViewController : NSObject<LOXSpineViewControllerDelegate> {
 
 @private
     IBOutlet WebView *_webView;
+    @private PackageResourceServer *m_resourceServer;
 }
 - (LOXPackage *) loxPackage;
 
@@ -59,6 +63,12 @@
 - (void)onReaderInitialized;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+
+
+@property (nonatomic, retain) NSNumber *isZipVsCache;
+//@property (assign) IBOutlet NSButton *toggleButtonZipVsCache;
+//- (IBAction)onToggleZipVsCache:(id)sender;
+
 
 @property (assign) IBOutlet NSButton *leftPageButton;
 @property (assign) IBOutlet NSButton *rightPageButton;
