@@ -15,6 +15,16 @@
 #import "DDRange.h"
 #import "DDNumber.h"
 
+
+#define LOCK_ME(block) do {\
+        dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER);\
+        @try {\
+            block();\
+        } @finally {\
+            dispatch_semaphore_signal(_lock);\
+        }\
+    } while (0);
+
 @interface AQHTTPConnection ()
 - (void) _setEventHandlerOnSocket;
 - (void) _handleIncomingData: (AQSocketReader *) reader;
@@ -32,6 +42,7 @@
     CFHTTPMessageRef _incomingMessage;
     
     NSTimer *   _idleDisconnectionTimer;
+    dispatch_semaphore_t _lock;
     
     AQHTTPServer * __maybe_weak _server;
 }
@@ -49,6 +60,9 @@
     
     _requestQ = [NSOperationQueue new];
     _requestQ.maxConcurrentOperationCount = 1;
+
+    // create a critical section lock
+    _lock = dispatch_semaphore_create(1);
     
     // don't install the event handler until we've got the queue ready: the event handler might be called immediately if data has already arrived.
     _socket = aSocket;
@@ -69,6 +83,16 @@
     if ( _incomingMessage != NULL )
         CFRelease(_incomingMessage);
     _socket.eventHandler = nil;
+
+#if DISPATCH_USES_ARC == 0
+    if ( _lock != NULL )
+    {
+        //dispatch_semaphore_signal(_lock);
+        dispatch_release(_lock);
+        _lock = NULL;
+    }
+#endif
+
 #if USING_MRR
     [_documentRoot release];
     [_socket release];
@@ -288,19 +312,20 @@
 
 - (void) _maybeInstallIdleTimer
 {
-    if ( [_requestQ operationCount] != 0 )
-        return;
-    
-    if ( _idleDisconnectionTimer != nil )
-        return;
-    
-    _idleDisconnectionTimer = [[NSTimer alloc] initWithFireDate: [NSDate dateWithTimeIntervalSinceNow: 2.0]
-                                                       interval: 2.0
-                                                         target: self
-                                                       selector: @selector(_checkIdleTimer:)
-                                                       userInfo: nil
-                                                        repeats: NO];
-    [[NSRunLoop mainRunLoop] addTimer: _idleDisconnectionTimer forMode: NSRunLoopCommonModes];
+    LOCK_ME(^{
+
+    if ( [_requestQ operationCount] == 0 &&  _idleDisconnectionTimer == nil )
+    {
+        _idleDisconnectionTimer = [[NSTimer alloc] initWithFireDate: [NSDate dateWithTimeIntervalSinceNow: 2.0]
+                                                           interval: 2.0
+                                                             target: self
+                                                           selector: @selector(_checkIdleTimer:)
+                                                           userInfo: nil
+                                                            repeats: NO];
+        [[NSRunLoop mainRunLoop] addTimer: _idleDisconnectionTimer forMode: NSRunLoopCommonModes];
+    }
+
+    });
 }
 
 - (void) _checkIdleTimer: (NSTimer *) timer
@@ -427,6 +452,7 @@
                 NSLog(@"AQHTTPResponseOperation");
     #endif
                 [op setCompletionBlock: ^{ [self _maybeInstallIdleTimer]; }];
+                LOCK_ME(^{
 
                 if ( [_idleDisconnectionTimer isValid] )
                 {
@@ -441,6 +467,8 @@
                 }
 
                 [_requestQ addOperation: op];
+
+                });
             }
             else
             {

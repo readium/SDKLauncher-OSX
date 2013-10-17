@@ -113,7 +113,10 @@
                         _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
         NSURL *url = [NSURL URLWithString:str];
 
-        NSLog(@"***** REQ URL %@", url);
+        if (DEBUGMIN)
+        {
+            NSLog(@"***** REQ URL %@", url);
+        }
 
         NSMutableURLRequest *newRequest = [request mutableCopy];
         [newRequest setURL: url];
@@ -122,14 +125,20 @@
 
     if ([scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] == NSOrderedSame)
     {
-        NSLog(@"----- REQ URL %@", request.URL);
+        if (DEBUGMIN)
+        {
+            NSLog(@"----- REQ URL %@", request.URL);
+        }
         return request;
     }
 
     NSString * str = [[NSString stringWithFormat:@"%@://%@/%@", kSDKLauncherWebViewSDKProtocol, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:str];
 
-    NSLog(@"===== REQ URL %@", url);
+    if (DEBUGMIN)
+    {
+        NSLog(@"===== REQ URL %@", url);
+    }
 
     NSMutableURLRequest *newRequest = [request mutableCopy];
     [newRequest setURL: url];

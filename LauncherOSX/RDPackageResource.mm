@@ -270,6 +270,12 @@
 	if (self = [super init]) {
         m_byteStream = byteStream;
         m_bytesCount = m_byteStream->BytesAvailable();
+
+        if (m_bytesCount == 0)
+        {
+            NSLog(@"m_bytesCount == 0 ????");
+        }
+
         m_bytesRead = 0;
 
 		m_relativePath = relativePath;

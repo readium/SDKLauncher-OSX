@@ -205,7 +205,10 @@ dispatch_sync(dispatch_get_main_queue(), block);\
         return [NSData data];
     }
 
-    NSLog(@"[%ld ... %ld] (%ld / %ld)", range.location, range.location+range.length-1, range.length, m_resource.bytesCount);
+    if (DEBUGMIN)
+    {
+        NSLog(@"[%ld ... %ld] (%ld / %ld)", range.location, range.location+range.length-1, range.length, m_resource.bytesCount);
+    }
 
     if (range.length == 0 || m_resource.bytesCount == 0)
     {
@@ -302,7 +305,12 @@ dispatch_sync(dispatch_get_main_queue(), block);\
         return [super responseOperationForRequest: request];
     }
 
-    RDPackageResource *resource = [m_LOXHTTPConnection_package resourceAtRelativePath:relPath];
+    __block RDPackageResource *resource =nil;
+
+    LOCKED(^{
+        resource = [m_LOXHTTPConnection_package resourceAtRelativePath:relPath];
+    });
+
     if (resource == nil)
     {
         return [super responseOperationForRequest: request];
@@ -323,6 +331,12 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 
             contentLength = [[PackageResourceCache shared] contentLengthAtRelativePath: resource.relativePath resource:resource];
         }
+    }
+
+    if (contentLength == 0)
+    {
+        NSLog(@"WHAT? contentLength 0");
+        return [super responseOperationForRequest: request];
     }
 
     NSString * rangeHeader = CFBridgingRelease(CFHTTPMessageCopyHeaderFieldValue(request, CFSTR("Range")));
@@ -505,8 +519,11 @@ NSLog(@"Skip encrypted filesystem cache, use direct ZIP byte stream: %d", m_skip
         }
         m_kSDKLauncherPackageResourceServerPort = [m_server serverPort];
 
-        NSLog(@"HTTP");
-        NSLog(@"%@", [m_server serverAddress]);
+        if (DEBUGMIN)
+        {
+            NSLog(@"HTTP");
+            NSLog(@"%@", [m_server serverAddress]);
+        }
 #else
 #error "HTTP ???"
 		m_requests = [[NSMutableArray alloc] init];
