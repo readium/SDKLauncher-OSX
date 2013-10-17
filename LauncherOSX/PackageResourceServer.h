@@ -12,7 +12,7 @@
 @class LOXPackage;
 @class RDPackageResource;
 
-static const BOOL m_skipCache = true;
+static BOOL m_skipCache = true;
 
 #ifdef USE_SIMPLE_HTTP_SERVER
 
@@ -49,7 +49,7 @@ static const BOOL m_skipCache = true;
 #endif
 }
 
-- (id)initWithPackage:(LOXPackage *)package;
+- (id)initWithPackage:(LOXPackage *)package resourcesFromZipStream_NoFileSystemEncryptedCache:(BOOL)resourcesFromZipStream_NoFileSystemEncryptedCache;
 
 - (int) serverPort;
 

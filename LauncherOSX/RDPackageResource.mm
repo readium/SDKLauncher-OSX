@@ -121,11 +121,20 @@
     }
     m_bytesRead += count;
 
-    if (DEBUGLOG)
+    if (DEBUGLOG || count != bytesToSkip)
     {
         NSLog(@"count %ld == bytesToSkip %ld ?", count, bytesToSkip);
     }
-    NSAssert(count == bytesToSkip, @"bytes skip mismatch??");
+    if (count != bytesToSkip)
+    {
+        NSLog(@"MISMATCH!!");
+        return [NSData data];
+    }
+
+//    if (DEBUGLOG)
+//    {
+//        NSAssert(count == bytesToSkip, @"bytes skip mismatch??");
+//    }
 
     UInt32 bytesToRead = range.length;
 
@@ -164,11 +173,20 @@
     }
     m_bytesRead += count;
 
-    if (DEBUGLOG)
+    if (DEBUGLOG || count != bytesToRead)
     {
         NSLog(@"count %ld == bytesToRead %ld ?", count, bytesToRead);
     }
-    NSAssert(count == bytesToRead, @"bytes read mismatch??");
+    if (count != bytesToRead)
+    {
+        NSLog(@"MISMATCH!!");
+        return [NSData data];
+    }
+
+//    if (DEBUGLOG)
+//    {
+//        NSAssert(count == bytesToRead, @"bytes read mismatch??");
+//    }
 
     return md;
 }

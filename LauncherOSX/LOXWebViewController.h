@@ -64,6 +64,12 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 
+
+@property (nonatomic, retain) NSNumber *isZipVsCache;
+//@property (assign) IBOutlet NSButton *toggleButtonZipVsCache;
+//- (IBAction)onToggleZipVsCache:(id)sender;
+
+
 @property (assign) IBOutlet NSButton *leftPageButton;
 @property (assign) IBOutlet NSButton *rightPageButton;
 

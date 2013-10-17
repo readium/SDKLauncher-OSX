@@ -155,6 +155,8 @@
     [nc addObserver:self selector:@selector(onProtocolBridgeNeedsResponse:)
                name:kSDKLauncherEPubURLProtocolBridgeNeedsResponse object:nil];
 
+    self.isZipVsCache = [NSNumber numberWithBool:NO];
+
     NSString* html = [self loadHtmlTemplate];
     NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
 
@@ -236,7 +238,8 @@
     {
         [m_resourceServer release];
     }
-    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package]; //retained
+    BOOL zip = [self.isZipVsCache intValue] != 0;
+    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package resourcesFromZipStream_NoFileSystemEncryptedCache: zip]; //retained
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 

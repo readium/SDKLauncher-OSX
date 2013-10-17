@@ -55,6 +55,8 @@ static NSData *m_key = nil;
 		return;
 	}
 
+    NSLog(@"CACHE");
+
 	NSString *relativePath = resource.relativePath;
 
 	if (relativePath == nil || relativePath.length == 0) {

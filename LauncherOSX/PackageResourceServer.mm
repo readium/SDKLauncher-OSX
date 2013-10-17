@@ -199,32 +199,47 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 
 - (NSData *) readDataFromByteRange: (DDRange) range
 {
+    if (m_resource == nil)
+    {
+        NSLog(@"NOT READY?!");
+        return [NSData data];
+    }
+
+    NSLog(@"[%ld ... %ld] (%ld / %ld)", range.location, range.location+range.length-1, range.length, m_resource.bytesCount);
+
+    if (range.length == 0 || m_resource.bytesCount == 0)
+    {
+        NSLog(@"WTF?!");
+        return [NSData data];
+    }
+
     __block NSData * result = nil;
 
-    if (m_skipCache)
+    if (DEBUGLOG)
     {
-        if (DEBUGLOG)
-        {
-            NSLog(@"LOCK readDataFromByteRange: %@", self);
-        }
+        NSLog(@"LOCK readDataFromByteRange: %@", self);
+    }
 
-        LOCKED(^{
-            result = [m_resource createChunkByReadingRange:NSRangeFromDDRange(range) package:m_package];
+    LOCKED(^{
+
+                if (m_skipCache)
+                {
+                    result = [m_resource createChunkByReadingRange:NSRangeFromDDRange(range) package:m_package];
+                }
+                else
+                {
+                    result = [[PackageResourceCache shared] dataAtRelativePath: m_resource.relativePath range:NSRangeFromDDRange(range) resource:m_resource];
+                }
         });
 
-        if (DEBUGLOG)
-        {
-            NSLog(@"un-LOCK readDataFromByteRange: %@", self);
-        }
-    }
-    else
+    if (DEBUGLOG)
     {
-        result = [[PackageResourceCache shared] dataAtRelativePath: m_resource.relativePath range:NSRangeFromDDRange(range) resource:m_resource];
+        NSLog(@"un-LOCK readDataFromByteRange: %@", self);
     }
 
     //result = [NSData data];
-
     //[result autorelease];
+
     return result;
 }
 
@@ -443,7 +458,7 @@ const static int m_socketTimeout = 60;
 	[super dealloc];
 }
 
-- (id)initWithPackage:(LOXPackage *)package {
+- (id)initWithPackage:(LOXPackage *)package resourcesFromZipStream_NoFileSystemEncryptedCache:(BOOL)resourcesFromZipStream_NoFileSystemEncryptedCache {
 	if (package == nil) {
 		[self release];
 		return nil;
@@ -453,7 +468,12 @@ const static int m_socketTimeout = 60;
 
 		m_package = [package retain];
 
+        m_skipCache = resourcesFromZipStream_NoFileSystemEncryptedCache;
+
+NSLog(@"Skip encrypted filesystem cache, use direct ZIP byte stream: %d", m_skipCache);
+
 #ifdef USE_SIMPLE_HTTP_SERVER
+
 
         // create a critical section lock
         m_byteStreamResourceLock = dispatch_semaphore_create(1);
@@ -484,8 +504,11 @@ const static int m_socketTimeout = 60;
             return nil;
         }
         m_kSDKLauncherPackageResourceServerPort = [m_server serverPort];
+
+        NSLog(@"HTTP");
         NSLog(@"%@", [m_server serverAddress]);
 #else
+#error "HTTP ???"
 		m_requests = [[NSMutableArray alloc] init];
 		m_mainSocket = [[AsyncSocket alloc] initWithDelegate:self];
 		[m_mainSocket setRunLoopModes:@[ NSRunLoopCommonModes ]];
