@@ -19,7 +19,7 @@
 @private UInt32 m_bytesRead;
 @private std::size_t m_bytesCount;
 @private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
-@private NSData *m_data;
+//@private NSData *m_data;
 }
 
 @end
@@ -28,14 +28,14 @@
 @implementation RDPackageResource
 
 
-@synthesize byteStream = m_byteStream;
+//@synthesize byteStream = m_byteStream;
 @synthesize bytesCount = m_bytesCount;
 @synthesize relativePath = m_relativePath;
 
 
 - (NSData *)createChunkByReadingRange:(NSRange)range package:(LOXPackage *)package {
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"BYTESTREAM READ %ld", m_byteStream);
     }
@@ -44,7 +44,7 @@
         return [NSData data];
     }
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"ByteStream Range %@", m_relativePath);
         NSLog(@"%ld - %ld", range.location, range.length);
@@ -60,9 +60,10 @@
         if (m_byteStream != nullptr)
         {
             delete m_byteStream;
+            m_byteStream = nullptr;
         }
 
-        if (m_debugAssetStream)
+        if (DEBUGLOG)
         {
             NSLog(@"=== ByteStream RESET");
         }
@@ -73,7 +74,7 @@
         m_bytesRead = 0;
     }
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"ByteStream COUNT: %ld", m_bytesCount);
     }
@@ -85,7 +86,7 @@
 
     UInt32 bytesToSkip = range.location - m_bytesRead;
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"TOTAL %ld", m_byteStream->BytesAvailable());
         NSLog(@"ByteStream TO SKIP: %ld", bytesToSkip);
@@ -120,7 +121,7 @@
     }
     m_bytesRead += count;
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"count %ld == bytesToSkip %ld ?", count, bytesToSkip);
     }
@@ -128,7 +129,7 @@
 
     UInt32 bytesToRead = range.length;
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"TOTAL %ld", m_byteStream->BytesAvailable());
         NSLog(@"ByteStream TO READ: %ld", bytesToRead);
@@ -163,7 +164,7 @@
     }
     m_bytesRead += count;
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"count %ld == bytesToRead %ld ?", count, bytesToRead);
     }
@@ -180,8 +181,8 @@
 }
 
 
-- (NSData *)data {
-	if (m_data == nil) {
+- (NSData *)readAllDataChunks {
+	//if (m_data == nil) {
 		NSMutableData *md = [NSMutableData data];
 
 		while (YES) {
@@ -196,20 +197,21 @@
 			}
 		}
 
-        if (m_debugAssetStream)
+        if (DEBUGLOG)
         {
             NSLog(@"ByteStream WHOLE read: %@", m_relativePath);
         }
 
-		m_data = [md retain];
-	}
+	//	m_data = [md retain];
+	//}
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"ByteStream WHOLE: %ld (%@)", m_bytesCount, m_relativePath);
     }
 
-	return m_data;
+    return md;
+	//return m_data;
 }
 
 
@@ -218,14 +220,19 @@
     // calls Close() on ByteStream destruction
     if (m_byteStream != nullptr)
     {
-        if (m_debugAssetStream)
+        if (DEBUGLOG)
         {
+            NSLog(@"DEALLOC BYTESTREAM");
             NSLog(@"BYTESTREAM DEALLOC %ld", m_byteStream);
         }
         delete m_byteStream;
+        m_byteStream = nullptr;
     }
-
-	[m_data release];
+//
+//    if (m_data != nil)
+//    {
+//        [m_data release];
+//    }
 	[m_relativePath release];
 
 	[super dealloc];
@@ -246,9 +253,11 @@
         m_byteStream = byteStream;
         m_bytesCount = m_byteStream->BytesAvailable();
         m_bytesRead = 0;
-		m_relativePath = [relativePath retain];
 
-        if (m_debugAssetStream)
+		m_relativePath = relativePath;
+        [m_relativePath retain];
+
+        if (DEBUGLOG)
         {
             NSLog(@"INIT ByteStream: %@ (%ld)", m_relativePath, m_bytesCount);
             NSLog(@"BYTESTREAM INIT %ld", m_byteStream);

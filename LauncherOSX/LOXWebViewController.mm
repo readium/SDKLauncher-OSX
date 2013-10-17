@@ -46,9 +46,6 @@
 - (void)updateSettings:(LOXPreferences *)preferences;
 
 - (void)updateUI;
-
-- (RDPackageResource*)resourceForUrl:(NSURL*) url;
-
 @end
 
 
@@ -207,54 +204,26 @@
     return htmlTemplate;
 }
 
-- (RDPackageResource*)resourceForUrl:(NSURL*) url {
-    NSString *s = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *prefix = [kSDKLauncherWebViewSDKProtocol stringByAppendingString:@"://"];
-
-    if (s == nil || ![s hasPrefix:prefix] || s.length == prefix.length) {
-        return nil;
-    }
-
-    s = [s substringFromIndex:prefix.length];
-    NSRange range = [s rangeOfString:@"/"];
-
-    if (range.location == NSNotFound) {
-        return nil;
-    }
-
-    NSString *packageUUID = [s substringToIndex:range.location];
-
-    if (![packageUUID isEqualToString:_package.packageUUID]) {
-        return nil;
-    }
-
-    s = [s substringFromIndex:packageUUID.length];
-
-    if (![s hasPrefix:@"/"]) {
-        return nil;
-    }
-
-    NSString *relativePath = [s substringFromIndex:1];
-    RDPackageResource* res = [_package resourceAtRelativePath:relativePath];
-
-    return res;
-}
 
 - (void)onProtocolBridgeNeedsResponse:(NSNotification *)notification {
     NSURL *url = [notification.userInfo objectForKey:@"url"];
 
-    RDPackageResource* res = [self resourceForUrl: url];
+    RDPackageResource* res = [_package resourceForUrl: url];
     if (res == nil)
     {
         return;
     }
 
-    NSData *data = res.data;
+    NSData *data = [res readAllDataChunks];
 
     if (data != nil) {
         EPubURLProtocolBridge *bridge = notification.object;
-        bridge.currentData = data;
+        bridge.currentData = data; // retained
     }
+
+    [res release]; // was alloc'ed
+    //[res autorelease];
+    //res = nil;
 }
 
 -(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
@@ -267,7 +236,7 @@
     {
         [m_resourceServer release];
     }
-    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package];
+    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package]; //retained
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
@@ -492,7 +461,11 @@
     [_baseUrlPath release];
     [_preferences removeChangeObserver:self];
     [_preferences release];
-    [m_resourceServer release];
+
+    if (m_resourceServer != nil)
+    {
+        [m_resourceServer release];
+    }
 
     [super dealloc];
 }

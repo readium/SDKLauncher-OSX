@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define kSDKLauncherWebViewSDKProtocol @"epubwebviewsdk"
-
 extern NSString * const kSDKLauncherEPubURLProtocolBridgeNeedsResponse;
 
 @interface EPubURLProtocolBridge : NSObject {

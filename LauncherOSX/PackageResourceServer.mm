@@ -24,6 +24,23 @@
 
 static LOXPackage * m_LOXHTTPConnection_package;
 
+//@synchronized(self) {
+//
+//}
+
+////from STACK to HEAP
+//void (^ myBlock)(void) = ^ {
+//    // your block code is here.
+//};
+//[IRQ addObject:[[myBlock copy] autorelease]];
+
+//@autoreleasepool {
+//while ( !done )
+//{
+//[[NSRunLoop currentRunLoop] runMode: @"AQHTTPRequestWritingDataRunLoopMode" beforeDate: [NSDate dateWithTimeIntervalSinceNow: 0.05]];
+//}
+//}
+
 //static dispatch_semaphore_t m_byteStreamResourceLock;
 //
 //#define LOCKED(block) do {\
@@ -48,14 +65,18 @@ static LOXPackage * m_LOXHTTPConnection_package;
 //
 //dispatch_sync(self.queue, ^{});
 //
+//dispatch_async(dispatch_get_main_queue(), ^{
+//
+//});
 
-@implementation LOXHTTPResponseOperation
+@implementation LOXHTTPResponseOperation {
+    LOXPackage * m_package;
+    RDPackageResource * m_resource;
+}
 
 //dispatch_semaphore_t    _lock;
 //@synthesize lock=_lock;
 
-LOXPackage * m_package;
-RDPackageResource * m_resource;
 
 //- (id) init
 //{
@@ -64,17 +85,33 @@ RDPackageResource * m_resource;
 //        return ( nil );
 //
 //    // create a critical section lock
-//    _lock = dispatch_semaphore_create(1);
+//    //_lock = dispatch_semaphore_create(1);
+//
+//    m_package = nil;
+//    m_resource = nil;
 //
 //    return ( self );
 //}
 
 - (void)initialiseData:(LOXPackage *)package resource:(RDPackageResource *)resource
 {
-    m_package = [package retain];
-    m_resource = [resource retain];
+    if (m_package != nil)
+    {
+        [m_package release];
+        m_package = nil;
+    }
+    m_package = package;
+    [m_package retain];
 
-    if (m_debugAssetStream)
+    if (m_resource != nil)
+    {
+        [m_resource release];
+        m_resource = nil;
+    }
+    m_resource = resource;
+    [m_resource retain];
+
+    if (DEBUGLOG)
     {
         NSLog(@"LOXHTTPResponseOperation: %@", m_resource.relativePath);
         NSLog(@"LOXHTTPResponseOperation: %ld", m_resource.bytesCount);
@@ -86,8 +123,9 @@ RDPackageResource * m_resource;
 }
 
 - (void)dealloc {
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
+        NSLog(@"DEALLOC LOXHTTPResponseOperation");
         NSLog(@"DEALLOC LOXHTTPResponseOperation: %@", m_resource.relativePath);
         NSLog(@"DEALLOC LOXHTTPResponseOperation: %@", self);
     }
@@ -99,9 +137,16 @@ RDPackageResource * m_resource;
 //        _lock = NULL;
 //    }
 //#endif
-    
-    [m_package release];
-    [m_resource release];
+    if (m_package != nil)
+    {
+        [m_package release];
+    }
+
+    if (m_resource != nil)
+    {
+        [m_resource release];
+    }
+
     [super dealloc];
 }
 
@@ -143,6 +188,7 @@ RDPackageResource * m_resource;
 
 - (id<AQRandomAccessFile>) randomAccessFileForItemAtPath: (NSString *) rootRelativePath
 {
+    //return [self autorelease];
     return self;
 }
 
@@ -153,12 +199,13 @@ RDPackageResource * m_resource;
 
 - (NSData *) readDataFromByteRange: (DDRange) range
 {
-    if (m_debugAssetStream)
-    {
-        NSLog(@"LOCK readDataFromByteRange: %@", self);
-    }
+//    if (DEBUGLOG)
+//    {
+//        NSLog(@"LOCK readDataFromByteRange: %@", self);
+//    }
 
-    __block NSData * result = nil;
+    //__block
+    NSData * result = nil;
 //    LOCKED(^{
         if (m_skipCache)
         {
@@ -170,10 +217,14 @@ RDPackageResource * m_resource;
         }
 //    });
 
-    if (m_debugAssetStream)
-    {
-        NSLog(@"un-LOCK readDataFromByteRange: %@", self);
-    }
+//    if (DEBUGLOG)
+//    {
+//        NSLog(@"un-LOCK readDataFromByteRange: %@", self);
+//    }
+
+    //result = [NSData data];
+
+    //[result autorelease];
     return result;
 }
 
@@ -181,10 +232,23 @@ RDPackageResource * m_resource;
 
 @implementation LOXHTTPConnection
 
-//+ (void)setPackage:(LOXPackage *)package
+//- (id) init
 //{
-//    m_LOXHTTPConnection_package = package;
+//    self = [super init];
+//    if ( self == nil )
+//        return ( nil );
+//
+//    return ( self );
 //}
+
+- (void)dealloc {
+    if (DEBUGLOG)
+    {
+        NSLog(@"DEALLOC LOXHTTPConnection");
+        NSLog(@"DEALLOC LOXHTTPConnection: %@", self);
+    }
+    [super dealloc];
+}
 
 - (BOOL) supportsPipelinedRequests
 {
@@ -199,7 +263,7 @@ RDPackageResource * m_resource;
         return [super responseOperationForRequest: request];
     }
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"responseOperationForRequest: %@", url);
     }
@@ -256,7 +320,10 @@ RDPackageResource * m_resource;
     LOXHTTPResponseOperation * op = [[LOXHTTPResponseOperation alloc] initWithRequest: request socket: self.socket ranges: ranges forConnection: self];
     [op initialiseData:m_LOXHTTPConnection_package resource:resource];
 
+    [resource release]; //was alloc'ed
+
 #if USING_MRR
+//#error "THIS SHOULD FAIL AT COMPILE TIME"
     [op autorelease];
 #endif
     return ( op );
@@ -316,7 +383,20 @@ const static int m_socketTimeout = 60;
 @end
 
 
-@implementation PackageResourceServer
+@implementation PackageResourceServer {
+    LOXPackage * m_package;
+}
+//
+//- (id) init
+//{
+//    self = [super init];
+//    if ( self == nil )
+//        return ( nil );
+//
+//    m_package = nil;
+//
+//    return ( self );
+//}
 
 - (int) serverPort
 {
@@ -324,6 +404,11 @@ const static int m_socketTimeout = 60;
 }
 
 - (void)dealloc {
+
+    if (DEBUGLOG)
+    {
+        NSLog(@"DEALLOC Pack Res Server ");
+    }
 
 #ifdef USE_SIMPLE_HTTP_SERVER
 
@@ -379,10 +464,16 @@ const static int m_socketTimeout = 60;
         NSString * address = @"localhost";
         NSURL * url = [NSURL fileURLWithPath: [@"file:///" stringByAppendingString:[m_package packageUUID]]];
 
-        m_server = [[AQHTTPServer alloc] initWithAddress: address root: url];
+        m_server = [[AQHTTPServer alloc] initWithAddress: address root: url]; //retained
 
 //        [LOXHTTPConnection setPackage: m_package];
+//        if (m_LOXHTTPConnection_package != nil)
+//        {
+//            [m_LOXHTTPConnection_package release];
+//        }
         m_LOXHTTPConnection_package = m_package;
+//        [m_LOXHTTPConnection_package retain];
+
         [m_server setConnectionClass:[LOXHTTPConnection class]];
 
         NSError * error = nil;
@@ -425,7 +516,7 @@ const static int m_socketTimeout = 60;
 
 - (void)onSocket:(AsyncSocket *)sock didAcceptNewSocket:(AsyncSocket *)newSocket {
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"SOCK %@", newSocket);
     }
@@ -631,7 +722,7 @@ const static int m_socketTimeout = 60;
         int length = p1 + 1 - p0;
         request.range = NSMakeRange(p0, length);
 
-        if (m_debugAssetStream)
+        if (DEBUGLOG)
         {
             NSLog(@"[%@] [%d , %d] (%d) / %d", request.resource.relativePath, p0, p1, request.range.length, contentLength);
         }
@@ -646,7 +737,7 @@ const static int m_socketTimeout = 60;
 		[sock writeData:[ms dataUsingEncoding:NSUTF8StringEncoding] withTimeout:m_socketTimeout tag:0];
 	}
 	else {
-        if (m_debugAssetStream)
+        if (DEBUGLOG)
         {
             NSLog(@"Entire HTTP file");
         }
@@ -687,7 +778,7 @@ const static int m_socketTimeout = 60;
 
 
 - (void)onSocket:(AsyncSocket *)sock willDisconnectWithError:(NSError *)err {
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"SOCK-ERR %@", sock);
     }
@@ -697,7 +788,7 @@ const static int m_socketTimeout = 60;
 
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock {
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"~SOCK %@", sock);
     }
@@ -724,7 +815,7 @@ const static int m_socketTimeout = 60;
 
     auto range = NSMakeRange(p0, p1 - p0);
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@">> [%@] [%d , %d] (%d) ... %d", request.resource.relativePath, p0, p1, range.length, request.byteCountWrittenSoFar);
     }

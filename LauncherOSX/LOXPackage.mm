@@ -71,6 +71,71 @@
 //    NSLog(@"The archive reader was not found!");
 //}
 
+- (NSString *) resourceRelativePath:(NSString *)urlAbsolutePath
+{
+    if (urlAbsolutePath == nil)
+    {
+        NSLog(@"The resource path is null!");
+        return nil;
+    }
+
+    NSRange range = [urlAbsolutePath rangeOfString:@"/"];
+
+    if (range.location != 0) {
+        NSLog(@"The HTTP request path doesn't begin with a forward slash!");
+        return nil;
+    }
+
+    range = [urlAbsolutePath rangeOfString:@"/" options:0 range:NSMakeRange(1, urlAbsolutePath.length - 1)];
+
+    if (range.location == NSNotFound) {
+        NSLog(@"The HTTP request path is incomplete!");
+        return nil;
+    }
+
+    NSString *packageUUID = [urlAbsolutePath substringWithRange:NSMakeRange(1, range.location - 1)];
+
+    if (![packageUUID isEqualToString:self.packageUUID]) {
+        NSLog(@"The HTTP request has the wrong package UUID!");
+        return nil;
+    }
+
+    return [urlAbsolutePath substringFromIndex:NSMaxRange(range)];
+}
+
+- (RDPackageResource*)resourceForUrl:(NSURL*) url {
+    NSString *s = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *prefix = [kSDKLauncherWebViewSDKProtocol stringByAppendingString:@"://"];
+
+    if (s == nil || ![s hasPrefix:prefix] || s.length == prefix.length) {
+        return nil;
+    }
+
+    s = [s substringFromIndex:prefix.length];
+    NSRange range = [s rangeOfString:@"/"];
+
+    if (range.location == NSNotFound) {
+        return nil;
+    }
+
+    NSString *packageUUID = [s substringToIndex:range.location];
+
+    if (![packageUUID isEqualToString:self.packageUUID]) {
+        return nil;
+    }
+
+    s = [s substringFromIndex:packageUUID.length];
+
+    if (![s hasPrefix:@"/"]) {
+        return nil;
+    }
+
+    NSString *relativePath = [s substringFromIndex:1];
+    RDPackageResource* res = [self resourceAtRelativePath:relativePath];
+
+    return res;
+}
+
 - (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath { //} isHTML:(BOOL *)isHTML {
 //    if (isHTML != NULL) {
 //        *isHTML = NO;
@@ -359,36 +424,5 @@
     return _sdkPackage;
 }
 
-- (NSString *) resourceRelativePath:(NSString *)urlAbsolutePath
-{
-    if (urlAbsolutePath == nil)
-    {
-        NSLog(@"The resource path is null!");
-        return nil;
-    }
-
-    NSRange range = [urlAbsolutePath rangeOfString:@"/"];
-
-    if (range.location != 0) {
-        NSLog(@"The HTTP request path doesn't begin with a forward slash!");
-        return nil;
-    }
-
-    range = [urlAbsolutePath rangeOfString:@"/" options:0 range:NSMakeRange(1, urlAbsolutePath.length - 1)];
-
-    if (range.location == NSNotFound) {
-        NSLog(@"The HTTP request path is incomplete!");
-        return nil;
-    }
-
-    NSString *packageUUID = [urlAbsolutePath substringWithRange:NSMakeRange(1, range.location - 1)];
-
-    if (![packageUUID isEqualToString:self.packageUUID]) {
-        NSLog(@"The HTTP request has the wrong package UUID!");
-        return nil;
-    }
-
-    return [urlAbsolutePath substringFromIndex:NSMaxRange(range)];
-}
 
 @end

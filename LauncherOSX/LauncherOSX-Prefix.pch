@@ -8,6 +8,8 @@
 
 #endif
 
+#define kSDKLauncherWebViewSDKProtocol @"epubwebviewsdk"
+
 
 #define USE_SIMPLE_HTTP_SERVER true
 

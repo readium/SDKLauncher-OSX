@@ -20,6 +20,10 @@ NSString * const kSDKLauncherEPubURLProtocolBridgeNeedsResponse =
 
 
 - (NSData *)dataForURL:(NSURL *)url {
+//    if (m_currentData != nil)
+//    {
+//        [m_currentData release];
+//    }
 	self.currentData = nil;
 
 	[[NSNotificationCenter defaultCenter]

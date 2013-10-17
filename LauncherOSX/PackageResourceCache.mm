@@ -62,7 +62,7 @@ static NSData *m_key = nil;
 		return;
 	}
 
-    if (m_debugAssetStream)
+    if (DEBUGLOG)
     {
         NSLog(@"ADD RES: %@", relativePath);
 
@@ -169,7 +169,7 @@ static NSData *m_key = nil;
             return fileSize;
         }
 
-        if (m_debugAssetStream)
+        if (DEBUGLOG)
         {
             NSLog(@"DECRYPT for content length");
         }
@@ -285,7 +285,7 @@ static NSData *m_key = nil;
             }
             else
             {
-                if (m_debugAssetStream)
+                if (DEBUGLOG)
                 {
                     NSLog(@"DECRYPT");
                 }

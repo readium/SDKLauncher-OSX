@@ -38,7 +38,7 @@ static const BOOL m_skipCache = false;
 #endif
 
 @interface PackageResourceServer : NSObject {
-@private LOXPackage *m_package;
+
 @private int m_kSDKLauncherPackageResourceServerPort;
 
 #ifdef USE_SIMPLE_HTTP_SERVER
