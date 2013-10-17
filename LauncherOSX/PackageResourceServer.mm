@@ -37,30 +37,30 @@ static LOXPackage * m_LOXHTTPConnection_package;
 //@autoreleasepool {
 //while ( !done )
 //{
-//[[NSRunLoop currentRunLoop] runMode: @"AQHTTPRequestWritingDataRunLoopMode" beforeDate: [NSDate dateWithTimeIntervalSinceNow: 0.05]];
+//[[NSRunLoop currentRunLoop] runMode: @"MyRunLoopMode" beforeDate: [NSDate dateWithTimeIntervalSinceNow: 0.05]];
 //}
 //}
 
-//static dispatch_semaphore_t m_byteStreamResourceLock;
-//
-//#define LOCKED(block) do {\
-//        dispatch_semaphore_wait(m_byteStreamResourceLock, DISPATCH_TIME_FOREVER);\
-//        @try {\
-//            block();\
-//        } @finally {\
-//            dispatch_semaphore_signal(m_byteStreamResourceLock);\
-//        }\
-//    } while (0);
+static dispatch_semaphore_t m_byteStreamResourceLock = NULL;
+
+#define LOCKED(block) do {\
+        dispatch_semaphore_wait(m_byteStreamResourceLock, DISPATCH_TIME_FOREVER);\
+        @try {\
+            block();\
+        } @finally {\
+            dispatch_semaphore_signal(m_byteStreamResourceLock);\
+        }\
+    } while (0);
 
 
 //[NSThread isMainThread]  ------  dispatch_get_current_queue() == dispatch_get_main_queue()
-//#define MAINQ(block) if ([NSThread isMainThread]) {\
-//NSLog(@"MAINQ - main thread");\
-//block();\
-//} else {\
-//NSLog(@"MAINQ - other thread");\
-//dispatch_sync(dispatch_get_main_queue(), block);\
-//}
+#define MAINQ(block) if ([NSThread isMainThread]) {\
+NSLog(@"MAINQ - main thread");\
+block();\
+} else {\
+NSLog(@"MAINQ - other thread");\
+dispatch_sync(dispatch_get_main_queue(), block);\
+}
 
 //
 //dispatch_sync(self.queue, ^{});
@@ -199,28 +199,28 @@ static LOXPackage * m_LOXHTTPConnection_package;
 
 - (NSData *) readDataFromByteRange: (DDRange) range
 {
-//    if (DEBUGLOG)
-//    {
-//        NSLog(@"LOCK readDataFromByteRange: %@", self);
-//    }
+    __block NSData * result = nil;
 
-    //__block
-    NSData * result = nil;
-//    LOCKED(^{
-        if (m_skipCache)
+    if (m_skipCache)
+    {
+        if (DEBUGLOG)
         {
+            NSLog(@"LOCK readDataFromByteRange: %@", self);
+        }
+
+        LOCKED(^{
             result = [m_resource createChunkByReadingRange:NSRangeFromDDRange(range) package:m_package];
-        }
-        else
-        {
-            result = [[PackageResourceCache shared] dataAtRelativePath: m_resource.relativePath range:NSRangeFromDDRange(range) resource:m_resource];
-        }
-//    });
+        });
 
-//    if (DEBUGLOG)
-//    {
-//        NSLog(@"un-LOCK readDataFromByteRange: %@", self);
-//    }
+        if (DEBUGLOG)
+        {
+            NSLog(@"un-LOCK readDataFromByteRange: %@", self);
+        }
+    }
+    else
+    {
+        result = [[PackageResourceCache shared] dataAtRelativePath: m_resource.relativePath range:NSRangeFromDDRange(range) resource:m_resource];
+    }
 
     //result = [NSData data];
 
@@ -412,14 +412,14 @@ const static int m_socketTimeout = 60;
 
 #ifdef USE_SIMPLE_HTTP_SERVER
 
-//#if DISPATCH_USES_ARC == 0
-//    if ( m_byteStreamResourceLock != NULL )
-//    {
-//        //dispatch_semaphore_signal(m_byteStreamResourceLock);
-//        dispatch_release(m_byteStreamResourceLock);
-//        m_byteStreamResourceLock = NULL;
-//    }
-//#endif
+#if DISPATCH_USES_ARC == 0
+    if ( m_byteStreamResourceLock != NULL )
+    {
+        //dispatch_semaphore_signal(m_byteStreamResourceLock);
+        dispatch_release(m_byteStreamResourceLock);
+        m_byteStreamResourceLock = NULL;
+    }
+#endif
 
     if ([m_server isListening])
     {
@@ -456,7 +456,7 @@ const static int m_socketTimeout = 60;
 #ifdef USE_SIMPLE_HTTP_SERVER
 
         // create a critical section lock
-//        m_byteStreamResourceLock = dispatch_semaphore_create(1);
+        m_byteStreamResourceLock = dispatch_semaphore_create(1);
 
 
 //        NSString * port = [NSString stringWithFormat:@"%d", kSDKLauncherPackageResourceServerPort];

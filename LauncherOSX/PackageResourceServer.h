@@ -12,7 +12,7 @@
 @class LOXPackage;
 @class RDPackageResource;
 
-static const BOOL m_skipCache = false;
+static const BOOL m_skipCache = true;
 
 #ifdef USE_SIMPLE_HTTP_SERVER
 
