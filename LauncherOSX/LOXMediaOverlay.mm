@@ -17,6 +17,7 @@
 
 @interface LOXMediaOverlay ()
 //- (NSString *)getProperty:(NSString *)name fromPropertyHolder:(std::shared_ptr<ePub3::PropertyHolder>)sdkPropertyHolder;
+- (void)saveProperty:(NSString *)valueName toDictionary:(NSMutableDictionary *)dict;
 @end
 
 @implementation LOXMediaOverlay {
@@ -165,15 +166,20 @@
 
     [dict setObject:smilDictionaries forKey:@"smil_models"];
 
-    [dict setObject:self.duration forKey:@"duration"];
-
-    [dict setObject:self.narrator forKey:@"narrator"];
-
-    [dict setObject:self.activeClass forKey:@"activeClass"];
-
-    [dict setObject:self.playbackActiveClass forKey:@"playbackActiveClass"];
+    [self saveProperty:@"duration" toDictionary:dict];
+    [self saveProperty:@"narrator" toDictionary:dict];
+    [self saveProperty:@"activeClass" toDictionary:dict];
+    [self saveProperty:@"playbackActiveClass" toDictionary:dict];
 
     return dict;
+}
+
+- (void)saveProperty:(NSString *)valueName toDictionary:(NSMutableDictionary*)dict
+{
+    NSObject* value = [self valueForKey:valueName];
+    if(value) {
+        [dict setObject:value forKey:valueName];
+    }
 }
 
 - (void)dealloc {
