@@ -1,6 +1,7 @@
 //  LauncherOSX
 //
 //  Created by Boris Schneiderman.
+// Modified by Daniel Weck
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
 //  The Readium SDK is free software: you can redistribute it and/or modify
@@ -219,6 +220,13 @@
 
 }
 
+- (void)dealloc
+{
+    [_speech release];
+
+    [super dealloc];
+}
+
 - (id)init
 {
     self = [super init];
@@ -226,7 +234,7 @@
     {
         _skipTTSEnd = false;
 
-        _speech = [[NSSpeechSynthesizer alloc] init];
+        _speech = [[NSSpeechSynthesizer alloc] init]; //retained
         [_speech setDelegate:self];
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_5
@@ -309,7 +317,7 @@ https://developer.apple.com/library/mac/documentation/userexperience/conceptual/
     NSString *tts = [dict objectForKey:@"tts"];//dict[@"tts"];
     if (tts != nil)
     {
-        NSError* error = [[NSError alloc]init];
+        NSError* error = [[[NSError alloc]init] autorelease];
         NSDictionary* dic = [_speech objectForProperty:NSSpeechStatusProperty error: &error];
         //NSSpeechStatusOutputPaused  NSSpeechStatusOutputBusy
 

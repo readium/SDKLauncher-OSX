@@ -24,7 +24,7 @@
 @implementation LOXSpineItem
 
 @synthesize idref = _idref;
-@synthesize packageStorageId = _packageStorrageId;
+//@synthesize packageStorageId = _packageStorrageId;
 @synthesize href = _href;
 @synthesize page_spread = _page_spread;
 @synthesize rendition_layout = _rendition_layout;
@@ -34,7 +34,8 @@
     return _sdkSpineItem;
 }
 
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage*)package
+//- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage*)package
+- (id)initWithSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage*)package
 {
     self = [super init];
     if(self) {
@@ -43,8 +44,8 @@
         auto manifestItem = sdkSpineItem->ManifestItem();
         _href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
         [_href retain];
-        _packageStorrageId = storageId;
-        [_packageStorrageId retain];
+        //_packageStorrageId = storageId;
+        //[_packageStorrageId retain];
         _idref = [[NSString stringWithUTF8String:str] retain];
         _sdkSpineItem = sdkSpineItem;
 
@@ -92,7 +93,7 @@
 
 - (void)dealloc
 {
-    [_packageStorrageId release];
+    //[_packageStorrageId release];
     [_idref release];
     [_href release];
     [_page_spread release];
