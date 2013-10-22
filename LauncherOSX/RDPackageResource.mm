@@ -27,6 +27,74 @@
 
 @implementation RDPackageResource
 
++ (std::size_t)bytesAvailable:(ePub3::ByteStream*)byteStream pack:(LOXPackage *)package path:(NSString *)relPath {
+    std::size_t size = byteStream->BytesAvailable();
+    if (size == 0)
+    {
+        NSLog(@"BYTESTREAM zero BytesAvailable!");
+    }
+    else
+    {
+        return size;
+    }
+
+    //std::unique_ptr<ePub3::ArchiveReader> reader = _sdkPackage->ReaderForRelativePath(s);
+    //reader->read(<#(void*)p#>, <#(size_t)len#>)
+
+    std::shared_ptr<ePub3::Archive> archive = [package sdkPackage]->Archive();
+
+    try
+    {
+        //ZipItemInfo
+        ePub3::ArchiveItemInfo info = archive->InfoAtPath([package sdkPackage]->BasePath() + [relPath UTF8String]);
+        size = info.UncompressedSize();
+    }
+    catch (std::exception& e)
+    {
+        auto msg = e.what();
+        NSLog(@"!!! [ArchiveItemInfo] ZIP file not found (corrupted archive?): %@ (%@)", relPath, [NSString stringWithUTF8String:msg]);
+    }
+    catch (...) {
+        throw;
+    }
+
+    archive = nullptr;
+
+
+
+    std::string s = [relPath UTF8String];
+    std::unique_ptr<ePub3::ArchiveReader> reader = [package sdkPackage]->ReaderForRelativePath(s);
+
+    if (reader == nullptr)
+    {
+        NSLog(@"!!! [ArchiveReader] ZIP file not found (corrupted archive?): %@", relPath);
+    }
+    else
+    {
+        UInt8 buffer[kSDKLauncherPackageResourceBufferSize];
+        std::size_t total = 0;
+        std::size_t count = 0;
+        while ((count = reader->read(buffer, sizeof(buffer))) > 0)
+        {
+            total += count;
+        }
+
+        if (total > 0)
+        {
+            // ByteStream bug??! zip_fread works with ArchiveReader, why not ByteStream?
+            NSLog(@"WTF??!");
+
+            if (total != size)
+            {
+                NSLog(@"Oh dear...");
+            }
+        }
+    }
+
+    reader = nullptr;
+
+    return size;
+}
 
 //@synthesize byteStream = m_byteStream;
 @synthesize bytesCount = m_bytesCount;
@@ -34,6 +102,11 @@
 
 
 - (NSData *)createChunkByReadingRange:(NSRange)range package:(LOXPackage *)package {
+
+    if (m_bytesCount == 0)
+    {
+        return [NSData data];
+    }
 
     if (DEBUGLOG)
     {
@@ -70,7 +143,7 @@
 
         ePub3::string s = ePub3::string(m_relativePath.UTF8String);
         m_byteStream = package.sdkPackage->ReadStreamForRelativePath(package.sdkPackage->BasePath() + s).release();
-        m_bytesCount = m_byteStream->BytesAvailable();
+        m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream pack:package path:m_relativePath];
         m_bytesRead = 0;
     }
 
@@ -88,7 +161,7 @@
 
     if (DEBUGLOG)
     {
-        NSLog(@"TOTAL %ld", m_byteStream->BytesAvailable());
+        NSLog(@"TOTAL %ld", m_bytesCount);
         NSLog(@"ByteStream TO SKIP: %ld", bytesToSkip);
     }
 
@@ -140,7 +213,7 @@
 
     if (DEBUGLOG)
     {
-        NSLog(@"TOTAL %ld", m_byteStream->BytesAvailable());
+        NSLog(@"TOTAL %ld", m_bytesCount);
         NSLog(@"ByteStream TO READ: %ld", bytesToRead);
     }
 
@@ -192,7 +265,20 @@
 }
 
 - (NSData *)createNextChunkByReading {
+
+    if (m_bytesCount == 0)
+    {
+        return [NSData data];
+    }
+
     std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
+
+    if (m_bytesRead == 0 && count == 0)
+    {
+        NSLog(@"ZIP file empty?? (or problem with byte stream?)");
+        // oh oh... :(
+    }
+
     m_bytesRead += count;
 
 	return (count == 0) ? nil : [[NSData alloc] initWithBytes:m_buffer length:count];
@@ -200,6 +286,12 @@
 
 
 - (NSData *)readAllDataChunks {
+
+    if (m_bytesCount == 0)
+    {
+        return [NSData data];
+    }
+
 	//if (m_data == nil) {
 		NSMutableData *md = [NSMutableData data];
 
@@ -260,6 +352,7 @@
 - (id)
 	initWithByteStream:(ePub3::ByteStream*)byteStream
 	relativePath:(NSString *)relativePath
+    pack:(LOXPackage *)package
 {
 	if (byteStream == nil
             || relativePath == nil || relativePath.length == 0) {
@@ -268,8 +361,12 @@
 	}
 
 	if (self = [super init]) {
+
+        m_relativePath = relativePath;
+        [m_relativePath retain];
+
         m_byteStream = byteStream;
-        m_bytesCount = m_byteStream->BytesAvailable();
+        m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream pack:package path:m_relativePath];
 
         if (m_bytesCount == 0)
         {
@@ -277,9 +374,6 @@
         }
 
         m_bytesRead = 0;
-
-		m_relativePath = relativePath;
-        [m_relativePath retain];
 
         if (DEBUGLOG)
         {

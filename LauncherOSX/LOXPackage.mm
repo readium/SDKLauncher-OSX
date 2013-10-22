@@ -162,7 +162,8 @@
 
     RDPackageResource *resource = [[RDPackageResource alloc]
             initWithByteStream:byteStream.release()
-                relativePath:relativePath]; // autorelease];
+                relativePath:relativePath
+                          pack: self]; // autorelease];
 
 //    if (resource != nil) {
 //        m_archiveReaderVector.push_back(std::move(byteStream));

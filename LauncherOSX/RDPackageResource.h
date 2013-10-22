@@ -38,6 +38,7 @@
 
 - (id)
 	initWithByteStream:(ePub3::ByteStream*)byteStream
-        relativePath:(NSString *)relativePath;
+        relativePath:(NSString *)relativePath
+        pack:(LOXPackage *)package;
 
 @end
