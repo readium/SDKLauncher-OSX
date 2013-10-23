@@ -7,7 +7,7 @@
 
 
 #import <Foundation/Foundation.h>
-#include <ePub3/package.h>
+#import <ePub3/package.h>
 
 @interface LOXMediaOverlay : NSObject
 

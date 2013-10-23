@@ -22,13 +22,11 @@
 #import "LOXWebViewController.h"
 #import "LOXAppDelegate.h"
 #import "LOXPackage.h"
-//#import <ePub3/package.h>
-
-#include "media-overlays_smil_data.h"
-#include "media-overlays_smil_model.h"
 #import "LOXPreferencesController.h"
 #import "LOXPreferences.h"
 
+#import <ePub3/media-overlays_smil_data.h>
+#import <ePub3/media-overlays_smil_model.h>
 #import <ePub3/media-overlays_smil_utils.h>
 
 @interface LOXMediaOverlayController ()

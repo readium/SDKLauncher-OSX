@@ -6,13 +6,12 @@
 // To change the template use AppCode | Preferences | File Templates.
 //
 
-
-#import <ePub3/package.h>
 #import "LOXMediaOverlay.h"
 #import "LOXSmilModel.h"
-#include "media-overlays_smil_data.h"
-#include "media-overlays_smil_model.h"
 
+#import <ePub3/package.h>
+#import <ePub3/media-overlays_smil_data.h>
+#import <ePub3/media-overlays_smil_model.h>
 #import <ePub3/media-overlays_smil_utils.h>
 
 

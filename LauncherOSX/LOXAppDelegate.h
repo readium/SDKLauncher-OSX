@@ -20,7 +20,7 @@
 //
 
 
-#include <string>
+#import <string>
 #import <Cocoa/Cocoa.h>
 #import "LOXSpineViewController.h"
 #import "LOXWebViewController.h"

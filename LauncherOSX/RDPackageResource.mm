@@ -8,10 +8,10 @@
 //
 
 #import "RDPackageResource.h"
-#include "byte_stream.h"
+#import "LOXPackage.h"
+
 #import <ePub3/archive.h>
 #import <ePub3/utilities/byte_stream.h>
-#import "LOXPackage.h"
 
 @interface RDPackageResource() {
 @private ePub3::ByteStream* m_byteStream;
