@@ -527,7 +527,7 @@ NSLog(@"Skip encrypted filesystem cache, use direct ZIP byte stream: %d", m_skip
             NSLog(@"%@", [m_server serverAddress]);
         }
 #else
-#error "HTTP ???"
+//#error "HTTP ???"
 		m_requests = [[NSMutableArray alloc] init];
 		m_mainSocket = [[AsyncSocket alloc] initWithDelegate:self];
 		[m_mainSocket setRunLoopModes:@[ NSRunLoopCommonModes ]];

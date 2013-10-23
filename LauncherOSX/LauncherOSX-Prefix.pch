@@ -12,7 +12,9 @@
 
 #define DEBUGMIN true
 
-#define USE_SIMPLE_HTTP_SERVER false
+#define DEBUGLOG false
+
+//#define USE_SIMPLE_HTTP_SERVER
 
 #ifdef USE_SIMPLE_HTTP_SERVER
 
@@ -28,8 +30,6 @@
 
 # import <Foundation/Foundation.h>
 # import <dispatch/dispatch.h>
-
-#define DEBUGLOG false
 
 # define USING_MRR (!__has_feature(objc_arc))
 
