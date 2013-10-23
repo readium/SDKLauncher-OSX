@@ -12,7 +12,7 @@
 
 #define DEBUGMIN true
 
-#define USE_SIMPLE_HTTP_SERVER true
+#define USE_SIMPLE_HTTP_SERVER false
 
 #ifdef USE_SIMPLE_HTTP_SERVER
 
