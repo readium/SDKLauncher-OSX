@@ -10,11 +10,11 @@
 
 #define kSDKLauncherWebViewSDKProtocol @"epubwebviewsdk"
 
-#define DEBUGMIN true
+#define DEBUGMIN false
 
 #define DEBUGLOG false
 
-//#define USE_SIMPLE_HTTP_SERVER
+#define USE_SIMPLE_HTTP_SERVER
 
 #ifdef USE_SIMPLE_HTTP_SERVER
 
