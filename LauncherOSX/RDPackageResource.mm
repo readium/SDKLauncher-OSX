@@ -370,7 +370,7 @@
 
         if (m_bytesCount == 0)
         {
-            NSLog(@"m_bytesCount == 0 ????");
+            NSLog(@"m_bytesCount == 0 ???? %@", m_relativePath);
         }
 
         m_bytesRead = 0;
