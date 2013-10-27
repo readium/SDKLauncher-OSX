@@ -98,6 +98,7 @@
 
     auto ext = [path pathExtension];
     if ([ext caseInsensitiveCompare: @"mp4"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"m4a"] == NSOrderedSame
             || [ext caseInsensitiveCompare: @"mp3"] == NSOrderedSame
             || [ext caseInsensitiveCompare: @"aiff"] == NSOrderedSame
             || [ext caseInsensitiveCompare: @"wav"] == NSOrderedSame
