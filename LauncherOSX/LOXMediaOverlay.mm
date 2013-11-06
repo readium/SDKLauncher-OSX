@@ -163,6 +163,10 @@
         str.append("#");
         str.append(node->SrcFragmentId().c_str());
     }
+    else
+    {
+        smilItem[@"srcFragmentId"] = [NSString stringWithUTF8String:""];
+    }
 
     smilItem[@"src"] = [NSString stringWithUTF8String: str.c_str()];
 
@@ -182,11 +186,17 @@
 
     std::string str("");
     str.append(node->SrcFile().c_str());
-    if (!node->SrcFragmentId().empty())
-    {
-        str.append("#");
-        str.append(node->SrcFragmentId().c_str());
-    }
+//    if (!node->SrcFragmentId().empty())
+//    {
+//        smilItem[@"srcFragmentId"] = [NSString stringWithUTF8String: node->SrcFragmentId().c_str()];
+//        
+//        str.append("#");
+//        str.append(node->SrcFragmentId().c_str());
+//    }
+//    else
+//    {
+//        smilItem[@"srcFragmentId"] = [NSString stringWithUTF8String:""];
+//    }
 
     smilItem[@"src"] = [NSString stringWithUTF8String: str.c_str()];
 
