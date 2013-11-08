@@ -120,8 +120,8 @@
 
             smil.spineItemId = [NSString stringWithUTF8String:smilData->XhtmlSpineItem()->Idref().c_str()];
 
-            smil.id = [NSString stringWithUTF8String:item->Identifier().c_str()];
-            smil.href = [NSString stringWithUTF8String:item->Href().c_str()];
+            smil.id = item == nullptr ? [NSString stringWithUTF8String:""] : [NSString stringWithUTF8String:item->Identifier().c_str()];
+            smil.href = item == nullptr ? [NSString stringWithUTF8String:"fake.smil"] : [NSString stringWithUTF8String:item->Href().c_str()];
 
             //NSLog(@"=== smil.id: [%s]", [smil.id UTF8String]);
             //NSLog(@"=== smil.href: [%s]", [smil.href UTF8String]);
