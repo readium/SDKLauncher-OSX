@@ -18,6 +18,7 @@
 
 @interface LOXMediaOverlay ()
 //- (NSString *)getProperty:(NSString *)name fromPropertyHolder:(std::shared_ptr<ePub3::PropertyHolder>)sdkPropertyHolder;
+- (void)saveProperty:(NSString *)valueName toDictionary:(NSMutableDictionary *)dict;
 @end
 
 @implementation LOXMediaOverlay {
@@ -322,6 +323,14 @@
     [dict setObject:self.playbackActiveClass forKey:@"playbackActiveClass"];
 
     return dict;
+}
+
+- (void)saveProperty:(NSString *)valueName toDictionary:(NSMutableDictionary*)dict
+{
+    NSObject* value = [self valueForKey:valueName];
+    if(value) {
+        [dict setObject:value forKey:valueName];
+    }
 }
 
 - (void)dealloc {
