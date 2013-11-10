@@ -1,5 +1,6 @@
 //
 // Created by Boris Schneiderman on 2013-08-14.
+// Modified by Daniel Weck
 // Copyright (c) 2013 Boris Schneiderman. All rights reserved.
 //
 // To change the template use AppCode | Preferences | File Templates.
@@ -44,11 +45,11 @@
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
     [dict setObject:self.id forKey:@"id"];
+    [dict setObject:self.spineItemId forKey:@"spineItemId"];
     [dict setObject:self.href forKey:@"href"];
     [dict setObject:self.smilVersion forKey:@"smilVersion"];
     [dict setObject:self.children forKey:@"children"];
     [dict setObject:self.duration forKey:@"duration"];
-    //[dict setObject:self.durationMilliseconds forKey:@"durationMilliseconds"];
 
     return dict;
 }

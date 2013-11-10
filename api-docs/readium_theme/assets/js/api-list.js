@@ -139,8 +139,8 @@ function onSearchClear(e) {
 function onSearchKey(e) {
     var target = e.target;
 
-    if (target.test('input,select,textarea')
-            || target.get('isContentEditable')) {
+    if (target.test('input,select,textarea') ||
+        target.get('isContentEditable')) {
         return;
     }
 

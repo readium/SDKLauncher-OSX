@@ -120,6 +120,11 @@ UserInterfaceState.xcuserstate
 
 *.moved-aside
 
+####
+# Xcode 5
+
+*.xccheckout
+
 ###
 #AppCode ide directory
 .idea

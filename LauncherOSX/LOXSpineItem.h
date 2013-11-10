@@ -33,17 +33,18 @@ namespace ePub3 {
     ePub3::SpineItemPtr _sdkSpineItem;
     NSString* _idref;
 
-    NSString* _packageStorrageId;
+    //NSString* _packageStorrageId;
 }
 
 @property(nonatomic, readonly) NSString *idref;
-@property(nonatomic, readonly) NSString *packageStorageId;
+//@property(nonatomic, readonly) NSString *packageStorageId;
 @property(nonatomic, readonly) NSString *href;
 @property(nonatomic, readonly) NSString *page_spread;
 @property(nonatomic, readonly) NSString *rendition_layout;
 @property(nonatomic, readonly) NSString *mediaOverlayId;
 
-- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage *)package;
+- (id)initWithSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage*)package;
+//- (id)initWithStorageId:(NSString *)storageId forSdkSpineItem:(ePub3::SpineItemPtr)sdkSpineItem fromPackage:(LOXPackage *)package;
 
 - (ePub3::SpineItemPtr) sdkSpineItem;
 

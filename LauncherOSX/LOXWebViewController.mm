@@ -19,6 +19,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#import <WebKit/WebKit.h>
 #import "LOXWebViewController.h"
 #import "LOXPackage.h"
 #import "LOXSpineItem.h"
@@ -28,6 +29,12 @@
 #import "LOXAppDelegate.h"
 #import "LOXCSSStyle.h"
 #import "LOXUtil.h"
+#import "LOXMediaOverlayController.h"
+#import "PackageResourceServer.h"
+#import "EPubURLProtocol.h"
+#import "EPubURLProtocolBridge.h"
+#import "RDPackageResource.h"
+#import <ePub3/utilities/byte_stream.h>
 
 
 @interface LOXWebViewController ()
@@ -39,8 +46,8 @@
 - (void)updateSettings:(LOXPreferences *)preferences;
 
 - (void)updateUI;
-
 @end
+
 
 @implementation LOXWebViewController {
 
@@ -50,16 +57,119 @@
 }
 
 
+- (NSURLRequest *)webView:(WebView *)sender
+                 resource:(id)identifier
+          willSendRequest:(NSURLRequest *)request
+         redirectResponse:(NSURLResponse *)redirectResponse
+           fromDataSource:(WebDataSource *)dataSource
+{
+    if (_package == nil)
+    {
+        return request;
+    }
+
+    if (request.URL == nil)
+    {
+        return request;
+    }
+
+    NSString *scheme = request.URL.scheme;
+
+    if (scheme == nil)
+    {
+        return request;
+    }
+
+    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame
+            && [scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] != NSOrderedSame)
+    {
+        return request;
+    }
+
+    NSString *path = request.URL.path;
+    if (path == nil)
+    {
+        return request;
+    }
+
+    if ([path hasPrefix:@"/"]) {
+        path = [path substringFromIndex:1];
+    }
+
+    auto ext = [path pathExtension];
+    if ([ext caseInsensitiveCompare: @"mp4"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"m4a"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"mp3"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"aiff"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"wav"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"ogg"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"ogv"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"mov"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"avi"] == NSOrderedSame
+            || [ext caseInsensitiveCompare: @"webm"] == NSOrderedSame
+            )
+    {
+        NSString * str = [[NSString stringWithFormat:@"http://localhost:%d/%@/%@",
+                        [m_resourceServer serverPort],
+                        _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:str];
+
+        if (DEBUGMIN)
+        {
+            NSLog(@"***** REQ URL %@", url);
+        }
+
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [newRequest setURL: url];
+        return newRequest;
+    }
+
+    if ([scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] == NSOrderedSame)
+    {
+        if (DEBUGMIN)
+        {
+            NSLog(@"----- REQ URL %@", request.URL);
+        }
+        return request;
+    }
+
+    NSString * str = [[NSString stringWithFormat:@"%@://%@/%@", kSDKLauncherWebViewSDKProtocol, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+    NSURL *url = [NSURL URLWithString:str];
+
+    if (DEBUGMIN)
+    {
+        NSLog(@"===== REQ URL %@", url);
+    }
+
+    NSMutableURLRequest *newRequest = [request mutableCopy];
+    [newRequest setURL: url];
+    return newRequest;
+}
+
+- (LOXPackage *) loxPackage
+{
+    return _package;
+}
+
 - (void)awakeFromNib
 {
+    [NSURLProtocol registerClass:[EPubURLProtocol class]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver:self
                                              selector:@selector(onPageChanged:)
                                                  name:LOXPageChangedEvent
                                                object:nil];
 
+    [nc addObserver:self selector:@selector(onProtocolBridgeNeedsResponse:)
+               name:kSDKLauncherEPubURLProtocolBridgeNeedsResponse object:nil];
+
+    self.isZipVsCache = [NSNumber numberWithBool:NO];
+
     NSString* html = [self loadHtmlTemplate];
     NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
+
     [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
 }
 
@@ -107,11 +217,39 @@
 }
 
 
+- (void)onProtocolBridgeNeedsResponse:(NSNotification *)notification {
+    NSURL *url = [notification.userInfo objectForKey:@"url"];
+
+    RDPackageResource* res = [_package resourceForUrl: url];
+    if (res == nil)
+    {
+        return;
+    }
+
+    NSData *data = [res readAllDataChunks];
+
+    if (data != nil) {
+        EPubURLProtocolBridge *bridge = notification.object;
+        bridge.currentData = data; // retained
+    }
+
+    [res release]; // was alloc'ed
+    //[res autorelease];
+    //res = nil;
+}
+
 -(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
 {
     [_package release];
     _package = package;
     [_package retain];
+
+    if (m_resourceServer != nil)
+    {
+        [m_resourceServer release];
+    }
+    BOOL zip = [self.isZipVsCache intValue] != 0;
+    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package resourcesFromZipStream_NoFileSystemEncryptedCache: zip]; //retained
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
@@ -123,6 +261,8 @@
     }
 
     NSString *json = [LOXUtil toJson:dict];
+    //NSLog(@"%@", json);
+
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", json];
 
     [_webView stringByEvaluatingJavaScriptFromString:callString];
@@ -147,24 +287,16 @@
 }
 
 
-- (NSURLRequest *)webView:(WebView *)sender
-                 resource:(id)identifier
-          willSendRequest:(NSURLRequest *)request
-         redirectResponse:(NSURLResponse *)redirectResponse
-           fromDataSource:(WebDataSource *)dataSource
-{
-
-    NSString *path = request.URL.path;
-
-    [_package prepareResourceWithPath: path];
-
-    return request;
-}
-
 //this allows JavaScript to call the -logJavaScriptString: method
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
 {
-    if( sel == @selector(onOpenPage:) || sel == @selector(onReaderInitialized) || sel == @selector(onSettingsApplied)) {
+    if(        sel == @selector(onOpenPage:)
+            || sel == @selector(onReaderInitialized)
+            || sel == @selector(onSettingsApplied)
+            || sel == @selector(onMediaOverlayStatusChanged:)
+            || sel == @selector(onMediaOverlayTTSSpeak:)
+            || sel == @selector(onMediaOverlayTTSStop)
+            ){
 
         return NO;
     }
@@ -184,6 +316,15 @@
     else if(sel == @selector(onSettingsApplied)) {
         return @"onSettingsApplied";
     }
+    else if(sel == @selector(onMediaOverlayStatusChanged:)) {
+        return @"onMediaOverlayStatusChanged";
+    }
+    else if(sel == @selector(onMediaOverlayTTSSpeak:)) {
+        return @"onMediaOverlayTTSSpeak";
+    }
+    else if(sel == @selector(onMediaOverlayTTSStop)) {
+        return @"onMediaOverlayTTSStop";
+    }
 
     return nil;
 }
@@ -200,19 +341,63 @@
 - (void)onOpenPage:(NSString*) currentPaginationInfo
 {
 
-        NSData* data = [currentPaginationInfo dataUsingEncoding:NSUTF8StringEncoding];
+    NSData* data = [currentPaginationInfo dataUsingEncoding:NSUTF8StringEncoding];
 
-        NSError *e = nil;
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
+    NSError *e = nil;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
 
-        if (!dict) {
-            NSLog(@"Error parsing JSON: %@", e);
-        }
-        else {
+    if (e) {
+        NSLog(@"Error parsing JSON: %@", e);
+        return;
+    }
 
-            [self.currentPagesInfo fromDictionary:dict];
-            [[NSNotificationCenter defaultCenter] postNotificationName:LOXPageChangedEvent object:self];
-        }
+    [self.currentPagesInfo fromDictionary:dict];
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOXPageChangedEvent object:self];
+
+}
+
+- (void)onMediaOverlayTTSStop
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOXMediaOverlayTTSStopEvent object:self userInfo:nil];
+}
+
+- (void)onMediaOverlayTTSSpeak:(NSString*) tts
+{
+    NSData* data = [tts dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSError *e = nil;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
+
+    if (e) {
+        NSLog(@"Error parsing JSON: %@", e);
+        return;
+    }
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOXMediaOverlayTTSSpeakEvent object:self userInfo:dict];
+}
+
+- (void)onMediaOverlayStatusChanged:(NSString*) status
+{
+    NSData* data = [status dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSError *e = nil;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
+
+    if (e) {
+        NSLog(@"Error parsing JSON: %@", e);
+        return;
+    }
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOXMediaOverlayStatusChangedEvent object:self userInfo:dict];
+}
+
+-(bool)isMediaOverlayAvailable
+{
+    NSString* callString = @"ReadiumSDK.reader.isMediaOverlayAvailable()";
+
+    NSString *result = [_webView stringByEvaluatingJavaScriptFromString:callString];
+
+    return [result boolValue];
 }
 
 -(void)setStyles:(NSArray *)styles
@@ -224,6 +409,7 @@
     }
 
     NSString* jsonDecl = [LOXUtil toJson: arr];
+    //NSLog(@"%@", jsonDecl);
 
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.setStyles(%@)", jsonDecl];
     [_webView stringByEvaluatingJavaScriptFromString:callString];
@@ -237,14 +423,17 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if(object == _preferences) {
+        [_preferences doNotUpdateView: keyPath];
         [self updateSettings:_preferences];
     }
-
 }
 
 -(void)updateSettings:(LOXPreferences *)preferences
 {
+    [[self.appDelegate mediaOverlayController] updateSettings: preferences];
+
     NSString *jsonString = [LOXUtil toJson:[preferences toDictionary]];
+    //NSLog(@"%@", jsonString);
 
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.updateSettings(%@)", jsonString];
     [_webView stringByEvaluatingJavaScriptFromString:callString];
@@ -285,6 +474,11 @@
     [_baseUrlPath release];
     [_preferences removeChangeObserver:self];
     [_preferences release];
+
+    if (m_resourceServer != nil)
+    {
+        [m_resourceServer release];
+    }
 
     [super dealloc];
 }
@@ -357,4 +551,42 @@
     WebScriptObject* script = [_webView windowScriptObject];
     [script evaluateWebScript: @"ReadiumSDK.reader.clearStyles()"];
 }
+
+
+- (void)mediaOverlaysOpenContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef forward:(double) offset
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+
+    NSString* sourceRefParam = sourceRef ? sourceRef : @"";
+
+    [script evaluateWebScript:[NSString stringWithFormat:@"ReadiumSDK.reader.mediaOverlaysOpenContentUrl(\"%@\", \"%@\", %f)", contentRef, sourceRefParam, offset]];
+}
+
+- (void)toggleMediaOverlay
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.toggleMediaOverlay()"];
+}
+
+- (void)nextMediaOverlay
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.nextMediaOverlay()"];
+}
+- (void)previousMediaOverlay
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.previousMediaOverlay()"];
+}
+- (void)escapeMediaOverlay
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.escapeMediaOverlay()"];
+}
+- (void)ttsEndedMediaOverlay
+{
+    WebScriptObject* script = [_webView windowScriptObject];
+    [script evaluateWebScript: @"ReadiumSDK.reader.ttsEndedMediaOverlay()"];
+}
+
 @end

@@ -20,7 +20,7 @@
 //
 
 
-#include <string>
+#import <string>
 #import <Cocoa/Cocoa.h>
 #import "LOXSpineViewController.h"
 #import "LOXWebViewController.h"
@@ -33,8 +33,15 @@
 @class LOXSpineItem;
 @class LOXCurrentPagesInfo;
 @class LOXPreferencesController;
+@class LOXMediaOverlay;
+@class LOXMediaOverlayController;
 
+//events
 NSString *const LOXPageChangedEvent = @"PageChangedEvent";
+NSString *const LOXMediaOverlayStatusChangedEvent = @"LOXMediaOverlayStatusChangedEvent";
+NSString *const LOXMediaOverlayTTSSpeakEvent = @"LOXMediaOverlayTTSSpeakEvent";
+NSString *const LOXMediaOverlayTTSStopEvent = @"LOXMediaOverlayTTSStopEvent";
+
 
 @interface LOXAppDelegate : NSObject <NSApplicationDelegate>
 
@@ -50,11 +57,14 @@ NSString *const LOXPageChangedEvent = @"PageChangedEvent";
 @property (assign) IBOutlet LOXTocViewController *tocViewController;
 @property (assign) IBOutlet LOXPageNumberTextController *pageNumController;
 @property (assign) IBOutlet LOXPreferencesController *preferencesController;
+@property (assign) IBOutlet LOXMediaOverlayController *mediaOverlayController;
 
 @property (nonatomic, readonly) LOXCurrentPagesInfo *currentPagesInfo;
 
 - (IBAction)openDocument:(id)sender;
 - (IBAction)showPreferences:(id)sender;
+
+- (LOXPreferences *)getPreferences;
 
 - (LOXBookmark*)createBookmark;
 

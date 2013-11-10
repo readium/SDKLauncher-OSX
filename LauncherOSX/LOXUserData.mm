@@ -96,10 +96,11 @@
     }
 }
 
-- (LOXBook *)findBookWithId:(NSString *)packageId
+- (LOXBook *)findBookWithId:(NSString *)packageId fileName:(NSString*)fileName
 {
     for (LOXBook *book in self.books) {
-        if ([book.packageId compare:packageId] == NSOrderedSame) {
+        if (   [book.packageId compare:packageId] == NSOrderedSame
+            && [[book.filePath lastPathComponent] caseInsensitiveCompare:fileName] == NSOrderedSame) {
             return book;
         }
     }
@@ -107,16 +108,6 @@
     return nil;
 }
 
-- (LOXBook *)findBookForPath:(NSString *)path
-{
-    for (LOXBook *book in self.books) {
-        if ([book.filePath caseInsensitiveCompare:path] == NSOrderedSame) {
-            return book;
-        }
-    }
-
-    return nil;
-}
 
 - (void)dealloc
 {
