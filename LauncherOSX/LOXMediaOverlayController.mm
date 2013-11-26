@@ -115,7 +115,7 @@
         return;
     }
 
-    ePub3::MediaOverlaysSmilModelPtr mo = package->MediaOverlaysSmilModel();
+    std::shared_ptr<ePub3::MediaOverlaysSmilModel> mo = package->MediaOverlaysSmilModel();
     if (mo == nullptr)
     {
         return;
@@ -125,7 +125,7 @@
     uint32_t parIndex = 0;
     uint32_t milliseconds = 0;
     const ePub3::SMILData::Parallel *par = nullptr;
-    ePub3::SMILDataPtr smilData = nullptr;
+    std::shared_ptr<ePub3::SMILData> smilData = nullptr;
     mo->PercentToPosition([_timeScrobbler doubleValue], smilData, smilIndex, par, parIndex, milliseconds);
 
     if (par == nullptr || par->Text() == nullptr || smilData == nullptr)
@@ -398,7 +398,7 @@ https://developer.apple.com/library/mac/documentation/userexperience/conceptual/
             return;
         }
 
-        ePub3::MediaOverlaysSmilModelPtr mo = package->MediaOverlaysSmilModel();
+        std::shared_ptr<ePub3::MediaOverlaysSmilModel> mo = package->MediaOverlaysSmilModel();
         if (mo == nullptr)
         {
             return;

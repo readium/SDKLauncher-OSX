@@ -110,7 +110,7 @@
 
     if (DEBUGLOG)
     {
-        NSLog(@"BYTESTREAM READ %ld", m_byteStream);
+        NSLog(@"BYTESTREAM READ %p", m_byteStream);
     }
 
     if (range.length == 0) {
@@ -333,7 +333,7 @@
         if (DEBUGLOG)
         {
             NSLog(@"DEALLOC BYTESTREAM");
-            NSLog(@"BYTESTREAM DEALLOC %ld", m_byteStream);
+            NSLog(@"BYTESTREAM DEALLOC %p", m_byteStream);
         }
         delete m_byteStream;
         m_byteStream = nullptr;
@@ -378,7 +378,7 @@
         if (DEBUGLOG)
         {
             NSLog(@"INIT ByteStream: %@ (%ld)", m_relativePath, m_bytesCount);
-            NSLog(@"BYTESTREAM INIT %ld", m_byteStream);
+            NSLog(@"BYTESTREAM INIT %p", m_byteStream);
         }
 	}
 
