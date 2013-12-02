@@ -124,7 +124,7 @@
     uint32_t smilIndex = 0;
     uint32_t parIndex = 0;
     uint32_t milliseconds = 0;
-    const ePub3::SMILData::Parallel *par = nullptr;
+    std::shared_ptr<const const ePub3::SMILData::Parallel> par = nullptr;
     std::shared_ptr<ePub3::SMILData> smilData = nullptr;
     mo->PercentToPosition([_timeScrobbler doubleValue], smilData, smilIndex, par, parIndex, milliseconds);
 

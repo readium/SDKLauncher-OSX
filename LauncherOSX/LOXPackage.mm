@@ -153,7 +153,7 @@
 
     ePub3::string s = ePub3::string(relativePath.UTF8String);
 
-    std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(_sdkPackage->BasePath() + s);
+    std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(s); //_sdkPackage->BasePath() API changed
 
     if (byteStream == nullptr) {
         NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
@@ -364,7 +364,7 @@
 //    // DEPRECATED (use ByteStream instead)
 //    //ePub3::unique_ptr<ePub3::ArchiveReader>& reader = _sdkPackage->ReaderForRelativePath(str);
 //
-//    std::unique_ptr<ePub3::ByteStream> reader = _sdkPackage->ReadStreamForRelativePath(_sdkPackage->BasePath() + str);
+//    std::unique_ptr<ePub3::ByteStream> reader = _sdkPackage->ReadStreamForRelativePath(str); //_sdkPackage->BasePath() API changed
 //
 //    if(reader == NULL){
 //        NSLog(@"No archive found for path %@", relativePath);

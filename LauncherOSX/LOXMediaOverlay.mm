@@ -130,10 +130,10 @@
             auto seq = smilData->Body();
             if (seq == nullptr)
             {
-                //throw std::invalid_argument("WTF?");
+                throw std::invalid_argument("Media Overlays SMIL body is null!!?");
             }
 
-            NSMutableDictionary *smilItem = [self parseTree_Sequence: seq];
+            NSMutableDictionary *smilItem = [self parseTree_Sequence: seq.get()];
 
             [smil addItem:smilItem];
 
@@ -226,14 +226,14 @@
     auto textMedia = node->Text();
     if (textMedia != nullptr && textMedia->IsText())
     {
-        NSMutableDictionary *text = [self parseTree_Text: textMedia];
+        NSMutableDictionary *text = [self parseTree_Text: textMedia.get()];
         [children addObject:text];
     }
 
     auto audioMedia = node->Audio();
     if (audioMedia != nullptr && audioMedia->IsAudio())
     {
-        NSMutableDictionary *audio = [self parseTree_Audio: audioMedia];
+        NSMutableDictionary *audio = [self parseTree_Audio: audioMedia.get()];
         [children addObject:audio];
     }
 
@@ -267,7 +267,7 @@
     auto count = node->GetChildrenCount();
     for (int i = 0; i < count; i++)
     {
-        const ePub3::SMILData::TimeContainer *container = node->GetChild(i);
+        const ePub3::SMILData::TimeContainer *container = node->GetChild(i).get();
 
         //const ePub3::SMILData::Sequence *seq = dynamic_cast<ePub3::SMILData::Sequence *>(container);
         //if (seq != nullptr)
