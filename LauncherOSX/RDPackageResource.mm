@@ -152,7 +152,7 @@
         }
 
         ePub3::string s = ePub3::string(m_relativePath.UTF8String);
-        m_byteStream = package.sdkPackage->ReadStreamForRelativePath(package.sdkPackage->BasePath() + s).release();
+        m_byteStream = package.sdkPackage->ReadStreamForRelativePath(s).release(); //package.sdkPackage->BasePath() API changed
         m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream pack:package path:m_relativePath];
 #ifndef USE_NATIVE_ZIP_SEEK
         m_bytesRead = 0;
