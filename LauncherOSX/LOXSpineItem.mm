@@ -21,13 +21,18 @@
 #import "LOXPackage.h"
 
 
+@interface LOXSpineItem ()
+- (NSString *)findProperty:(NSString *)propName withPrefix:(NSString *)prefix;
+@end
+
 @implementation LOXSpineItem
 
 @synthesize idref = _idref;
-//@synthesize packageStorageId = _packageStorrageId;
+//@synthesize packageStorageId = _packageStorageId;
 @synthesize href = _href;
 @synthesize page_spread = _page_spread;
 @synthesize rendition_layout = _rendition_layout;
+@synthesize rendition_spread = _rendition_spread;
 
 - (ePub3::SpineItemPtr)sdkSpineItem
 {
@@ -49,33 +54,34 @@
         _idref = [[NSString stringWithUTF8String:str] retain];
         _sdkSpineItem = sdkSpineItem;
 
-        if(sdkSpineItem->Spread() == ePub3::PageSpread::Left) {
-            _page_spread = @"page-spread-left";
+        _page_spread = [self findProperty:@"page-spread-left" withPrefix:@"rendition"];
+        if([_page_spread length] == 0) {
+            _page_spread = [self findProperty:@"page-spread-right" withPrefix:@"rendition"];
+            if([_page_spread length] == 0) {
+                _page_spread = [self findProperty:@"page-spread-center" withPrefix:@"rendition"];
+            }
         }
-        else if(sdkSpineItem->Spread() == ePub3::PageSpread::Right) {
-            _page_spread = @"page-spread-right";
-        }
-        else{
-            _page_spread = @"";
-        }
-
         [_page_spread retain];
 
-        _rendition_layout = @"";
-        auto layoutProp = _sdkSpineItem->PropertyMatching("layout", "rendition");
-        if(layoutProp != nullptr) {
-            _rendition_layout = [NSString stringWithUTF8String: layoutProp->Value().c_str()];
-        }
+        _rendition_spread = [self findProperty:@"spread" withPrefix:@"rendition"];
+        [_rendition_spread retain];
 
-        auto mediaOverlayString = _sdkSpineItem->ManifestItem()->MediaOverlayID();
-        _mediaOverlayId = [NSString stringWithUTF8String: mediaOverlayString.c_str()];
-
+        _rendition_layout = [self findProperty:@"layout" withPrefix:@"rendition"];
         [_rendition_layout retain];
-
     }
 
     return self;
 
+}
+
+- (NSString *) findProperty:(NSString *)propName withPrefix:(NSString *)prefix
+{
+    auto prop = _sdkSpineItem->PropertyMatching([propName UTF8String], [prefix UTF8String]);
+    if(prop != nullptr) {
+        return [NSString stringWithUTF8String: prop->Value().c_str()];
+    }
+
+    return @"";
 }
 
 - (NSDictionary *)toDictionary
@@ -86,18 +92,19 @@
     [dict setObject:_idref forKey:@"idref"];
     [dict setObject:_page_spread forKey:@"page_spread"];
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
-    [dict setObject:_mediaOverlayId forKey:@"media_overlay_id"];
+    [dict setObject:_rendition_spread forKey:@"rendition_spread"];
 
     return dict;
 }
 
 - (void)dealloc
 {
-    //[_packageStorrageId release];
+    //[_packageStorageId release];
     [_idref release];
     [_href release];
     [_page_spread release];
     [_rendition_layout release];
+    [_rendition_spread release];
     [super dealloc];
 }
 
