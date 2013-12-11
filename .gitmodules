@@ -6,4 +6,4 @@
 	url = https://github.com/readium/readium-shared-js.git
 [submodule "SimpleHTTPServer"]
 	path = SimpleHTTPServer
-	url = git@github.com:readium/SimpleHTTPServer.git
+	url = https://github.com/readium/SimpleHTTPServer.git
