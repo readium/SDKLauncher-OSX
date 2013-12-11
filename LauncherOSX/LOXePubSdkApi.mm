@@ -23,10 +23,11 @@
 
 #import <ePub3/container.h>
 #import <ePub3/nav_table.h>
+#include <ePub3/initialization.h>
 
 #import "LOXSpineItem.h"
 #import "LOXPackage.h"
-#include "initialization.h"
+
 
 
 @interface LOXePubSdkApi ()
