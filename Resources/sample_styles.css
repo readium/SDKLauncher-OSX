@@ -50,3 +50,10 @@
     padding: 10px;
     box-shadow: -5px 5px 5px 0 rgba(0, 0, 0, 0.1);
 }
+
+.mo-active-default {
+    background-color: blue !important;
+    color: white !important;
+    padding: 0.2em;
+    font-weight: bold;
+}

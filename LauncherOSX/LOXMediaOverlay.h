@@ -7,15 +7,25 @@
 
 
 #import <Foundation/Foundation.h>
-
+#import <ePub3/package.h>
 
 @interface LOXMediaOverlay : NSObject
 
 @property(nonatomic, readonly) NSArray *smilModels;
-@property(nonatomic, copy) NSString *duration;
+
+@property(nonatomic, readonly) NSArray *skippables;
+@property(nonatomic, readonly) NSArray *escapables;
+
+@property (nonatomic, copy) NSNumber *duration;
 @property(nonatomic, copy) NSString *narrator;
+@property(nonatomic, copy) NSString *activeClass;
+@property(nonatomic, copy) NSString *playbackActiveClass;
 
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage;
 
 - (NSDictionary *)toDictionary;
+
++ (NSString *) defaultEscapables;
++ (NSString *) defaultSkippables;
+
 @end

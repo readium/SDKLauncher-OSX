@@ -35,10 +35,13 @@
 #import "LOXPageNumberTextController.h"
 #import "LOXPreferencesController.h"
 #import "LOXUtil.h"
+#import "LOXMediaOverlay.h"
+#import "LOXMediaOverlayController.h"
 
 using namespace ePub3;
 
-FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
+//FOUNDATION_EXPORT
+extern NSString *const LOXPageChangedEvent;
 
 @interface LOXAppDelegate ()
 
@@ -65,6 +68,11 @@ FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
 }
 
 @synthesize currentPagesInfo = _currentPagesInfo;
+
+- (LOXPreferences *)getPreferences
+{
+    return _userData.preferences;
+}
 
 - (id)init
 {
@@ -181,7 +189,7 @@ FOUNDATION_EXPORT NSString *const LOXPageChangedEvent;
 
 - (LOXBook *)findOrCreateBookForCurrentPackageWithPath:(NSString *)path
 {
-    LOXBook * book = [_userData findBookWithId:_package.packageId];
+    LOXBook * book = [_userData findBookWithId:_package.packageId fileName:[path lastPathComponent]];
 
     if(!book) {
         book = [[[LOXBook alloc] init] autorelease];

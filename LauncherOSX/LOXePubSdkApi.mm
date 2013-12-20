@@ -23,9 +23,11 @@
 
 #import <ePub3/container.h>
 #import <ePub3/nav_table.h>
+#include <ePub3/initialization.h>
 
 #import "LOXSpineItem.h"
 #import "LOXPackage.h"
+
 
 
 @interface LOXePubSdkApi ()
@@ -47,7 +49,8 @@
 
 +(void)initialize
 {
-    ePub3::Archive::Initialize();
+    ePub3::InitializeSdk();
+    ePub3::PopulateFilterManager();
 }
 
 - (id)init

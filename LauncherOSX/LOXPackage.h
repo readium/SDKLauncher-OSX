@@ -17,33 +17,45 @@
 
 #import <Foundation/Foundation.h>
 #import <ePub3/package.h>
+#import "RDPackageResource.h"
 
 @class LOXSpine;
 @class LOXSpineItem;
-@class LOXTemporaryFileStorage;
 @class LOXToc;
 @class LOXMediaOverlay;
 
 
-@interface LOXPackage : NSObject
+@interface LOXPackage : NSObject { //<RDPackageResourceDelegate>
+    @private NSString *m_packageUUID;
+//    @private NSMutableSet *m_relativePathsThatAreHTML;
+//    @private NSMutableSet *m_relativePathsThatAreNotHTML;
+}
 
 -(id)initWithSdkPackage:(ePub3::PackagePtr) sdkPackage;
 
-- (void)prepareResourceWithPath:(NSString *)path;
+//- (void)prepareResourceWithPath:(NSString *)path;
 
 - (NSString *)getCfiForSpineItem:(LOXSpineItem *)spineItem;
 
 
 - (NSDictionary *)toDictionary;
+- (ePub3::PackagePtr) sdkPackage;
 
+@property (nonatomic, readonly) NSString *packageUUID;
 @property(nonatomic, readonly) LOXSpine *spine;
 @property(nonatomic, readonly) NSString *title;
 @property(nonatomic, readonly) NSString *packageId;
 @property(nonatomic, readonly) LOXToc *toc;
 @property(nonatomic, readonly) NSString *rendition_layout;
-@property(nonatomic, readonly) NSString *rootDirectory;
+//@property(nonatomic, readonly) NSString *rootDirectory;
 
 @property(nonatomic, readonly) LOXMediaOverlay *mediaOverlay;
 
+
+
+- (RDPackageResource*)resourceForUrl:(NSURL*) url;
+- (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath; // isHTML:(BOOL *)isHTML;
+
+- (NSString *) resourceRelativePath:(NSString *)urlAbsolutePath;
 
 @end
