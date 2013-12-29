@@ -165,7 +165,7 @@
     [nc addObserver:self selector:@selector(onProtocolBridgeNeedsResponse:)
                name:kSDKLauncherEPubURLProtocolBridgeNeedsResponse object:nil];
 
-    self.isZipVsCache = [NSNumber numberWithBool:NO];
+    self.isZipVsCache = [NSNumber numberWithBool:YES];
 
     NSString* html = [self loadHtmlTemplate];
     NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
