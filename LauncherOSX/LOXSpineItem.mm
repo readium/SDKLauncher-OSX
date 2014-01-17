@@ -32,6 +32,7 @@
 @synthesize href = _href;
 @synthesize page_spread = _page_spread;
 @synthesize rendition_layout = _rendition_layout;
+@synthesize rendition_flow = _rendition_flow;
 @synthesize rendition_spread = _rendition_spread;
 @synthesize media_overlay_id = _media_overlay_id;
 
@@ -71,6 +72,8 @@
         _rendition_layout = [self findProperty:@"layout" withPrefix:@"rendition"];
         [_rendition_layout retain];
 
+        _rendition_flow = [self findProperty:@"flow" withPrefix:@"rendition"];
+        [_rendition_flow retain];
 
         auto mediaOverlayID = sdkSpineItem->ManifestItem()->MediaOverlayID();
         _media_overlay_id = [[NSString alloc] initWithUTF8String: mediaOverlayID.c_str()];
@@ -99,6 +102,7 @@
     [dict setObject:_page_spread forKey:@"page_spread"];
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
     [dict setObject:_rendition_spread forKey:@"rendition_spread"];
+    [dict setObject:_rendition_flow forKey:@"rendition_flow"];
     [dict setObject:_media_overlay_id forKey:@"media_overlay_id"];
 
     return dict;
@@ -113,6 +117,7 @@
     [_rendition_layout release];
     [_rendition_spread release];
     [_media_overlay_id release];
+    [_rendition_flow release];
     [super dealloc];
 }
 

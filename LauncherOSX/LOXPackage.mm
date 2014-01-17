@@ -34,7 +34,7 @@
     //@private std::vector<std::unique_ptr<ePub3::ByteStream>> m_archiveReaderVector;
 }
 
-- (NSString *)getLayoutProperty;
+- (NSString *)findProperty:(NSString *)propName withPrefix:(NSString *)prefix;
 
 - (LOXToc *)getToc;
 
@@ -56,6 +56,7 @@
 @synthesize packageId = _packageId;
 @synthesize toc = _toc;
 @synthesize rendition_layout = _rendition_layout;
+@synthesize rendition_flow = _rendition_flow;
 //@synthesize rootDirectory = _rootDirectory;
 @synthesize mediaOverlay = _mediaOverlay;
 
@@ -238,7 +239,8 @@
         _packageId = [[NSString stringWithUTF8String:_sdkPackage->PackageID().c_str()] retain];
         _title = [[NSString stringWithUTF8String:_sdkPackage->Title().c_str()] retain];
 
-        _rendition_layout = [[self getLayoutProperty] retain];
+        _rendition_layout = [[self findProperty:@"layout" withPrefix:@"rendition"] retain];
+        _rendition_flow = [[self findProperty:@"flow" withPrefix:@"rendition"] retain];
 
 //        _storage = [[self createStorageForPackage:_sdkPackage] retain];
 //        _rootDirectory = [_storage.rootDirectory retain];
@@ -269,9 +271,9 @@
     return self;
 }
 
--(NSString*)getLayoutProperty
+- (NSString *) findProperty:(NSString *)propName withPrefix:(NSString *)prefix
 {
-    auto prop = _sdkPackage->PropertyMatching("layout", "rendition");
+    auto prop = _sdkPackage->PropertyMatching([propName UTF8String], [prefix UTF8String]);
     if(prop != nullptr) {
         return [NSString stringWithUTF8String: prop->Value().c_str()];
     }
@@ -292,6 +294,7 @@
     [_rendition_layout release];
     //[_rootDirectory release];
     [_mediaOverlay release];
+    [_rendition_flow release];
     [super dealloc];
 }
 
@@ -413,9 +416,9 @@
     [dict setObject:@"/" forKey:@"rootUrl"];
 
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
+    [dict setObject:_rendition_flow forKey:@"rendition_flow"];
     [dict setObject:[_spine toDictionary] forKey:@"spine"];
     [dict setObject:[_mediaOverlay toDictionary] forKey:@"media_overlay"];
-
 
     return dict;
 }
