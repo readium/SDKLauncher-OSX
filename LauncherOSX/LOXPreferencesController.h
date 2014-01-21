@@ -31,6 +31,8 @@
 @property (assign) IBOutlet NSTextView *moSkippablesCtrl;
 @property (assign) IBOutlet NSTextView *moEscapablesCtrl;
 
+@property (assign) IBOutlet NSMatrix *displayModeCtrl;
+
 @property(nonatomic, retain) LOXPreferences *preferences;
 @property(nonatomic, retain) LOXWebViewController *webViewController;
 

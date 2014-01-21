@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="LOXPreferencesController">
             <connections>
+                <outlet property="displayModeCtrl" destination="Ui7-Ke-pjm" id="OAm-iW-gq4"/>
                 <outlet property="moEscapablesCtrl" destination="329" id="345"/>
                 <outlet property="moSkippablesCtrl" destination="313" id="344"/>
                 <outlet property="selectorsCtrl" destination="219" id="230"/>

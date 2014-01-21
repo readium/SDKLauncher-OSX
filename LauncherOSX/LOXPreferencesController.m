@@ -163,6 +163,16 @@
     //otherwise sheet il not be attached to the window
     [NSBundle loadNibNamed:@"PreferencesDlg" owner:self];
 
+    if([_preferences.isScrollViewDoc boolValue]) {
+        [self.displayModeCtrl selectCellWithTag: 1];
+    }
+    else if([_preferences.isScrollViewContinuous boolValue]) {
+        [self.displayModeCtrl selectCellWithTag: 2];
+    }
+    else {
+        [self.displayModeCtrl selectCellWithTag: 0];
+    }
+
     [NSApp beginSheet:self.sheet
        modalForWindow:[[NSApp delegate] window]
         modalDelegate:self
@@ -190,6 +200,8 @@
     {
         [self.moEscapablesCtrl setString:[_preferences mediaOverlaysEscapables]];
     }
+
+
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -215,6 +227,7 @@
     [self.selectorsCtrl selectItemAtIndex:0];
 
     [self selectorSelected: self];
+
 }
 
 - (void)closeSheet
