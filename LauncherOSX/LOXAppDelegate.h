@@ -72,5 +72,7 @@ NSString *const LOXMediaOverlayTTSStopEvent = @"LOXMediaOverlayTTSStopEvent";
 
 - (void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString *)sourceRef;
 
+- (void)onReaderInitialized;
+
 
 @end

@@ -105,8 +105,6 @@ extern NSString *const LOXPageChangedEvent;
     self.pageNumController.currentPagesInfo = _currentPagesInfo;
     self.spineViewController.selectionChangedLiscener = self.webViewController;
 
-    [self.webViewController observePreferences:_userData.preferences];
-
     self.preferencesController.webViewController = self.webViewController;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -266,6 +264,12 @@ extern NSString *const LOXPageChangedEvent;
 {
    [self.webViewController openContentUrl:contentRef fromSourceFileUrl:sourceRef];
 }
+
+- (void)onReaderInitialized
+{
+   [self.webViewController updateSettings:_userData.preferences];
+}
+
 
 - (IBAction)showPreferences:(id)sender
 {

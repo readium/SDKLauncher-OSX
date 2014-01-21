@@ -95,8 +95,6 @@
 
 - (void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark;
 
--(void)observePreferences:(LOXPreferences *)preferences;
-
 - (void)resetStyles;
 
 - (void)mediaOverlaysOpenContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef forward:(double) offset;
@@ -105,5 +103,7 @@
 - (void)previousMediaOverlay;
 - (void)escapeMediaOverlay;
 - (void)ttsEndedMediaOverlay;
+
+- (void)updateSettings:(LOXPreferences *)preferences;
 
 @end

@@ -21,7 +21,9 @@
 - (IBAction)resetEscapables:(id)sender;
 - (IBAction)applySkippables:(id)sender;
 - (IBAction)applyEscapables:(id)sender;
+- (IBAction)onViewModeChanged: (id)sender;
 
+@property (assign) IBOutlet NSButton *thiteticSpread;
 @property (assign) IBOutlet NSWindow *sheet;
 
 @property (assign) IBOutlet NSPopUpButton *selectorsCtrl;

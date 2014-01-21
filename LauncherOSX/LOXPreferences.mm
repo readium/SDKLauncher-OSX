@@ -15,24 +15,20 @@
     bool _doNotUpdateView;
 }
 
-- (void)doNotUpdateView:(NSString*)keyPath
+- (void)setDoNotUpdateView:(bool)doNotUpdate
 {
-    //[keyPath hasPrefix:@"mediaOverlays"]
-    if ([keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysSkipSkippables))]
-            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEscapeEscapables))]
-            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEnableClick))]
-            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEscapables))]
-            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysSkippables))]
-            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysRate))]
-            || [keyPath isEqualToString:NSStringFromSelector(@selector(mediaOverlaysVolume))]
-    )
-    {
-        _doNotUpdateView = YES;
-    }
-    else
-    {
-        _doNotUpdateView = NO;
-    }
+    _doNotUpdateView = doNotUpdate;
+}
+
+-(bool) isMediaOverlayProperty:(NSString*)name
+{
+    return     [name isEqualToString:NSStringFromSelector(@selector(mediaOverlaysSkipSkippables))]
+            || [name isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEscapeEscapables))]
+            || [name isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEnableClick))]
+            || [name isEqualToString:NSStringFromSelector(@selector(mediaOverlaysEscapables))]
+            || [name isEqualToString:NSStringFromSelector(@selector(mediaOverlaysSkippables))]
+            || [name isEqualToString:NSStringFromSelector(@selector(mediaOverlaysRate))]
+            || [name isEqualToString:NSStringFromSelector(@selector(mediaOverlaysVolume))];
 }
 
 - (id)init
@@ -50,6 +46,8 @@
         self.columnGap = [NSNumber numberWithInt:20];
         self.mediaOverlaysRate = [NSNumber numberWithInt:1];
         self.mediaOverlaysVolume = [NSNumber numberWithInt:100];
+        self.isScrollViewDoc = [NSNumber numberWithBool:NO];
+        self.isScrollViewContinuous = [NSNumber numberWithBool:NO];
 
         _doNotUpdateView = NO;
 
@@ -64,6 +62,8 @@
                         NSStringFromSelector(@selector(mediaOverlaysEnableClick)),
                         NSStringFromSelector(@selector(mediaOverlaysRate)),
                         NSStringFromSelector(@selector(mediaOverlaysVolume)),
+                        NSStringFromSelector(@selector(isScrollViewDoc)),
+                        NSStringFromSelector(@selector(isScrollViewContinuous)),
                         nil];
         [_observableProperties retain];
     }
@@ -108,9 +108,6 @@
 
 -(NSDictionary *) toDictionary
 {
-    NSNumber* doNotUpdateView = [NSNumber numberWithBool:_doNotUpdateView];
-    _doNotUpdateView = NO;
-
     return @{
             NSStringFromSelector(@selector(fontSize)): self.fontSize,
             NSStringFromSelector(@selector(isSyntheticSpread)): self.isSyntheticSpread,
@@ -122,7 +119,9 @@
             NSStringFromSelector(@selector(mediaOverlaysRate)): self.mediaOverlaysRate,
             NSStringFromSelector(@selector(mediaOverlaysVolume)): self.mediaOverlaysVolume,
             NSStringFromSelector(@selector(columnGap)): self.columnGap,
-            NSStringFromSelector(@selector(doNotUpdateView)): doNotUpdateView
+            NSStringFromSelector(@selector(isScrollViewDoc)): self.isScrollViewDoc,
+            NSStringFromSelector(@selector(isScrollViewContinuous)): self.isScrollViewContinuous,
+            NSStringFromSelector(@selector(doNotUpdateView)): [NSNumber numberWithBool:_doNotUpdateView]
     };
 }
 

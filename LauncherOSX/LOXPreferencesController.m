@@ -25,6 +25,8 @@
 @implementation LOXPreferencesController {
     LOXPreferences *_preferences;
     LOXSampleStylesProvider *_stylesProvider;
+
+    BOOL _postponeSettingsUpdate;
 }
 
 - (IBAction)onClose:(id)sender
@@ -57,6 +59,30 @@
     //[self.webViewController setMediaOverlayEscapables:str];
     
     [_preferences updateMediaOverlaysEscapables: str];
+}
+
+- (IBAction)onViewModeChanged:(id)sender {
+
+    _postponeSettingsUpdate = YES;
+    NSButtonCell *selCell = [sender selectedCell];
+    switch([selCell tag])
+    {
+        case 1:
+            self.preferences.isScrollViewDoc = [NSNumber numberWithBool:YES];
+            self.preferences.isScrollViewContinuous = [NSNumber numberWithBool:NO];
+            break;
+        case 2:
+            self.preferences.isScrollViewDoc = [NSNumber numberWithBool:NO];
+            self.preferences.isScrollViewContinuous = [NSNumber numberWithBool:YES];
+            break;
+        default:
+            self.preferences.isScrollViewDoc = [NSNumber numberWithBool:NO];
+            self.preferences.isScrollViewContinuous = [NSNumber numberWithBool:NO];
+    }
+    _postponeSettingsUpdate = NO;
+
+    [self.preferences setDoNotUpdateView:NO];
+    [self.webViewController updateSettings: self.preferences];
 }
 
 - (IBAction)resetEscapables:(id)sender
@@ -126,9 +152,12 @@
         return;
     }
 
+    _postponeSettingsUpdate = NO;
+
     _preferences = preferences;
     [_preferences retain];
 
+    [_preferences registerChangeObserver:self];
 
     //Make sure that in nib file "Visible at launch" property set to false
     //otherwise sheet il not be attached to the window
@@ -163,6 +192,14 @@
     }
 }
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if(!_postponeSettingsUpdate) {
+        [_preferences setDoNotUpdateView:[_preferences isMediaOverlayProperty:keyPath]];
+        [self.webViewController updateSettings:_preferences];
+    }
+}
+
 -(void)updateStylesUI
 {
     [_stylesProvider release];
@@ -186,6 +223,7 @@
         return;
     }
 
+    [_preferences removeChangeObserver: self];
     [_preferences release];
     [NSApp endSheet:self.sheet];
     [self.sheet close];

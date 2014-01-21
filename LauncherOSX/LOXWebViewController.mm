@@ -43,8 +43,6 @@
 
 - (NSString *)loadHtmlTemplate;
 
-- (void)updateSettings:(LOXPreferences *)preferences;
-
 - (void)updateUI;
 @end
 
@@ -53,7 +51,6 @@
 
     LOXPackage *_package;
     NSString* _baseUrlPath;
-    LOXPreferences *_preferences;
 }
 
 
@@ -268,18 +265,6 @@
     [_webView stringByEvaluatingJavaScriptFromString:callString];
 }
 
-- (void)observePreferences:(LOXPreferences *)preferences
-{
-   [_preferences removeChangeObserver:self];
-   [_preferences release];
-
-    _preferences = preferences;
-    [_preferences retain];
-    [_preferences registerChangeObserver:self];
-
-    [self updateSettings:_preferences];
-}
-
 - (void)clear
 {
     WebScriptObject* script = [_webView windowScriptObject];
@@ -417,16 +402,9 @@
 
 - (void)onReaderInitialized
 {
-    [self updateSettings:_preferences];
+    [self.appDelegate onReaderInitialized];
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if(object == _preferences) {
-        [_preferences doNotUpdateView: keyPath];
-        [self updateSettings:_preferences];
-    }
-}
 
 -(void)updateSettings:(LOXPreferences *)preferences
 {
@@ -472,8 +450,6 @@
 
     [_package release];
     [_baseUrlPath release];
-    [_preferences removeChangeObserver:self];
-    [_preferences release];
 
     if (m_resourceServer != nil)
     {

@@ -23,11 +23,15 @@
 @property (nonatomic, retain) NSNumber *mediaOverlaysEnableClick;
 @property (nonatomic, retain) NSNumber *mediaOverlaysRate;
 @property (nonatomic, retain) NSNumber *mediaOverlaysVolume;
+@property (nonatomic, retain) NSNumber *isScrollViewDoc;
+@property (nonatomic, retain) NSNumber *isScrollViewContinuous;
 
 - (void)updateMediaOverlaysSkippables:(NSString *)str;
 - (void)updateMediaOverlaysEscapables:(NSString *)str;
 
-- (void)doNotUpdateView:(NSString*)keyPath;
+- (void)setDoNotUpdateView:(bool)doNotUpdate;
+
+- (bool)isMediaOverlayProperty:(NSString *)name;
 
 - (id)initWithDictionary:(NSDictionary *)dict;
 
