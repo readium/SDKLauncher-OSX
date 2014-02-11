@@ -16,7 +16,7 @@
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
 	NSString *s = request.URL.scheme;
-	BOOL accept = s != nil && [s isEqualToString:kSDKLauncherWebViewSDKProtocol];
+	BOOL accept = s != nil && ([s isEqualToString:kReadiumSdkUriScheme_EPUB] || [s isEqualToString:kReadiumSdkUriScheme_ROOT]);
 //    if (accept)
 //    {
 //        BOOL breakpoint = true;
@@ -58,23 +58,41 @@
     [self.client URLProtocol:self didReceiveResponse:response
         cacheStoragePolicy:NSURLCacheStorageAllowed];
 
-    // We get called from various threads.  Dispatch the data retrieval to the main thread
-    // to simplify code downstream.  Someday multi-threaded data retrieval might be nice but
-    // currently causes problems.
+    NSString *scheme = self.request.URL.scheme;
+    if ([scheme isEqualToString:kReadiumSdkUriScheme_EPUB])
+    {
+        // We get called from various threads.  Dispatch the data retrieval to the main thread
+        // to simplify code downstream.  Someday multi-threaded data retrieval might be nice but
+        // currently causes problems.
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSData *data = [[EPubURLProtocolBridge shared] dataForURL:self.request.URL];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSData *data = [[EPubURLProtocolBridge shared] dataForURL:self.request.URL];
 
-        if (data == nil) {
-            NSError *error = [NSError errorWithDomain:NSURLErrorDomain
-                code:NSURLErrorResourceUnavailable userInfo:nil];
-            [self.client URLProtocol:self didFailWithError:error];
-        }
-        else {
-            [self.client URLProtocol:self didLoadData:data];
-            [self.client URLProtocolDidFinishLoading:self];
-        }
-    });
+            if (data == nil) {
+                NSError *error = [NSError errorWithDomain:NSURLErrorDomain
+                    code:NSURLErrorResourceUnavailable userInfo:nil];
+                [self.client URLProtocol:self didFailWithError:error];
+            }
+            else {
+                [self.client URLProtocol:self didLoadData:data];
+                [self.client URLProtocolDidFinishLoading:self];
+            }
+        });
+    }
+    else
+    {
+        //[scheme isEqualToString:kReadiumSdkUriScheme_ROOT]);
+
+        NSString *path = self.request.URL.path;
+
+        NSFileHandle *handle = [NSFileHandle fileHandleForReadingAtPath:path];
+        NSData *data = [handle readDataToEndOfFile];
+
+        //[handle release];
+
+        [self.client URLProtocol:self didLoadData:data];
+        [self.client URLProtocolDidFinishLoading:self];
+    }
 }
 
 
