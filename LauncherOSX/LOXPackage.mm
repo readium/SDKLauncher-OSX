@@ -106,7 +106,7 @@
 
 - (RDPackageResource*)resourceForUrl:(NSURL*) url {
     NSString *s = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *prefix = [kSDKLauncherWebViewSDKProtocol stringByAppendingString:@"://"];
+    NSString *prefix = [kReadiumSdkUriScheme_EPUB stringByAppendingString:@"://"];
 
     if (s == nil || ![s hasPrefix:prefix] || s.length == prefix.length) {
         return nil;

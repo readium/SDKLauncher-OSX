@@ -60,11 +60,6 @@
          redirectResponse:(NSURLResponse *)redirectResponse
            fromDataSource:(WebDataSource *)dataSource
 {
-    if (_package == nil)
-    {
-        return request;
-    }
-
     if (request.URL == nil)
     {
         return request;
@@ -77,17 +72,29 @@
         return request;
     }
 
-    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame
-            && [scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] != NSOrderedSame)
-    {
-        return request;
-    }
-
     NSString *path = request.URL.path;
     if (path == nil)
     {
         return request;
     }
+
+    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame
+            && [scheme caseInsensitiveCompare: kReadiumSdkUriScheme_EPUB] != NSOrderedSame
+            && [scheme caseInsensitiveCompare: kReadiumSdkUriScheme_ROOT] != NSOrderedSame)
+    {
+        return request;
+    }
+
+    if (_package == nil && [scheme caseInsensitiveCompare: kReadiumSdkUriScheme_ROOT] == NSOrderedSame)
+    {
+        if (DEBUGMIN)
+        {
+            NSLog(@"----- REQ URL (kReadiumSdkUriScheme_ROOT) %@", request.URL);
+        }
+
+        return request;
+    }
+
 
     if ([path hasPrefix:@"/"]) {
         path = [path substringFromIndex:1];
@@ -121,16 +128,40 @@
         return newRequest;
     }
 
-    if ([scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] == NSOrderedSame)
+    if ([scheme caseInsensitiveCompare: kReadiumSdkUriScheme_EPUB] == NSOrderedSame)
     {
+//        if (_package == nil)
+//        {
+//            NSString * str = [[NSString stringWithFormat:@"file:///%@/", path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+//            NSURL *url = [NSURL URLWithString:str];
+//
+//            if (DEBUGMIN)
+//            {
+//                NSLog(@"===== REQ URL %@", url);
+//            }
+//
+//            NSMutableURLRequest *newRequest = [request mutableCopy];
+//            [newRequest setURL: url];
+//            return newRequest;
+//        }
+
         if (DEBUGMIN)
         {
-            NSLog(@"----- REQ URL %@", request.URL);
+            NSLog(@"----- REQ URL (kReadiumSdkUriScheme_EPUB) %@", request.URL);
         }
+
         return request;
     }
 
-    NSString * str = [[NSString stringWithFormat:@"%@://%@/%@", kSDKLauncherWebViewSDKProtocol, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+    if ([scheme caseInsensitiveCompare: @"file"] == NSOrderedSame)
+    {
+        if (_package == nil)
+        {
+            return request;
+        }
+    }
+
+    NSString * str = [[NSString stringWithFormat:@"%@://%@/%@", kReadiumSdkUriScheme_EPUB, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:str];
 
     if (DEBUGMIN)
@@ -165,6 +196,12 @@
     self.isZipVsCache = [NSNumber numberWithBool:YES];
 
     NSString* html = [self loadHtmlTemplate];
+
+// This tests cross-origin iframe access
+// (demonstrates that file:// for reader.html allows injection of content and scripted behaviour into the iframe, but not with readiumsdk:// URI scheme)
+//    NSString * str = [[NSString stringWithFormat:@"%@://READIUM%@/", kReadiumSdkUriScheme_ROOT, _baseUrlPath] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+//    NSURL *baseUrl = [NSURL URLWithString:str];
+
     NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
 
     [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];

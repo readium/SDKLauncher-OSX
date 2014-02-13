@@ -8,7 +8,8 @@
 
 #endif
 
-#define kSDKLauncherWebViewSDKProtocol @"epubwebviewsdk"
+#define kReadiumSdkUriScheme_EPUB @"readiumsdkepub"
+#define kReadiumSdkUriScheme_ROOT @"readiumsdkhtmlroot"
 
 #define DEBUGMIN false
 
