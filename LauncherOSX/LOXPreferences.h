@@ -13,18 +13,18 @@
 
 
 
-@property (nonatomic, retain) NSNumber *isSyntheticSpread;
-@property (nonatomic, retain) NSNumber *fontSize;
-@property (nonatomic, retain) NSNumber *columnGap;
-@property (nonatomic, retain) NSNumber *mediaOverlaysSkipSkippables;
-@property (nonatomic, retain) NSNumber *mediaOverlaysEscapeEscapables;
-@property (nonatomic, retain) NSString *mediaOverlaysSkippables;
-@property (nonatomic, retain) NSString *mediaOverlaysEscapables;
-@property (nonatomic, retain) NSNumber *mediaOverlaysEnableClick;
-@property (nonatomic, retain) NSNumber *mediaOverlaysRate;
-@property (nonatomic, retain) NSNumber *mediaOverlaysVolume;
-@property (nonatomic, retain) NSNumber *isScrollViewDoc;
-@property (nonatomic, retain) NSNumber *isScrollViewContinuous;
+@property (nonatomic, strong) NSNumber *isSyntheticSpread;
+@property (nonatomic, strong) NSNumber *fontSize;
+@property (nonatomic, strong) NSNumber *columnGap;
+@property (nonatomic, strong) NSNumber *mediaOverlaysSkipSkippables;
+@property (nonatomic, strong) NSNumber *mediaOverlaysEscapeEscapables;
+@property (nonatomic, strong) NSString *mediaOverlaysSkippables;
+@property (nonatomic, strong) NSString *mediaOverlaysEscapables;
+@property (nonatomic, strong) NSNumber *mediaOverlaysEnableClick;
+@property (nonatomic, strong) NSNumber *mediaOverlaysRate;
+@property (nonatomic, strong) NSNumber *mediaOverlaysVolume;
+@property (nonatomic, strong) NSNumber *isScrollViewDoc;
+@property (nonatomic, strong) NSNumber *isScrollViewContinuous;
 
 - (void)updateMediaOverlaysSkippables:(NSString *)str;
 - (void)updateMediaOverlaysEscapables:(NSString *)str;

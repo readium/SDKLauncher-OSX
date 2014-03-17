@@ -16,25 +16,22 @@
 @class LOXPackage;
 
 @interface RDPackageResource : NSObject {
+@private LOXPackage *m_package;
+@private NSData *m_data;
 }
 
 //@property (nonatomic, readonly) ePub3::ByteStream* byteStream;
 @property (nonatomic, readonly) std::size_t bytesCount;
 
-// The content of the resource in its entirety.  If you call this, don't call
-// createNextChunkByReading.
-//@property (nonatomic, readonly) NSData *data;
+@property (nonatomic, readonly) NSData *data;
 
-// The relative path associated with this resource.
+@property (nonatomic, readonly) LOXPackage *package;
+
+
 @property (nonatomic, readonly) NSString *relativePath;
 
-// The next chunk of data for the resource, or nil if we have finished reading all chunks.  If
-// you call this, don't call the data property.
-- (NSData *)createNextChunkByReading;
-
-- (NSData *)readAllDataChunks;
-
-- (NSData *)createChunkByReadingRange:(NSRange)range package:(LOXPackage *)package;
+- (NSData *)readDataOfLength:(NSUInteger)length;
+- (void)setOffset:(UInt64)offset;
 
 - (id)
 	initWithByteStream:(ePub3::ByteStream*)byteStream

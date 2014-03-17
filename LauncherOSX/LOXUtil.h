@@ -23,8 +23,6 @@
 
 @interface LOXUtil : NSObject
 
-+ (NSString *)uuid;
-
 + (id)valueForKey:(NSString *)keyName orDefault:(id)defaultValue fromDictionary:(NSDictionary *)dict;
 
 + (void)reportError:(NSString *)error;

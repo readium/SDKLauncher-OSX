@@ -16,8 +16,8 @@
 
 - (NSDictionary *)toDictionary;
 
-@property (nonatomic, retain) NSString* selector;
+@property (nonatomic, strong) NSString* selector;
 @property (nonatomic, copy) NSString* declarationsBlock;
-@property (nonatomic, retain) NSDictionary *declarations;
+@property (nonatomic, strong) NSDictionary *declarations;
 
 @end

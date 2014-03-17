@@ -84,8 +84,8 @@
 
         LOXBookmark *bookmark = [bookmarks objectAtIndex:i];
 
-        NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle:bookmark.title
-                                                       action:@selector(bookmarkClicked:) keyEquivalent:@""] autorelease];
+        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:bookmark.title
+                                                       action:@selector(bookmarkClicked:) keyEquivalent:@""];
 
 
         [item setTag:i];
@@ -100,18 +100,18 @@
 
 -(NSMenu *)createBookmarkOptionsSubmenuForIndex:(NSInteger) ix
 {
-    NSMenu *bookmarkOptionsMenu = [[[NSMenu alloc] initWithTitle:@"Bookmark Options"] autorelease];
+    NSMenu *bookmarkOptionsMenu = [[NSMenu alloc] initWithTitle:@"Bookmark Options"];
 
-    NSMenuItem *editItem = [[[NSMenuItem alloc] initWithTitle:@"Edit bookmark"
-                                                   action:@selector(editBookmarkClicked:) keyEquivalent:@""] autorelease];
+    NSMenuItem *editItem = [[NSMenuItem alloc] initWithTitle:@"Edit bookmark"
+                                                   action:@selector(editBookmarkClicked:) keyEquivalent:@""];
 
     [editItem setTarget:self];
     [editItem setTag:ix];
 
     [bookmarkOptionsMenu addItem:editItem];
 
-    NSMenuItem *removeItem = [[[NSMenuItem alloc] initWithTitle:@"Remove bookmark"
-                                                   action:@selector(removeBookmarkClicked:) keyEquivalent:@""] autorelease];
+    NSMenuItem *removeItem = [[NSMenuItem alloc] initWithTitle:@"Remove bookmark"
+                                                   action:@selector(removeBookmarkClicked:) keyEquivalent:@""];
 
     [removeItem setTarget:self];
     [removeItem setTag:ix];
@@ -185,11 +185,6 @@
 
     LOXBookmark * bookmark = _book.bookmarks[(NSUInteger)menuItem.tag];
     [self.mainController openBookmark: bookmark];
-}
-
-- (void)dealloc
-{
-     [super dealloc];
 }
 
 

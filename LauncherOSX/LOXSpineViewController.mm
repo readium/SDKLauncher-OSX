@@ -119,18 +119,10 @@
 
 - (void)setPackage:(LOXPackage *)package
 {
-    [_package release];
     _package = package;
-    [_package retain];
 
     [_tableView reloadData];
 }
 
-
-- (void)dealloc
-{
-    [_package release];
-    [super dealloc];
-}
 
 @end

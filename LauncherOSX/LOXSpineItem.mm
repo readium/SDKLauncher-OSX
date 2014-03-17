@@ -51,10 +51,8 @@
 
         auto manifestItem = sdkSpineItem->ManifestItem();
         _href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
-        [_href retain];
-        //_packageStorrageId = storageId;
-        //[_packageStorrageId retain];
-        _idref = [[NSString stringWithUTF8String:str] retain];
+
+        _idref = [NSString stringWithUTF8String:str];
         _sdkSpineItem = sdkSpineItem;
 
         _page_spread = [self findProperty:@"page-spread-left" withPrefix:@"rendition"];
@@ -64,16 +62,12 @@
                 _page_spread = [self findProperty:@"page-spread-center" withPrefix:@"rendition"];
             }
         }
-        [_page_spread retain];
 
         _rendition_spread = [self findProperty:@"spread" withPrefix:@"rendition"];
-        [_rendition_spread retain];
 
         _rendition_layout = [self findProperty:@"layout" withPrefix:@"rendition"];
-        [_rendition_layout retain];
 
         _rendition_flow = [self findProperty:@"flow" withPrefix:@"rendition"];
-        [_rendition_flow retain];
 
         auto mediaOverlayID = sdkSpineItem->ManifestItem()->MediaOverlayID();
         _media_overlay_id = [[NSString alloc] initWithUTF8String: mediaOverlayID.c_str()];
@@ -108,17 +102,5 @@
     return dict;
 }
 
-- (void)dealloc
-{
-    //[_packageStorageId release];
-    [_idref release];
-    [_href release];
-    [_page_spread release];
-    [_rendition_layout release];
-    [_rendition_spread release];
-    [_media_overlay_id release];
-    [_rendition_flow release];
-    [super dealloc];
-}
 
 @end

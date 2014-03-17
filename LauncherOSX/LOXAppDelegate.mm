@@ -86,16 +86,6 @@ extern NSString *const LOXPageChangedEvent;
     return self;
 }
 
-- (void)dealloc
-{
-    [_package release];
-    [_epubApi release];
-    [_userData release];
-    [_currentPagesInfo release];
-    [super dealloc];
-}
-
-
 -(void) awakeFromNib
 {
     _epubApi = [[LOXePubSdkApi alloc] init];
@@ -146,14 +136,11 @@ extern NSString *const LOXPageChangedEvent;
 {
     try {
 
-        [_package release];
         _package = [_epubApi openFile:path];
 
         if(!_package) {
             return NO;
         }
-
-        [_package retain];
 
         [self.tocViewController setPackage: _package];
         [self.spineViewController setPackage:_package];
@@ -190,7 +177,7 @@ extern NSString *const LOXPageChangedEvent;
     LOXBook * book = [_userData findBookWithId:_package.packageId fileName:[path lastPathComponent]];
 
     if(!book) {
-        book = [[[LOXBook alloc] init] autorelease];
+        book = [[LOXBook alloc] init];
         book.filePath = path;
         book.packageId = _package.packageId;
         book.name = _package.title;

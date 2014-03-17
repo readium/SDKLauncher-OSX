@@ -81,10 +81,7 @@
     if (_timeScrobbler && [timeScrub isEqualToNumber:_timeScrobbler])
         return;
 
-    if (_timeScrobbler)
-        [_timeScrobbler release];
-
-    _timeScrobbler = [timeScrub retain];
+    _timeScrobbler = timeScrub;
 //
 //    if (skipTimeScrobbler)
 //    {
@@ -218,13 +215,6 @@
 
 }
 
-- (void)dealloc
-{
-    [_speech release];
-
-    [super dealloc];
-}
-
 - (id)init
 {
     self = [super init];
@@ -232,7 +222,7 @@
     {
         _skipTTSEnd = false;
 
-        _speech = [[NSSpeechSynthesizer alloc] init]; //retained
+        _speech = [[NSSpeechSynthesizer alloc] init];
         [_speech setDelegate:self];
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_5
@@ -315,7 +305,7 @@ https://developer.apple.com/library/mac/documentation/userexperience/conceptual/
     NSString *tts = [dict objectForKey:@"tts"];//dict[@"tts"];
     if (tts != nil)
     {
-        NSError* error = [[[NSError alloc]init] autorelease];
+        NSError* error = [[NSError alloc]init];
         NSDictionary* dic = [_speech objectForProperty:NSSpeechStatusProperty error: &error];
         //NSSpeechStatusOutputPaused  NSSpeechStatusOutputBusy
 

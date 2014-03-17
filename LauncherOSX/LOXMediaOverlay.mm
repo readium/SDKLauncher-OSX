@@ -37,7 +37,7 @@
 
 + (NSString *) defaultEscapables
 {
-    NSMutableArray* arr = [[NSMutableArray array] retain];
+    NSMutableArray* arr = [NSMutableArray array];
     
     auto count = ePub3::MediaOverlaysSmilModel::GetEscapablesCount();
     for (int i = 0; i < count; i++)
@@ -51,7 +51,7 @@
 
 + (NSString *) defaultSkippables
 {
-    NSMutableArray* arr = [[NSMutableArray array] retain];
+    NSMutableArray* arr = [NSMutableArray array];
     
     auto count = ePub3::MediaOverlaysSmilModel::GetSkippablesCount();
     for (int i = 0; i < count; i++)
@@ -86,10 +86,10 @@
         self.duration = [NSNumber numberWithDouble: ePubSmilModel->DurationMilliseconds_Metadata() / 1000.0];
         //NSLog(@"=== TOTAL MO DURATION: %ldms", (long) floor([self.duration doubleValue] * 1000.0));
 
-        _smilModels = [[NSMutableArray array] retain];
+        _smilModels = [NSMutableArray array];
 
 
-        _skippables = [[NSMutableArray array] retain];
+        _skippables = [NSMutableArray array];
         auto count = ePub3::MediaOverlaysSmilModel::GetSkippablesCount();
         for (int i = 0; i < count; i++)
         {
@@ -97,7 +97,7 @@
             [_skippables addObject:[NSString stringWithUTF8String: str.c_str()]];
         }
 
-        _escapables = [[NSMutableArray array] retain];
+        _escapables = [NSMutableArray array];
         count = ePub3::MediaOverlaysSmilModel::GetEscapablesCount();
         for (int i = 0; i < count; i++)
         {
@@ -333,15 +333,4 @@
     }
 }
 
-- (void)dealloc {
-    for(LOXSmilModel *mo in _smilModels) {
-        [mo release];
-    }
-    [_smilModels release];
-
-    [_skippables release];
-    [_escapables release];
-
-    [super dealloc];
-}
 @end

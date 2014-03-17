@@ -30,7 +30,7 @@
                                                          error:NULL];
 
 
-        _styles = [[LOXCSSParser parseCSS:content] retain];
+        _styles = [LOXCSSParser parseCSS:content];
     }
 
     return self;
@@ -47,11 +47,5 @@
     return [_styles objectAtIndex:index];
 }
 
-
-- (void)dealloc
-{
-    [_styles release];
-    [super dealloc];
-}
 
 @end

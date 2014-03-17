@@ -33,8 +33,8 @@
 
 @property (assign) IBOutlet NSMatrix *displayModeCtrl;
 
-@property(nonatomic, retain) LOXPreferences *preferences;
-@property(nonatomic, retain) LOXWebViewController *webViewController;
+@property(nonatomic, strong) LOXPreferences *preferences;
+@property(nonatomic, strong) LOXWebViewController *webViewController;
 
 -(void) showPreferences:(LOXPreferences*)preferences;
 -(void) closeSheet;

@@ -96,7 +96,7 @@
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <binding destination="-2" name="value" keyPath="self.webViewController.isZipVsCache" id="a6o-yo-QjI"/>
+                                                <binding destination="-2" name="value" keyPath="preferences.isSyntheticSpread" id="a6o-yo-QjI"/>
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" id="5UE-wM-nST">

@@ -36,12 +36,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [_children release];
-    [super dealloc];
-}
-
 
 -(void)addChild:(LOXTocEntry*)child
 {

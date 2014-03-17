@@ -24,8 +24,8 @@
 @interface LOXUserData : NSObject
 
 
-@property (nonatomic, retain, readonly) NSArray *books;
-@property (nonatomic, retain) LOXPreferences *preferences;
+@property (nonatomic, strong, readonly) NSArray *books;
+@property (nonatomic, strong) LOXPreferences *preferences;
 
 - (void)save;
 

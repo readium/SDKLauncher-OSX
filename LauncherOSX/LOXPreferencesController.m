@@ -155,7 +155,6 @@
     _postponeSettingsUpdate = NO;
 
     _preferences = preferences;
-    [_preferences retain];
 
     [_preferences registerChangeObserver:self];
 
@@ -214,9 +213,7 @@
 
 -(void)updateStylesUI
 {
-    [_stylesProvider release];
     _stylesProvider = [[LOXSampleStylesProvider alloc] init];
-    [_stylesProvider retain];
 
     [self.selectorsCtrl removeAllItems];
 
@@ -237,18 +234,12 @@
     }
 
     [_preferences removeChangeObserver: self];
-    [_preferences release];
+
     [NSApp endSheet:self.sheet];
     [self.sheet close];
     self.sheet = nil;
 }
 
-
-- (void)dealloc {
-    [_preferences release];
-    [_stylesProvider release];
-    [super dealloc];
-}
 
 
 @end

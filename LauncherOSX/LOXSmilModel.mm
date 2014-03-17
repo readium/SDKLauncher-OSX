@@ -23,7 +23,7 @@
     self = [super init];
     if (self){
 
-        _children = [[NSMutableArray array] retain];
+        _children = [NSMutableArray array];
 
     }
 
@@ -35,10 +35,6 @@
     [_children addObject:item];
 }
 
-- (void)dealloc {
-    [_children release];
-    [super dealloc];
-}
 
 -(NSDictionary *)toDictionary
 {
