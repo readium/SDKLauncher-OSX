@@ -38,7 +38,7 @@
   }
 
 @property (assign, nonatomic) id<LOXSpineViewControllerDelegate> selectionChangedLiscener;
-@property (nonatomic, retain) LOXCurrentPagesInfo *currentPagesInfo;
+@property (nonatomic, strong) LOXCurrentPagesInfo *currentPagesInfo;
 
 - (LOXSpineItem *)getSelectedItem;
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5053"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="LOXPreferencesController">
@@ -18,7 +18,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application"/>
-        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="1">
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="1">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="571" height="428"/>
@@ -69,13 +69,9 @@
                                             <rect key="frame" x="117" y="165" width="96" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="25">
-                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="26">
-                                                    <real key="roundingIncrement" value="0.0"/>
+                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="26">
                                                     <integer key="minimum" value="20"/>
                                                     <integer key="maximum" value="200"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
                                                 </numberFormatter>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -87,26 +83,6 @@
                                             <connections>
                                                 <binding destination="-2" name="value" keyPath="preferences.fontSize" id="114"/>
                                             </connections>
-                                        </textField>
-                                        <button id="aq3-3P-3wr">
-                                            <rect key="frame" x="486" y="3" width="61" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="e5J-Ab-CDh">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <binding destination="-2" name="value" keyPath="self.webViewController.isZipVsCache" id="a6o-yo-QjI"/>
-                                            </connections>
-                                        </button>
-                                        <textField verticalHuggingPriority="750" id="5UE-wM-nST">
-                                            <rect key="frame" x="2" y="-3" width="467" height="24"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="direct ZIP streaming, no encrypted filesystem cache (ADVANCED OPTION)" id="KFE-aT-H7Q">
-                                                <font key="font" metaFont="system"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="88">
                                             <rect key="frame" x="2" y="127" width="100" height="17"/>
@@ -121,13 +97,9 @@
                                             <rect key="frame" x="117" y="122" width="96" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="94">
-                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="95">
-                                                    <real key="roundingIncrement" value="0.0"/>
+                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="95">
                                                     <real key="minimum" value="0.0"/>
                                                     <integer key="maximum" value="300"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
                                                 </numberFormatter>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -241,17 +213,17 @@
                                             <rect key="frame" x="17" y="189" width="188" height="113"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="nAU-r4-vAj">
-                                                <rect key="frame" x="1" y="1" width="171" height="111"/>
+                                                <rect key="frame" x="1" y="1" width="186" height="111"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="313">
-                                                        <rect key="frame" x="0.0" y="0.0" width="171" height="111"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="186" height="111"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="171" height="111"/>
+                                                        <size key="minSize" width="186" height="111"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                         <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="171" height="111"/>
+                                                        <size key="minSize" width="186" height="111"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                     </textView>
                                                 </subviews>
@@ -321,17 +293,17 @@
                                             <rect key="frame" x="17" y="10" width="188" height="135"/>
                                             <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                             <clipView key="contentView" id="5D4-QB-awZ">
-                                                <rect key="frame" x="1" y="1" width="171" height="133"/>
+                                                <rect key="frame" x="1" y="1" width="186" height="133"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="329">
-                                                        <rect key="frame" x="0.0" y="0.0" width="171" height="133"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="186" height="133"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="171" height="133"/>
+                                                        <size key="minSize" width="186" height="133"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                         <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="171" height="133"/>
+                                                        <size key="minSize" width="186" height="133"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                     </textView>
                                                 </subviews>
@@ -404,13 +376,9 @@
                                             <rect key="frame" x="412" y="249" width="96" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" state="on" drawsBackground="YES" id="378">
-                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="379">
-                                                    <real key="roundingIncrement" value="0.0"/>
+                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="379">
                                                     <real key="minimum" value="0.0"/>
                                                     <integer key="maximum" value="300"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
                                                 </numberFormatter>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -427,13 +395,9 @@
                                             <rect key="frame" x="412" y="306" width="96" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" sendsActionOnEndEditing="YES" state="on" drawsBackground="YES" id="384">
-                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="385">
-                                                    <real key="roundingIncrement" value="0.0"/>
+                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="385">
                                                     <real key="minimum" value="0.0"/>
                                                     <integer key="maximum" value="300"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
                                                 </numberFormatter>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -499,17 +463,17 @@
                                             <rect key="frame" x="76" y="37" width="440" height="255"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="3xU-BE-wjf">
-                                                <rect key="frame" x="1" y="1" width="423" height="253"/>
+                                                <rect key="frame" x="1" y="1" width="438" height="253"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="286">
-                                                        <rect key="frame" x="0.0" y="0.0" width="423" height="253"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="438" height="253"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="423" height="253"/>
+                                                        <size key="minSize" width="438" height="253"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                         <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="423" height="253"/>
+                                                        <size key="minSize" width="438" height="253"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                     </textView>
                                                 </subviews>

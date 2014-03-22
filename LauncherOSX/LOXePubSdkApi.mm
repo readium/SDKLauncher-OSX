@@ -59,7 +59,7 @@
     
     if(self){
 
-        _packages = [[NSMutableArray array] retain];
+        _packages = [NSMutableArray array];
     }
 
     return self;
@@ -86,7 +86,7 @@
 
     for (auto package = packages.begin(); package != packages.end(); ++package) {
 
-        [_packages addObject:[[[LOXPackage alloc] initWithSdkPackage:*package] autorelease]];
+        [_packages addObject:[[LOXPackage alloc] initWithSdkPackage:*package]];
     }
 }
 
@@ -94,15 +94,11 @@
 - (void)dealloc
 {
     [self cleanup];
-
-    [_packages release];
-    [super dealloc];
 }
 
 - (void)cleanup
 {
     [_packages removeAllObjects];
-    [_currentPackage release];
     _currentPackage = nil;
 }
 

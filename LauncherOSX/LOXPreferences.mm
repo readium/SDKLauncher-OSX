@@ -65,7 +65,6 @@
                         NSStringFromSelector(@selector(isScrollViewDoc)),
                         NSStringFromSelector(@selector(isScrollViewContinuous)),
                         nil];
-        [_observableProperties retain];
     }
 
     return self;
@@ -147,11 +146,6 @@
            forKeyPath:property
               options:NSKeyValueObservingOptionNew
               context:NULL];
-}
-
-- (void)dealloc {
-    [_observableProperties release];
-    [super dealloc];
 }
 
 @end

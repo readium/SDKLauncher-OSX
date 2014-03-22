@@ -54,7 +54,6 @@
 
 
 
-- (RDPackageResource*)resourceForUrl:(NSURL*) url;
 - (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath; // isHTML:(BOOL *)isHTML;
 
 - (NSString *) resourceRelativePath:(NSString *)urlAbsolutePath;

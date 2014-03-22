@@ -31,7 +31,7 @@
 
 +(id) bookmarkFromDictionary:(NSDictionary *)dict
 {
-    LOXBookmark * bookmark = [[[LOXBookmark alloc] init] autorelease];
+    LOXBookmark * bookmark = [[LOXBookmark alloc] init];
 
     for (id key in dict.allKeys) {
         [bookmark setValue:dict[key] forKey:key];
@@ -67,16 +67,6 @@
 - (bool)isNew
 {
     return self.book == nil;
-}
-
-- (void)dealloc
-{
-    [idref release];
-    [title release];
-    [spineItemCFI release];
-    [contentCFI release];
-    [_basePath release];
-    [super dealloc];
 }
 
 @end

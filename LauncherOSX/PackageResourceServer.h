@@ -12,45 +12,32 @@
 @class LOXPackage;
 @class RDPackageResource;
 
-static BOOL m_skipCache = true;
+#import "HTTPConnection.h"
 
-#ifdef USE_SIMPLE_HTTP_SERVER
+@interface PackageResourceConnection : HTTPConnection
 
-#import "AQHTTPConnection.h"
-#import "AQHTTPResponseOperation.h"
++ (void)setPackage:(LOXPackage *)package;
 
-@class AQHTTPServer;
-
-@interface LOXHTTPResponseOperation : AQHTTPResponseOperation<AQRandomAccessFile>
-{
-}
-//@property (nonatomic, readonly) dispatch_semaphore_t lock;
-- (void)initialiseData:(LOXPackage *)package resource:(RDPackageResource *)resource;
 @end
 
-@interface LOXHTTPConnection : AQHTTPConnection
-{
-
+@interface PackageResourceResponse : NSObject <HTTPResponse> {
+@private UInt64 m_offset;
+@private RDPackageResource *m_resource;
 }
+
+- (id)initWithResource:(RDPackageResource *)resource;
+
 @end
-#else
-@class AsyncSocket;
-#endif
 
 @interface PackageResourceServer : NSObject {
 
-@private int m_kSDKLauncherPackageResourceServerPort;
-
-#ifdef USE_SIMPLE_HTTP_SERVER
-    AQHTTPServer * m_server;
-#else
-	@private AsyncSocket *m_mainSocket;
-	@private NSMutableArray *m_requests;
-#endif
+    HTTPServer * m_server;
 }
 
-- (id)initWithPackage:(LOXPackage *)package resourcesFromZipStream_NoFileSystemEncryptedCache:(BOOL)resourcesFromZipStream_NoFileSystemEncryptedCache;
+- (id)initWithPackage:(LOXPackage *)package;
 
 - (int) serverPort;
+
++ (id)resourceLock;
 
 @end

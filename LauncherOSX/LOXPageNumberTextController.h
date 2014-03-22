@@ -30,7 +30,7 @@
 @property (assign) IBOutlet NSTextField *pageNumberCtrl;
 @property (assign) IBOutlet NSTextField *pageCountCtrl;
 
-@property (nonatomic, retain) LOXCurrentPagesInfo *currentPagesInfo;
+@property (nonatomic, strong) LOXCurrentPagesInfo *currentPagesInfo;
 
 
 @end

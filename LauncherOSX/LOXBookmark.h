@@ -22,12 +22,12 @@
 
 @interface LOXBookmark : NSObject
 
-@property (nonatomic, retain) NSString *idref;
-@property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) NSString *spineItemCFI;
-@property (nonatomic, retain) NSString *contentCFI;
+@property (nonatomic, strong) NSString *idref;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString *spineItemCFI;
+@property (nonatomic, strong) NSString *contentCFI;
 @property (nonatomic, assign) LOXBook *book;
-@property(nonatomic, retain) NSString *basePath;
+@property(nonatomic, strong) NSString *basePath;
 
 + (id)bookmarkFromDictionary:(NSDictionary *)dict;
 

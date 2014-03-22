@@ -51,7 +51,6 @@
         return;
     }
 
-    [_bookmark release];
     [NSApp endSheet:self.sheet];
     [self.sheet close];
     self.sheet = nil;
@@ -65,7 +64,6 @@
     }
 
     _bookmark = bookmark;
-    [_bookmark retain];
 
     //Make sure that in nib file "Visible at launch" property set to false
     //otherwise sheet il not be attached to the window
@@ -79,12 +77,6 @@
 
     [self updateControls];
 
-}
-
-- (void)dealloc
-{
-    [_bookmark release];
-    [super dealloc];
 }
 
 - (void)controlTextDidChange:(NSNotification *)notification {

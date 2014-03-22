@@ -23,15 +23,15 @@
 
 @interface LOXBook : NSObject
 
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSString * filePath;
-@property (nonatomic, retain, readonly) NSArray *bookmarks;
+@property (nonatomic, strong) NSString * name;
+@property (nonatomic, strong) NSString * filePath;
+@property (nonatomic, strong, readonly) NSArray *bookmarks;
 
-@property (nonatomic, retain) LOXBookmark *lastOpenPage;
+@property (nonatomic, strong) LOXBookmark *lastOpenPage;
 
-@property(nonatomic, retain) NSDate* dateCreated;
-@property(nonatomic, retain) NSDate* dateOpened;
-@property(nonatomic, retain) NSString *packageId;
+@property(nonatomic, strong) NSDate* dateCreated;
+@property(nonatomic, strong) NSDate* dateOpened;
+@property(nonatomic, strong) NSString *packageId;
 
 - (NSDictionary *)toDictionary;
 

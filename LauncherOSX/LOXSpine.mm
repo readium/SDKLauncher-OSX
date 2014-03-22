@@ -33,16 +33,10 @@
 {
     if ((self = [super init])) {
         _items = [[NSMutableArray alloc] init];
-        _direction = [direction retain];
+        _direction = direction;
     }
 
     return self;
-}
-
-- (void)dealloc {
-    [_items release];
-    [_direction release];
-    [super dealloc];
 }
 
 - (void)addItem:(LOXSpineItem *)spineItem

@@ -20,7 +20,7 @@
 
 @interface LOXBook()
 
-@property (retain, nonatomic, readwrite) NSArray *bookmarks;
+@property (strong, nonatomic, readwrite) NSArray *bookmarks;
 
 
 @end
@@ -38,7 +38,7 @@
 
 +(id) bookFromDictionary:(NSDictionary *)dict
 {
-    LOXBook * book = [[[LOXBook alloc] init] autorelease];
+    LOXBook * book = [[LOXBook alloc] init];
 
     for(id key in dict.allKeys) {
 
@@ -106,16 +106,6 @@
 {
     bookmark.book = self;
     [_bookmarks addObject:bookmark];
-}
-
-- (void)dealloc
-{
-    [name release];
-    [filePath release];
-    [dateOpened release];
-    [dateCreated release];
-    [_bookmarks release];
-    [super dealloc];
 }
 
 - (void)removeBookmark:(LOXBookmark *)bookmark

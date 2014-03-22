@@ -24,7 +24,7 @@
 
 + (LOXOpenPageInfo *)pageInfoFromDictionary:(NSDictionary *)dictionary {
 
-    LOXOpenPageInfo *pageInfo = [[[LOXOpenPageInfo alloc] init] autorelease];
+    LOXOpenPageInfo *pageInfo = [[LOXOpenPageInfo alloc] init];
 
     pageInfo.idref = [LOXUtil valueForKey:@"idref" orDefault:@"" fromDictionary:dictionary];
     pageInfo.spineItemPageIndex = [[LOXUtil valueForKey:@"spineItemPageIndex" orDefault:[NSNumber numberWithInt:0] fromDictionary:dictionary] integerValue];
