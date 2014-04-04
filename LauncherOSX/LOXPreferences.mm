@@ -46,8 +46,8 @@
         self.columnGap = [NSNumber numberWithInt:20];
         self.mediaOverlaysRate = [NSNumber numberWithInt:1];
         self.mediaOverlaysVolume = [NSNumber numberWithInt:100];
-        self.isScrollViewDoc = [NSNumber numberWithBool:NO];
-        self.isScrollViewContinuous = [NSNumber numberWithBool:NO];
+        self.isScrollDoc = [NSNumber numberWithBool:NO];
+        self.isScrollContinuous = [NSNumber numberWithBool:NO];
 
         _doNotUpdateView = NO;
 
@@ -62,8 +62,8 @@
                         NSStringFromSelector(@selector(mediaOverlaysEnableClick)),
                         NSStringFromSelector(@selector(mediaOverlaysRate)),
                         NSStringFromSelector(@selector(mediaOverlaysVolume)),
-                        NSStringFromSelector(@selector(isScrollViewDoc)),
-                        NSStringFromSelector(@selector(isScrollViewContinuous)),
+                        NSStringFromSelector(@selector(isScrollDoc)),
+                        NSStringFromSelector(@selector(isScrollContinuous)),
                         nil];
     }
 
@@ -118,8 +118,8 @@
             NSStringFromSelector(@selector(mediaOverlaysRate)): self.mediaOverlaysRate,
             NSStringFromSelector(@selector(mediaOverlaysVolume)): self.mediaOverlaysVolume,
             NSStringFromSelector(@selector(columnGap)): self.columnGap,
-            NSStringFromSelector(@selector(isScrollViewDoc)): self.isScrollViewDoc,
-            NSStringFromSelector(@selector(isScrollViewContinuous)): self.isScrollViewContinuous,
+            NSStringFromSelector(@selector(isScrollDoc)): self.isScrollDoc,
+            NSStringFromSelector(@selector(isScrollContinuous)): self.isScrollContinuous,
             NSStringFromSelector(@selector(doNotUpdateView)): [NSNumber numberWithBool:_doNotUpdateView]
     };
 }

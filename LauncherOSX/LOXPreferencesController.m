@@ -68,16 +68,16 @@
     switch([selCell tag])
     {
         case 1:
-            self.preferences.isScrollViewDoc = [NSNumber numberWithBool:YES];
-            self.preferences.isScrollViewContinuous = [NSNumber numberWithBool:NO];
+            self.preferences.isScrollDoc = [NSNumber numberWithBool:YES];
+            self.preferences.isScrollContinuous = [NSNumber numberWithBool:NO];
             break;
         case 2:
-            self.preferences.isScrollViewDoc = [NSNumber numberWithBool:NO];
-            self.preferences.isScrollViewContinuous = [NSNumber numberWithBool:YES];
+            self.preferences.isScrollDoc = [NSNumber numberWithBool:NO];
+            self.preferences.isScrollContinuous = [NSNumber numberWithBool:YES];
             break;
         default:
-            self.preferences.isScrollViewDoc = [NSNumber numberWithBool:NO];
-            self.preferences.isScrollViewContinuous = [NSNumber numberWithBool:NO];
+            self.preferences.isScrollDoc = [NSNumber numberWithBool:NO];
+            self.preferences.isScrollContinuous = [NSNumber numberWithBool:NO];
     }
     _postponeSettingsUpdate = NO;
 
@@ -162,10 +162,10 @@
     //otherwise sheet il not be attached to the window
     [NSBundle loadNibNamed:@"PreferencesDlg" owner:self];
 
-    if([_preferences.isScrollViewDoc boolValue]) {
+    if([_preferences.isScrollDoc boolValue]) {
         [self.displayModeCtrl selectCellWithTag: 1];
     }
-    else if([_preferences.isScrollViewContinuous boolValue]) {
+    else if([_preferences.isScrollContinuous boolValue]) {
         [self.displayModeCtrl selectCellWithTag: 2];
     }
     else {
