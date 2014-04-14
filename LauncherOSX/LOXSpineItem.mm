@@ -34,6 +34,7 @@
 @synthesize rendition_layout = _rendition_layout;
 @synthesize rendition_flow = _rendition_flow;
 @synthesize rendition_spread = _rendition_spread;
+@synthesize media_type = _media_type;
 @synthesize media_overlay_id = _media_overlay_id;
 
 
@@ -51,7 +52,11 @@
 
         auto manifestItem = sdkSpineItem->ManifestItem();
         _href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
-
+       
+        _media_type = [NSString stringWithUTF8String:manifestItem->MediaType().c_str()];
+        
+        _media_overlay_id = [[NSString alloc] initWithUTF8String: manifestItem->MediaOverlayID().c_str()];
+        
         _idref = [NSString stringWithUTF8String:str];
         _sdkSpineItem = sdkSpineItem;
 
@@ -68,9 +73,7 @@
         _rendition_layout = [self findProperty:@"layout" withPrefix:@"rendition"];
 
         _rendition_flow = [self findProperty:@"flow" withPrefix:@"rendition"];
-
-        auto mediaOverlayID = sdkSpineItem->ManifestItem()->MediaOverlayID();
-        _media_overlay_id = [[NSString alloc] initWithUTF8String: mediaOverlayID.c_str()];
+        
     }
 
     return self;
@@ -98,6 +101,7 @@
     [dict setObject:_rendition_spread forKey:@"rendition_spread"];
     [dict setObject:_rendition_flow forKey:@"rendition_flow"];
     [dict setObject:_media_overlay_id forKey:@"media_overlay_id"];
+    [dict setObject:_media_type forKey:@"media_type"];
 
     return dict;
 }

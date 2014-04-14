@@ -191,6 +191,7 @@
 		85C221A01795C67C004B8E1E /* LOXPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXPreferencesController.h; sourceTree = "<group>"; };
 		85C221A11795C67C004B8E1E /* LOXPreferencesController.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = LOXPreferencesController.m; sourceTree = "<group>"; };
 		85DC402E179074660044849D /* host_app_feedback.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = host_app_feedback.js; path = LauncherOSX/ReaderScripts/host_app_feedback.js; sourceTree = "<group>"; };
+		85F5B56318FC5FBF00FA4F57 /* LOXSpineItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LOXSpineItem.h; sourceTree = "<group>"; };
 		85F74E6116C32A9900D29953 /* LOXPageNumberTextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXPageNumberTextController.h; sourceTree = "<group>"; };
 		85F74E6216C32A9900D29953 /* LOXPageNumberTextController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXPageNumberTextController.mm; sourceTree = "<group>"; };
 		A250D0128B8A2A9185DE9538 /* HTTPFileResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPFileResponse.m; sourceTree = "<group>"; };
@@ -624,6 +625,7 @@
 		AD8C8DDC6A31E5F47859857D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				85F5B56318FC5FBF00FA4F57 /* LOXSpineItem.h */,
 				AD8C8D308BD0A3611D878245 /* LOXBookmark.h */,
 				AD8C843ACC17BE5B9F5CFB72 /* LOXBookmark.mm */,
 				AD8C82CA03D8D14746D2F116 /* LOXBook.h */,
@@ -634,8 +636,8 @@
 				AD8C8041704F29F63C6D6146 /* LOXToc.h */,
 				AD8C8EF247B16C8906794B7C /* LOXTocEntry.h */,
 				AD8C8DA3503BCF545B3C4FDC /* LOXSpineItem.h */,
-				AD8C8CAC243F70317D0AE999 /* LOXToc.mm */,
 				AD8C86C1645932986E6E6120 /* LOXSpineItem.mm */,
+				AD8C8CAC243F70317D0AE999 /* LOXToc.mm */,
 				AD8C8BED6E81D7BB521ECA6A /* LOXSpine.mm */,
 				AD8C887C2D3DB3DAED09C59E /* LOXSpine.h */,
 				AD8C85205029531154E4983B /* LOXPackage.mm */,
