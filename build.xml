@@ -7,6 +7,7 @@
 	<property name="build.dir" value="${basedir}" /> 
 	
 	<property name="scheme" value="LauncherOSX"/>
+	<property name="derivedDataPath" value="build/Release/"/>
 	<property environment="env"/>
   <echo message="Number of Processors = ${env.NUMBER_OF_PROCESSORS}"/>
   <echo message="ANT_HOME is set to = ${env.ANT_HOME}"/>
@@ -19,6 +20,8 @@
     		<arg value="${xcworkspace}" />
     		<arg value="-scheme" />
     		<arg value="${scheme}" />
+			<arg value="-derivedDataPath" />
+			<arg value="${derivedDataPath}" />
 		 </exec>
     </target>
 
