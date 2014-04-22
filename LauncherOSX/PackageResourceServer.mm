@@ -50,6 +50,14 @@ static LOXPackage *m_package = nil;
     @synchronized ([PackageResourceServer resourceLock]) {
         RDPackageResource *resource = [m_package resourceAtRelativePath:path];
 
+        NSString* ext = [[path pathExtension] lowercaseString];
+        NSString* contentType = nil;
+        
+        if([ext isEqualToString:@"svg"]) {
+            contentType = @"image/svg+xml";
+        }
+        
+        
         if (resource == nil) {
             NSLog(@"No resource found! (%@)", path);
         }
@@ -61,7 +69,7 @@ static LOXPackage *m_package = nil;
             NSData *data = resource.data;
 
             if (data != nil) {
-                return [[HTTPDataResponse alloc] initWithData:data];
+                return [[HTTPDataResponse alloc] initWithData:data contentType:contentType];
             }
         }
         else {
@@ -82,6 +90,20 @@ static LOXPackage *m_package = nil;
 
 @implementation PackageResourceResponse
 
+- (NSDictionary *)httpHeaders {
+    
+    if(m_resource.relativePath) {
+    
+        NSString* ext = [[m_resource.relativePath pathExtension] lowercaseString];
+        
+        if([ext isEqualToString:@"svg"]) {
+            return [NSDictionary dictionaryWithObject:@"image/svg+xml" forKey:@"Content-Type"];
+        }
+        
+    }
+    
+    return [NSDictionary new];
+}
 
 - (UInt64)contentLength {
     return m_resource.bytesCount;
