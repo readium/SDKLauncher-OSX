@@ -52,31 +52,37 @@
 
         auto manifestItem = sdkSpineItem->ManifestItem();
         _href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
-       
+
         _media_type = [NSString stringWithUTF8String:manifestItem->MediaType().c_str()];
-        
+
         _media_overlay_id = [[NSString alloc] initWithUTF8String: manifestItem->MediaOverlayID().c_str()];
-        
+
         _idref = [NSString stringWithUTF8String:str];
         _sdkSpineItem = sdkSpineItem;
 
-        _page_spread = [self findProperty:@"page-spread-left" withPrefix:@"rendition"];
-        if([_page_spread length] == 0) {
-            _page_spread = [self findProperty:@"page-spread-right" withPrefix:@"rendition"];
-            if([_page_spread length] == 0) {
-                _page_spread = [self findProperty:@"page-spread-center" withPrefix:@"rendition"];
-            }
-        }
+        _page_spread = [self findProperty:@"page-spread" withOptionalPrefix:@"rendition"];
 
         _rendition_spread = [self findProperty:@"spread" withPrefix:@"rendition"];
 
         _rendition_layout = [self findProperty:@"layout" withPrefix:@"rendition"];
 
         _rendition_flow = [self findProperty:@"flow" withPrefix:@"rendition"];
-        
+
     }
 
     return self;
+
+}
+
+- (NSString *) findProperty:(NSString *)propName withOptionalPrefix:(NSString *)prefix
+{
+    NSString* value = [self findProperty:propName withPrefix:prefix];
+
+    if([value length] == 0) {
+        value = [self findProperty:propName withPrefix:@""];
+    }
+
+    return value;
 
 }
 
