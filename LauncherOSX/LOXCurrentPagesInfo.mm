@@ -73,13 +73,6 @@
     [_openPages removeAllObjects];
 }
 
-- (void)dealloc
-{
-
-    [_openPages release];
-    [super dealloc];
-}
-
 -(bool)canGoNext
 {
     if(_openPages.count == 0) {

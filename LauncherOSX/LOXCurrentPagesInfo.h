@@ -28,7 +28,7 @@
 @property (nonatomic, readonly) NSArray *openPages;
 @property (nonatomic) bool isFixedLayout;
 @property (nonatomic) int spineItemCount;
-@property (nonatomic, retain) NSString* pageProgressionDirection;
+@property (nonatomic, strong) NSString* pageProgressionDirection;
 
 
 - (void)fromDictionary:(NSDictionary *)dict;

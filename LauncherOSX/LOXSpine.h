@@ -25,7 +25,7 @@
 
 
 @property (nonatomic, readonly) NSArray *items;
-@property (nonatomic, retain) NSString* direction;
+@property (nonatomic, strong) NSString* direction;
 
 
 - (id)initWithDirection:(NSString *)direction;

@@ -17,9 +17,6 @@
 @private ePub3::ByteStream* m_byteStream;
 @private NSString *m_relativePath;
 
-#ifndef USE_NATIVE_ZIP_SEEK
-@private UInt32 m_bytesRead;
-#endif
 
 @private std::size_t m_bytesCount;
 @private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
@@ -30,6 +27,40 @@
 
 
 @implementation RDPackageResource
+
+//@synthesize byteStream = m_byteStream;
+@synthesize bytesCount = m_bytesCount;
+@synthesize relativePath = m_relativePath;
+@synthesize package = m_package;
+
+- (NSData *)data {
+    if (m_data == nil) {
+
+        if (m_bytesCount == 0)
+        {
+            m_data = [NSData data];
+        }
+        else
+        {
+            NSMutableData *md = [[NSMutableData alloc] initWithCapacity: m_bytesCount];
+
+            while (YES) {
+                std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
+
+                if (count <= 0) {
+                    break;
+                }
+
+                [md appendBytes:m_buffer length:count];
+            }
+
+            m_data = md;
+        }
+    }
+
+    return m_data;
+}
+
 
 + (std::size_t)bytesAvailable:(ePub3::ByteStream*)byteStream pack:(LOXPackage *)package path:(NSString *)relPath {
     std::size_t size = byteStream->BytesAvailable();
@@ -100,270 +131,40 @@
     return size;
 }
 
-//@synthesize byteStream = m_byteStream;
-@synthesize bytesCount = m_bytesCount;
-@synthesize relativePath = m_relativePath;
-
-
-- (NSData *)createChunkByReadingRange:(NSRange)range package:(LOXPackage *)package {
-
-    if (m_bytesCount == 0)
+- (NSData *)readDataOfLength:(NSUInteger)length {
+    if (length == 0)
     {
         return [NSData data];
     }
 
-    if (DEBUGLOG)
-    {
-        NSLog(@"BYTESTREAM READ %p", m_byteStream);
-    }
+    NSMutableData *md = [[NSMutableData alloc] initWithCapacity: length];
+    NSUInteger totalRead = 0;
 
-    if (range.length == 0) {
-        return [NSData data];
-    }
+    while (totalRead < length) {
+        NSUInteger thisLength = MIN(sizeof(m_buffer), length - totalRead);
+        std::size_t count = m_byteStream->ReadBytes(m_buffer, thisLength);
+        totalRead += count;
+        [md appendBytes:m_buffer length:count];
 
-    if (DEBUGLOG)
-    {
-        NSLog(@"ByteStream Range %@", m_relativePath);
-        NSLog(@"%ld - %ld", range.location, range.length);
-
-#ifndef USE_NATIVE_ZIP_SEEK
-        if (m_bytesRead > 0)
-        {
-            NSLog(@"=== ByteStream READALREADY %ld", m_bytesRead);
+        if (count != thisLength) {
+            NSLog(@"Did not read the expected number of bytes! (%lu %d)", count, thisLength);
+            break;
         }
-#endif
     }
 
-    if (m_byteStream == nullptr
-#ifndef USE_NATIVE_ZIP_SEEK
-            || range.location < m_bytesRead
-#endif
-            )
-    {
-        if (m_byteStream != nullptr)
-        {
-            delete m_byteStream;
-            m_byteStream = nullptr;
-        }
+    return md;
+}
 
-        if (DEBUGLOG)
-        {
-            NSLog(@"=== ByteStream RESET");
-        }
 
-        ePub3::string s = ePub3::string(m_relativePath.UTF8String);
-        m_byteStream = package.sdkPackage->ReadStreamForRelativePath(s).release(); //package.sdkPackage->BasePath() API changed
-        m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream pack:package path:m_relativePath];
-#ifndef USE_NATIVE_ZIP_SEEK
-        m_bytesRead = 0;
-#endif
-    }
-
-    if (DEBUGLOG)
-    {
-        NSLog(@"ByteStream COUNT: %ld", m_bytesCount);
-    }
-
-    if (NSMaxRange(range) > m_bytesCount) {
-        NSLog(@"The requested data range is out of bounds!");
-        return nil;
-    }
-
-    UInt32 bytesToRead = range.length;
-
-    if (DEBUGLOG)
-    {
-        NSLog(@"TOTAL %ld", m_bytesCount);
-        NSLog(@"ByteStream TO READ: %ld", bytesToRead);
-    }
-
-    NSMutableData *md = [NSMutableData dataWithCapacity:bytesToRead];
-
-    int bufSize = sizeof(m_buffer);
-    std::size_t count = 0;
-
-#ifdef USE_NATIVE_ZIP_SEEK
-
-    //ePub3::SeekableByteStream* seekStream = std::dynamic_pointer_cast<ePub3::SeekableByteStream>(m_byteStream);
+- (void)setOffset:(UInt64)offset {
     ePub3::SeekableByteStream* seekStream = dynamic_cast<ePub3::SeekableByteStream*>(m_byteStream);
+    ePub3::ByteStream::size_type pos = seekStream->Seek(offset, std::ios::beg);
 
-    ePub3::ByteStream::size_type pos = seekStream->Seek(range.location, std::ios::beg);
-    if (pos != range.location)
-    {
-        NSLog(@"Unable to ZIP seek! %ld vs. %ld", pos, range.location);
-        return nil;
+    if (pos != offset) {
+        NSLog(@"Setting the byte stream offset failed! pos = %lu, offset = %llu", pos, offset);
     }
-
-    int remainderToRead = bytesToRead;
-    int toRead = 0;
-    while ((toRead = remainderToRead < bufSize ? remainderToRead : bufSize) > 0 && (count = m_byteStream->ReadBytes(m_buffer, toRead)) > 0)
-    {
-        [md appendBytes:m_buffer length:count];
-        remainderToRead -= count;
-    }
-    if (remainderToRead != 0)
-    {
-        NSLog(@"Did not seek-read all ZIP range? %ld vs. %ld", remainderToRead, bytesToRead);
-        return nil;
-    }
-
-#else
-    UInt32 bytesToSkip = range.location - m_bytesRead;
-
-    if (DEBUGLOG)
-    {
-        NSLog(@"TOTAL %ld", m_bytesCount);
-        NSLog(@"ByteStream TO SKIP: %ld", bytesToSkip);
-    }
-
-    if (bytesToSkip > 0)
-    {
-        if (bytesToSkip <= bufSize)
-        {
-            count = m_byteStream->ReadBytes(m_buffer, bytesToSkip);
-        }
-        else
-        {
-            count = 0;
-
-            int nFullBuffers = floor(bytesToSkip / (double)bufSize);
-            for (int i = 0; i < nFullBuffers; i++)
-            {
-                count += m_byteStream->ReadBytes(m_buffer, bufSize);
-            }
-
-            int remainder = bytesToSkip - (nFullBuffers * bufSize);
-            if (remainder > 0)
-            {
-                count += m_byteStream->ReadBytes(m_buffer, remainder);
-            }
-        }
-    }
-    m_bytesRead += count;
-
-    if (DEBUGLOG || count != bytesToSkip)
-    {
-        NSLog(@"count %ld == bytesToSkip %ld ?", count, bytesToSkip);
-    }
-    if (count != bytesToSkip)
-    {
-        NSLog(@"MISMATCH!!");
-        return [NSData data];
-    }
-
-//    if (DEBUGLOG)
-//    {
-//        NSAssert(count == bytesToSkip, @"bytes skip mismatch??");
-//    }
-
-    count = 0;
-    if (bytesToRead <= bufSize)
-    {
-        count = m_byteStream->ReadBytes(m_buffer, bytesToRead);
-        [md appendBytes:m_buffer length:count];
-    }
-    else
-    {
-        count = 0;
-        int nFullBuffers = floor(bytesToRead / (double)bufSize);
-        for (int i = 0; i < nFullBuffers; i++)
-        {
-            std::size_t read = m_byteStream->ReadBytes(m_buffer, bufSize);
-            count += read;
-            [md appendBytes:m_buffer length:read];
-        }
-
-        int remainder = bytesToRead - (nFullBuffers * bufSize);
-        if (remainder > 0)
-        {
-            std::size_t read = m_byteStream->ReadBytes(m_buffer, remainder);
-            count += read;
-            [md appendBytes:m_buffer length:read];
-        }
-    }
-    m_bytesRead += count;
-
-    if (DEBUGLOG || count != bytesToRead)
-    {
-        NSLog(@"count %ld == bytesToRead %ld ?", count, bytesToRead);
-    }
-    if (count != bytesToRead)
-    {
-        NSLog(@"MISMATCH!!");
-        return [NSData data];
-    }
-
-//    if (DEBUGLOG)
-//    {
-//        NSAssert(count == bytesToRead, @"bytes read mismatch??");
-//    }
-
-#endif
-
-    return md;
 }
 
-- (NSData *)createNextChunkByReading {
-
-    if (m_bytesCount == 0)
-    {
-        return [NSData data];
-    }
-
-    std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
-
-#ifndef USE_NATIVE_ZIP_SEEK
-    if (m_bytesRead == 0 && count == 0)
-    {
-        NSLog(@"ZIP file empty?? (or problem with byte stream?)");
-        // oh oh... :(
-    }
-
-    m_bytesRead += count;
-#endif
-
-	return (count == 0) ? nil : [[NSData alloc] initWithBytes:m_buffer length:count];
-}
-
-
-- (NSData *)readAllDataChunks {
-
-    if (m_bytesCount == 0)
-    {
-        return [NSData data];
-    }
-
-	//if (m_data == nil) {
-		NSMutableData *md = [NSMutableData data];
-
-		while (YES) {
-			NSData *chunk = [self createNextChunkByReading];
-
-			if (chunk != nil) {
-				[md appendData:chunk];
-				[chunk release];
-			}
-			else {
-				break;
-			}
-		}
-
-        if (DEBUGLOG)
-        {
-            NSLog(@"ByteStream WHOLE read: %@", m_relativePath);
-        }
-
-	//	m_data = [md retain];
-	//}
-
-    if (DEBUGLOG)
-    {
-        NSLog(@"ByteStream WHOLE: %ld (%@)", m_bytesCount, m_relativePath);
-    }
-
-    return md;
-	//return m_data;
-}
 
 
 - (void)dealloc {
@@ -371,22 +172,9 @@
     // calls Close() on ByteStream destruction
     if (m_byteStream != nullptr)
     {
-        if (DEBUGLOG)
-        {
-            NSLog(@"DEALLOC BYTESTREAM");
-            NSLog(@"BYTESTREAM DEALLOC %p", m_byteStream);
-        }
         delete m_byteStream;
         m_byteStream = nullptr;
     }
-//
-//    if (m_data != nil)
-//    {
-//        [m_data release];
-//    }
-	[m_relativePath release];
-
-	[super dealloc];
 }
 
 
@@ -397,14 +185,13 @@
 {
 	if (byteStream == nil
             || relativePath == nil || relativePath.length == 0) {
-		[self release];
 		return nil;
 	}
 
 	if (self = [super init]) {
 
+        m_package = package;
         m_relativePath = relativePath;
-        [m_relativePath retain];
 
         m_byteStream = byteStream;
         m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream pack:package path:m_relativePath];
@@ -414,15 +201,6 @@
             NSLog(@"m_bytesCount == 0 ???? %@", m_relativePath);
         }
 
-#ifndef USE_NATIVE_ZIP_SEEK
-        m_bytesRead = 0;
-#endif
-
-        if (DEBUGLOG)
-        {
-            NSLog(@"INIT ByteStream: %@ (%ld)", m_relativePath, m_bytesCount);
-            NSLog(@"BYTESTREAM INIT %p", m_byteStream);
-        }
 	}
 
 	return self;

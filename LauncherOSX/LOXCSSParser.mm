@@ -44,7 +44,7 @@
             NSString *block = [cssContent substringWithRange:[match rangeAtIndex:2]];
             block = [NSString stringWithFormat:@"{%@}", block];
 
-            LOXCSSStyle *style = [[[LOXCSSStyle alloc] initWithSelector:selector declarationsBlock:block] autorelease];
+            LOXCSSStyle *style = [[LOXCSSStyle alloc] initWithSelector:selector declarationsBlock:block];
             [array addObject:style];
         }
 

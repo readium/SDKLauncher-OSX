@@ -39,7 +39,7 @@
 {
     self = [super init];
     if(self) {
-        _cells = [[NSMutableArray array] retain];
+        _cells = [NSMutableArray array];
     }
 
     return self;
@@ -99,12 +99,6 @@
     return container.title;
 }
 
-- (void)dealloc
-{
-    [_cells release];
-    [_package release];
-    [super dealloc];
-}
 
 - (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
@@ -115,7 +109,7 @@
     LOXTocEntry * container = (LOXTocEntry *)item;
 
     if([self isClickableItem: container]){
-        NSTextFieldCell * cell = [[[NSTextFieldCell alloc] init] autorelease];
+        NSTextFieldCell * cell = [[NSTextFieldCell alloc] init];
         [cell setTextColor:[NSColor blueColor]];
         [cell setBackgroundColor:[NSColor redColor]];
         cell.selectable = YES;
@@ -212,10 +206,7 @@
 
 - (void)setPackage:(LOXPackage *)package
 {
-
-    [_package release];
     _package = package;
-    [_package retain];
 
     [self updateToc];
 

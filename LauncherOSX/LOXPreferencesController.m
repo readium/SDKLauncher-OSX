@@ -25,6 +25,8 @@
 @implementation LOXPreferencesController {
     LOXPreferences *_preferences;
     LOXSampleStylesProvider *_stylesProvider;
+
+    BOOL _postponeSettingsUpdate;
 }
 
 - (IBAction)onClose:(id)sender
@@ -57,6 +59,30 @@
     //[self.webViewController setMediaOverlayEscapables:str];
     
     [_preferences updateMediaOverlaysEscapables: str];
+}
+
+- (IBAction)onViewModeChanged:(id)sender {
+
+    _postponeSettingsUpdate = YES;
+    NSButtonCell *selCell = [sender selectedCell];
+    switch([selCell tag])
+    {
+        case 1:
+            self.preferences.isScrollDoc = [NSNumber numberWithBool:YES];
+            self.preferences.isScrollContinuous = [NSNumber numberWithBool:NO];
+            break;
+        case 2:
+            self.preferences.isScrollDoc = [NSNumber numberWithBool:NO];
+            self.preferences.isScrollContinuous = [NSNumber numberWithBool:YES];
+            break;
+        default:
+            self.preferences.isScrollDoc = [NSNumber numberWithBool:NO];
+            self.preferences.isScrollContinuous = [NSNumber numberWithBool:NO];
+    }
+    _postponeSettingsUpdate = NO;
+
+    [self.preferences setDoNotUpdateView:NO];
+    [self.webViewController updateSettings: self.preferences];
 }
 
 - (IBAction)resetEscapables:(id)sender
@@ -126,13 +152,25 @@
         return;
     }
 
-    _preferences = preferences;
-    [_preferences retain];
+    _postponeSettingsUpdate = NO;
 
+    _preferences = preferences;
+
+    [_preferences registerChangeObserver:self];
 
     //Make sure that in nib file "Visible at launch" property set to false
     //otherwise sheet il not be attached to the window
     [NSBundle loadNibNamed:@"PreferencesDlg" owner:self];
+
+    if([_preferences.isScrollDoc boolValue]) {
+        [self.displayModeCtrl selectCellWithTag: 1];
+    }
+    else if([_preferences.isScrollContinuous boolValue]) {
+        [self.displayModeCtrl selectCellWithTag: 2];
+    }
+    else {
+        [self.displayModeCtrl selectCellWithTag: 0];
+    }
 
     [NSApp beginSheet:self.sheet
        modalForWindow:[[NSApp delegate] window]
@@ -161,13 +199,21 @@
     {
         [self.moEscapablesCtrl setString:[_preferences mediaOverlaysEscapables]];
     }
+
+
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if(!_postponeSettingsUpdate) {
+        [_preferences setDoNotUpdateView:[_preferences isMediaOverlayProperty:keyPath]];
+        [self.webViewController updateSettings:_preferences];
+    }
 }
 
 -(void)updateStylesUI
 {
-    [_stylesProvider release];
     _stylesProvider = [[LOXSampleStylesProvider alloc] init];
-    [_stylesProvider retain];
 
     [self.selectorsCtrl removeAllItems];
 
@@ -178,6 +224,7 @@
     [self.selectorsCtrl selectItemAtIndex:0];
 
     [self selectorSelected: self];
+
 }
 
 - (void)closeSheet
@@ -186,18 +233,13 @@
         return;
     }
 
-    [_preferences release];
+    [_preferences removeChangeObserver: self];
+
     [NSApp endSheet:self.sheet];
     [self.sheet close];
     self.sheet = nil;
 }
 
-
-- (void)dealloc {
-    [_preferences release];
-    [_stylesProvider release];
-    [super dealloc];
-}
 
 
 @end

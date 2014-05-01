@@ -24,7 +24,7 @@
 
 //- (void)loadDataFromFile:(NSString *)file;
 
-@property(retain, nonatomic, readwrite) NSArray *books;
+@property(strong, nonatomic, readwrite) NSArray *books;
 
 @end
 
@@ -47,7 +47,7 @@
     if (self) {
 
         self.books = [NSMutableArray array];
-        self.preferences = [[[LOXPreferences alloc] init] autorelease];
+        self.preferences = [[LOXPreferences alloc] init];
 
         [self load];
     }
@@ -68,8 +68,8 @@
 
     NSDictionary * dict = [ud objectForKey:@"preferences"];
 
-    self.preferences = [dict ? ([[LOXPreferences alloc] initWithDictionary:dict])
-                                : ([[LOXPreferences alloc] init]) autorelease];
+    self.preferences = dict ? ([[LOXPreferences alloc] initWithDictionary:dict])
+                                : ([[LOXPreferences alloc] init]);
 }
 
 - (void)save
@@ -108,13 +108,6 @@
     return nil;
 }
 
-
-- (void)dealloc
-{
-    [_preferences release];
-    [_books release];
-    [super dealloc];
-}
 
 - (void)addBook:(LOXBook *)book
 {

@@ -23,14 +23,6 @@
 
 @implementation LOXUtil
 
-+ (NSString *)uuid
-{
-    CFUUIDRef theUUID = CFUUIDCreate(NULL);
-    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-    CFRelease(theUUID);
-    return [(NSString *) string autorelease];
-}
-
 +(id)valueForKey:(NSString *)keyName orDefault:(id)defaultValue fromDictionary:(NSDictionary*)dict
 {
     id val = [dict objectForKey:keyName];
@@ -41,7 +33,7 @@
 {
     NSLog(@"%@", error);
 
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:error];
     [alert runModal];
 }
@@ -49,7 +41,7 @@
 +(NSString *)toJson:(id)object
 {
     NSData* encodedData = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil];
-    return [[[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding] autorelease];
+    return [[NSString alloc] initWithData:encodedData encoding:NSUTF8StringEncoding];
 }
 
 @end

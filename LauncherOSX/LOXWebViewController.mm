@@ -31,8 +31,6 @@
 #import "LOXUtil.h"
 #import "LOXMediaOverlayController.h"
 #import "PackageResourceServer.h"
-#import "EPubURLProtocol.h"
-#import "EPubURLProtocolBridge.h"
 #import "RDPackageResource.h"
 #import <ePub3/utilities/byte_stream.h>
 
@@ -43,8 +41,6 @@
 
 - (NSString *)loadHtmlTemplate;
 
-- (void)updateSettings:(LOXPreferences *)preferences;
-
 - (void)updateUI;
 @end
 
@@ -53,7 +49,6 @@
 
     LOXPackage *_package;
     NSString* _baseUrlPath;
-    LOXPreferences *_preferences;
 }
 
 
@@ -63,11 +58,6 @@
          redirectResponse:(NSURLResponse *)redirectResponse
            fromDataSource:(WebDataSource *)dataSource
 {
-    if (_package == nil)
-    {
-        return request;
-    }
-
     if (request.URL == nil)
     {
         return request;
@@ -80,69 +70,35 @@
         return request;
     }
 
-    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame
-            && [scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] != NSOrderedSame)
-    {
-        return request;
-    }
-
     NSString *path = request.URL.path;
     if (path == nil)
     {
         return request;
     }
 
+    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame)
+    {
+        return request;
+    }
+
+    if (_package == nil)
+    {
+        return request;
+    }
+
+
     if ([path hasPrefix:@"/"]) {
         path = [path substringFromIndex:1];
     }
 
-    auto ext = [path pathExtension];
-    if ([ext caseInsensitiveCompare: @"mp4"] == NSOrderedSame
-            || [ext caseInsensitiveCompare: @"m4a"] == NSOrderedSame
-            || [ext caseInsensitiveCompare: @"mp3"] == NSOrderedSame
-            || [ext caseInsensitiveCompare: @"aiff"] == NSOrderedSame
-            || [ext caseInsensitiveCompare: @"wav"] == NSOrderedSame
-            || [ext caseInsensitiveCompare: @"ogg"] == NSOrderedSame
-            || [ext caseInsensitiveCompare: @"ogv"] == NSOrderedSame
-            || [ext caseInsensitiveCompare: @"mov"] == NSOrderedSame
-            || [ext caseInsensitiveCompare: @"avi"] == NSOrderedSame
-            || [ext caseInsensitiveCompare: @"webm"] == NSOrderedSame
-            )
-    {
-        NSString * str = [[NSString stringWithFormat:@"http://localhost:%d/%@/%@",
-                        [m_resourceServer serverPort],
-                        _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
-        NSURL *url = [NSURL URLWithString:str];
-
-        if (DEBUGMIN)
-        {
-            NSLog(@"***** REQ URL %@", url);
-        }
-
-        NSMutableURLRequest *newRequest = [request mutableCopy];
-        [newRequest setURL: url];
-        return newRequest;
-    }
-
-    if ([scheme caseInsensitiveCompare: kSDKLauncherWebViewSDKProtocol] == NSOrderedSame)
-    {
-        if (DEBUGMIN)
-        {
-            NSLog(@"----- REQ URL %@", request.URL);
-        }
-        return request;
-    }
-
-    NSString * str = [[NSString stringWithFormat:@"%@://%@/%@", kSDKLauncherWebViewSDKProtocol, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+    NSString * str = [[NSString stringWithFormat:@"http://127.0.0.1:%d/%@/%@",
+                                                 [m_resourceServer serverPort],
+                                                 _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:str];
-
-    if (DEBUGMIN)
-    {
-        NSLog(@"===== REQ URL %@", url);
-    }
 
     NSMutableURLRequest *newRequest = [request mutableCopy];
     [newRequest setURL: url];
+
     return newRequest;
 }
 
@@ -153,8 +109,6 @@
 
 - (void)awakeFromNib
 {
-    [NSURLProtocol registerClass:[EPubURLProtocol class]];
-
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 
     [nc addObserver:self
@@ -162,12 +116,8 @@
                                                  name:LOXPageChangedEvent
                                                object:nil];
 
-    [nc addObserver:self selector:@selector(onProtocolBridgeNeedsResponse:)
-               name:kSDKLauncherEPubURLProtocolBridgeNeedsResponse object:nil];
-
-    self.isZipVsCache = [NSNumber numberWithBool:NO];
-
     NSString* html = [self loadHtmlTemplate];
+
     NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
 
     [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
@@ -203,9 +153,7 @@
 {
     NSString* path = [[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"];
 
-    [_baseUrlPath release];
     _baseUrlPath = [path stringByDeletingLastPathComponent];
-    [_baseUrlPath retain];
 
     NSString* htmlTemplate = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
 
@@ -216,47 +164,19 @@
     return htmlTemplate;
 }
 
-
-- (void)onProtocolBridgeNeedsResponse:(NSNotification *)notification {
-    NSURL *url = [notification.userInfo objectForKey:@"url"];
-
-    RDPackageResource* res = [_package resourceForUrl: url];
-    if (res == nil)
-    {
-        return;
-    }
-
-    NSData *data = [res readAllDataChunks];
-
-    if (data != nil) {
-        EPubURLProtocolBridge *bridge = notification.object;
-        bridge.currentData = data; // retained
-    }
-
-    [res release]; // was alloc'ed
-    //[res autorelease];
-    //res = nil;
-}
-
 -(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
 {
-    [_package release];
     _package = package;
-    [_package retain];
 
-    if (m_resourceServer != nil)
-    {
-        [m_resourceServer release];
-    }
-    BOOL zip = [self.isZipVsCache intValue] != 0;
-    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package resourcesFromZipStream_NoFileSystemEncryptedCache: zip]; //retained
+    m_resourceServer = nil;
+    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package];
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
     [dict setObject:[_package toDictionary] forKey:@"package"];
 
     if(bookmark) {
-        NSDictionary *locationDict = [[[NSDictionary alloc] initWithObjectsAndKeys:bookmark.idref, @"idref", bookmark.contentCFI, @"elementCfi", nil] autorelease];
+        NSDictionary *locationDict = [[NSDictionary alloc] initWithObjectsAndKeys:bookmark.idref, @"idref", bookmark.contentCFI, @"elementCfi", nil];
         [dict setObject:locationDict forKey:@"openPageRequest"];
     }
 
@@ -266,18 +186,6 @@
     NSString* callString = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)", json];
 
     [_webView stringByEvaluatingJavaScriptFromString:callString];
-}
-
-- (void)observePreferences:(LOXPreferences *)preferences
-{
-   [_preferences removeChangeObserver:self];
-   [_preferences release];
-
-    _preferences = preferences;
-    [_preferences retain];
-    [_preferences registerChangeObserver:self];
-
-    [self updateSettings:_preferences];
 }
 
 - (void)clear
@@ -417,16 +325,9 @@
 
 - (void)onReaderInitialized
 {
-    [self updateSettings:_preferences];
+    [self.appDelegate onReaderInitialized];
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if(object == _preferences) {
-        [_preferences doNotUpdateView: keyPath];
-        [self updateSettings:_preferences];
-    }
-}
 
 -(void)updateSettings:(LOXPreferences *)preferences
 {
@@ -469,18 +370,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-
-    [_package release];
-    [_baseUrlPath release];
-    [_preferences removeChangeObserver:self];
-    [_preferences release];
-
-    if (m_resourceServer != nil)
-    {
-        [m_resourceServer release];
-    }
-
-    [super dealloc];
 }
 
 - (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem *)spineItem
@@ -532,7 +421,7 @@
         return nil;
     }
 
-    LOXBookmark *bookmark = [[[LOXBookmark alloc] init] autorelease];
+    LOXBookmark *bookmark = [[LOXBookmark alloc] init];
 
     bookmark.idref = dict[@"idref"];
     bookmark.contentCFI = dict[@"contentCFI"];

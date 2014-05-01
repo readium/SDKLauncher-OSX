@@ -24,7 +24,7 @@
 @interface LOXOpenPageInfo : NSObject
 
 
-@property (nonatomic, retain) NSString* idref;
+@property (nonatomic, strong) NSString* idref;
 @property (nonatomic) int spineItemPageIndex;
 @property (nonatomic) int spineItemPageCount;
 @property (nonatomic) int spineItemIndex;

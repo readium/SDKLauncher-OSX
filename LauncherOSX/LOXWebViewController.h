@@ -65,17 +65,12 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 
 
-@property (nonatomic, retain) NSNumber *isZipVsCache;
-//@property (assign) IBOutlet NSButton *toggleButtonZipVsCache;
-//- (IBAction)onToggleZipVsCache:(id)sender;
-
-
 @property (assign) IBOutlet NSButton *leftPageButton;
 @property (assign) IBOutlet NSButton *rightPageButton;
 
 @property (assign) IBOutlet LOXAppDelegate *appDelegate;
 
-@property (nonatomic, retain) LOXCurrentPagesInfo *currentPagesInfo;
+@property (nonatomic, strong) LOXCurrentPagesInfo *currentPagesInfo;
 
 
 - (IBAction)onLeftPageClick:(id)sender;
@@ -95,8 +90,6 @@
 
 - (void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark;
 
--(void)observePreferences:(LOXPreferences *)preferences;
-
 - (void)resetStyles;
 
 - (void)mediaOverlaysOpenContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString*) sourceRef forward:(double) offset;
@@ -105,5 +98,7 @@
 - (void)previousMediaOverlay;
 - (void)escapeMediaOverlay;
 - (void)ttsEndedMediaOverlay;
+
+- (void)updateSettings:(LOXPreferences *)preferences;
 
 @end

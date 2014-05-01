@@ -7,6 +7,7 @@
 	<property name="build.dir" value="${basedir}" /> 
 	
 	<property name="scheme" value="LauncherOSX"/>
+	<property name="derivedDataPath" value="build/Release/"/>
 	<property environment="env"/>
   <echo message="Number of Processors = ${env.NUMBER_OF_PROCESSORS}"/>
   <echo message="ANT_HOME is set to = ${env.ANT_HOME}"/>
@@ -14,11 +15,13 @@
 	
 	<!-- this builds LauncherOSX -->
 	<target name ="build.all" depends="init" description="Invoke xcodebuild to do a full build" >
-         <exec executable="xcodebuild" spawn="false">
+         <exec executable="xcodebuild" spawn="false" failonerror="true">
     		<arg value="-workspace" />
     		<arg value="${xcworkspace}" />
     		<arg value="-scheme" />
     		<arg value="${scheme}" />
+			<arg value="-derivedDataPath" />
+			<arg value="${derivedDataPath}" />
 		 </exec>
     </target>
 
@@ -26,7 +29,7 @@
 	</target>
 	
 	<target name="clean" depends="init" description="Clean the workspace">
-         <exec executable="xcodebuild" spawn="false" dir="${build.dir}">
+         <exec executable="xcodebuild" spawn="false" dir="${build.dir}" failonerror="true">
     		<arg value="-workspace" />
     		<arg value="${xcworkspace}" />
     		<arg value="-scheme" />

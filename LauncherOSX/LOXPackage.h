@@ -47,13 +47,13 @@
 @property(nonatomic, readonly) NSString *packageId;
 @property(nonatomic, readonly) LOXToc *toc;
 @property(nonatomic, readonly) NSString *rendition_layout;
+@property(nonatomic, readonly) NSString *rendition_flow;
 //@property(nonatomic, readonly) NSString *rootDirectory;
 
 @property(nonatomic, readonly) LOXMediaOverlay *mediaOverlay;
 
 
 
-- (RDPackageResource*)resourceForUrl:(NSURL*) url;
 - (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath; // isHTML:(BOOL *)isHTML;
 
 - (NSString *) resourceRelativePath:(NSString *)urlAbsolutePath;

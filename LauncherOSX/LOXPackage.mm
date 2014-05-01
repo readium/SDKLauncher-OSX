@@ -34,7 +34,7 @@
     //@private std::vector<std::unique_ptr<ePub3::ByteStream>> m_archiveReaderVector;
 }
 
-- (NSString *)getLayoutProperty;
+- (NSString *)findProperty:(NSString *)propName withPrefix:(NSString *)prefix;
 
 - (LOXToc *)getToc;
 
@@ -56,6 +56,7 @@
 @synthesize packageId = _packageId;
 @synthesize toc = _toc;
 @synthesize rendition_layout = _rendition_layout;
+@synthesize rendition_flow = _rendition_flow;
 //@synthesize rootDirectory = _rootDirectory;
 @synthesize mediaOverlay = _mediaOverlay;
 
@@ -103,43 +104,7 @@
     return [urlAbsolutePath substringFromIndex:NSMaxRange(range)];
 }
 
-- (RDPackageResource*)resourceForUrl:(NSURL*) url {
-    NSString *s = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *prefix = [kSDKLauncherWebViewSDKProtocol stringByAppendingString:@"://"];
-
-    if (s == nil || ![s hasPrefix:prefix] || s.length == prefix.length) {
-        return nil;
-    }
-
-    s = [s substringFromIndex:prefix.length];
-    NSRange range = [s rangeOfString:@"/"];
-
-    if (range.location == NSNotFound) {
-        return nil;
-    }
-
-    NSString *packageUUID = [s substringToIndex:range.location];
-
-    if (![packageUUID isEqualToString:self.packageUUID]) {
-        return nil;
-    }
-
-    s = [s substringFromIndex:packageUUID.length];
-
-    if (![s hasPrefix:@"/"]) {
-        return nil;
-    }
-
-    NSString *relativePath = [s substringFromIndex:1];
-    RDPackageResource* res = [self resourceAtRelativePath:relativePath];
-
-    return res;
-}
-
-- (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath { //} isHTML:(BOOL *)isHTML {
-//    if (isHTML != NULL) {
-//        *isHTML = NO;
-//    }
+- (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath {
 
     if (relativePath == nil || relativePath.length == 0) {
         return nil;
@@ -163,39 +128,7 @@
     RDPackageResource *resource = [[RDPackageResource alloc]
             initWithByteStream:byteStream.release()
                 relativePath:relativePath
-                          pack: self]; // autorelease];
-
-//    if (resource != nil) {
-//        m_archiveReaderVector.push_back(std::move(byteStream));
-//    }
-
-    // Determine if the data represents HTML.
-
-//    if (isHTML != NULL) {
-//        if ([m_relativePathsThatAreHTML containsObject:relativePath]) {
-//            *isHTML = YES;
-//        }
-//        else if (![m_relativePathsThatAreNotHTML containsObject:relativePath]) {
-//            ePub3::ManifestTable manifest = _sdkPackage->Manifest();
-//
-//            for (auto i = manifest.begin(); i != manifest.end(); i++) {
-//                std::shared_ptr<ePub3::ManifestItem> item = i->second;
-//
-//                if (item->Href() == s) {
-//                    if (item->MediaType() == "application/xhtml+xml") {
-//                        [m_relativePathsThatAreHTML addObject:relativePath];
-//                        *isHTML = YES;
-//                    }
-//
-//                    break;
-//                }
-//            }
-//
-//            if (*isHTML == NO) {
-//                [m_relativePathsThatAreNotHTML addObject:relativePath];
-//            }
-//        }
-//    }
+                          pack: self];
 
     return resource;
 }
@@ -208,14 +141,10 @@
 
         _sdkPackage = sdkPackage;
 
-        if (m_packageUUID != nil)
-        {
-            [m_packageUUID release];
-        }
-
         CFUUIDRef uuid = CFUUIDCreate(NULL);
-        m_packageUUID = (NSString *)CFUUIDCreateString(NULL, uuid);
+        m_packageUUID = CFBridgingRelease(CFUUIDCreateString(NULL, uuid));
         CFRelease(uuid);
+
 //
 //        m_relativePathsThatAreHTML = [[NSMutableSet alloc] init];
 //        m_relativePathsThatAreNotHTML = [[NSMutableSet alloc] init];
@@ -234,67 +163,36 @@
         }
 
         _spine = [[LOXSpine alloc] initWithDirection:direction];
-        _toc = [[self getToc] retain];
-        _packageId = [[NSString stringWithUTF8String:_sdkPackage->PackageID().c_str()] retain];
-        _title = [[NSString stringWithUTF8String:_sdkPackage->Title().c_str()] retain];
+        _toc = [self getToc];
+        _packageId = [NSString stringWithUTF8String:_sdkPackage->PackageID().c_str()];
+        _title = [NSString stringWithUTF8String:_sdkPackage->Title().c_str()];
 
-        _rendition_layout = [[self getLayoutProperty] retain];
-
-//        _storage = [[self createStorageForPackage:_sdkPackage] retain];
-//        _rootDirectory = [_storage.rootDirectory retain];
+        _rendition_layout = [self findProperty:@"layout" withPrefix:@"rendition"];
+        _rendition_flow = [self findProperty:@"flow" withPrefix:@"rendition"];
 
         auto spineItem = _sdkPackage->FirstSpineItem();
         while (spineItem) {
 
-            //LOXSpineItem *loxSpineItem = [[[LOXSpineItem alloc] initWithStorageId:_storage.uuid forSdkSpineItem:spineItem fromPackage:self] autorelease];
-            LOXSpineItem *loxSpineItem = [[[LOXSpineItem alloc] initWithSdkSpineItem:spineItem fromPackage:self] autorelease];
+            LOXSpineItem *loxSpineItem = [[LOXSpineItem alloc] initWithSdkSpineItem:spineItem fromPackage:self];
             [_spine addItem: loxSpineItem];
             spineItem = spineItem->Next();
         }
 
         _mediaOverlay = [[LOXMediaOverlay alloc] initWithSdkPackage:_sdkPackage];
-
-        /*
-        auto propList = _sdkPackage->PropertiesMatching("duration", "media");
-
-        for(auto iter = propList.begin(); iter != propList.end(); iter++) {
-
-            auto prop = iter;
-
-
-        }
-        */
     }
     
     return self;
 }
 
--(NSString*)getLayoutProperty
+- (NSString *) findProperty:(NSString *)propName withPrefix:(NSString *)prefix
 {
-    auto prop = _sdkPackage->PropertyMatching("layout", "rendition");
+    auto prop = _sdkPackage->PropertyMatching([propName UTF8String], [prefix UTF8String]);
     if(prop != nullptr) {
         return [NSString stringWithUTF8String: prop->Value().c_str()];
     }
 
     return @"";
 }
-
-- (void)dealloc {
-//
-//    [m_relativePathsThatAreHTML release];
-//    [m_relativePathsThatAreNotHTML release];
-
-    [_spine release];
-    [_toc release];
-    //[_storage release];
-    [_packageId release];
-    [_title release];
-    [_rendition_layout release];
-    //[_rootDirectory release];
-    [_mediaOverlay release];
-    [super dealloc];
-}
-
 
 - (LOXToc*)getToc
 {
@@ -304,7 +202,7 @@
         return nil;
     }
 
-    LOXToc *toc = [[[LOXToc alloc] init] autorelease];
+    LOXToc *toc = [[LOXToc alloc] init];
 
     toc.title = [NSString stringWithUTF8String:navTable->Title().c_str()];
     if(toc.title.length == 0) {
@@ -327,7 +225,7 @@
 
         if(navPoint != nil) {
 
-            LOXTocEntry *entry = [[[LOXTocEntry alloc] init] autorelease];
+            LOXTocEntry *entry = [[LOXTocEntry alloc] init];
             [self copyTitleFromNavElement:navPoint toEntry:entry];
             entry.contentRef = [NSString stringWithUTF8String:navPoint->Content().c_str()];
 
@@ -413,9 +311,9 @@
     [dict setObject:@"/" forKey:@"rootUrl"];
 
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
+    [dict setObject:_rendition_flow forKey:@"rendition_flow"];
     [dict setObject:[_spine toDictionary] forKey:@"spine"];
     [dict setObject:[_mediaOverlay toDictionary] forKey:@"media_overlay"];
-
 
     return dict;
 }

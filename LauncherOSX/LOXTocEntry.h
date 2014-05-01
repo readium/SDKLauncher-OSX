@@ -21,8 +21,8 @@
 
 @interface LOXTocEntry : NSObject
 
-@property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) NSString *contentRef;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString *contentRef;
 @property (nonatomic, readonly) NSArray *children;
 
 - (void)addChild:(LOXTocEntry *)child;

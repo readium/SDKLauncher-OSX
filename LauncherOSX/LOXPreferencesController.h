@@ -21,7 +21,9 @@
 - (IBAction)resetEscapables:(id)sender;
 - (IBAction)applySkippables:(id)sender;
 - (IBAction)applyEscapables:(id)sender;
+- (IBAction)onViewModeChanged: (id)sender;
 
+@property (assign) IBOutlet NSButton *thiteticSpread;
 @property (assign) IBOutlet NSWindow *sheet;
 
 @property (assign) IBOutlet NSPopUpButton *selectorsCtrl;
@@ -29,8 +31,10 @@
 @property (assign) IBOutlet NSTextView *moSkippablesCtrl;
 @property (assign) IBOutlet NSTextView *moEscapablesCtrl;
 
-@property(nonatomic, retain) LOXPreferences *preferences;
-@property(nonatomic, retain) LOXWebViewController *webViewController;
+@property (assign) IBOutlet NSMatrix *displayModeCtrl;
+
+@property(nonatomic, strong) LOXPreferences *preferences;
+@property(nonatomic, strong) LOXWebViewController *webViewController;
 
 -(void) showPreferences:(LOXPreferences*)preferences;
 -(void) closeSheet;
