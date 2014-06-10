@@ -34,7 +34,7 @@
 - (void)setOffset:(UInt64)offset;
 
 - (id)
-	initWithByteStream:(ePub3::ByteStream*)byteStream
+	initWithByteStream:(std::shared_ptr<ePub3::ByteStream>)byteStream
         relativePath:(NSString *)relativePath
         pack:(LOXPackage *)package;
 

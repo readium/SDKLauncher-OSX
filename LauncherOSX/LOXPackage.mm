@@ -19,6 +19,7 @@
 #import <ePub3/nav_table.h>
 #import <ePub3/archive.h>
 #import <ePub3/package.h>
+#import <ePub3/manifest.h>
 
 
 #import "LOXPackage.h"
@@ -118,15 +119,19 @@
 
     ePub3::string s = ePub3::string(relativePath.UTF8String);
 
-    std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(s); //_sdkPackage->BasePath() API changed
-
+    //ConstManifestItemPtr
+    std::shared_ptr<const ePub3::ManifestItem> manItem = _sdkPackage->ManifestItemAtRelativePath(s);
+    std::shared_ptr<ePub3::ByteStream> byteStream = _sdkPackage->SyncContentStreamForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
+    
+    //std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(s); //_sdkPackage->BasePath() API changed
+    
     if (byteStream == nullptr) {
         NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
         return nil;
     }
 
     RDPackageResource *resource = [[RDPackageResource alloc]
-            initWithByteStream:byteStream.release()
+            initWithByteStream:byteStream //release()
                 relativePath:relativePath
                           pack: self];
 

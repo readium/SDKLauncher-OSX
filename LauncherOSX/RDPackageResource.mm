@@ -12,9 +12,10 @@
 
 #import <ePub3/archive.h>
 #import <ePub3/utilities/byte_stream.h>
+#import <ePub3/filter_chain.h>
 
 @interface RDPackageResource() {
-@private ePub3::ByteStream* m_byteStream;
+@private std::shared_ptr<ePub3::ByteStream> m_byteStream;
 @private NSString *m_relativePath;
 
 
@@ -62,7 +63,7 @@
 }
 
 
-+ (std::size_t)bytesAvailable:(ePub3::ByteStream*)byteStream pack:(LOXPackage *)package path:(NSString *)relPath {
++ (std::size_t)bytesAvailable:(std::shared_ptr<ePub3::ByteStream>)byteStream pack:(LOXPackage *)package path:(NSString *)relPath {
     std::size_t size = byteStream->BytesAvailable();
     if (size == 0)
     {
@@ -157,8 +158,12 @@
 
 
 - (void)setOffset:(UInt64)offset {
-    ePub3::SeekableByteStream* seekStream = dynamic_cast<ePub3::SeekableByteStream*>(m_byteStream);
-    ePub3::ByteStream::size_type pos = seekStream->Seek(offset, std::ios::beg);
+    //std::shared_ptr<ePub3::SeekableByteStream> seekStream = std::dynamic_pointer_cast<ePub3::SeekableByteStream>(m_byteStream);
+    //ePub3::SeekableByteStream* seekStream = dynamic_cast<ePub3::SeekableByteStream*>(m_byteStream.get());
+    //ePub3::ByteStream::size_type pos = seekStream->Seek(offset, std::ios::beg);
+
+    ePub3::FilterChainSyncStream* seekStream = dynamic_cast<ePub3::FilterChainSyncStream*>(m_byteStream.get());
+    // TODO!!
 
     if (pos != offset) {
         NSLog(@"Setting the byte stream offset failed! pos = %lu, offset = %llu", pos, offset);
@@ -172,18 +177,18 @@
     // calls Close() on ByteStream destruction
     if (m_byteStream != nullptr)
     {
-        delete m_byteStream;
+        //delete m_byteStream;
         m_byteStream = nullptr;
     }
 }
 
 
 - (id)
-	initWithByteStream:(ePub3::ByteStream*)byteStream
+	initWithByteStream:(std::shared_ptr<ePub3::ByteStream>)byteStream
 	relativePath:(NSString *)relativePath
     pack:(LOXPackage *)package
 {
-	if (byteStream == nil
+	if (byteStream == nullptr
             || relativePath == nil || relativePath.length == 0) {
 		return nil;
 	}
