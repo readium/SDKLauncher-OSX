@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5053"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="LOXPreferencesController">
             <connections>
                 <outlet property="displayModeCtrl" destination="Ui7-Ke-pjm" id="OAm-iW-gq4"/>
+                <outlet property="displaySynthCtrl" destination="pmZ-sh-78a" id="1qo-HI-GTk"/>
                 <outlet property="moEscapablesCtrl" destination="329" id="345"/>
                 <outlet property="moSkippablesCtrl" destination="313" id="344"/>
                 <outlet property="selectorsCtrl" destination="219" id="230"/>
                 <outlet property="sheet" destination="1" id="58"/>
                 <outlet property="styleCtrl" destination="286" id="293"/>
-                <outlet property="thiteticSpread" destination="Is4-0o-VJx" id="0Hi-UX-8oI"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -121,10 +121,10 @@
                                             </connections>
                                         </stepper>
                                         <matrix verticalHuggingPriority="750" tag="1" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="Ui7-Ke-pjm">
-                                            <rect key="frame" x="4" y="252" width="171" height="64"/>
+                                            <rect key="frame" x="316" y="252" width="171" height="64"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="cellSize" width="171" height="18"/>
+                                            <size key="cellSize" width="98" height="18"/>
                                             <size key="intercellSpacing" width="4" height="2"/>
                                             <buttonCell key="prototype" type="radio" title="Use Book Defaults:" imagePosition="right" alignment="left" inset="2" id="dF3-gx-Neh" userLabel="Button Cell - Empty:">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -132,15 +132,15 @@
                                             </buttonCell>
                                             <cells>
                                                 <column>
-                                                    <buttonCell type="radio" title="Use Book Defaults:" imagePosition="right" alignment="left" state="on" inset="2" id="QSc-lb-utl">
+                                                    <buttonCell type="radio" title="Scroll Auto" imagePosition="right" alignment="left" state="on" inset="2" id="QSc-lb-utl">
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
-                                                    <buttonCell type="radio" title="Scroll View Document:" imagePosition="right" alignment="left" tag="1" inset="2" id="BfS-Ei-zxe">
+                                                    <buttonCell type="radio" title="Document:" imagePosition="right" alignment="left" tag="1" inset="2" id="BfS-Ei-zxe">
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
-                                                    <buttonCell type="radio" title="Scroll View Continuous:" imagePosition="right" alignment="left" tag="2" inset="2" id="hKb-9H-0SW">
+                                                    <buttonCell type="radio" title="Continuous:" imagePosition="right" alignment="left" tag="2" inset="2" id="hKb-9H-0SW">
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
@@ -150,17 +150,36 @@
                                                 <action selector="onViewModeChanged:" target="-2" id="wdl-qC-q8I"/>
                                             </connections>
                                         </matrix>
-                                        <button id="Is4-0o-VJx">
-                                            <rect key="frame" x="238" y="300" width="148" height="18"/>
+                                        <matrix verticalHuggingPriority="750" tag="1" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="pmZ-sh-78a">
+                                            <rect key="frame" x="17" y="252" width="171" height="64"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Synthetic Spread:" bezelStyle="regularSquare" imagePosition="right" state="on" inset="2" id="PqZ-Aj-8na">
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            <size key="cellSize" width="161" height="18"/>
+                                            <size key="intercellSpacing" width="4" height="2"/>
+                                            <buttonCell key="prototype" type="radio" title="Use Book Defaults:" imagePosition="right" alignment="left" inset="2" id="gSz-Dv-R6g" userLabel="Button Cell - Empty:">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <cells>
+                                                <column>
+                                                    <buttonCell type="radio" title="Synthetic Spread Auto" imagePosition="right" alignment="left" state="on" inset="2" id="tue-5Q-LXk">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <buttonCell type="radio" title="Single" imagePosition="right" alignment="left" tag="1" inset="2" id="4Te-Wi-bTv">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <buttonCell type="radio" title="Double" imagePosition="right" alignment="left" tag="2" inset="2" id="eDP-Xo-Lg6">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                </column>
+                                            </cells>
                                             <connections>
-                                                <binding destination="-2" name="value" keyPath="preferences.isSyntheticSpread" id="u5P-ZN-QJ2"/>
+                                                <action selector="onViewSynthChanged:" target="-2" id="1VU-DJ-Drf"/>
                                             </connections>
-                                        </button>
+                                        </matrix>
                                     </subviews>
                                 </view>
                             </tabViewItem>

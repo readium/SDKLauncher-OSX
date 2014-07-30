@@ -62,25 +62,44 @@
 }
 
 - (IBAction)onViewModeChanged:(id)sender {
-
+    
     _postponeSettingsUpdate = YES;
     NSButtonCell *selCell = [sender selectedCell];
     switch([selCell tag])
     {
         case 1:
-            self.preferences.isScrollDoc = [NSNumber numberWithBool:YES];
-            self.preferences.isScrollContinuous = [NSNumber numberWithBool:NO];
+            self.preferences.displayScroll = @"scroll-doc";
             break;
         case 2:
-            self.preferences.isScrollDoc = [NSNumber numberWithBool:NO];
-            self.preferences.isScrollContinuous = [NSNumber numberWithBool:YES];
+            self.preferences.displayScroll = @"scroll-continuous";
             break;
         default:
-            self.preferences.isScrollDoc = [NSNumber numberWithBool:NO];
-            self.preferences.isScrollContinuous = [NSNumber numberWithBool:NO];
+            self.preferences.displayScroll = @"auto";
     }
     _postponeSettingsUpdate = NO;
+    
+    [self.preferences setDoNotUpdateView:NO];
+    [self.webViewController updateSettings: self.preferences];
+}
 
+
+- (IBAction)onViewSynthChanged:(id)sender {
+    
+    _postponeSettingsUpdate = YES;
+    NSButtonCell *selCell = [sender selectedCell];
+    switch([selCell tag])
+    {
+        case 1:
+            self.preferences.displaySyntheticSpread = @"single";
+            break;
+        case 2:
+            self.preferences.displaySyntheticSpread = @"double";
+            break;
+        default:
+            self.preferences.displaySyntheticSpread = @"auto";
+    }
+    _postponeSettingsUpdate = NO;
+    
     [self.preferences setDoNotUpdateView:NO];
     [self.webViewController updateSettings: self.preferences];
 }
@@ -161,15 +180,25 @@
     //Make sure that in nib file "Visible at launch" property set to false
     //otherwise sheet il not be attached to the window
     [NSBundle loadNibNamed:@"PreferencesDlg" owner:self];
-
-    if([_preferences.isScrollDoc boolValue]) {
+    
+    if([_preferences.displayScroll  isEqual: @"scroll-doc"]) {
         [self.displayModeCtrl selectCellWithTag: 1];
     }
-    else if([_preferences.isScrollContinuous boolValue]) {
+    else if([_preferences.displayScroll isEqual: @"scroll-continuous"]) {
         [self.displayModeCtrl selectCellWithTag: 2];
     }
     else {
         [self.displayModeCtrl selectCellWithTag: 0];
+    }
+    
+    if([_preferences.displaySyntheticSpread  isEqual: @"single"]) {
+        [self.displaySynthCtrl selectCellWithTag: 1];
+    }
+    else if([_preferences.displaySyntheticSpread isEqual: @"double"]) {
+        [self.displaySynthCtrl selectCellWithTag: 2];
+    }
+    else {
+        [self.displaySynthCtrl selectCellWithTag: 0];
     }
 
     [NSApp beginSheet:self.sheet
