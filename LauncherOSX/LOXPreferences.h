@@ -23,8 +23,8 @@
 @property (nonatomic, strong) NSNumber *mediaOverlaysRate;
 @property (nonatomic, strong) NSNumber *mediaOverlaysVolume;
 
-@property (nonatomic, strong) NSString *displayScroll;
-@property (nonatomic, strong) NSString *displaySyntheticSpread;
+@property (nonatomic, strong) NSString *scroll;
+@property (nonatomic, strong) NSString *syntheticSpread;
 
 
 - (void)updateMediaOverlaysSkippables:(NSString *)str;

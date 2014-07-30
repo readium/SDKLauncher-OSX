@@ -56,6 +56,8 @@
 @synthesize packageId = _packageId;
 @synthesize toc = _toc;
 @synthesize rendition_layout = _rendition_layout;
+@synthesize rendition_spread = _rendition_spread;
+@synthesize rendition_orientation = _rendition_orientation;
 @synthesize rendition_flow = _rendition_flow;
 //@synthesize rootDirectory = _rootDirectory;
 @synthesize mediaOverlay = _mediaOverlay;
@@ -168,6 +170,8 @@
         _title = [NSString stringWithUTF8String:_sdkPackage->Title().c_str()];
 
         _rendition_layout = [self findProperty:@"layout" withPrefix:@"rendition"];
+        _rendition_orientation = [self findProperty:@"orientation" withPrefix:@"rendition"];
+        _rendition_spread = [self findProperty:@"spread" withPrefix:@"rendition"];
         _rendition_flow = [self findProperty:@"flow" withPrefix:@"rendition"];
 
         auto spineItem = _sdkPackage->FirstSpineItem();
@@ -311,6 +315,8 @@
     [dict setObject:@"/" forKey:@"rootUrl"];
 
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
+    [dict setObject:_rendition_spread forKey:@"rendition_spread"];
+    [dict setObject:_rendition_orientation forKey:@"rendition_orientation"];
     [dict setObject:_rendition_flow forKey:@"rendition_flow"];
     [dict setObject:[_spine toDictionary] forKey:@"spine"];
     [dict setObject:[_mediaOverlay toDictionary] forKey:@"media_overlay"];

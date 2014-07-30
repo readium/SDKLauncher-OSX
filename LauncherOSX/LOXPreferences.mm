@@ -46,8 +46,8 @@
         self.mediaOverlaysRate = [NSNumber numberWithInt:1];
         self.mediaOverlaysVolume = [NSNumber numberWithInt:100];
         
-        self.displaySyntheticSpread = @"auto";
-        self.displayScroll = @"auto";
+        self.syntheticSpread = @"auto";
+        self.scroll = @"auto";
 
         _doNotUpdateView = NO;
 
@@ -62,8 +62,8 @@
                         NSStringFromSelector(@selector(mediaOverlaysRate)),
                         NSStringFromSelector(@selector(mediaOverlaysVolume)),
                                  
-                        NSStringFromSelector(@selector(displayScroll)),
-                        NSStringFromSelector(@selector(displaySyntheticSpread)),
+                        NSStringFromSelector(@selector(scroll)),
+                        NSStringFromSelector(@selector(syntheticSpread)),
                         nil];
     }
 
@@ -118,8 +118,8 @@
             NSStringFromSelector(@selector(mediaOverlaysVolume)): self.mediaOverlaysVolume,
             NSStringFromSelector(@selector(columnGap)): self.columnGap,
             
-            NSStringFromSelector(@selector(syntheticSpread)): self.displaySyntheticSpread,
-            NSStringFromSelector(@selector(scroll)): self.displayScroll,
+            NSStringFromSelector(@selector(syntheticSpread)): self.syntheticSpread,
+            NSStringFromSelector(@selector(scroll)): self.scroll,
 
             
             NSStringFromSelector(@selector(doNotUpdateView)): [NSNumber numberWithBool:_doNotUpdateView]

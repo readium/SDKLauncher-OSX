@@ -68,13 +68,13 @@
     switch([selCell tag])
     {
         case 1:
-            self.preferences.displayScroll = @"scroll-doc";
+            self.preferences.scroll = @"scroll-doc";
             break;
         case 2:
-            self.preferences.displayScroll = @"scroll-continuous";
+            self.preferences.scroll = @"scroll-continuous";
             break;
         default:
-            self.preferences.displayScroll = @"auto";
+            self.preferences.scroll = @"auto";
     }
     _postponeSettingsUpdate = NO;
     
@@ -90,13 +90,13 @@
     switch([selCell tag])
     {
         case 1:
-            self.preferences.displaySyntheticSpread = @"single";
+            self.preferences.syntheticSpread = @"single";
             break;
         case 2:
-            self.preferences.displaySyntheticSpread = @"double";
+            self.preferences.syntheticSpread = @"double";
             break;
         default:
-            self.preferences.displaySyntheticSpread = @"auto";
+            self.preferences.syntheticSpread = @"auto";
     }
     _postponeSettingsUpdate = NO;
     
@@ -181,20 +181,20 @@
     //otherwise sheet il not be attached to the window
     [NSBundle loadNibNamed:@"PreferencesDlg" owner:self];
     
-    if([_preferences.displayScroll  isEqual: @"scroll-doc"]) {
+    if([_preferences.scroll  isEqual: @"scroll-doc"]) {
         [self.displayModeCtrl selectCellWithTag: 1];
     }
-    else if([_preferences.displayScroll isEqual: @"scroll-continuous"]) {
+    else if([_preferences.scroll isEqual: @"scroll-continuous"]) {
         [self.displayModeCtrl selectCellWithTag: 2];
     }
     else {
         [self.displayModeCtrl selectCellWithTag: 0];
     }
     
-    if([_preferences.displaySyntheticSpread  isEqual: @"single"]) {
+    if([_preferences.syntheticSpread  isEqual: @"single"]) {
         [self.displaySynthCtrl selectCellWithTag: 1];
     }
-    else if([_preferences.displaySyntheticSpread isEqual: @"double"]) {
+    else if([_preferences.syntheticSpread isEqual: @"double"]) {
         [self.displaySynthCtrl selectCellWithTag: 2];
     }
     else {
