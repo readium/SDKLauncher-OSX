@@ -76,7 +76,47 @@
         return request;
     }
 
-    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame)
+    // Fake script request, immediately invoked after epubReadingSystem hook is in place
+    NSString * eprs = @"/readium_epubReadingSystem_inject";
+    if ([path hasPrefix:eprs]) {
+
+//        NSRange r = [path rangeOfString:eprs];
+//        NSString * id = [path substringFromIndex: r.location+r.length];
+
+        // TODO: cache this code! (will save some CPU + I/O cycles)
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"epubReadingSystem_inject" ofType:@"js" inDirectory:@"Scripts"];
+        NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+        NSString* cmd = [NSString stringWithFormat:@"window.readium_set_epubReadingSystem_DO = {}; console.log('/readium_epubReadingSystem_inject'); %@", code];
+
+//        WebScriptObject* script = [sender windowScriptObject];
+//        [script evaluateWebScript:cmd];
+
+        [_webView stringByEvaluatingJavaScriptFromString:cmd];
+
+        return nil;
+    }
+
+    NSComparisonResult schemeFile = [scheme caseInsensitiveCompare: @"file"];
+
+    NSString * folder = [_baseUrlPath stringByDeletingLastPathComponent];
+
+    NSString * prefix1 = [NSString stringWithFormat:@"http://127.0.0.1:%d", [m_resourceServer serverPort]];
+
+    //NSString * prefix2 = [NSString stringWithFormat:@"%@%@", prefix1, folder];
+    //[path substringFromIndex: [path rangeOfString:prefix1].location]
+
+
+    if (schemeFile != NSOrderedSame && [path hasPrefix:folder]) {
+        NSString * str = [[NSString stringWithFormat:@"file://%@", path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:str];
+
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [newRequest setURL: url];
+
+        return newRequest;
+    }
+
+    if (schemeFile != NSOrderedSame)
     {
         return request;
     }
@@ -86,14 +126,11 @@
         return request;
     }
 
-
     if ([path hasPrefix:@"/"]) {
         path = [path substringFromIndex:1];
     }
 
-    NSString * str = [[NSString stringWithFormat:@"http://127.0.0.1:%d/%@/%@",
-                                                 [m_resourceServer serverPort],
-                                                 _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+    NSString * str = [[NSString stringWithFormat:@"%@/%@/%@", prefix1, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:str];
 
     NSMutableURLRequest *newRequest = [request mutableCopy];
@@ -153,7 +190,8 @@
 {
     NSString* path = [[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"];
 
-    _baseUrlPath = [path stringByDeletingLastPathComponent];
+    //_baseUrlPath = [path stringByDeletingLastPathComponent];
+    _baseUrlPath = path;
 
     NSString* htmlTemplate = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
 
@@ -169,7 +207,7 @@
     _package = package;
 
     m_resourceServer = nil;
-    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package];
+    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package baseUrlPath:_baseUrlPath];
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
