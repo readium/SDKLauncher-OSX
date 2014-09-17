@@ -30,6 +30,7 @@
 @synthesize idref = _idref;
 //@synthesize packageStorageId = _packageStorageId;
 @synthesize href = _href;
+@synthesize linear = _linear;
 @synthesize page_spread = _page_spread;
 @synthesize rendition_layout = _rendition_layout;
 @synthesize rendition_flow = _rendition_flow;
@@ -50,6 +51,9 @@
     self = [super init];
     if(self) {
         auto str = sdkSpineItem->Idref().c_str();
+
+        bool l = sdkSpineItem->Linear();
+        _linear = l ? @"yes" : @"no";
 
         auto manifestItem = sdkSpineItem->ManifestItem();
         _href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
@@ -99,6 +103,7 @@
 
     [dict setObject:_href forKey:@"href"];
     [dict setObject:_idref forKey:@"idref"];
+    [dict setObject:_linear forKey:@"linear"];
     [dict setObject:_page_spread forKey:@"page_spread"];
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
     [dict setObject:_rendition_orientation forKey:@"rendition_orientation"];
