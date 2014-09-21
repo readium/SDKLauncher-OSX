@@ -44,6 +44,8 @@ static LOXPackage *m_package = nil;
         return nil;
     }
 
+    NSObject <HTTPResponse> *response = nil;
+
     // Synchronize using a process-level lock to guard against multiple threads accessing a
     // resource byte stream, which may lead to instability.
 
@@ -61,15 +63,20 @@ static LOXPackage *m_package = nil;
             NSData *data = resource.data;
 
             if (data != nil) {
-                return [[HTTPDataResponse alloc] initWithData:data];
+				PackageDataResponse *dataResponse = [[PackageDataResponse alloc] initWithData:data];
+                if (resource.mimeType) {
+                    dataResponse.contentType = resource.mimeType;
+                }
+                response = dataResponse;
             }
         }
         else {
-            return [[PackageResourceResponse alloc] initWithResource:resource];
+			PackageResourceResponse *resourceResponse = [[PackageResourceResponse alloc] initWithResource:resource];
+            response = resourceResponse;
         }
     }
 
-    return nil;
+	return response;
 }
 
 
@@ -77,6 +84,19 @@ static LOXPackage *m_package = nil;
     m_package = package;
 }
 
+
+@end
+
+@implementation PackageDataResponse
+
+- (NSDictionary *)httpHeaders {
+    if (self.contentType) {
+        return @{@"Content-Type": self.contentType};
+    }
+    else {
+        return @{};
+    }
+}
 
 @end
 
@@ -131,6 +151,17 @@ static LOXPackage *m_package = nil;
 
     @synchronized ([PackageResourceServer resourceLock]) {
         [m_resource setOffset:offset];
+    }
+}
+
+
+- (NSDictionary *)httpHeaders {
+    NSString *contentType = self->m_resource.mimeType;
+    if (contentType) {
+        return @{@"Content-Type": contentType};
+    }
+    else {
+        return @{};
     }
 }
 

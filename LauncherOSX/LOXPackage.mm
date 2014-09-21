@@ -131,6 +131,13 @@
             initWithByteStream:byteStream.release()
                 relativePath:relativePath
                           pack: self];
+    
+    ePub3::ConstManifestItemPtr item = _sdkPackage->ManifestItemAtRelativePath(s);
+    
+    if (item) {
+        const ePub3::ManifestItem::MimeType &mediaType = item->MediaType();
+        resource.mimeType = [NSString stringWithUTF8String:mediaType.c_str()];
+    }
 
     return resource;
 }

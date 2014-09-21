@@ -13,10 +13,18 @@
 @class RDPackageResource;
 
 #import "HTTPConnection.h"
+#import "HTTPResponse.h"
+#import "HTTPDataResponse.h"
 
 @interface PackageResourceConnection : HTTPConnection
 
 + (void)setPackage:(LOXPackage *)package;
+
+@end
+
+@interface PackageDataResponse : HTTPDataResponse
+
+@property (nonatomic, copy) NSString *contentType;
 
 @end
 
