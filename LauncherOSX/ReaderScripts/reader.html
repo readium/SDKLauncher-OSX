@@ -49,51 +49,10 @@
         <script src="host_app_feedback.js" type="text/javascript"></script>
 
         <script type="text/javascript">
-
-            var preprocessedDocIframeLoader = function(options) {
-
-                var self = this;
-
-                var basicIframeLoader = new ReadiumSDK.Views.IFrameLoader(options);
-
-                this.addIFrameEventListener = function(eventName, callback, context) {
-                    basicIframeLoader.addIFrameEventListener(eventName, callback, context);
-                };
-
-                this.updateIframeEvents = function (iframe) {
-                    basicIframeLoader.updateIframeEvents(iframe);
-                };
-
-                this.loadIframe = function(iframe, src, callback, context, attachedData) {
-
-                    iframe.onload = function () {
-                        self.updateIframeEvents(iframe);
-                        callback.call(context, true, attachedData);
-                    };
-
-                    iframe.setAttribute("data-baseUri", iframe.baseURI);
-                    iframe.setAttribute("data-src", src);
-
-                    var iframeBaseURI = new URI(iframe.baseURI).search('').hash('').toString();
-
-                    var loadedDocumentUri = new URI(src).absoluteTo(iframeBaseURI).toString();
-
-                    iframe.setAttribute("data-uri", loadedDocumentUri);
-
-                    iframe.setAttribute("src", src);
-                };
-            };
-
-            //var prefix = (self.location && self.location.origin && self.location.pathname) ? (self.location.origin + self.location.pathname + "/..") : "";
-            //mathJaxUrl: (prefix  + "/mathjax/MathJax.js")
-
-            //annotationCSSUrl: (prefix + "/annotations.css")
-
-            var iFrameLoader = new preprocessedDocIframeLoader({});
-
+        
             $(document).ready(function () {
                 "use strict";
-                ReadiumSDK.reader = new ReadiumSDK.Views.ReaderView({el:"#viewport", iframeLoader: iFrameLoader});
+                ReadiumSDK.reader = new ReadiumSDK.Views.ReaderView({el:"#viewport"});
                 ReadiumSDK.trigger(ReadiumSDK.Events.READER_INITIALIZED);
             });
 
