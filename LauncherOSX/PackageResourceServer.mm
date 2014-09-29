@@ -82,21 +82,41 @@ static NSString* m_baseUrlPath = nil;
                         } else {
                             //NSString *filePath = [[NSBundle mainBundle] pathForResource:@"epubReadingSystem_inject" ofType:@"js" inDirectory:@"Scripts"];
                             //NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
-                            //NSString *inject_epubReadingSystem = [NSString stringWithFormat:@"<script type=\"text/javascript\">%@</script>", code];
+                            //NSString *inject_epubReadingSystem = [NSString stringWithFormat:@"<script type=\"text/javascript\"></script>", code];
 
-                            // Real script, executes first, phase 1: setup the epubReadingSystem hook.
-                            NSString *inject_epubReadingSystem1 = [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@/../epubReadingSystem_inject.js\"></script>", m_baseUrlPath];
+                            //NSString *inject_epubReadingSystem1 = [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@/../epubReadingSystem_inject.js\"></script>", m_baseUrlPath];
+                            
+                            // Installs "hook" function so that top-level window (application) can later inject the window.navigator.epubReadingSystem into this HTML document's iframe
+                            NSString *inject_epubReadingSystem1 = [NSString stringWithFormat:@"<script id=\"readium_epubReadingSystem_inject1\" type=\"text/javascript\">\n//<![CDATA[\n%@\n//]]>\n</script>",
+                            @"window.readium_set_epubReadingSystem = function (obj) {\
+                                \nwindow.navigator.epubReadingSystem = obj;\
+                                \nwindow.readium_set_epubReadingSystem = undefined;\
+                                \nvar el1 = document.getElementById(\"readium_epubReadingSystem_inject1\");\
+                                \nif (el1 && el1.parentNode) { el1.parentNode.removeChild(el1); }\
+                                \nvar el2 = document.getElementById(\"readium_epubReadingSystem_inject2\");\
+                                \nif (el2 && el2.parentNode) { el2.parentNode.removeChild(el2); }\
+                                \n};"];
 
-                            // Fake script, generates HTTP request, will trigger second injection phase => push epubReadingSystem
-                            NSString *inject_epubReadingSystem2 = @"<script type=\"text/javascript\" src=\"/readium_epubReadingSystem_inject/xxx\"></script>";
+                            // Fake script, generates HTTP request => triggers the push of window.navigator.epubReadingSystem into this HTML document's iframe (see LOXWebViewController.mm where the "readium_epubReadingSystem_inject" UIWebView URI query is handled)
+                            NSString *inject_epubReadingSystem2 = @"<script id=\"readium_epubReadingSystem_inject2\" type=\"text/javascript\" src=\"/readium_epubReadingSystem_inject/xxx\"> </script>";
 
                             NSString *inject_mathJax = @"";
                             if ([source rangeOfString:@"<math"].location != NSNotFound) {
-                                inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@/../mathjax/MathJax.js\"></script>", m_baseUrlPath];
+
+                                //TODO: MathJax fails to process markup correctly...problem specific to UIWebView??
+
+                                //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@/../mathjax/MathJax.js\"> </script>", m_baseUrlPath];
+                                inject_mathJax = @"<script type=\"text/javascript\" src=\"/readium_MathJax.js\"> </script>";
+
+                                //NSString *filePath = [[NSBundle mainBundle] pathForResource:@"MathJax" ofType:@"js" inDirectory:@"Scripts/mathjax"];
+                                //NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+                                //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\">\n//<![CDATA[\n%@\n//]]>\n</script>", code];
+                                //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\">\n\n%@\n\n</script>", code];
+                                //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\">\n<![CDATA[\n%@\n]]>\n</script>", code];
                             }
                             
                             NSString *newSource = [regex stringByReplacingMatchesInString:source options:0 range:NSMakeRange(0, [source length]) withTemplate:
-                            [NSString stringWithFormat:@"%@ %@ %@ %@", @"$1", inject_epubReadingSystem1, inject_epubReadingSystem2, inject_mathJax]];
+                            [NSString stringWithFormat:@"%@\n%@\n%@\n%@", @"$1", inject_epubReadingSystem1, inject_epubReadingSystem2, inject_mathJax]];
                             if (newSource != nil && newSource.length > 0) {
                                NSData * newData = [newSource dataUsingEncoding:NSUTF8StringEncoding];
                                if (newData != nil) {

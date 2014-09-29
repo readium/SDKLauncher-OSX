@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
-		8370C14A199403D500CE6C08 /* epubReadingSystem_inject.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8370C149199403D400CE6C08 /* epubReadingSystem_inject.js */; };
 		83A68A3C1993D7D100DED991 /* mathjax in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83A68A3B1993D7D100DED991 /* mathjax */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
 		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
@@ -132,7 +131,6 @@
 			dstPath = Scripts;
 			dstSubfolderSpec = 7;
 			files = (
-				8370C14A199403D500CE6C08 /* epubReadingSystem_inject.js in CopyFiles */,
 				83A68A3C1993D7D100DED991 /* mathjax in CopyFiles */,
 				8561A1F3178B6F25007D15D3 /* reader.html in CopyFiles */,
 				8561A1F0178B6F1B007D15D3 /* js in CopyFiles */,
@@ -157,7 +155,6 @@
 /* Begin PBXFileReference section */
 		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		558E562716EF859800FCF273 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "readium-sdk/Platform/Apple/ePub3.xcodeproj"; sourceTree = "<group>"; };
-		8370C149199403D400CE6C08 /* epubReadingSystem_inject.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = epubReadingSystem_inject.js; path = LauncherOSX/ReaderScripts/epubReadingSystem_inject.js; sourceTree = "<group>"; };
 		83A68A341993D5F400DED991 /* mathjax */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mathjax; path = LauncherOSX/ReaderScripts/mathjax; sourceTree = "<group>"; };
 		83A68A3B1993D7D100DED991 /* mathjax */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mathjax; path = LauncherOSX/ReaderScripts/mathjax; sourceTree = "<group>"; };
 		850B1A5A16A61FB900619C3C /* ePub3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = ePub3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -350,7 +347,6 @@
 		8561A1E4178B6EB8007D15D3 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
-				8370C149199403D400CE6C08 /* epubReadingSystem_inject.js */,
 				83A68A341993D5F400DED991 /* mathjax */,
 				85ADCFF317B45CB5009F224E /* static */,
 				85DC402E179074660044849D /* host_app_feedback.js */,

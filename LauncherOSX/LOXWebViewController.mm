@@ -76,24 +76,37 @@
         return request;
     }
 
-    // Fake script request, immediately invoked after epubReadingSystem hook is in place
+    // Fake script request, immediately invoked after epubReadingSystem hook is in place,
+    // => push the global window.navigator.epubReadingSystem into the iframe(s)
     NSString * eprs = @"/readium_epubReadingSystem_inject";
     if ([path hasPrefix:eprs]) {
 
-//        NSRange r = [path rangeOfString:eprs];
-//        NSString * id = [path substringFromIndex: r.location+r.length];
+        // Previous method was fetching JS code directly from the "inject" script, but was I/O costly, and separation of concerns was not clear.
+        // NSString *filePath = [[NSBundle mainBundle] pathForResource:@"epubReadingSystem_inject" ofType:@"js" inDirectory:@"Scripts"];
+        // NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
 
-        // TODO: cache this code! (will save some CPU + I/O cycles)
-        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"epubReadingSystem_inject" ofType:@"js" inDirectory:@"Scripts"];
-        NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
-        NSString* cmd = [NSString stringWithFormat:@"window.readium_set_epubReadingSystem_DO = {}; console.log('/readium_epubReadingSystem_inject'); %@", code];
+        // Iterate top-level iframes, inject global window.navigator.epubReadingSystem if the expected hook function exists ( readium_set_epubReadingSystem() ).
+        NSString* cmd = @"for (var i = 0; i < window.frames.length; i++) { var iframe = window.frames[i]; if (iframe.readium_set_epubReadingSystem) { iframe.readium_set_epubReadingSystem(window.navigator.epubReadingSystem); }}";
 
-//        WebScriptObject* script = [sender windowScriptObject];
-//        [script evaluateWebScript:cmd];
+        // does not work as expected:
+        // WebScriptObject* script = [sender windowScriptObject];
+        // [script evaluateWebScript:cmd];
 
         [_webView stringByEvaluatingJavaScriptFromString:cmd];
 
         return nil;
+    }
+
+    NSString * math = @"/readium_MathJax.js";
+    if ([path hasPrefix:math]) {
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"MathJax" ofType:@"js" inDirectory:@"Scripts/mathjax"];
+        NSString * str = [[NSString stringWithFormat:@"file://%@", filePath] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:str];
+
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [newRequest setURL: url];
+
+        return newRequest;
     }
 
     NSComparisonResult schemeFile = [scheme caseInsensitiveCompare: @"file"];
