@@ -20,8 +20,20 @@ static const int httpLogLevel = HTTP_LOG_LEVEL_WARN; // | HTTP_LOG_FLAG_TRACE;
 
 - (NSDictionary *)httpHeaders {
     //HTTPLogTrace();
-    if ([[[filePath pathExtension] lowercaseString] isEqualToString:@"svg"]) {
+
+    NSString* ext = [[filePath  pathExtension] lowercaseString];
+
+    if ([ext isEqualToString:@"svg"]) {
         return [NSDictionary dictionaryWithObject:@"image/svg+xml" forKey:@"Content-Type"];
+    }
+    else if([ext isEqualToString:@"js"]) {
+        return [NSDictionary dictionaryWithObject:@"text/javascript" forKey:@"Content-Type"];
+    }
+    else if([ext isEqualToString:@"css"]) {
+        return [NSDictionary dictionaryWithObject:@"text/css" forKey:@"Content-Type"];
+    }
+    else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
+        return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"];
     }
     return [NSDictionary new];
 }

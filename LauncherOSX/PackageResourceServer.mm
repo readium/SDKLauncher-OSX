@@ -53,9 +53,18 @@ static NSString* m_baseUrlPath = nil;
 
         NSString* ext = [[path pathExtension] lowercaseString];
         NSString* contentType = nil;
-        
+
         if([ext isEqualToString:@"svg"]) {
             contentType = @"image/svg+xml";
+        }
+        else if([ext isEqualToString:@"js"]) {
+            contentType = @"text/javascript";
+        }
+        else if([ext isEqualToString:@"css"]) {
+            contentType = @"text/css";
+        }
+        else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
+            contentType = @"application/xhtml+xml";
         }
         
         
@@ -111,8 +120,6 @@ static NSString* m_baseUrlPath = nil;
                             NSString *inject_mathJax = @"";
                             if ([source rangeOfString:@"<math"].location != NSNotFound) {
 
-                                //TODO: MathJax fails to process markup correctly...problem specific to UIWebView??
-
                                 //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@/../mathjax/MathJax.js\"> </script>", m_baseUrlPath];
                                 inject_mathJax = @"<script type=\"text/javascript\" src=\"/readium_MathJax.js\"> </script>";
 
@@ -128,7 +135,7 @@ static NSString* m_baseUrlPath = nil;
                             if (newSource != nil && newSource.length > 0) {
                                NSData * newData = [newSource dataUsingEncoding:NSUTF8StringEncoding];
                                if (newData != nil) {
-                                   return [[HTTPDataResponse alloc] initWithData:newData];
+                                   return [[HTTPDataResponse alloc] initWithData:newData contentType:contentType];
                                }
                             }
                         }
@@ -226,6 +233,15 @@ static NSString* m_baseUrlPath = nil;
         
         if([ext isEqualToString:@"svg"]) {
             return [NSDictionary dictionaryWithObject:@"image/svg+xml" forKey:@"Content-Type"];
+        }
+        else if([ext isEqualToString:@"js"]) {
+            return [NSDictionary dictionaryWithObject:@"text/javascript" forKey:@"Content-Type"];
+        }
+        else if([ext isEqualToString:@"css"]) {
+            return [NSDictionary dictionaryWithObject:@"text/css" forKey:@"Content-Type"];
+        }
+        else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
+            return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"];
         }
         
     }
