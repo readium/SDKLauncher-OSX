@@ -47,6 +47,8 @@
 @property(nonatomic, readonly) NSString *packageId;
 @property(nonatomic, readonly) LOXToc *toc;
 @property(nonatomic, readonly) NSString *rendition_layout;
+@property(nonatomic, readonly) NSString *rendition_orientation;
+@property(nonatomic, readonly) NSString *rendition_spread;
 @property(nonatomic, readonly) NSString *rendition_flow;
 //@property(nonatomic, readonly) NSString *rootDirectory;
 

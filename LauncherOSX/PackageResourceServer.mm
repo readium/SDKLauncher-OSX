@@ -32,7 +32,7 @@ static LOXPackage *m_package = nil;
         return nil;
     }
 
-    //path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
 //
 //    if (path != nil && [path hasPrefix:@"/"]) {

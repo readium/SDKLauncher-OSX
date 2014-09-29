@@ -22,6 +22,7 @@
 - (IBAction)applySkippables:(id)sender;
 - (IBAction)applyEscapables:(id)sender;
 - (IBAction)onViewModeChanged: (id)sender;
+- (IBAction)onViewSynthChanged: (id)sender;
 
 @property (assign) IBOutlet NSButton *thiteticSpread;
 @property (assign) IBOutlet NSWindow *sheet;
@@ -32,6 +33,7 @@
 @property (assign) IBOutlet NSTextView *moEscapablesCtrl;
 
 @property (assign) IBOutlet NSMatrix *displayModeCtrl;
+@property (assign) IBOutlet NSMatrix *displaySynthCtrl;
 
 @property(nonatomic, strong) LOXPreferences *preferences;
 @property(nonatomic, strong) LOXWebViewController *webViewController;

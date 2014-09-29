@@ -30,9 +30,11 @@
 @synthesize idref = _idref;
 //@synthesize packageStorageId = _packageStorageId;
 @synthesize href = _href;
+@synthesize linear = _linear;
 @synthesize page_spread = _page_spread;
 @synthesize rendition_layout = _rendition_layout;
 @synthesize rendition_flow = _rendition_flow;
+@synthesize rendition_orientation = _rendition_orientation;
 @synthesize rendition_spread = _rendition_spread;
 @synthesize media_type = _media_type;
 @synthesize media_overlay_id = _media_overlay_id;
@@ -49,6 +51,9 @@
     self = [super init];
     if(self) {
         auto str = sdkSpineItem->Idref().c_str();
+
+        bool l = sdkSpineItem->Linear();
+        _linear = l ? @"yes" : @"no";
 
         auto manifestItem = sdkSpineItem->ManifestItem();
         _href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
@@ -69,6 +74,8 @@
         }
 
         _rendition_spread = [self findProperty:@"spread" withPrefix:@"rendition"];
+
+        _rendition_orientation = [self findProperty:@"orientation" withPrefix:@"rendition"];
 
         _rendition_layout = [self findProperty:@"layout" withPrefix:@"rendition"];
 
@@ -96,8 +103,10 @@
 
     [dict setObject:_href forKey:@"href"];
     [dict setObject:_idref forKey:@"idref"];
+    [dict setObject:_linear forKey:@"linear"];
     [dict setObject:_page_spread forKey:@"page_spread"];
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
+    [dict setObject:_rendition_orientation forKey:@"rendition_orientation"];
     [dict setObject:_rendition_spread forKey:@"rendition_spread"];
     [dict setObject:_rendition_flow forKey:@"rendition_flow"];
     [dict setObject:_media_overlay_id forKey:@"media_overlay_id"];
