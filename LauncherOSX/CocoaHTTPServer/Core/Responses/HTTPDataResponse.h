@@ -6,8 +6,10 @@
 {
 	NSUInteger offset;
 	NSData *data;
+    NSString *contentType;
 }
 
-- (id)initWithData:(NSData *)data;
+- (id)initWithData:(NSData *)dataParam;
+- (id)initWithData:(NSData *)dataParam contentType:(NSString *)contentTypeParam;
 
 @end
