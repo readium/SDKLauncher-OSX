@@ -39,7 +39,8 @@
 
 -(void)onPageChanged:(NSNotification*) notification;
 
-- (NSString *)loadHtmlTemplate;
+// Now load file URL directly (no need for reader.html pre-processing)
+//- (NSString *)loadHtmlTemplate;
 
 - (void)updateUI;
 @end
@@ -166,11 +167,22 @@
                                                  name:LOXPageChangedEvent
                                                object:nil];
 
-    NSString* html = [self loadHtmlTemplate];
+    // Now load file URL directly (no need for reader.html pre-processing)
+    //NSString* html = [self loadHtmlTemplate];
+    //NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
+    //[[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
 
-    NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
 
-    [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
+    //NSURL *url = [[NSBundle mainBundle] URLForResource:@"reader.html" withExtension:nil];
+
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"];
+
+    //_baseUrlPath = [path stringByDeletingLastPathComponent];
+    _baseUrlPath = path;
+
+    NSURL *url = [NSURL fileURLWithPath:_baseUrlPath];
+
+    [[_webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 }
 
 -(void)onPageChanged:(NSNotification*) notification
@@ -198,7 +210,8 @@
     return cfi;
 }
 
-
+// Now load file URL directly (no need for reader.html pre-processing)
+/*
 - (NSString*) loadHtmlTemplate
 {
     NSString* path = [[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"];
@@ -214,6 +227,7 @@
 
     return htmlTemplate;
 }
+*/
 
 -(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
 {
