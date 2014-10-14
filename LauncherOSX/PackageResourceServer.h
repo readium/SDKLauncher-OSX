@@ -34,7 +34,7 @@
     HTTPServer * m_server;
 }
 
-- (id)initWithPackage:(LOXPackage *)package;
+- (id)initWithPackage:(LOXPackage *)package baseUrlPath:(NSString*)baseUrlPath;
 
 - (int) serverPort;
 

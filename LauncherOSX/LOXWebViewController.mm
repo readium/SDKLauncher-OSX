@@ -39,7 +39,8 @@
 
 -(void)onPageChanged:(NSNotification*) notification;
 
-- (NSString *)loadHtmlTemplate;
+// Now load file URL directly (no need for reader.html pre-processing)
+//- (NSString *)loadHtmlTemplate;
 
 - (void)updateUI;
 @end
@@ -76,7 +77,60 @@
         return request;
     }
 
-    if ([scheme caseInsensitiveCompare: @"file"] != NSOrderedSame)
+    // Fake script request, immediately invoked after epubReadingSystem hook is in place,
+    // => push the global window.navigator.epubReadingSystem into the iframe(s)
+    NSString * eprs = @"/readium_epubReadingSystem_inject";
+    if ([path hasPrefix:eprs]) {
+
+        // Previous method was fetching JS code directly from the "inject" script, but was I/O costly, and separation of concerns was not clear.
+        // NSString *filePath = [[NSBundle mainBundle] pathForResource:@"epubReadingSystem_inject" ofType:@"js" inDirectory:@"Scripts"];
+        // NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+
+        // Iterate top-level iframes, inject global window.navigator.epubReadingSystem if the expected hook function exists ( readium_set_epubReadingSystem() ).
+        NSString* cmd = @"for (var i = 0; i < window.frames.length; i++) { var iframe = window.frames[i]; if (iframe.readium_set_epubReadingSystem) { iframe.readium_set_epubReadingSystem(window.navigator.epubReadingSystem); }}";
+
+        // does not work as expected:
+        // WebScriptObject* script = [sender windowScriptObject];
+        // [script evaluateWebScript:cmd];
+
+        [_webView stringByEvaluatingJavaScriptFromString:cmd];
+
+        return nil;
+    }
+
+    NSString * math = @"/readium_MathJax.js";
+    if ([path hasPrefix:math]) {
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"MathJax" ofType:@"js" inDirectory:@"Scripts/mathjax"];
+        NSString * str = [[NSString stringWithFormat:@"file://%@", filePath] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:str];
+
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [newRequest setURL: url];
+
+        return newRequest;
+    }
+
+    NSComparisonResult schemeFile = [scheme caseInsensitiveCompare: @"file"];
+
+    NSString * folder = [_baseUrlPath stringByDeletingLastPathComponent];
+
+    NSString * prefix1 = [NSString stringWithFormat:@"http://127.0.0.1:%d", [m_resourceServer serverPort]];
+
+    //NSString * prefix2 = [NSString stringWithFormat:@"%@%@", prefix1, folder];
+    //[path substringFromIndex: [path rangeOfString:prefix1].location]
+
+
+    if (schemeFile != NSOrderedSame && [path hasPrefix:folder]) {
+        NSString * str = [[NSString stringWithFormat:@"file://%@", path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:str];
+
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [newRequest setURL: url];
+
+        return newRequest;
+    }
+
+    if (schemeFile != NSOrderedSame)
     {
         return request;
     }
@@ -86,14 +140,11 @@
         return request;
     }
 
-
     if ([path hasPrefix:@"/"]) {
         path = [path substringFromIndex:1];
     }
 
-    NSString * str = [[NSString stringWithFormat:@"http://127.0.0.1:%d/%@/%@",
-                                                 [m_resourceServer serverPort],
-                                                 _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+    NSString * str = [[NSString stringWithFormat:@"%@/%@/%@", prefix1, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:str];
 
     NSMutableURLRequest *newRequest = [request mutableCopy];
@@ -116,11 +167,22 @@
                                                  name:LOXPageChangedEvent
                                                object:nil];
 
-    NSString* html = [self loadHtmlTemplate];
+    // Now load file URL directly (no need for reader.html pre-processing)
+    //NSString* html = [self loadHtmlTemplate];
+    //NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
+    //[[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
 
-    NSURL *baseUrl = [NSURL fileURLWithPath:_baseUrlPath];
 
-    [[_webView mainFrame] loadHTMLString:html baseURL:baseUrl];
+    //NSURL *url = [[NSBundle mainBundle] URLForResource:@"reader.html" withExtension:nil];
+
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"];
+
+    //_baseUrlPath = [path stringByDeletingLastPathComponent];
+    _baseUrlPath = path;
+
+    NSURL *url = [NSURL fileURLWithPath:_baseUrlPath];
+
+    [[_webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 }
 
 -(void)onPageChanged:(NSNotification*) notification
@@ -148,12 +210,14 @@
     return cfi;
 }
 
-
+// Now load file URL directly (no need for reader.html pre-processing)
+/*
 - (NSString*) loadHtmlTemplate
 {
     NSString* path = [[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"];
 
-    _baseUrlPath = [path stringByDeletingLastPathComponent];
+    //_baseUrlPath = [path stringByDeletingLastPathComponent];
+    _baseUrlPath = path;
 
     NSString* htmlTemplate = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
 
@@ -163,13 +227,14 @@
 
     return htmlTemplate;
 }
+*/
 
 -(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
 {
     _package = package;
 
     m_resourceServer = nil;
-    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package];
+    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package baseUrlPath:_baseUrlPath];
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
