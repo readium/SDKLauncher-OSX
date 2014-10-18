@@ -65,14 +65,8 @@
         _idref = [NSString stringWithUTF8String:str];
         _sdkSpineItem = sdkSpineItem;
 
-        _page_spread = [self findProperty:@"page-spread-left" withPrefix:@"rendition"];
-        if([_page_spread length] == 0) {
-            _page_spread = [self findProperty:@"page-spread-right" withPrefix:@"rendition"];
-            if([_page_spread length] == 0) {
-                _page_spread = [self findProperty:@"page-spread-center" withPrefix:@"rendition"];
-            }
-        }
-
+        _page_spread = [self findProperty:@"page-spread" withOptionalPrefix:@"rendition"];
+ 
         _rendition_spread = [self findProperty:@"spread" withPrefix:@"rendition"];
 
         _rendition_orientation = [self findProperty:@"orientation" withPrefix:@"rendition"];
@@ -84,6 +78,18 @@
     }
 
     return self;
+
+}
+
+- (NSString *) findProperty:(NSString *)propName withOptionalPrefix:(NSString *)prefix
+{
+    NSString* value = [self findProperty:propName withPrefix:prefix];
+
+    if([value length] == 0) {
+        value = [self findProperty:propName withPrefix:@""];
+    }
+
+    return value;
 
 }
 
