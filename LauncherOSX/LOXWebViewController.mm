@@ -263,7 +263,7 @@
 //this allows JavaScript to call the -logJavaScriptString: method
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
 {
-    if(        sel == @selector(onOpenPage:)
+    if(        sel == @selector(onOpenPage:canGoLeftRight:)
             || sel == @selector(onReaderInitialized)
             || sel == @selector(onSettingsApplied)
             || sel == @selector(onMediaOverlayStatusChanged:)
@@ -280,7 +280,7 @@
 //this returns a nice name for the method in the JavaScript environment
 +(NSString*)webScriptNameForSelector:(SEL)sel
 {
-    if(sel == @selector(onOpenPage:)) {
+    if(sel == @selector(onOpenPage:canGoLeftRight:)) {
         return @"onOpenPage";
     }
     else if(sel == @selector(onReaderInitialized)) {
@@ -311,7 +311,7 @@
     [windowScriptObject setValue:self forKey:@"LauncherUI"];
 }
 
-- (void)onOpenPage:(NSString*) currentPaginationInfo
+- (void)onOpenPage:(NSString*) currentPaginationInfo canGoLeftRight:(NSString*) canGoLeftRight
 {
 
     NSData* data = [currentPaginationInfo dataUsingEncoding:NSUTF8StringEncoding];
@@ -324,9 +324,22 @@
         return;
     }
 
-    [self.currentPagesInfo fromDictionary:dict];
-    [[NSNotificationCenter defaultCenter] postNotificationName:LOXPageChangedEvent object:self];
+    data = nil;
+    data = [canGoLeftRight dataUsingEncoding:NSUTF8StringEncoding];
 
+    e = nil;
+    NSDictionary *dictCanGoLeftRight = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
+
+    if (e) {
+        NSLog(@"Error parsing JSON: %@", e);
+        return;
+    }
+
+    BOOL canGoLeft = ([[dictCanGoLeftRight valueForKey:@"canGoLeft"] isEqual:[NSNumber numberWithBool:YES]] ? YES : NO);
+    BOOL canGoRight = ([[dictCanGoLeftRight valueForKey:@"canGoRight"] isEqual:[NSNumber numberWithBool:YES]] ? YES : NO);
+
+    [self.currentPagesInfo fromDictionary:dict canGoLeft:canGoLeft canGoRight:canGoRight];
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOXPageChangedEvent object:self];
 }
 
 - (void)onMediaOverlayTTSStop

@@ -49,7 +49,7 @@
 
 - (void) clear;
 
-- (void)onOpenPage:(NSString *)currentPaginationInfo;
+- (void)onOpenPage:(NSString *)currentPaginationInfo canGoLeftRight:(NSString*) canGoLeftRight;
 
 - (void)onMediaOverlayStatusChanged:(NSString*) status;
 
