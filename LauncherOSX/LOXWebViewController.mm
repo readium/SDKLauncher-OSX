@@ -194,6 +194,8 @@
 
     NSURL *url = [NSURL fileURLWithPath:_baseUrlPath];
 
+    [_webView setWantsLayer:YES];
+
     [[_webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 }
 
