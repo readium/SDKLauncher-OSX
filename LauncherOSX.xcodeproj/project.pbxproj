@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
 		83A68A3C1993D7D100DED991 /* mathjax in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83A68A3B1993D7D100DED991 /* mathjax */; };
+		83EBB4A119F566310083E8F1 /* annotations.css in CopyFiles */ = {isa = PBXBuildFile; fileRef = A250DB706A1422DFE8EF2706 /* annotations.css */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
 		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
 		850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9416A6320200619C3C /* LOXSpineViewController.mm */; };
@@ -131,6 +132,7 @@
 			dstPath = Scripts;
 			dstSubfolderSpec = 7;
 			files = (
+				83EBB4A119F566310083E8F1 /* annotations.css in CopyFiles */,
 				83A68A3C1993D7D100DED991 /* mathjax in CopyFiles */,
 				8561A1F3178B6F25007D15D3 /* reader.html in CopyFiles */,
 				8561A1F0178B6F1B007D15D3 /* js in CopyFiles */,
@@ -243,6 +245,7 @@
 		A250DA7E497872608733C36A /* HTTPDynamicFileResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPDynamicFileResponse.h; sourceTree = "<group>"; };
 		A250DAE1E3B993805F868531 /* HTTPDataResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPDataResponse.h; sourceTree = "<group>"; };
 		A250DB0DD4746DF18C3F2E02 /* RDPackageResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDPackageResource.h; sourceTree = "<group>"; };
+		A250DB706A1422DFE8EF2706 /* annotations.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = annotations.css; path = LauncherOSX/ReaderScripts/annotations.css; sourceTree = "<group>"; };
 		A250DBC4A054869FB86E1CE2 /* DDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDLog.m; sourceTree = "<group>"; };
 		A250DBCD25C11B7E64FA8847 /* HTTPFileResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPFileResponse.h; sourceTree = "<group>"; };
 		A250DBEC23CD0AC8D34BF451 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
@@ -353,6 +356,7 @@
 				8561A1E6178B6ED1007D15D3 /* js */,
 				8561A1E7178B6ED1007D15D3 /* lib */,
 				8561A1E9178B6ED1007D15D3 /* reader.html */,
+				A250DB706A1422DFE8EF2706 /* annotations.css */,
 			);
 			name = Scripts;
 			sourceTree = "<group>";
