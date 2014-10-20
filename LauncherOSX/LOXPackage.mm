@@ -210,7 +210,7 @@
 
     toc.title = [NSString stringWithUTF8String:navTable->Title().c_str()];
     if(toc.title.length == 0) {
-        toc.title = @"Table of content";
+        toc.title = @"Table of Contents";
     }
 
     toc.sourceHref = [NSString stringWithUTF8String:navTable->SourceHref().c_str()];
