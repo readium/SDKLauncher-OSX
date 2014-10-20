@@ -110,6 +110,18 @@
         return newRequest;
     }
 
+    NSString * annotationsCSS = @"/readium_Annotations.css";
+    if ([path hasPrefix:annotationsCSS]) {
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"annotations" ofType:@"css" inDirectory:@"Scripts"];
+        NSString * str = [[NSString stringWithFormat:@"file://%@", filePath] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:str];
+
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [newRequest setURL: url];
+
+        return newRequest;
+    }
+
     NSComparisonResult schemeFile = [scheme caseInsensitiveCompare: @"file"];
 
     NSString * folder = [_baseUrlPath stringByDeletingLastPathComponent];
