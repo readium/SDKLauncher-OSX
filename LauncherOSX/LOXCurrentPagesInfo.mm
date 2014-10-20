@@ -29,11 +29,13 @@
     NSMutableArray* _openPages;
     BOOL _canGoLeft;
     BOOL _canGoRight;
+    BOOL _isRightToLeft;
 }
 
 @synthesize openPages = _openPages;
 @synthesize canGoLeft = _canGoLeft;
 @synthesize canGoRight = _canGoRight;
+@synthesize isRightToLeft = _isRightToLeft;
 
 -(id)init
 {
@@ -54,7 +56,8 @@
 
     self.isFixedLayout = [[LOXUtil valueForKey:@"isFixedLayout" orDefault:[NSNumber numberWithBool:NO] fromDictionary:dict] boolValue];
     self.spineItemCount = [[LOXUtil valueForKey:@"spineItemCount" orDefault:[NSNumber numberWithInt:0] fromDictionary:dict] integerValue];
-    self.pageProgressionDirection = [LOXUtil valueForKey:@"pageProgressionDirection" orDefault:@"default" fromDictionary:dict];
+
+    _isRightToLeft = ([[dict valueForKey:@"isRightToLeft"] isEqual:[NSNumber numberWithBool:YES]] ? YES : NO);
 
     NSArray *arr = (NSArray*)[LOXUtil valueForKey:@"openPages" orDefault:nil fromDictionary:dict];
 

@@ -30,7 +30,7 @@
 @property (nonatomic, readonly) BOOL canGoRight;
 @property (nonatomic) bool isFixedLayout;
 @property (nonatomic) int spineItemCount;
-@property (nonatomic, strong) NSString* pageProgressionDirection;
+@property (nonatomic, readonly) BOOL isRightToLeft;
 
 
 - (void)fromDictionary:(NSDictionary *)dict canGoLeft:(BOOL)canGoLeft canGoRight:(BOOL)canGoRight;
