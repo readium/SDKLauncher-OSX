@@ -26,20 +26,14 @@
 
 
 @property (nonatomic, readonly) NSArray *openPages;
+@property (nonatomic, readonly) BOOL canGoLeft;
+@property (nonatomic, readonly) BOOL canGoRight;
 @property (nonatomic) bool isFixedLayout;
 @property (nonatomic) int spineItemCount;
 @property (nonatomic, strong) NSString* pageProgressionDirection;
 
 
-- (void)fromDictionary:(NSDictionary *)dict;
-
-- (bool)canGoNext;
-
-- (bool)canGoLeft;
-
-- (bool)canGoRight;
-
-- (bool)canGoPrev;
+- (void)fromDictionary:(NSDictionary *)dict canGoLeft:(BOOL)canGoLeft canGoRight:(BOOL)canGoRight;
 
 - (LOXOpenPageInfo *)firstOpenPage;
 
