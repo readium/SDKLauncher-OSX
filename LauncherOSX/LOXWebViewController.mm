@@ -194,8 +194,11 @@
 
     NSURL *url = [NSURL fileURLWithPath:_baseUrlPath];
 
-    [[_webView superview] setWantsLayer:YES];
-    [_webView setWantsLayer:NO];
+    // See enableGPUHardwareAccelerationCSS3D in LOXPreferences@toDictionary()
+    //[[_webView superview] setWantsLayer:YES];
+    //[_webView setWantsLayer:YES];
+    //[[[_webView mainFrame] frameView] setWantsLayer:YES];
+    //[[[[_webView mainFrame] frameView] documentView] setWantsLayer:YES];
 
     [[_webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 }
