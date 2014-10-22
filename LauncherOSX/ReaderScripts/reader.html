@@ -57,6 +57,7 @@
 
                 ReadiumSDK.reader = new ReadiumSDK.Views.ReaderView(
                 {
+                    needsFixedLayoutScalerWorkAround: true,
                     el:"#viewport",
                     annotationCSSUrl: '/readium_Annotations.css' //prefix + '/css/annotations.css'
                 });

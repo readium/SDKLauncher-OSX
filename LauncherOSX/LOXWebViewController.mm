@@ -43,6 +43,8 @@
 //- (NSString *)loadHtmlTemplate;
 
 - (void)updateUI;
+- (void)updateWebView;
+
 @end
 
 
@@ -194,11 +196,7 @@
 
     NSURL *url = [NSURL fileURLWithPath:_baseUrlPath];
 
-    // See enableGPUHardwareAccelerationCSS3D in LOXPreferences@toDictionary()
-    //[[_webView superview] setWantsLayer:YES];
-    //[_webView setWantsLayer:YES];
-    //[[[_webView mainFrame] frameView] setWantsLayer:YES];
-    //[[[[_webView mainFrame] frameView] documentView] setWantsLayer:YES];
+    // See enableGPUHardwareAccelerationCSS3D in LOXPreferences@toDictionary(), and updateWebView() below
 
     [[_webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 }
@@ -442,10 +440,72 @@
     NSLog(@"controlTextDidChange: stringValue == %@", [textField stringValue]);
 }
 
+- (void)updateWebView
+{
+    NSLog(@"========");
+
+    WebFrame *mainFrame = [_webView mainFrame];
+    WebFrameView *mainFrameView = [mainFrame frameView];
+    NSView<WebDocumentView> *const mainFrameDocView = [mainFrameView documentView]; //WebHTMLView
+    NSScrollView *mainFrameScrollView = [mainFrameDocView enclosingScrollView]; //WebDynamicScrollBarsView
+    NSClipView *mainFrameClipView = [mainFrameScrollView contentView]; //WebClipView
+
+    //setContentMode:NSViewContentModeRedraw
+    //[mainFrameView setLayerContentsRedrawPolicy:NSViewLayerContentsRedrawNever];
+
+    NSLog(@"%d", [mainFrameView layerContentsRedrawPolicy]); //2 => NSViewLayerContentsRedrawDuringViewResize
+
+    CALayer* mainFrameView_layer = [mainFrameView layer];
+    CALayer* mainFrameDocView_layer = [mainFrameDocView layer];
+    CALayer* mainFrameScrollView_layer = [mainFrameScrollView layer];
+    CALayer* mainFrameClipView_layer = [mainFrameClipView layer];
+
+    NSLog(@"%@", mainFrameView_layer);
+    NSLog(@"%@", mainFrameDocView_layer);
+    NSLog(@"%@", mainFrameScrollView_layer);
+    NSLog(@"%@", mainFrameClipView_layer);
+
+    for (WebFrame * childFrame in [[_webView mainFrame] childFrames])
+    {
+        WebFrameView *childFrameView = [childFrame frameView];
+        NSView<WebDocumentView> *const childFrameDocView = [childFrameView documentView]; //WebHTMLView
+        NSScrollView *childFrameScrollView = [childFrameDocView enclosingScrollView]; //WebDynamicScrollBarsView
+        NSClipView *childFrameClipView = [childFrameScrollView contentView]; //WebClipView
+
+        //[childFrameView setWantsLayer:YES];
+        //[childFrameView scaleUnitSquareToSize: NSMakeSize(0.999, 0.999)];
+
+        NSLog(@"----");
+
+        NSLog(@"%d", [childFrameView layerContentsRedrawPolicy]); //2 => NSViewLayerContentsRedrawDuringViewResize
+
+        CALayer* childFrameView_layer = [childFrameView layer];
+        CALayer* childFrameDocView_layer = [childFrameDocView layer];
+        CALayer* childFrameScrollView_layer = [childFrameScrollView layer];
+        CALayer* childFrameClipView_layer = [childFrameClipView layer];
+
+        NSLog(@"%@", childFrameView_layer);
+        NSLog(@"%@", childFrameDocView_layer);
+        NSLog(@"%@", childFrameScrollView_layer);
+        NSLog(@"%@", childFrameClipView_layer);
+
+        //[view setWantsLayer:YES];
+
+        //[view setNeedsLayout:YES];
+
+        //[view setNeedsDisplay:YES];
+    }
+}
+
 - (void)updateUI
 {
     [self.leftPageButton setEnabled:[self.currentPagesInfo canGoLeft]];
     [self.rightPageButton setEnabled:[self.currentPagesInfo canGoRight]];
+
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [self updateWebView];
+//    });
+    //[self.appDelegate performSelectorOnMainThread:@selector(updateWebView) withObject:nil waitUntilDone:YES];
 }
 
 

@@ -108,7 +108,7 @@
 -(NSDictionary *) toDictionary
 {
     return @{
-            @"enableGPUHardwareAccelerationCSS3D": [NSNumber numberWithBool:YES],
+            @"enableGPUHardwareAccelerationCSS3D": [NSNumber numberWithBool:NO],
 
             NSStringFromSelector(@selector(fontSize)): self.fontSize,
             NSStringFromSelector(@selector(mediaOverlaysSkipSkippables)): self.mediaOverlaysSkipSkippables,
