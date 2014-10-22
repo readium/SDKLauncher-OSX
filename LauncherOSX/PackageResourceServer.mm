@@ -143,7 +143,7 @@ static NSString* m_baseUrlPath = nil;
                 }
             }
             
-            if (resource.bytesCount < 1024 * 1024) { // 1MB
+            if (!resource.isByteRangeResource) { //resource.bytesCount < 1024 * 1024) { // 1MB
 
                 // This resource is small enough that we can just fetch the entire thing in memory,
                 // which simplifies access into the byte stream.  Adjust the threshold to taste.

@@ -131,6 +131,17 @@
         NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
         return nil;
     }
+/*
+TODO: uncomment and enable the following block of code. This piece of code will allow
+the use of Byte Ranges. For resources above a given size, a ByteRangeFilterSyncStream
+will be returned, which allows reading just ranges of bytes from a given resource.
+However, currently this block of code is currently disabled because we are seeing
+crashes when playing a Quicktime video using byte ranges.
+*/
+if (true || byteStream->BytesAvailable() > 1000000)
+{
+byteStream = _sdkPackage->SyncByteRangeForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
+}
 
     RDPackageResource *resource = [[RDPackageResource alloc]
             initWithByteStream:byteStream //release()

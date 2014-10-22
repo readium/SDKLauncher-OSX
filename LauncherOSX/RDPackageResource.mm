@@ -13,12 +13,12 @@
 #import <ePub3/archive.h>
 #import <ePub3/utilities/byte_stream.h>
 #import <ePub3/filter_chain.h>
+#import <ePub3/filter.h>
 
 @interface RDPackageResource() {
 @private std::shared_ptr<ePub3::ByteStream> m_byteStream;
 @private NSString *m_relativePath;
-
-
+@private UInt64 m_offset;
 @private std::size_t m_bytesCount;
 @private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
 //@private NSData *m_data;
@@ -138,18 +138,29 @@
         return [NSData data];
     }
 
-    NSMutableData *md = [[NSMutableData alloc] initWithCapacity: length];
-    NSUInteger totalRead = 0;
+    NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
 
-    while (totalRead < length) {
-        NSUInteger thisLength = MIN(sizeof(m_buffer), length - totalRead);
-        std::size_t count = m_byteStream->ReadBytes(m_buffer, thisLength);
-        totalRead += count;
-        [md appendBytes:m_buffer length:count];
+    ePub3::ByteRangeFilterSyncStream *filterStream = dynamic_cast<ePub3::ByteRangeFilterSyncStream *>(m_byteStream.get());
 
-        if (count != thisLength) {
-            NSLog(@"Did not read the expected number of bytes! (%lu %d)", count, thisLength);
-            break;
+    if (filterStream == nullptr) {
+		NSLog(@"The byte stream is not a FilterChainSyncStream!");
+	}
+	else {
+		ePub3::ByteRange range;
+		range.Location(m_offset);
+		NSUInteger totalRead = 0;
+
+        while (totalRead < length) {
+    		range.Length(MIN(sizeof(m_buffer), length - totalRead));
+    		std::size_t count = filterStream->ReadBytes(m_buffer, sizeof(m_buffer), range);
+    		[md appendBytes:m_buffer length:count];
+    		totalRead += count;
+            range.Location(range.Location() + count);
+
+            if (count != range.Length()) {
+        		NSLog(@"Did not read the expected number of bytes! (%lu %lu)", count, (unsigned long)range.Length());
+        		break;
+        	}
         }
     }
 
@@ -158,18 +169,14 @@
 
 
 - (void)setOffset:(UInt64)offset {
-    //std::shared_ptr<ePub3::SeekableByteStream> seekStream = std::dynamic_pointer_cast<ePub3::SeekableByteStream>(m_byteStream);
-    //ePub3::SeekableByteStream* seekStream = dynamic_cast<ePub3::SeekableByteStream*>(m_byteStream.get());
-    //ePub3::ByteStream::size_type pos = seekStream->Seek(offset, std::ios::beg);
-
-    ePub3::FilterChainSyncStream* seekStream = dynamic_cast<ePub3::FilterChainSyncStream*>(m_byteStream.get());
-    // TODO!!
-
-    if (pos != offset) {
-        NSLog(@"Setting the byte stream offset failed! pos = %lu, offset = %llu", pos, offset);
-    }
+    m_offset = offset;
 }
 
+- (BOOL)isByteRangeResource
+{
+    ePub3::ByteRangeFilterSyncStream *filterStream = dynamic_cast<ePub3::ByteRangeFilterSyncStream *>(m_byteStream.get());
+    return (filterStream != nullptr);
+}
 
 
 - (void)dealloc {
