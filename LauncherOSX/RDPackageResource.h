@@ -18,6 +18,7 @@
 @interface RDPackageResource : NSObject {
 @private LOXPackage *m_package;
 @private NSData *m_data;
+
 }
 
 //@property (nonatomic, readonly) ePub3::ByteStream* byteStream;

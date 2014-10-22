@@ -37,7 +37,6 @@
     if(self) {
 
         self.fontSize = [NSNumber numberWithInt:100];
-        self.isSyntheticSpread = [NSNumber numberWithBool:YES];
         self.mediaOverlaysSkipSkippables = [NSNumber numberWithBool:NO];
         self.mediaOverlaysEscapeEscapables = [NSNumber numberWithBool:YES];
         self.mediaOverlaysSkippables = [NSString stringWithUTF8String:""];
@@ -46,14 +45,14 @@
         self.columnGap = [NSNumber numberWithInt:20];
         self.mediaOverlaysRate = [NSNumber numberWithInt:1];
         self.mediaOverlaysVolume = [NSNumber numberWithInt:100];
-        self.isScrollDoc = [NSNumber numberWithBool:NO];
-        self.isScrollContinuous = [NSNumber numberWithBool:NO];
+        
+        self.syntheticSpread = @"auto";
+        self.scroll = @"auto";
 
         _doNotUpdateView = NO;
 
         _observableProperties = [NSArray arrayWithObjects:
                 NSStringFromSelector(@selector(fontSize)),
-                        NSStringFromSelector(@selector(isSyntheticSpread)),
                         NSStringFromSelector(@selector(columnGap)),
                         NSStringFromSelector(@selector(mediaOverlaysSkipSkippables)),
                         NSStringFromSelector(@selector(mediaOverlaysEscapeEscapables)),
@@ -62,8 +61,9 @@
                         NSStringFromSelector(@selector(mediaOverlaysEnableClick)),
                         NSStringFromSelector(@selector(mediaOverlaysRate)),
                         NSStringFromSelector(@selector(mediaOverlaysVolume)),
-                        NSStringFromSelector(@selector(isScrollDoc)),
-                        NSStringFromSelector(@selector(isScrollContinuous)),
+                                 
+                        NSStringFromSelector(@selector(scroll)),
+                        NSStringFromSelector(@selector(syntheticSpread)),
                         nil];
     }
 
@@ -108,8 +108,9 @@
 -(NSDictionary *) toDictionary
 {
     return @{
+            @"enableGPUHardwareAccelerationCSS3D": [NSNumber numberWithBool:NO],
+
             NSStringFromSelector(@selector(fontSize)): self.fontSize,
-            NSStringFromSelector(@selector(isSyntheticSpread)): self.isSyntheticSpread,
             NSStringFromSelector(@selector(mediaOverlaysSkipSkippables)): self.mediaOverlaysSkipSkippables,
             NSStringFromSelector(@selector(mediaOverlaysEscapeEscapables)): self.mediaOverlaysEscapeEscapables,
             NSStringFromSelector(@selector(mediaOverlaysSkippables)): self.mediaOverlaysSkippables,
@@ -118,8 +119,11 @@
             NSStringFromSelector(@selector(mediaOverlaysRate)): self.mediaOverlaysRate,
             NSStringFromSelector(@selector(mediaOverlaysVolume)): self.mediaOverlaysVolume,
             NSStringFromSelector(@selector(columnGap)): self.columnGap,
-            NSStringFromSelector(@selector(isScrollDoc)): self.isScrollDoc,
-            NSStringFromSelector(@selector(isScrollContinuous)): self.isScrollContinuous,
+            
+            NSStringFromSelector(@selector(syntheticSpread)): self.syntheticSpread,
+            NSStringFromSelector(@selector(scroll)): self.scroll,
+
+            
             NSStringFromSelector(@selector(doNotUpdateView)): [NSNumber numberWithBool:_doNotUpdateView]
     };
 }

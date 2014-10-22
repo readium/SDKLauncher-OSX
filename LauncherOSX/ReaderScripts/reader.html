@@ -49,11 +49,18 @@
         <script src="host_app_feedback.js" type="text/javascript"></script>
 
         <script type="text/javascript">
-
+        
             $(document).ready(function () {
                 "use strict";
 
-                ReadiumSDK.reader = new ReadiumSDK.Views.ReaderView({el:"#viewport"});
+                //var prefix = (self.location && self.location.origin && self.location.pathname) ? (self.location.origin + self.location.pathname + "/..") : "";
+
+                ReadiumSDK.reader = new ReadiumSDK.Views.ReaderView(
+                {
+                    needsFixedLayoutScalerWorkAround: true,
+                    el:"#viewport",
+                    annotationCSSUrl: '/readium_Annotations.css' //prefix + '/css/annotations.css'
+                });
                 ReadiumSDK.trigger(ReadiumSDK.Events.READER_INITIALIZED);
             });
 

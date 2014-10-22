@@ -27,9 +27,15 @@
 @implementation LOXCurrentPagesInfo {
 
     NSMutableArray* _openPages;
+    BOOL _canGoLeft;
+    BOOL _canGoRight;
+    BOOL _isRightToLeft;
 }
 
 @synthesize openPages = _openPages;
+@synthesize canGoLeft = _canGoLeft;
+@synthesize canGoRight = _canGoRight;
+@synthesize isRightToLeft = _isRightToLeft;
 
 -(id)init
 {
@@ -40,14 +46,18 @@
     return self;
 }
 
--(void)fromDictionary:(NSDictionary *)dict
+-(void)fromDictionary:(NSDictionary *)dict canGoLeft:(BOOL)canGoLeft canGoRight:(BOOL)canGoRight
 {
 
     [self reset];
 
+    _canGoLeft = canGoLeft;
+    _canGoRight = canGoRight;
+
     self.isFixedLayout = [[LOXUtil valueForKey:@"isFixedLayout" orDefault:[NSNumber numberWithBool:NO] fromDictionary:dict] boolValue];
     self.spineItemCount = [[LOXUtil valueForKey:@"spineItemCount" orDefault:[NSNumber numberWithInt:0] fromDictionary:dict] integerValue];
-    self.pageProgressionDirection = [LOXUtil valueForKey:@"pageProgressionDirection" orDefault:@"default" fromDictionary:dict];
+
+    _isRightToLeft = ([[dict valueForKey:@"isRightToLeft"] isEqual:[NSNumber numberWithBool:YES]] ? YES : NO);
 
     NSArray *arr = (NSArray*)[LOXUtil valueForKey:@"openPages" orDefault:nil fromDictionary:dict];
 
@@ -70,37 +80,9 @@
     self.isFixedLayout = false;
     self.spineItemCount = 0;
 
+    _canGoLeft = NO;
+    _canGoRight = NO;
     [_openPages removeAllObjects];
-}
-
--(bool)canGoNext
-{
-    if(_openPages.count == 0) {
-        return NO;
-    }
-
-    LOXOpenPageInfo *lastOpenPage = [_openPages lastObject];
-    return lastOpenPage.spineItemIndex < _spineItemCount - 1 || lastOpenPage.spineItemPageIndex < lastOpenPage.spineItemPageCount - 1;
-}
-
--(bool)canGoLeft
-{
-    return [self.pageProgressionDirection isEqualToString:@"rtl"] ? [self canGoNext] : [self canGoPrev];
-}
-
--(bool)canGoRight
-{
-    return [self.pageProgressionDirection isEqualToString:@"rtl"] ? [self canGoPrev] : [self canGoNext];
-}
-
--(bool)canGoPrev
-{
-    if(_openPages.count == 0) {
-        return NO;
-    }
-
-    LOXOpenPageInfo *firstOpenPage = [_openPages objectAtIndex:0];
-    return firstOpenPage.spineItemIndex > 0 || firstOpenPage.spineItemPageIndex > 0;
 }
 
 -(LOXOpenPageInfo *) firstOpenPage

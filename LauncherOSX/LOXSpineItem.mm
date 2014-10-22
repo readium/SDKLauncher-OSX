@@ -30,9 +30,11 @@
 @synthesize idref = _idref;
 //@synthesize packageStorageId = _packageStorageId;
 @synthesize href = _href;
+@synthesize linear = _linear;
 @synthesize page_spread = _page_spread;
 @synthesize rendition_layout = _rendition_layout;
 @synthesize rendition_flow = _rendition_flow;
+@synthesize rendition_orientation = _rendition_orientation;
 @synthesize rendition_spread = _rendition_spread;
 @synthesize media_type = _media_type;
 @synthesize media_overlay_id = _media_overlay_id;
@@ -50,6 +52,9 @@
     if(self) {
         auto str = sdkSpineItem->Idref().c_str();
 
+        bool l = sdkSpineItem->Linear();
+        _linear = l ? @"yes" : @"no";
+
         auto manifestItem = sdkSpineItem->ManifestItem();
         _href = [NSString stringWithUTF8String:manifestItem->BaseHref().c_str()];
        
@@ -60,15 +65,11 @@
         _idref = [NSString stringWithUTF8String:str];
         _sdkSpineItem = sdkSpineItem;
 
-        _page_spread = [self findProperty:@"page-spread-left" withPrefix:@"rendition"];
-        if([_page_spread length] == 0) {
-            _page_spread = [self findProperty:@"page-spread-right" withPrefix:@"rendition"];
-            if([_page_spread length] == 0) {
-                _page_spread = [self findProperty:@"page-spread-center" withPrefix:@"rendition"];
-            }
-        }
-
+        _page_spread = [self findProperty:@"page-spread" withOptionalPrefix:@"rendition"];
+ 
         _rendition_spread = [self findProperty:@"spread" withPrefix:@"rendition"];
+
+        _rendition_orientation = [self findProperty:@"orientation" withPrefix:@"rendition"];
 
         _rendition_layout = [self findProperty:@"layout" withPrefix:@"rendition"];
 
@@ -77,6 +78,18 @@
     }
 
     return self;
+
+}
+
+- (NSString *) findProperty:(NSString *)propName withOptionalPrefix:(NSString *)prefix
+{
+    NSString* value = [self findProperty:propName withPrefix:prefix];
+
+    if([value length] == 0) {
+        value = [self findProperty:propName withPrefix:@""];
+    }
+
+    return value;
 
 }
 
@@ -96,8 +109,10 @@
 
     [dict setObject:_href forKey:@"href"];
     [dict setObject:_idref forKey:@"idref"];
+    [dict setObject:_linear forKey:@"linear"];
     [dict setObject:_page_spread forKey:@"page_spread"];
     [dict setObject:_rendition_layout forKey:@"rendition_layout"];
+    [dict setObject:_rendition_orientation forKey:@"rendition_orientation"];
     [dict setObject:_rendition_spread forKey:@"rendition_spread"];
     [dict setObject:_rendition_flow forKey:@"rendition_flow"];
     [dict setObject:_media_overlay_id forKey:@"media_overlay_id"];
