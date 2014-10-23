@@ -16,6 +16,10 @@
 
 #import "LOXMediaOverlay.h"
 
+#import "LOXWebViewController.h"
+#import "LOXAppDelegate.h"
+
+
 @interface LOXPreferencesController ()
 - (LOXCSSStyle *)selectedStyle;
 
@@ -201,8 +205,10 @@
         [self.displaySynthCtrl selectCellWithTag: 0];
     }
 
+    LOXAppDelegate* del = [self.webViewController appDelegate];
+
     [NSApp beginSheet:self.sheet
-       modalForWindow:[[NSApp delegate] window]
+       modalForWindow:[del window]
         modalDelegate:self
        didEndSelector:nil
           contextInfo:nil];
