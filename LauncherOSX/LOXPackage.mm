@@ -140,7 +140,7 @@ crashes when playing a Quicktime video using byte ranges.
 */
 if (true || byteStream->BytesAvailable() > 1000000)
 {
-    //byteStream = _sdkPackage->SyncByteRangeForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
+    byteStream = _sdkPackage->SyncByteRangeForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
 }
 
     RDPackageResource *resource = [[RDPackageResource alloc]

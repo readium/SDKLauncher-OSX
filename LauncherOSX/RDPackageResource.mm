@@ -45,14 +45,44 @@
         {
             NSMutableData *md = [[NSMutableData alloc] initWithCapacity: m_bytesCount];
 
-            while (YES) {
-                std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
+            ePub3::ByteRangeFilterSyncStream *filterStream = dynamic_cast<ePub3::ByteRangeFilterSyncStream *>(m_byteStream.get());
+            if (filterStream != nullptr) {
 
-                if (count <= 0) {
-                    break;
+                ePub3::ByteRange range;
+                range.Location(0);
+                range.Length(sizeof(m_buffer));
+
+                NSUInteger totalRead = 0;
+
+                std::size_t count = 1;
+                while (count > 0) {
+
+                    count = filterStream->ReadBytes(m_buffer, sizeof(m_buffer), range);
+
+                    if (count <= 0) break;
+
+                    [md appendBytes:m_buffer length:count];
+
+                    totalRead += count;
+
+                    range.Location(range.Location() + count);
+//
+//                    if (count != range.Length()) {
+//                        NSLog(@"Did not read the expected number of bytes! (%lu %lu)", count, (unsigned long)range.Length());
+//                        break;
+//                    }
                 }
+            }
+            else {
+                while (YES) {
+                    std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
 
-                [md appendBytes:m_buffer length:count];
+                    if (count <= 0) {
+                        break;
+                    }
+
+                    [md appendBytes:m_buffer length:count];
+                }
             }
 
             m_data = md;
@@ -151,16 +181,22 @@
 		NSUInteger totalRead = 0;
 
         while (totalRead < length) {
-    		range.Length(MIN(sizeof(m_buffer), length - totalRead));
-    		std::size_t count = filterStream->ReadBytes(m_buffer, sizeof(m_buffer), range);
-    		[md appendBytes:m_buffer length:count];
-    		totalRead += count;
-            range.Location(range.Location() + count);
 
-            if (count != range.Length()) {
-        		NSLog(@"Did not read the expected number of bytes! (%lu %lu)", count, (unsigned long)range.Length());
-        		break;
-        	}
+            range.Length(MIN(sizeof(m_buffer), length - totalRead));
+
+    		std::size_t count = filterStream->ReadBytes(m_buffer, sizeof(m_buffer), range);
+
+            if (count <= 0) break;
+
+    		[md appendBytes:m_buffer length:count];
+
+    		totalRead += count;
+
+            range.Location(range.Location() + count);
+        }
+
+        if (totalRead != length) {
+            NSLog(@"Did not read the expected number of bytes! (%lu %lu)", totalRead, length);
         }
     }
 
