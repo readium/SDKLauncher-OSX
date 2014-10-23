@@ -66,11 +66,14 @@
                     totalRead += count;
 
                     range.Location(range.Location() + count);
-//
-//                    if (count != range.Length()) {
-//                        NSLog(@"Did not read the expected number of bytes! (%lu %lu)", count, (unsigned long)range.Length());
-//                        break;
-//                    }
+                }
+
+                if (totalRead != m_bytesCount) {
+                    NSLog(@"2) length difference between filtered and raw bytes: (%lu %lu - %@)", totalRead, m_bytesCount, m_relativePath);
+                }
+                else
+                {
+                    NSLog(@"2) Correct: (%lu %lu - %@)", totalRead, m_bytesCount, m_relativePath);
                 }
             }
             else {
@@ -196,7 +199,10 @@
         }
 
         if (totalRead != length) {
-            NSLog(@"Did not read the expected number of bytes! (%lu %lu)", totalRead, length);
+            NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+        }
+        else {
+            NSLog(@"1) Correct: (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
         }
     }
 
