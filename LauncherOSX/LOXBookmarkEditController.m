@@ -20,6 +20,10 @@
 #import "LOXBookmark.h"
 #import "LOXBookmarksController.h"
 
+#import "LOXBookmarksController.h"
+#import "LOXAppDelegate.h"
+
+
 @interface LOXBookmarkEditController ()
 - (void)updateControls;
 
@@ -69,8 +73,11 @@
     //otherwise sheet il not be attached to the window
     [NSBundle loadNibNamed:@"BookmarkDlg" owner:self];
 
+    //LOXAppDelegate* del = [NSApp delegate];
+    LOXAppDelegate* del = [self.bookmarksController mainController];
+
     [NSApp beginSheet:self.sheet
-       modalForWindow:[[NSApp delegate] window]
+       modalForWindow:[del window]
         modalDelegate:self
        didEndSelector:nil
           contextInfo:nil];
