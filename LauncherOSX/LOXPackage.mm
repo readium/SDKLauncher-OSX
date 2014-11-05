@@ -123,25 +123,32 @@
 
     //ConstManifestItemPtr
     std::shared_ptr<const ePub3::ManifestItem> manItem = _sdkPackage->ManifestItemAtRelativePath(s);
-    std::shared_ptr<ePub3::ByteStream> byteStream = _sdkPackage->SyncContentStreamForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
-    
-    //std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(s); //_sdkPackage->BasePath() API changed
-    
-    if (byteStream == nullptr) {
-        NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
-        return nil;
+
+    std::shared_ptr<ePub3::ByteStream> byteStream = nullptr;
+    bool FORCE_BYTE_RANGE = true;
+    if (FORCE_BYTE_RANGE)
+    {
+        byteStream = _sdkPackage->SyncByteRangeForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
+
+        if (byteStream == nullptr) {
+            NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
+            return nil;
+        }
     }
-/*
-TODO: uncomment and enable the following block of code. This piece of code will allow
-the use of Byte Ranges. For resources above a given size, a ByteRangeFilterSyncStream
-will be returned, which allows reading just ranges of bytes from a given resource.
-However, currently this block of code is currently disabled because we are seeing
-crashes when playing a Quicktime video using byte ranges.
-*/
-if (true || byteStream->BytesAvailable() > 1000000)
-{
-    byteStream = _sdkPackage->SyncByteRangeForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
-}
+    else
+    {
+        byteStream =  _sdkPackage->SyncContentStreamForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
+
+        if (byteStream == nullptr) {
+            NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
+            return nil;
+        }
+
+        if (byteStream->BytesAvailable() > 1024*1024) // 1MB
+        {
+            byteStream = _sdkPackage->SyncByteRangeForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
+        }
+    }
 
     RDPackageResource *resource = [[RDPackageResource alloc]
             initWithByteStream:byteStream //release()

@@ -66,7 +66,19 @@ static NSString* m_baseUrlPath = nil;
         else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
             contentType = @"application/xhtml+xml";
         }
-        
+
+        if (contentType == nil)
+        {
+            ePub3::string s = ePub3::string(path.UTF8String);
+            ePub3::ManifestTable manifest = [m_package sdkPackage]->Manifest();
+            for (auto i = manifest.begin(); i != manifest.end(); i++) {
+                std::shared_ptr<ePub3::ManifestItem> item = i->second;
+                if (item->Href() == s) {
+                    contentType = [NSString stringWithUTF8String: item->MediaType().c_str()];
+                    break;
+                }
+            }
+        }
         
         if (resource == nil) {
             NSLog(@"No resource found! (%@)", path);
@@ -143,18 +155,14 @@ static NSString* m_baseUrlPath = nil;
                 }
             }
             
-            if (!resource.isByteRangeResource) { //resource.bytesCount < 1024 * 1024) { // 1MB
-
-                // This resource is small enough that we can just fetch the entire thing in memory,
-                // which simplifies access into the byte stream.  Adjust the threshold to taste.
-
+            if (resource.isByteRangeResource) {
+                return [[PackageResourceResponse alloc] initWithResource:resource];
+            }
+            else {
                 NSData *data = resource.data;
                 if (data != nil) {
                     return [[HTTPDataResponse alloc] initWithData:data contentType:contentType];
                 }
-            }
-            else {
-                return [[PackageResourceResponse alloc] initWithResource:resource];
             }
         }
     }
@@ -243,7 +251,18 @@ static NSString* m_baseUrlPath = nil;
         else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
             return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"];
         }
-        
+        else
+        {
+            ePub3::string s = ePub3::string(m_resource.relativePath.UTF8String);
+            ePub3::ManifestTable manifest = [m_package sdkPackage]->Manifest();
+            for (auto i = manifest.begin(); i != manifest.end(); i++) {
+                std::shared_ptr<ePub3::ManifestItem> item = i->second;
+                if (item->Href() == s) {
+                    NSString * contentType = [NSString stringWithUTF8String: item->MediaType().c_str()];
+                    return [NSDictionary dictionaryWithObject:contentType forKey:@"Content-Type"];
+                }
+            }
+        }
     }
     
     return [NSDictionary new];
@@ -281,6 +300,7 @@ static NSString* m_baseUrlPath = nil;
     NSData *data = nil;
 
     @synchronized ([PackageResourceServer resourceLock]) {
+        [m_resource setOffset:m_offset];
         data = [m_resource readDataOfLength:length];
     }
 
