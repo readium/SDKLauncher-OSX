@@ -25,6 +25,8 @@
 #import <ePub3/nav_table.h>
 #include <ePub3/initialization.h>
 
+#include <ePub3/utilities/error_handler.h>
+
 #import "LOXSpineItem.h"
 #import "LOXPackage.h"
 
@@ -46,9 +48,19 @@
     LOXPackage* _currentPackage;
 }
 
+bool LauncherErrorHandler(const ePub3::error_details& err)
+{
+    const char * msg = err.message();
+    NSLog(@"%s\n", msg);
+
+    return ePub3::DefaultErrorHandler(err);
+}
 
 +(void)initialize
 {
+    ePub3::ErrorHandlerFn launcherErrorHandler = LauncherErrorHandler;
+    ePub3::SetErrorHandler(launcherErrorHandler);
+
     ePub3::InitializeSdk();
     ePub3::PopulateFilterManager();
 }

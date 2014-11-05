@@ -7,6 +7,6 @@
         "options": {
         "linkNatives": "true",
         "outdir": "./js-api-docs",
-        "paths": "../Scripts"
+        "paths": "../readium-shared-js"
     }
 }
