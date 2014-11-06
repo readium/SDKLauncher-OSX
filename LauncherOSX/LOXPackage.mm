@@ -128,7 +128,7 @@
     bool FORCE_BYTE_RANGE = true;
     if (FORCE_BYTE_RANGE)
     {
-        byteStream = _sdkPackage->SyncByteRangeForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
+        byteStream = _sdkPackage->GetFilterChainByteStreamRange(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
 
         if (byteStream == nullptr) {
             NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
@@ -137,7 +137,7 @@
     }
     else
     {
-        byteStream =  _sdkPackage->SyncContentStreamForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
+        byteStream = _sdkPackage->GetFilterChainByteStream(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
 
         if (byteStream == nullptr) {
             NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
@@ -147,7 +147,7 @@
         if (byteStream->BytesAvailable() > 1024*1024) // 1MB
         {
             byteStream = nullptr;
-            byteStream = _sdkPackage->SyncByteRangeForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
+            byteStream = _sdkPackage->GetFilterChainByteStreamRange(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
         }
     }
 

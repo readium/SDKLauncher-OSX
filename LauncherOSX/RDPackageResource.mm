@@ -45,7 +45,7 @@
         {
             NSMutableData *md = [[NSMutableData alloc] initWithCapacity: m_bytesCount];
 
-            ePub3::ByteRangeFilterSyncStream *filterStream = dynamic_cast<ePub3::ByteRangeFilterSyncStream *>(m_byteStream.get());
+            ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
             if (filterStream != nullptr) {
 
                 ePub3::ByteRange range;
@@ -173,10 +173,10 @@
 
     NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
 
-    ePub3::ByteRangeFilterSyncStream *filterStream = dynamic_cast<ePub3::ByteRangeFilterSyncStream *>(m_byteStream.get());
+    ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
 
     if (filterStream == nullptr) {
-		NSLog(@"The byte stream is not a FilterChainSyncStream!");
+		NSLog(@"The byte stream is not a FilterChainByteStream!");
 	}
 	else {
 		ePub3::ByteRange range;
@@ -216,7 +216,7 @@
 
 - (BOOL)isByteRangeResource
 {
-    ePub3::ByteRangeFilterSyncStream *filterStream = dynamic_cast<ePub3::ByteRangeFilterSyncStream *>(m_byteStream.get());
+    ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
     return (filterStream != nullptr);
 }
 
