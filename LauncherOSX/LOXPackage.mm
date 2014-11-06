@@ -146,6 +146,7 @@
 
         if (byteStream->BytesAvailable() > 1024*1024) // 1MB
         {
+            byteStream = nullptr;
             byteStream = _sdkPackage->SyncByteRangeForItem(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
         }
     }
