@@ -13,7 +13,7 @@ echo "Javascript output:"
 echo "${JS_FILE}"
 echo "------"
 
-echo $"" > "${JS_FILE}"
+FIRST=""
 
 GitDo() {
 ROOT_DIR=$1
@@ -71,6 +71,13 @@ test -z "${GIT_STATUS}" && GIT_CLEAN=true
 echo "Git CLEAN:"
 echo "${GIT_CLEAN}"
 echo "------"
+
+echo "FIRST:"
+echo "${FIRST}"
+echo "------"
+
+test -z "${FIRST}" || echo $"" > "${JS_FILE}"
+FIRST="false"
 
 echo "ReadiumSDK.READIUM_${SUBMODULE}_sha = '${GIT_SHA}';" >> "${JS_FILE}"
 echo "ReadiumSDK.READIUM_${SUBMODULE}_tag = '${GIT_TAG}';" >> "${JS_FILE}"
