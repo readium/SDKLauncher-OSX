@@ -76,7 +76,7 @@ echo "FIRST:"
 echo "${FIRST}"
 echo "------"
 
-test -z "${FIRST}" || echo $"" > "${JS_FILE}"
+test -z "${FIRST}" && echo $"" > "${JS_FILE}"
 FIRST="false"
 
 echo "ReadiumSDK.READIUM_${SUBMODULE}_sha = '${GIT_SHA}';" >> "${JS_FILE}"
