@@ -13,7 +13,7 @@ echo "Javascript output:"
 echo "${JS_FILE}"
 echo "------"
 
-echo $"\n" > "${JS_FILE}"
+echo $"" > "${JS_FILE}"
 
 GitDo() {
 ROOT_DIR=$1
@@ -72,11 +72,9 @@ echo "Git CLEAN:"
 echo "${GIT_CLEAN}"
 echo "------"
 
-echo $"\
-ReadiumSDK.READIUM_${SUBMODULE}_sha = '${GIT_SHA}';\n\
-ReadiumSDK.READIUM_${SUBMODULE}_tag = '${GIT_TAG}';\n\
-ReadiumSDK.READIUM_${SUBMODULE}_clean = '${GIT_CLEAN}';\n\
-" >> "${JS_FILE}"
+echo "ReadiumSDK.READIUM_${SUBMODULE}_sha = '${GIT_SHA}';" >> "${JS_FILE}"
+echo "ReadiumSDK.READIUM_${SUBMODULE}_tag = '${GIT_TAG}';" >> "${JS_FILE}"
+echo "ReadiumSDK.READIUM_${SUBMODULE}_clean = '${GIT_CLEAN}';" >> "${JS_FILE}"
 
 }
 
@@ -86,9 +84,7 @@ GitDo "${pwd}" "${pwd}/readium-shared-js" "SHARED_JS"
 
 READIUM_dateTimeString=`date`
 
-echo $"\
-ReadiumSDK.READIUM_dateTimeString = '${READIUM_dateTimeString}';\n\
-" >> "${JS_FILE}"
+echo "ReadiumSDK.READIUM_dateTimeString = '${READIUM_dateTimeString}';" >> "${JS_FILE}"
 
 cat ${JS_FILE}
 
