@@ -8,9 +8,11 @@ echo "Path:"
 echo "${pwd}"
 echo "------"
 
-JS_FILE="${pwd}/LauncherOSX/ReaderScripts/epubReadingSystem.js"
+JS_FILE="${pwd}/LauncherOSX/ReaderScripts/epubReadingSystem_.js"
+test -z "${CONTENTS_FOLDER_PATH}" || JS_FILE="${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Resources/Scripts/epubReadingSystem.js"
 echo "Javascript output:"
 echo "${JS_FILE}"
+test -z "${CONTENTS_FOLDER_PATH}" && echo "WARNING: file 'epubReadingSystem.js' will NOT be updated in XCode build folder! (running script from raw command line?)"
 echo "------"
 
 FIRST=""

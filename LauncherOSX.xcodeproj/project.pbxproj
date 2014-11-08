@@ -682,10 +682,10 @@
 				8573953B172ED0F60071B66C /* ShellScript */,
 				8597D60916824655000FAAAF /* Sources */,
 				8597D60A16824655000FAAAF /* Frameworks */,
-				83766D481A0EA069008077E1 /* ShellScript */,
 				8597D60B16824655000FAAAF /* Resources */,
 				8573952E172ADFD00071B66C /* CopyFiles */,
 				8561A1E1178B6E52007D15D3 /* CopyFiles */,
+				83766D481A0EA069008077E1 /* ShellScript */,
 			);
 			buildRules = (
 			);
