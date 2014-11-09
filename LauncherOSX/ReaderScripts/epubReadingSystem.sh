@@ -8,6 +8,10 @@ echo "Path:"
 echo "${pwd}"
 echo "------"
 
+# TODO iOS
+# JS_FILE="${pwd}/Resources/epubReadingSystem_.js"
+# test -z "${CONTENTS_FOLDER_PATH}" || JS_FILE="${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/epubReadingSystem.js"
+
 JS_FILE="${pwd}/LauncherOSX/ReaderScripts/epubReadingSystem_.js"
 test -z "${CONTENTS_FOLDER_PATH}" || JS_FILE="${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Resources/Scripts/epubReadingSystem.js"
 echo "Javascript output:"
@@ -19,14 +23,16 @@ FIRST=""
 
 GitDo() {
 ROOT_DIR=$1
-SUB_DIR=$2
-SUBMODULE=$3
+INTERMEDIATE_DIR=$2
+GIT_SUBMODULE=$3
+SUB_DIR="${ROOT_DIR}${INTERMEDIATE_DIR}${GIT_SUBMODULE}"
+TARGET_PREFIX=$4
 
 cd "${SUB_DIR}"
 
 echo "========================="
-echo "Git submodule:"
-echo "${SUBMODULE}"
+echo "Git target prefix:"
+echo "${TARGET_PREFIX}"
 echo "------"
 
 GIT_DIR="${ROOT_DIR}/.git"
@@ -34,19 +40,25 @@ echo "Git directory:"
 echo "${GIT_DIR}"
 echo "------"
 
-GIT_CWD="${SUB_DIR}"
-#test -d "${GIT_CWD}" || GIT_CWD="${SUB_DIR}"
 echo "Git submodule directory:"
-echo "${GIT_CWD}"
+echo "${SUB_DIR}"
 echo "------"
 
+# We use "cd" instead! (more reliable, due to vendor submodules not necessarily setup the way we do it internally for Readium)
 GIT_DIR_CWD=""
-# GIT_DIR_CWD="--git-dir=${GIT_DIR} --work-tree=${GIT_CWD}"
+# GIT_DIR_CWD="--git-dir=${GIT_DIR} --work-tree=${SUB_DIR}"
 # echo "Git path spec:"
 # echo "${GIT_DIR_CWD}"
 # echo "------"
 
-GIT_HEAD=`cat "${GIT_DIR}/HEAD"`
+GIT_HEAD_PATH="${GIT_DIR}/HEAD"
+test -f "${SUB_DIR}/HEAD" && GIT_HEAD_PATH="${SUB_DIR}/HEAD"
+test -f "${GIT_DIR}/modules/${GIT_SUBMODULE}/HEAD" && GIT_HEAD_PATH="${GIT_DIR}/modules/${GIT_SUBMODULE}/HEAD"
+echo "Git HEAD path:"
+echo "${GIT_HEAD_PATH}";
+echo "------"
+
+GIT_HEAD=`cat "${GIT_HEAD_PATH}"`
 echo "Git HEAD:"
 echo "${GIT_HEAD}";
 echo "------"
@@ -81,19 +93,27 @@ echo "------"
 test -z "${FIRST}" && echo $"" > "${JS_FILE}"
 FIRST="false"
 
-echo "ReadiumSDK.READIUM_${SUBMODULE}_sha = '${GIT_SHA}';" >> "${JS_FILE}"
-echo "ReadiumSDK.READIUM_${SUBMODULE}_tag = '${GIT_TAG}';" >> "${JS_FILE}"
-echo "ReadiumSDK.READIUM_${SUBMODULE}_clean = '${GIT_CLEAN}';" >> "${JS_FILE}"
+echo "ReadiumSDK.READIUM_${TARGET_PREFIX}_sha = '${GIT_SHA}';" >> "${JS_FILE}"
+echo "ReadiumSDK.READIUM_${TARGET_PREFIX}_tag = '${GIT_TAG}';" >> "${JS_FILE}"
+echo "ReadiumSDK.READIUM_${TARGET_PREFIX}_clean = '${GIT_CLEAN}';" >> "${JS_FILE}"
 
 }
 
-GitDo "${pwd}" "${pwd}" "OSX"
-GitDo "${pwd}" "${pwd}/readium-sdk" "SDK"
-GitDo "${pwd}" "${pwd}/readium-shared-js" "SHARED_JS"
+
+
+GitDo "${pwd}" "" "" "OSX"
+
+GitDo "${pwd}" "/" "readium-sdk" "SDK"
+
+# TODO iOS
+# GitDo "${pwd}" "/Resources/" "readium-shared-js" "SHARED_JS"
+GitDo "${pwd}" "/" "readium-shared-js" "SHARED_JS"
+
+
 
 READIUM_dateTimeString=`date`
-
 echo "ReadiumSDK.READIUM_dateTimeString = '${READIUM_dateTimeString}';" >> "${JS_FILE}"
+
 
 cat ${JS_FILE}
 
