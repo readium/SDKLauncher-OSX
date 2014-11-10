@@ -12,8 +12,11 @@
 
 #import <ePub3/archive.h>
 #import <ePub3/utilities/byte_stream.h>
+
 #import <ePub3/filter_chain.h>
 #import <ePub3/filter.h>
+#import <ePub3/filter_chain_byte_stream.h>
+#import <ePub3/filter_chain_byte_stream_range.h>
 
 @interface RDPackageResource() {
 @private std::shared_ptr<ePub3::ByteStream> m_byteStream;

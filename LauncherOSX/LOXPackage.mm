@@ -125,7 +125,7 @@
     std::shared_ptr<const ePub3::ManifestItem> manItem = _sdkPackage->ManifestItemAtRelativePath(s);
 
     std::shared_ptr<ePub3::ByteStream> byteStream = nullptr;
-    bool FORCE_BYTE_RANGE = true;
+    bool FORCE_BYTE_RANGE = false;
     if (FORCE_BYTE_RANGE)
     {
         byteStream = _sdkPackage->GetFilterChainByteStreamRange(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
