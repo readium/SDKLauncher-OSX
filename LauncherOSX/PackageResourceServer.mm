@@ -33,7 +33,10 @@ static NSString* m_baseUrlPath = nil;
         return nil;
     }
 
-    path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    // See:
+    // ConstManifestItemPtr PackageBase::ManifestItemAtRelativePath(const string& path) const
+    // which compares with non-escaped source (OPF original manifest>item@src attribute value)
+    //path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
 //
 //    if (path != nil && [path hasPrefix:@"/"]) {
@@ -54,6 +57,8 @@ static NSString* m_baseUrlPath = nil;
         NSString* ext = [[path pathExtension] lowercaseString];
         NSString* contentType = nil;
 
+        bool isHTML = [ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]; //[path hasSuffix:@".html"] || [path hasSuffix:@".xhtml"];
+
         if([ext isEqualToString:@"svg"]) {
             contentType = @"image/svg+xml";
         }
@@ -63,7 +68,7 @@ static NSString* m_baseUrlPath = nil;
         else if([ext isEqualToString:@"css"]) {
             contentType = @"text/css";
         }
-        else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
+        else if(isHTML) {
             contentType = @"application/xhtml+xml";
         }
 
@@ -84,7 +89,6 @@ static NSString* m_baseUrlPath = nil;
             NSLog(@"No resource found! (%@)", path);
         }
         else {
-            bool isHTML = [path hasSuffix:@".html"] || [path hasSuffix:@".xhtml"];
             if (!isHTML) {
                 ePub3::string s = ePub3::string(path.UTF8String);
                 ePub3::ManifestTable manifest = [m_package sdkPackage]->Manifest();

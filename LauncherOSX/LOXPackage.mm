@@ -124,6 +124,11 @@
     //ConstManifestItemPtr
     std::shared_ptr<const ePub3::ManifestItem> manItem = _sdkPackage->ManifestItemAtRelativePath(s);
 
+    if (manItem == nullptr) {
+        NSLog(@"Relative path '%@' does not have a manifest item!", relativePath);
+        return nil;
+    }
+
     std::shared_ptr<ePub3::ByteStream> byteStream = nullptr;
     bool FORCE_BYTE_RANGE = false;
     if (FORCE_BYTE_RANGE)
