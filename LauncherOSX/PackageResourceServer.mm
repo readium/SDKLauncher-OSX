@@ -105,6 +105,24 @@ static NSString* m_baseUrlPath = nil;
             if (isHTML) {
                 NSData *data = resource.data;
                 if (data != nil) {
+                    BOOL ok = NO;
+                    try
+                    {
+                        NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:data];
+                        //[xmlparser setDelegate:self];
+                        [xmlparser setShouldResolveExternalEntities:NO];
+                        ok = [xmlparser parse];
+                    }
+                    catch (NSException *ex)
+                    {
+                        ok = NO;
+                    }
+                    if (ok == NO)
+                    {
+                        //contentType = @"application/xhtml+xml";
+                        contentType = @"text/html";
+                    }
+
                     NSString* source = [self htmlFromData:data];
                     if (source != nil) {
                         NSString *pattern = @"(<head.*>)";
