@@ -34,6 +34,7 @@
     //@private std::vector<std::unique_ptr<ePub3::ByteStream>> m_archiveReaderVector;
 }
 
+- (NSString *)findProperty:(NSString *)propName withOptionalPrefix:(NSString *)prefix;
 - (NSString *)findProperty:(NSString *)propName withPrefix:(NSString *)prefix;
 
 - (LOXToc *)getToc;
@@ -186,6 +187,17 @@
     }
     
     return self;
+}
+
+
+- (NSString *)findProperty:(NSString *)propName withOptionalPrefix:(NSString *)prefix {
+    NSString *value = [self findProperty:propName withPrefix:prefix];
+
+    if (value.length == 0) {
+        value = [self findProperty:propName withPrefix:@""];
+    }
+
+    return value;
 }
 
 - (NSString *) findProperty:(NSString *)propName withPrefix:(NSString *)prefix

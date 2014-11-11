@@ -22,6 +22,8 @@
 
 
 @interface LOXSpineItem ()
+{}
+- (NSString *)findProperty:(NSString *)propName withOptionalPrefix:(NSString *)prefix;
 - (NSString *)findProperty:(NSString *)propName withPrefix:(NSString *)prefix;
 @end
 
@@ -95,7 +97,7 @@
 
 - (NSString *) findProperty:(NSString *)propName withPrefix:(NSString *)prefix
 {
-    auto prop = _sdkSpineItem->PropertyMatching([propName UTF8String], [prefix UTF8String]);
+    auto prop = _sdkSpineItem->PropertyMatching([propName UTF8String], [prefix UTF8String], false);
     if(prop != nullptr) {
         return [NSString stringWithUTF8String: prop->Value().c_str()];
     }
