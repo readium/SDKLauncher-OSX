@@ -105,22 +105,27 @@ static NSString* m_baseUrlPath = nil;
             if (isHTML) {
                 NSData *data = resource.data;
                 if (data != nil) {
+
                     BOOL ok = NO;
-                    try
+                    @try
                     {
                         NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:data];
                         //[xmlparser setDelegate:self];
                         [xmlparser setShouldResolveExternalEntities:NO];
                         ok = [xmlparser parse];
                     }
-                    catch (NSException *ex)
+                    @catch (NSException *ex)
                     {
+                        NSLog(@"XHTML parse exception: %@", ex);
                         ok = NO;
                     }
+
                     if (ok == NO)
                     {
                         //contentType = @"application/xhtml+xml";
                         contentType = @"text/html";
+
+                        //TODO: resource.contentType = contentType;
                     }
 
                     NSString* source = [self htmlFromData:data];
