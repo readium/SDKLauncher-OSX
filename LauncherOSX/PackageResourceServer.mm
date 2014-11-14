@@ -314,7 +314,9 @@ static NSString* m_baseUrlPath = nil;
 
 
 - (BOOL)isDone {
-    return m_offset == m_resource.bytesCount;
+    bool isDone = m_offset >= m_resource.bytesCount;
+//printf("is DONE: %d\n", isDone);
+    return isDone;
 }
 
 

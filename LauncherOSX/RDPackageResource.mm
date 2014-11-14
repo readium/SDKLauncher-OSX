@@ -51,6 +51,8 @@
             ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
             if (filterStream != nullptr) {
 
+//printf("::::::::::::: read all data (%d): %s\n", m_bytesCount, [m_relativePath UTF8String]);
+
                 ePub3::ByteRange range;
                 range.Location(0);
                 range.Length(sizeof(m_buffer));
@@ -72,11 +74,13 @@
                 }
 
                 if (totalRead != m_bytesCount) {
-                    NSLog(@"2) length difference between filtered and raw bytes: (%lu %lu - %@)", totalRead, m_bytesCount, m_relativePath);
+                    //NSLog(@"2) length difference between filtered and raw bytes: (%lu %lu - %@)", totalRead, m_bytesCount, m_relativePath);
+                    printf("2) length difference between filtered and raw bytes: (%d %d - %s)\n", totalRead, m_bytesCount, [m_relativePath UTF8String]);
                 }
                 else
                 {
-                    NSLog(@"2) Correct: (%lu %lu - %@)", totalRead, m_bytesCount, m_relativePath);
+                    //NSLog(@"2) Correct: (%lu %lu - %@)", totalRead, m_bytesCount, m_relativePath);
+                    printf("2) Correct: (%d %d - %s)\n", totalRead, m_bytesCount, [m_relativePath UTF8String]);
                 }
             }
             else {
@@ -174,17 +178,18 @@
         return [NSData data];
     }
 
-    NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
-
     ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
 
-    if (filterStream == nullptr) {
-		NSLog(@"The byte stream is not a FilterChainByteStream!");
-	}
-	else {
-		ePub3::ByteRange range;
+    if (filterStream != nullptr) {
+
+        NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
+
+        ePub3::ByteRange range;
 		range.Location(m_offset);
 		NSUInteger totalRead = 0;
+
+        //NSLog(@"+++++ readDataOfLength: %lu + %lu (%@)", m_offset, length, m_relativePath);
+//printf("+++++ readDataOfLength: %d + %d (%s)\n", m_offset, length, [m_relativePath UTF8String]);
 
         while (totalRead < length) {
 
@@ -197,19 +202,37 @@
     		[md appendBytes:m_buffer length:count];
 
     		totalRead += count;
+//printf("+++++ readDataOfLength SO FAR: %d / %d (%s)\n", totalRead, length, [m_relativePath UTF8String]);
 
             range.Location(range.Location() + count);
         }
 
         if (totalRead != length) {
-            NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+            //NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+            printf("1) Did not read the expected number of bytes! (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+
+            if (totalRead == 0){
+
+//                //CRLF
+//                m_buffer[0] = 0x0D;
+//                m_buffer[1] = 0x0A;
+//                [md appendBytes:m_buffer length:2];
+//                printf("CR LF socket close... \n");
+
+                //return [NSData data];
+            }
         }
         else {
-            NSLog(@"1) Correct: (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+            //NSLog(@"1) Correct: (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+            printf("1) Correct: (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
         }
+
+
+        return md;
     }
 
-    return md;
+    NSLog(@"The byte stream is not a FilterChainByteStream!");
+    return [NSData data];
 }
 
 
@@ -252,6 +275,45 @@
 
         m_byteStream = byteStream;
         m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream pack:package path:m_relativePath];
+
+
+
+
+/*
+
+
+        NSData * data = [self data];
+
+
+
+//        NSString *fileName = [NSString stringWithFormat:@"%@_%@", [[NSProcessInfo processInfo] globallyUniqueString], m_relativePath];
+//        NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:fileName]];
+
+        NSError *error = nil;
+        NSURL *directoryURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]] isDirectory:YES];
+        [[NSFileManager defaultManager] createDirectoryAtURL:directoryURL withIntermediateDirectories:YES attributes:nil error:&error];
+
+        NSURL *fileURL = [directoryURL URLByAppendingPathComponent:m_relativePath];
+
+        error = nil;
+        [[NSFileManager defaultManager] removeItemAtURL:fileURL error:&error];
+
+        NSString* path = [fileURL path];
+NSLog(@"PATH: %@", path);
+
+        path = [path stringByDeletingLastPathComponent];
+        error = nil;
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
+
+        error = nil;
+        BOOL res = [data writeToURL:fileURL options:NSDataWritingAtomic error:&error];
+        if (res == NO && error != nil)
+            NSLog(@"Write returned error: %@", [error localizedDescription]);
+
+
+*/
+
+
 
         if (m_bytesCount == 0)
         {
