@@ -19,8 +19,10 @@
 #import <ePub3/filter_chain_byte_stream_range.h>
 
 @interface RDPackageResource() {
-@private std::shared_ptr<ePub3::ByteStream> m_byteStream;
+@private std::unique_ptr<ePub3::ByteStream> m_byteStream;
 @private NSString *m_relativePath;
+@private BOOL m_isRangeRequest;
+@private BOOL m_hasProperStream;
 @private UInt64 m_offset;
 @private std::size_t m_bytesCount;
 @private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
@@ -36,6 +38,11 @@
 @synthesize bytesCount = m_bytesCount;
 @synthesize relativePath = m_relativePath;
 @synthesize package = m_package;
+@synthesize isRangeRequest = m_isRangeRequest;
+
+- (void *)byteStream {
+    return m_byteStream.get();
+}
 
 - (NSData *)data {
     if (m_data == nil) {
@@ -48,42 +55,14 @@
         {
             NSMutableData *md = [[NSMutableData alloc] initWithCapacity: m_bytesCount];
 
-            ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
-            if (filterStream != nullptr) {
-
-//printf("::::::::::::: read all data (%d): %s\n", m_bytesCount, [m_relativePath UTF8String]);
-
-                ePub3::ByteRange range;
-                range.Location(0);
-                range.Length(sizeof(m_buffer));
-
-                NSUInteger totalRead = 0;
-
-                std::size_t count = 1;
-                while (count > 0) {
-
-                    count = filterStream->ReadBytes(m_buffer, sizeof(m_buffer), range);
-
-                    if (count <= 0) break;
-
-                    [md appendBytes:m_buffer length:count];
-
-                    totalRead += count;
-
-                    range.Location(range.Location() + count);
-                }
-
-                if (totalRead != m_bytesCount) {
-                    //NSLog(@"2) length difference between filtered and raw bytes: (%lu %lu - %@)", totalRead, m_bytesCount, m_relativePath);
-                    printf("2) length difference between filtered and raw bytes: (%d %d - %s)\n", totalRead, m_bytesCount, [m_relativePath UTF8String]);
-                }
-                else
+                if (!m_hasProperStream)
                 {
-                    //NSLog(@"2) Correct: (%lu %lu - %@)", totalRead, m_bytesCount, m_relativePath);
-                    printf("2) Correct: (%d %d - %s)\n", totalRead, m_bytesCount, [m_relativePath UTF8String]);
+                    ePub3::ByteStream *byteStream = m_byteStream.release();
+                    m_byteStream.reset((ePub3::ByteStream *)[m_package getProperByteStream:m_relativePath currentByteStream:byteStream isRangeRequest:m_isRangeRequest]);
+                    m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:m_package path:m_relativePath];
+                    m_hasProperStream = YES;
                 }
-            }
-            else {
+
                 while (YES) {
                     std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
 
@@ -93,7 +72,6 @@
 
                     [md appendBytes:m_buffer length:count];
                 }
-            }
 
             m_data = md;
         }
@@ -103,7 +81,7 @@
 }
 
 
-+ (std::size_t)bytesAvailable:(std::shared_ptr<ePub3::ByteStream>)byteStream pack:(LOXPackage *)package path:(NSString *)relPath {
++ (std::size_t)bytesAvailable:(ePub3::ByteStream*)byteStream pack:(LOXPackage *)package path:(NSString *)relPath {
     std::size_t size = byteStream->BytesAvailable();
     if (size == 0)
     {
@@ -178,6 +156,21 @@
         return [NSData data];
     }
 
+    if (!m_hasProperStream)
+    {
+        ePub3::ByteStream *byteStream = m_byteStream.release();
+        m_byteStream.reset((ePub3::ByteStream *)[m_package getProperByteStream:m_relativePath currentByteStream:byteStream isRangeRequest:m_isRangeRequest]);
+        m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:m_package path:m_relativePath];
+        m_hasProperStream = YES;
+    }
+
+    if (!m_isRangeRequest)
+    {
+        NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
+        [md appendBytes:[self data].bytes length:length];
+        return md;
+    }
+
     ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
 
     if (filterStream != nullptr) {
@@ -204,6 +197,7 @@
     		totalRead += count;
 //printf("+++++ readDataOfLength SO FAR: %d / %d (%s)\n", totalRead, length, [m_relativePath UTF8String]);
 
+            m_offset += count;
             range.Location(range.Location() + count);
         }
 
@@ -240,12 +234,6 @@
     m_offset = offset;
 }
 
-- (BOOL)isByteRangeResource
-{
-    ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
-    return (filterStream != nullptr);
-}
-
 
 - (void)dealloc {
 
@@ -259,7 +247,7 @@
 
 
 - (id)
-	initWithByteStream:(std::shared_ptr<ePub3::ByteStream>)byteStream
+	initWithByteStream:(ePub3::ByteStream *)byteStream
 	relativePath:(NSString *)relativePath
     pack:(LOXPackage *)package
 {
@@ -273,9 +261,11 @@
         m_package = package;
         m_relativePath = relativePath;
 
-        m_byteStream = byteStream;
-        m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream pack:package path:m_relativePath];
+        m_byteStream.reset(byteStream);
+        m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:package path:m_relativePath];
 
+        m_isRangeRequest = NO;
+        m_hasProperStream = NO;
 
 
 

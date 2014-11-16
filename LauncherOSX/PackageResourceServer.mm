@@ -181,16 +181,13 @@ static NSString* m_baseUrlPath = nil;
                     }
                 }
             }
-            
-            if (resource.isByteRangeResource) {
-                return [[PackageResourceResponse alloc] initWithResource:resource];
-            }
-            else {
-                NSData *data = resource.data;
-                if (data != nil) {
-                    return [[HTTPDataResponse alloc] initWithData:data contentType:contentType];
-                }
-            }
+
+            return [[PackageResourceResponse alloc] initWithResource:resource];
+//
+//                NSData *data = resource.data;
+//                if (data != nil) {
+//                    return [[HTTPDataResponse alloc] initWithData:data contentType:contentType];
+//                }
         }
     }
 
@@ -330,6 +327,10 @@ static NSString* m_baseUrlPath = nil;
 
     @synchronized ([PackageResourceServer resourceLock]) {
         [m_resource setOffset:m_offset];
+
+        // No! (see setOffset below)
+        //m_resource.isRangeRequest = YES;
+
         data = [m_resource readDataOfLength:length];
     }
 
@@ -346,6 +347,7 @@ static NSString* m_baseUrlPath = nil;
 
     @synchronized ([PackageResourceServer resourceLock]) {
         [m_resource setOffset:offset];
+        m_resource.isRangeRequest = YES;
     }
 }
 

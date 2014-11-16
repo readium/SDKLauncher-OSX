@@ -28,15 +28,15 @@
 
 @property (nonatomic, readonly) LOXPackage *package;
 
+@property (nonatomic) BOOL isRangeRequest;
 
 @property (nonatomic, readonly) NSString *relativePath;
 
 - (NSData *)readDataOfLength:(NSUInteger)length;
 - (void)setOffset:(UInt64)offset;
-- (BOOL)isByteRangeResource;
 
 - (id)
-	initWithByteStream:(std::shared_ptr<ePub3::ByteStream>)byteStream
+	initWithByteStream:(ePub3::ByteStream *)byteStream
         relativePath:(NSString *)relativePath
         pack:(LOXPackage *)package;
 

@@ -124,47 +124,67 @@
 
     //ConstManifestItemPtr
     std::shared_ptr<const ePub3::ManifestItem> manItem = _sdkPackage->ManifestItemAtRelativePath(s);
-
     if (manItem == nullptr) {
         NSLog(@"Relative path '%@' does not have a manifest item!", relativePath);
         return nil;
     }
 
-    std::shared_ptr<ePub3::ByteStream> byteStream = nullptr;
-    bool FORCE_BYTE_RANGE = true;
-    if (FORCE_BYTE_RANGE)
-    {
-        byteStream = _sdkPackage->GetFilterChainByteStreamRange(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
-
-        if (byteStream == nullptr) {
-            NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
-            return nil;
-        }
-    }
-    else
-    {
-        byteStream = _sdkPackage->GetFilterChainByteStream(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
-
-        if (byteStream == nullptr) {
-            NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
-            return nil;
-        }
-
-        if (byteStream->BytesAvailable() > 1024*1024) // 1MB
-        {
-            byteStream = nullptr;
-            byteStream = _sdkPackage->GetFilterChainByteStreamRange(std::const_pointer_cast<ePub3::ManifestItem>(manItem));
-        }
+    std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(s);
+    if (byteStream == nullptr) {
+        NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
+        return nil;
     }
 
     RDPackageResource *resource = [[RDPackageResource alloc]
-            initWithByteStream:byteStream //release()
+            initWithByteStream:byteStream.release()
                 relativePath:relativePath
                           pack: self];
 
     return resource;
 }
 
+- (void *)getProperByteStream:(NSString *)relativePath currentByteStream:(ePub3::ByteStream *)currentByteStream isRangeRequest:(BOOL)isRangeRequest {
+    if (relativePath == nil || relativePath.length == 0) {
+        return nil;
+    }
+
+    NSRange range = [relativePath rangeOfString:@"#"];
+
+    if (range.location != NSNotFound) {
+        relativePath = [relativePath substringToIndex:range.location];
+    }
+    ePub3::string s = ePub3::string(relativePath.UTF8String);
+
+    ePub3::ConstManifestItemPtr manifestItem = _sdkPackage->ManifestItemAtRelativePath(s);
+    if (manifestItem == nullptr) {
+        NSLog(@"Relative path '%@' does not have a manifest item!", relativePath);
+        return nil;
+    }
+    ePub3::ManifestItemPtr m = std::const_pointer_cast<ePub3::ManifestItem>(manifestItem);
+
+    size_t numFilters = _sdkPackage->GetFilterChainSize(m);
+    ePub3::ByteStream *byteStream = nullptr;
+    ePub3::SeekableByteStream *rawInput = dynamic_cast<ePub3::SeekableByteStream *>((ePub3::ByteStream *)currentByteStream);
+
+    if (numFilters <= 0)
+    {
+        byteStream = (ePub3::ByteStream *) currentByteStream;
+    }
+    else if (numFilters == 1 && isRangeRequest)
+    {
+        byteStream = _sdkPackage->GetFilterChainByteStreamRange(m, rawInput).release();
+        if (byteStream == nullptr)
+        {
+            byteStream = _sdkPackage->GetFilterChainByteStream(m, rawInput).release();
+        }
+    }
+    else
+    {
+        byteStream = _sdkPackage->GetFilterChainByteStream(m, rawInput).release();
+    }
+
+    return byteStream;
+}
 
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage {
 
