@@ -166,8 +166,11 @@
 
     if (!m_isRangeRequest)
     {
-        NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
-        [md appendBytes:[self data].bytes length:length];
+        NSData* prefetchedData = [self data];
+        NSUInteger prefetchedDataLength = [prefetchedData length];
+        NSUInteger adjustedLength = prefetchedDataLength < length ? prefetchedDataLength : length;
+        NSMutableData *md = [[NSMutableData alloc] initWithCapacity:adjustedLength];
+        [md appendBytes:prefetchedData.bytes length:adjustedLength];
         return md;
     }
 
