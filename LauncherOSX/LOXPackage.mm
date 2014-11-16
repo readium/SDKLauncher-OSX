@@ -164,11 +164,11 @@
 
     size_t numFilters = _sdkPackage->GetFilterChainSize(m);
     ePub3::ByteStream *byteStream = nullptr;
-    ePub3::SeekableByteStream *rawInput = dynamic_cast<ePub3::SeekableByteStream *>((ePub3::ByteStream *)currentByteStream);
+    ePub3::SeekableByteStream *rawInput = dynamic_cast<ePub3::SeekableByteStream *>(currentByteStream);
 
     if (numFilters <= 0)
     {
-        byteStream = (ePub3::ByteStream *) currentByteStream;
+        byteStream = currentByteStream;
     }
     else if (numFilters == 1 && isRangeRequest)
     {

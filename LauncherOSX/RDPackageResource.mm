@@ -175,7 +175,6 @@
     }
 
     ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
-
     if (filterStream != nullptr) {
 
         NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
@@ -202,6 +201,58 @@
 
             m_offset += count;
             range.Location(range.Location() + count);
+        }
+
+        if (totalRead != length) {
+            //NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+            printf("1) Did not read the expected number of bytes! (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+
+            if (totalRead == 0){
+
+//                //CRLF
+//                m_buffer[0] = 0x0D;
+//                m_buffer[1] = 0x0A;
+//                [md appendBytes:m_buffer length:2];
+//                printf("CR LF socket close... \n");
+
+                //return [NSData data];
+            }
+        }
+        else {
+            //NSLog(@"1) Correct: (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+            printf("1) Correct: (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+        }
+
+
+        return md;
+    }
+
+    ePub3::SeekableByteStream *seekableByteStream = dynamic_cast<ePub3::SeekableByteStream *>(m_byteStream.get());
+    if (seekableByteStream != nullptr) {
+
+        NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
+
+        seekableByteStream->Seek(m_offset, std::ios::seekdir::beg);
+
+        NSUInteger totalRead = 0;
+
+        //NSLog(@"+++++ readDataOfLength: %lu + %lu (%@)", m_offset, length, m_relativePath);
+//printf("+++++ readDataOfLength: %d + %d (%s)\n", m_offset, length, [m_relativePath UTF8String]);
+
+        while (totalRead < length) {
+
+            std::size_t toRead = MIN(sizeof(m_buffer), length - totalRead);
+
+            std::size_t count = seekableByteStream->ReadBytes(m_buffer, toRead);
+
+            if (count <= 0) break;
+
+            [md appendBytes:m_buffer length:count];
+
+            totalRead += count;
+//printf("+++++ readDataOfLength SO FAR: %d / %d (%s)\n", totalRead, length, [m_relativePath UTF8String]);
+
+            m_offset += count;
         }
 
         if (totalRead != length) {
