@@ -31,21 +31,21 @@
 @class LOXPageNumberTextController;
 @class LOXBookmarksController;
 @class LOXAppDelegate;
-@class LOXPackage;
+@class RDPackage;
 @class LOXCurrentPagesInfo;
 @class LOXBookmark;
 @class LOXPreferences;
 @class LOXCSSStyle;
 @class WebView;
-@class PackageResourceServer;
+@class RDPackageResourceServer;
 
 @interface LOXWebViewController : NSObject<LOXSpineViewControllerDelegate> {
 
 @private
     IBOutlet WebView *_webView;
-    @private PackageResourceServer *m_resourceServer;
+    @private RDPackageResourceServer *m_resourceServer;
 }
-- (LOXPackage *) loxPackage;
+- (RDPackage *) loxPackage;
 
 - (void) clear;
 
@@ -88,7 +88,7 @@
 
 - (NSString *)getCurrentPageCfi;
 
-- (void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark;
+- (void)openPackage:(RDPackage *)package onPage:(LOXBookmark*) bookmark;
 
 - (void)resetStyles;
 

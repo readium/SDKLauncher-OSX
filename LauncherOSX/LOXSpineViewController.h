@@ -22,14 +22,14 @@
 #import <Foundation/Foundation.h>
 
 @class LOXSpineViewController;
-@class LOXSpineItem;
-@class LOXSpine;
-@class LOXPackage;
+@class RDSpineItem;
+@class RDSpine;
+@class RDPackage;
 @class LOXCurrentPagesInfo;
 
 
 @protocol LOXSpineViewControllerDelegate
-- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem *)spineItem;
+- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(RDSpineItem *)spineItem;
 @end
 
 @interface LOXSpineViewController : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
@@ -40,11 +40,11 @@
 @property (assign, nonatomic) id<LOXSpineViewControllerDelegate> selectionChangedLiscener;
 @property (nonatomic, strong) LOXCurrentPagesInfo *currentPagesInfo;
 
-- (LOXSpineItem *)getSelectedItem;
+- (RDSpineItem *)getSelectedItem;
 
-- (void)selectSpieItem:(LOXSpineItem *)spineItem;
+- (void)selectSpieItem:(RDSpineItem *)spineItem;
 
-- (void)setPackage:(LOXPackage *)package;
+- (void)setPackage:(RDPackage *)package;
 
 
 @end

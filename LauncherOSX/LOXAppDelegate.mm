@@ -27,15 +27,15 @@
 #import "LOXBook.h"
 #import "LOXBookmarksController.h"
 #import "LOXBookmark.h"
-#import "LOXSpineItem.h"
+#import "RDSpineItem.h"
 #import "LOXTocViewController.h"
-#import "LOXSpine.h"
-#import "LOXPackage.h"
+#import "RDSpineItem.h"
+#import "RDPackage.h"
 #import "LOXCurrentPagesInfo.h"
 #import "LOXPageNumberTextController.h"
 #import "LOXPreferencesController.h"
 #import "LOXUtil.h"
-#import "LOXMediaOverlay.h"
+#import "RDMediaOverlaysSmilModel.h"
 #import "LOXMediaOverlayController.h"
 
 using namespace ePub3;
@@ -64,7 +64,7 @@ extern NSString *const LOXPageChangedEvent;
     LOXePubSdkApi *_epubApi;
     LOXUserData *_userData;
     LOXBook*_currentBook;
-    LOXPackage *_package;
+    RDPackage *_package;
 }
 
 @synthesize currentPagesInfo = _currentPagesInfo;
@@ -174,12 +174,12 @@ extern NSString *const LOXPageChangedEvent;
 
 - (LOXBook *)findOrCreateBookForCurrentPackageWithPath:(NSString *)path
 {
-    LOXBook * book = [_userData findBookWithId:_package.packageId fileName:[path lastPathComponent]];
+    LOXBook * book = [_userData findBookWithId:_package.packageID fileName:[path lastPathComponent]];
 
     if(!book) {
         book = [[LOXBook alloc] init];
         book.filePath = path;
-        book.packageId = _package.packageId;
+        book.packageId = _package.packageID;
         book.name = _package.title;
         [_userData addBook: book];
     }
@@ -230,7 +230,7 @@ extern NSString *const LOXPageChangedEvent;
         return nil;
     }
 
-    LOXSpineItem *spineItem = [_package.spine getSpineItemWithId:bookmark.idref];
+    RDSpineItem *spineItem = [_package.spine getSpineItemWithId:bookmark.idref];
     if(!spineItem) {
         return nil;
     }

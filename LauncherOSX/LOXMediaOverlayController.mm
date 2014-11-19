@@ -21,7 +21,7 @@
 #import "LOXMediaOverlayController.h"
 #import "LOXWebViewController.h"
 #import "LOXAppDelegate.h"
-#import "LOXPackage.h"
+#import "RDPackage.h"
 #import "LOXPreferencesController.h"
 #import "LOXPreferences.h"
 

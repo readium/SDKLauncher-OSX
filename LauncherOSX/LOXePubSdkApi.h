@@ -22,10 +22,8 @@
 
 
 
-@class LOXToc;
-@class LOXSpineItem;
-@class LOXSpine;
-@class LOXPackage;
+@class RDSpineItem;
+@class RDPackage;
 
 namespace ePub3 {
     class Container;
@@ -36,10 +34,6 @@ namespace ePub3 {
 
 }
 
-
-
-+(void)initialize;
-
-- (LOXPackage *)openFile:(NSString *)file;
+- (RDPackage *)openFile:(NSString *)file;
 
 @end

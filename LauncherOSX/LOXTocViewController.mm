@@ -18,7 +18,7 @@
 #import "LOXTocViewController.h"
 #import "LOXToc.h"
 #import "LOXAppDelegate.h"
-#import "LOXPackage.h"
+#import "RDPackage.h"
 
 
 @interface LOXTocViewController ()
@@ -31,7 +31,7 @@
 @implementation LOXTocViewController {
 
     NSMutableArray *_cells;
-    LOXPackage *_package;
+    RDPackage *_package;
 
 }
 
@@ -204,7 +204,7 @@
 //    return combinedPath;
 //}
 
-- (void)setPackage:(LOXPackage *)package
+- (void)setPackage:(RDPackage *)package
 {
     _package = package;
 

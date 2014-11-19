@@ -20,9 +20,9 @@
 //
 
 #import "LOXSpineViewController.h"
-#import "LOXSpineItem.h"
-#import "LOXSpine.h"
-#import "LOXPackage.h"
+#import "RDSpineItem.h"
+#import "RDSpineItem.h"
+#import "RDPackage.h"
 #import "LOXCurrentPagesInfo.h"
 #import "LOXOpenPageInfo.h"
 #import "LOXAppDelegate.h"
@@ -37,7 +37,7 @@
 
 @implementation LOXSpineViewController {
 
-    LOXPackage *_package;
+    RDPackage *_package;
 
 }
 
@@ -51,7 +51,7 @@
 
 - (void)onPageChanged:(id)onPageChanged
 {
-    LOXSpineItem *openSpineItem = [self getOpenSpineItem];
+    RDSpineItem *openSpineItem = [self getOpenSpineItem];
 
     if(!openSpineItem) {
         return;
@@ -67,7 +67,7 @@
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    LOXSpineItem *item = [[_package.spine items] objectAtIndex:(NSUInteger) row];
+    RDSpineItem *item = [[_package.spine items] objectAtIndex:(NSUInteger) row];
 
     NSString* propIdentifier = [tableColumn identifier];
     return [item valueForKey:propIdentifier];
@@ -75,20 +75,20 @@
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification
 {
-    LOXSpineItem * selectedItem = [self getSelectedItem];
+    RDSpineItem * selectedItem = [self getSelectedItem];
 
     if(!selectedItem) {
         return;
     }
 
-    LOXSpineItem *openSpineItem = [self getOpenSpineItem];
+    RDSpineItem *openSpineItem = [self getOpenSpineItem];
 
     if(selectedItem != openSpineItem) {
         [self.selectionChangedLiscener spineView:self selectionChangedTo:selectedItem];
     }
 }
 
-- (LOXSpineItem *)getOpenSpineItem
+- (RDSpineItem *)getOpenSpineItem
 {
     LOXOpenPageInfo *openPage = self.currentPagesInfo.firstOpenPage;
 
@@ -99,14 +99,14 @@
     return [_package.spine getSpineItemWithId:openPage.idref];
 }
 
-- (LOXSpineItem *)getSelectedItem
+- (RDSpineItem *)getSelectedItem
 {
     NSInteger row = [_tableView selectedRow];
-    LOXSpineItem * selectedItem = row == -1 ? nil : [[_package.spine items] objectAtIndex:(NSUInteger) row];
+    RDSpineItem * selectedItem = row == -1 ? nil : [[_package.spine items] objectAtIndex:(NSUInteger) row];
     return selectedItem;
 }
 
-- (void)selectSpieItem: (LOXSpineItem *) spineItem
+- (void)selectSpieItem: (RDSpineItem *) spineItem
 {
     for (NSUInteger i = 0; i < _package.spine.itemCount; i++){
         if ([[_package.spine items] objectAtIndex:i] == spineItem) {
@@ -117,7 +117,7 @@
     }
 }
 
-- (void)setPackage:(LOXPackage *)package
+- (void)setPackage:(RDPackage *)package
 {
     _package = package;
 

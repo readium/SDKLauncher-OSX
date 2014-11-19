@@ -14,7 +14,7 @@
 #import "LOXCSSParser.h"
 #import "LOXUtil.h"
 
-#import "LOXMediaOverlay.h"
+#import "RDMediaOverlaysSmilModel.h"
 
 #import "LOXWebViewController.h"
 #import "LOXAppDelegate.h"

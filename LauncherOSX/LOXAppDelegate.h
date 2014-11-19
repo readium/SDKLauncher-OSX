@@ -28,10 +28,10 @@
 @class LOXBookmark;
 @class LOXBookmarkEditController;
 @class LOXTocViewController;
-@class LOXSpineItem;
+@class RDSpineItem;
 @class LOXCurrentPagesInfo;
 @class LOXPreferencesController;
-@class LOXMediaOverlay;
+@class RDMediaOverlay;
 @class LOXMediaOverlayController;
 
 //events

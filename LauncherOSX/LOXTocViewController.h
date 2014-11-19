@@ -17,11 +17,10 @@
 
 #import <Foundation/Foundation.h>
 
-@class LOXToc;
 @class LOXAppDelegate;
-@class LOXTocEntry;
+@class RDNavigationElement;
 @class LOXePubSdkApi;
-@class LOXPackage;
+@class RDPackage;
 
 
 @interface LOXTocViewController : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate, NSTableViewDelegate> {
@@ -33,7 +32,7 @@
 }
 
 
-- (BOOL)isClickableItem:(LOXTocEntry *)item;
-- (void)setPackage:(LOXPackage *)package;
+- (BOOL)isClickableItem:(RDNavigationElement *)item;
+- (void)setPackage:(RDPackage *)package;
 
 @end

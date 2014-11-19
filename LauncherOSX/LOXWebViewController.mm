@@ -21,8 +21,8 @@
 
 #import <WebKit/WebKit.h>
 #import "LOXWebViewController.h"
-#import "LOXPackage.h"
-#import "LOXSpineItem.h"
+#import "RDPackage.h"
+#import "RDSpineItem.h"
 #import "LOXCurrentPagesInfo.h"
 #import "LOXBookmark.h"
 #import "LOXPreferences.h"
@@ -30,13 +30,16 @@
 #import "LOXCSSStyle.h"
 #import "LOXUtil.h"
 #import "LOXMediaOverlayController.h"
-#import "PackageResourceServer.h"
+#import "RDPackageResourceServer.h"
 #import "RDPackageResource.h"
 #import <ePub3/utilities/byte_stream.h>
 
 
-@interface LOXWebViewController ()
-
+@interface LOXWebViewController () <RDPackageResourceServerDelegate>
+{
+@private NSData *m_specialPayload_AnnotationsCSS;
+@private NSData *m_specialPayload_MathJaxJS;
+}
 -(void)onPageChanged:(NSNotification*) notification;
 
 // Now load file URL directly (no need for reader.html pre-processing)
@@ -50,11 +53,51 @@
 
 @implementation LOXWebViewController {
 
-    LOXPackage *_package;
+    RDPackage *_package;
     NSString* _baseUrlPath;
 }
 
+- (void)initializeSpecialPayloads {
 
+    // May be left to NIL if desired (in which case MathJax and annotations.css functionality will be disabled).
+
+    m_specialPayload_AnnotationsCSS = nil;
+    m_specialPayload_MathJaxJS = nil;
+
+
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"MathJax" ofType:@"js" inDirectory:@"mathjax"];
+    if (filePath != nil) {
+        NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+        if (code != nil) {
+            NSData *data = [code dataUsingEncoding:NSUTF8StringEncoding];
+            if (data != nil) {
+                m_specialPayload_MathJaxJS = data;
+            }
+        }
+    }
+
+    filePath = [[NSBundle mainBundle] pathForResource:@"annotations" ofType:@"css"];
+    if (filePath != nil) {
+        NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+        if (code != nil) {
+            NSData *data = [code dataUsingEncoding:NSUTF8StringEncoding];
+            if (data != nil) {
+                m_specialPayload_AnnotationsCSS = data;
+            }
+        }
+    }
+}
+
+- (void)
+packageResourceServer:(RDPackageResourceServer *)packageResourceServer
+    executeJavaScript:(NSString *)javaScript
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_webView stringByEvaluatingJavaScriptFromString:javaScript];
+    });
+}
+
+/*
 - (NSURLRequest *)webView:(WebView *)sender
                  resource:(id)identifier
           willSendRequest:(NSURLRequest *)request
@@ -166,8 +209,9 @@
 
     return newRequest;
 }
+*/
 
-- (LOXPackage *) loxPackage
+- (RDPackage *) loxPackage
 {
     return _package;
 }
@@ -245,12 +289,19 @@
 }
 */
 
--(void)openPackage:(LOXPackage *)package onPage:(LOXBookmark*) bookmark
+-(void)openPackage:(RDPackage *)package onPage:(LOXBookmark*) bookmark
 {
     _package = package;
 
+    [self initializeSpecialPayloads];
+
     m_resourceServer = nil;
-    m_resourceServer = [[PackageResourceServer alloc] initWithPackage:package baseUrlPath:_baseUrlPath];
+
+    m_resourceServer = [[RDPackageResourceServer alloc]
+            initWithDelegate:self
+                     package:package
+specialPayloadAnnotationsCSS:m_specialPayload_AnnotationsCSS
+     specialPayloadMathJaxJS:m_specialPayload_MathJaxJS];
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
@@ -532,7 +583,7 @@ This was used to attempt to debunk the CSS 3D rendering issues (clipping, non-in
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(LOXSpineItem *)spineItem
+- (void)spineView:(LOXSpineViewController *)spineViewController selectionChangedTo:(RDSpineItem *)spineItem
 {
     [self openSpineItem:spineItem.idref pageIndex:0];
 }

@@ -27,42 +27,26 @@
 
 #include <ePub3/utilities/error_handler.h>
 
-#import "LOXSpineItem.h"
-#import "LOXPackage.h"
+#import "RDSpineItem.h"
+#import "RDPackage.h"
+#import "RDContainer.h"
 
 
 
-@interface LOXePubSdkApi ()
-
-- (void)cleanup;
-
-- (void)readPackages;
+@interface LOXePubSdkApi () <RDContainerDelegate>
+{
+@private RDContainer *m_container;
+@private RDPackage *m_package;
+}
 
 @end
 
 @implementation LOXePubSdkApi {
-    NSMutableArray *_packages;
 
-    ePub3::ContainerPtr _container;
-
-    LOXPackage* _currentPackage;
 }
 
-bool LauncherErrorHandler(const ePub3::error_details& err)
-{
-    const char * msg = err.message();
-    NSLog(@"%s\n", msg);
-
-    return ePub3::DefaultErrorHandler(err);
-}
-
-+(void)initialize
-{
-    ePub3::ErrorHandlerFn launcherErrorHandler = LauncherErrorHandler;
-    ePub3::SetErrorHandler(launcherErrorHandler);
-
-    ePub3::InitializeSdk();
-    ePub3::PopulateFilterManager();
+- (void)container:(RDContainer *)container handleSdkError:(NSString *)message {
+    NSLog(@"READIUM SDK: %@\n", message);
 }
 
 - (id)init
@@ -71,47 +55,22 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
     
     if(self){
 
-        _packages = [NSMutableArray array];
     }
 
     return self;
 }
 
-- (LOXPackage *)openFile:(NSString *)file
+- (RDPackage *)openFile:(NSString *)file
 {
-    [self cleanup];
+    m_container = [[RDContainer alloc] initWithDelegate:self path:file];
 
-     _container = ePub3::Container::OpenContainer([file UTF8String]);
+    m_package = m_container.firstPackage;
 
-    [self readPackages];
-
-    if([_packages count] > 0) {
-        return [_packages objectAtIndex:0];
+    if (m_package == nil) {
+        return nil;
     }
 
-    return nil;
-}
-
-- (void)readPackages
-{
-    auto packages = _container->Packages();
-
-    for (auto package = packages.begin(); package != packages.end(); ++package) {
-
-        [_packages addObject:[[LOXPackage alloc] initWithSdkPackage:*package]];
-    }
-}
-
-
-- (void)dealloc
-{
-    [self cleanup];
-}
-
-- (void)cleanup
-{
-    [_packages removeAllObjects];
-    _currentPackage = nil;
+    return m_package;
 }
 
 
