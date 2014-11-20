@@ -126,7 +126,7 @@
     std::shared_ptr<const ePub3::ManifestItem> manItem = _sdkPackage->ManifestItemAtRelativePath(s);
     if (manItem == nullptr) {
         NSLog(@"Relative path '%@' does not have a manifest item!", relativePath);
-        return nil;
+        //return nil;
     }
 
     std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(s);
@@ -158,7 +158,8 @@
     ePub3::ConstManifestItemPtr manifestItem = _sdkPackage->ManifestItemAtRelativePath(s);
     if (manifestItem == nullptr) {
         NSLog(@"Relative path '%@' does not have a manifest item!", relativePath);
-        return nil;
+        //return nil;
+        return currentByteStream;
     }
     ePub3::ManifestItemPtr m = std::const_pointer_cast<ePub3::ManifestItem>(manifestItem);
 
