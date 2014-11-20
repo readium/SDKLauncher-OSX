@@ -103,7 +103,7 @@ static NSString* m_baseUrlPath = nil;
                 }
             }
             if (isHTML) {
-                NSData *data = resource.data;
+                NSData *data = [resource readDataFull];
                 if (data != nil) {
 
                     BOOL ok = NO;
@@ -304,6 +304,7 @@ static NSString* m_baseUrlPath = nil;
 
     if (self = [super init]) {
         m_resource = resource;
+        m_isRangeRequest = NO;
     }
 
     return self;
@@ -326,12 +327,8 @@ static NSString* m_baseUrlPath = nil;
     NSData *data = nil;
 
     @synchronized ([PackageResourceServer resourceLock]) {
-        [m_resource setOffset:m_offset];
 
-        // No! (see setOffset below)
-        //m_resource.isRangeRequest = YES;
-
-        data = [m_resource readDataOfLength:length];
+        data = [m_resource readDataOfLength:length offset:m_offset isRangeRequest:m_isRangeRequest];
     }
 
     if (data != nil) {
@@ -344,11 +341,7 @@ static NSString* m_baseUrlPath = nil;
 
 - (void)setOffset:(UInt64)offset {
     m_offset = offset;
-
-    @synchronized ([PackageResourceServer resourceLock]) {
-        [m_resource setOffset:offset];
-        m_resource.isRangeRequest = YES;
-    }
+    m_isRangeRequest = YES;
 }
 
 

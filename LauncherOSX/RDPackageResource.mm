@@ -21,9 +21,7 @@
 @interface RDPackageResource() {
 @private std::unique_ptr<ePub3::ByteStream> m_byteStream;
 @private NSString *m_relativePath;
-@private BOOL m_isRangeRequest;
 @private BOOL m_hasProperStream;
-@private UInt64 m_offset;
 @private std::size_t m_bytesCount;
 @private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
 //@private NSData *m_data;
@@ -38,13 +36,12 @@
 @synthesize bytesCount = m_bytesCount;
 @synthesize relativePath = m_relativePath;
 @synthesize package = m_package;
-@synthesize isRangeRequest = m_isRangeRequest;
 
 - (void *)byteStream {
     return m_byteStream.get();
 }
 
-- (NSData *)data {
+- (NSData *)readDataFull {
     if (m_data == nil) {
 
         if (m_bytesCount == 0)
@@ -58,7 +55,7 @@
                 if (!m_hasProperStream)
                 {
                     ePub3::ByteStream *byteStream = m_byteStream.release();
-                    m_byteStream.reset((ePub3::ByteStream *)[m_package getProperByteStream:m_relativePath currentByteStream:byteStream isRangeRequest:m_isRangeRequest]);
+                    m_byteStream.reset((ePub3::ByteStream *)[m_package getProperByteStream:m_relativePath currentByteStream:byteStream isRangeRequest:NO]);
                     m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:m_package path:m_relativePath];
                     m_hasProperStream = YES;
                 }
@@ -66,7 +63,7 @@
                 while (YES) {
                     std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
 
-                    if (count <= 0) {
+                    if (count == 0) {
                         break;
                     }
 
@@ -150,7 +147,7 @@
     return size;
 }
 
-- (NSData *)readDataOfLength:(NSUInteger)length {
+- (NSData *)readDataOfLength:(NSUInteger)length offset:(UInt64)offset isRangeRequest:(BOOL)isRangeRequest {
     if (length == 0)
     {
         return [NSData data];
@@ -159,19 +156,9 @@
     if (!m_hasProperStream)
     {
         ePub3::ByteStream *byteStream = m_byteStream.release();
-        m_byteStream.reset((ePub3::ByteStream *)[m_package getProperByteStream:m_relativePath currentByteStream:byteStream isRangeRequest:m_isRangeRequest]);
+        m_byteStream.reset((ePub3::ByteStream *)[m_package getProperByteStream:m_relativePath currentByteStream:byteStream isRangeRequest:isRangeRequest]);
         m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:m_package path:m_relativePath];
         m_hasProperStream = YES;
-    }
-
-    if (!m_isRangeRequest)
-    {
-        NSData* prefetchedData = [self data];
-        NSUInteger prefetchedDataLength = [prefetchedData length];
-        NSUInteger adjustedLength = prefetchedDataLength < length ? prefetchedDataLength : length;
-        NSMutableData *md = [[NSMutableData alloc] initWithCapacity:adjustedLength];
-        [md appendBytes:prefetchedData.bytes length:adjustedLength];
-        return md;
     }
 
     ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
@@ -180,7 +167,7 @@
         NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
 
         ePub3::ByteRange range;
-		range.Location(m_offset);
+		range.Location(offset);
 		NSUInteger totalRead = 0;
 
         //NSLog(@"+++++ readDataOfLength: %lu + %lu (%@)", m_offset, length, m_relativePath);
@@ -199,13 +186,12 @@
     		totalRead += count;
 //printf("+++++ readDataOfLength SO FAR: %d / %d (%s)\n", totalRead, length, [m_relativePath UTF8String]);
 
-            m_offset += count;
             range.Location(range.Location() + count);
         }
 
         if (totalRead != length) {
             //NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
-            printf("1) Did not read the expected number of bytes! (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+            //printf("1) Did not read the expected number of bytes! (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
 
             if (totalRead == 0){
 
@@ -228,11 +214,16 @@
     }
 
     ePub3::SeekableByteStream *seekableByteStream = dynamic_cast<ePub3::SeekableByteStream *>(m_byteStream.get());
-    if (seekableByteStream != nullptr) {
+    if (seekableByteStream != nullptr
+        || (m_bytesCount - m_byteStream->BytesAvailable()) == offset) //not-seek-able-ByteStream does not expose its internal position! m_byteStream->Position()
+    {
 
         NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
 
-        seekableByteStream->Seek(m_offset, std::ios::seekdir::beg);
+        if (seekableByteStream != nullptr)
+        {
+            seekableByteStream->Seek(offset, std::ios::seekdir::beg);
+        }
 
         NSUInteger totalRead = 0;
 
@@ -243,7 +234,7 @@
 
             std::size_t toRead = MIN(sizeof(m_buffer), length - totalRead);
 
-            std::size_t count = seekableByteStream->ReadBytes(m_buffer, toRead);
+            std::size_t count = m_byteStream->ReadBytes(m_buffer, toRead);
 
             if (count <= 0) break;
 
@@ -252,12 +243,11 @@
             totalRead += count;
 //printf("+++++ readDataOfLength SO FAR: %d / %d (%s)\n", totalRead, length, [m_relativePath UTF8String]);
 
-            m_offset += count;
         }
 
         if (totalRead != length) {
             //NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
-            printf("1) Did not read the expected number of bytes! (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+            //printf("1) Did not read the expected number of bytes! (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
 
             if (totalRead == 0){
 
@@ -279,15 +269,15 @@
         return md;
     }
 
-    NSLog(@"The byte stream is not a FilterChainByteStream!");
-    return [NSData data];
+    NSLog(@"readDataOfLength prefetchedData should never happen! %@", m_relativePath);
+
+    NSData *prefetchedData = [self readDataFull]; // Note: ensureProperByteStream was already called above.
+    NSUInteger prefetchedDataLength = [prefetchedData length];
+    NSUInteger adjustedLength = prefetchedDataLength < length ? prefetchedDataLength : length;
+    NSMutableData *md = [[NSMutableData alloc] initWithCapacity:adjustedLength];
+    [md appendBytes:prefetchedData.bytes length:adjustedLength];
+    return md;
 }
-
-
-- (void)setOffset:(UInt64)offset {
-    m_offset = offset;
-}
-
 
 - (void)dealloc {
 
@@ -318,7 +308,6 @@
         m_byteStream.reset(byteStream);
         m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:package path:m_relativePath];
 
-        m_isRangeRequest = NO;
         m_hasProperStream = NO;
 
 

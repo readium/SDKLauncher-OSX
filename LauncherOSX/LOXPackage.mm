@@ -168,19 +168,19 @@
 
     if (numFilters <= 0)
     {
-        byteStream = currentByteStream;
+        byteStream = currentByteStream; // is actually a SeekableByteStream
     }
     else if (numFilters == 1 && isRangeRequest)
     {
-        byteStream = _sdkPackage->GetFilterChainByteStreamRange(m, rawInput).release();
+        byteStream = _sdkPackage->GetFilterChainByteStreamRange(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
         if (byteStream == nullptr)
         {
-            byteStream = _sdkPackage->GetFilterChainByteStream(m, rawInput).release();
+            byteStream = _sdkPackage->GetFilterChainByteStream(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
         }
     }
     else
     {
-        byteStream = _sdkPackage->GetFilterChainByteStream(m, rawInput).release();
+        byteStream = _sdkPackage->GetFilterChainByteStream(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
     }
 
     return byteStream;
