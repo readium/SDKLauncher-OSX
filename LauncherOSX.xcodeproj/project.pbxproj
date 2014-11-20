@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
+		83766D441A0E9C53008077E1 /* epubReadingSystem.js in Resources */ = {isa = PBXBuildFile; fileRef = 83766D431A0E9C53008077E1 /* epubReadingSystem.js */; };
+		83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83766D431A0E9C53008077E1 /* epubReadingSystem.js */; };
 		83A68A3C1993D7D100DED991 /* mathjax in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83A68A3B1993D7D100DED991 /* mathjax */; };
 		83EBB4A119F566310083E8F1 /* annotations.css in CopyFiles */ = {isa = PBXBuildFile; fileRef = A250DB706A1422DFE8EF2706 /* annotations.css */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
@@ -134,6 +136,7 @@
 			dstPath = Scripts;
 			dstSubfolderSpec = 7;
 			files = (
+				83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */,
 				83EBB4A119F566310083E8F1 /* annotations.css in CopyFiles */,
 				83A68A3C1993D7D100DED991 /* mathjax in CopyFiles */,
 				8561A1F3178B6F25007D15D3 /* reader.html in CopyFiles */,
@@ -159,6 +162,7 @@
 /* Begin PBXFileReference section */
 		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		558E562716EF859800FCF273 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "readium-sdk/Platform/Apple/ePub3.xcodeproj"; sourceTree = "<group>"; };
+		83766D431A0E9C53008077E1 /* epubReadingSystem.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = epubReadingSystem.js; path = LauncherOSX/ReaderScripts/epubReadingSystem.js; sourceTree = "<group>"; };
 		83A68A341993D5F400DED991 /* mathjax */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mathjax; path = LauncherOSX/ReaderScripts/mathjax; sourceTree = "<group>"; };
 		83A68A3B1993D7D100DED991 /* mathjax */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mathjax; path = LauncherOSX/ReaderScripts/mathjax; sourceTree = "<group>"; };
 		850B1A5A16A61FB900619C3C /* ePub3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = ePub3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -355,6 +359,7 @@
 		8561A1E4178B6EB8007D15D3 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				83766D431A0E9C53008077E1 /* epubReadingSystem.js */,
 				83A68A341993D5F400DED991 /* mathjax */,
 				85ADCFF317B45CB5009F224E /* static */,
 				85DC402E179074660044849D /* host_app_feedback.js */,
@@ -705,6 +710,7 @@
 				8597D60B16824655000FAAAF /* Resources */,
 				8573952E172ADFD00071B66C /* CopyFiles */,
 				8561A1E1178B6E52007D15D3 /* CopyFiles */,
+				83766D481A0EA069008077E1 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -779,6 +785,7 @@
 			files = (
 				8597D61C16824655000FAAAF /* InfoPlist.strings in Resources */,
 				8597D62216824655000FAAAF /* Credits.rtf in Resources */,
+				83766D441A0E9C53008077E1 /* epubReadingSystem.js in Resources */,
 				8597D62816824656000FAAAF /* MainMenu.xib in Resources */,
 				856354F716DE7C3A009DA283 /* BookmarkDlg.xib in Resources */,
 				552FC46616F39AB5000E73BA /* icon.icns in Resources */,
@@ -796,6 +803,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		83766D481A0EA069008077E1 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = ./LauncherOSX/ReaderScripts/epubReadingSystem.sh;
+		};
 		8573953B172ED0F60071B66C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
