@@ -24,18 +24,15 @@
 //@property (nonatomic, readonly) ePub3::ByteStream* byteStream;
 @property (nonatomic, readonly) std::size_t bytesCount;
 
-@property (nonatomic, readonly) NSData *data;
-
 @property (nonatomic, readonly) LOXPackage *package;
-
 
 @property (nonatomic, readonly) NSString *relativePath;
 
-- (NSData *)readDataOfLength:(NSUInteger)length;
-- (void)setOffset:(UInt64)offset;
+- (NSData *)readDataFull;
+- (NSData *)readDataOfLength:(NSUInteger)length offset:(UInt64)offset isRangeRequest:(BOOL)isRangeRequest;;
 
 - (id)
-	initWithByteStream:(ePub3::ByteStream*)byteStream
+	initWithByteStream:(ePub3::ByteStream *)byteStream
         relativePath:(NSString *)relativePath
         pack:(LOXPackage *)package;
 

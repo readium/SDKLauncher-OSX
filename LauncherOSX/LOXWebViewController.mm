@@ -440,6 +440,9 @@
     NSLog(@"controlTextDidChange: stringValue == %@", [textField stringValue]);
 }
 
+/*
+This was used to attempt to debunk the CSS 3D rendering issues (clipping, non-interactive text and video/audio controls)
+
 - (void)updateWebView
 {
     NSLog(@"========");
@@ -496,6 +499,7 @@
         //[view setNeedsDisplay:YES];
     }
 }
+*/
 
 - (void)updateUI
 {
