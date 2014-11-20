@@ -33,7 +33,10 @@ static NSString* m_baseUrlPath = nil;
         return nil;
     }
 
-    path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    // See:
+    // ConstManifestItemPtr PackageBase::ManifestItemAtRelativePath(const string& path) const
+    // which compares with non-escaped source (OPF original manifest>item@src attribute value)
+    //path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
 //
 //    if (path != nil && [path hasPrefix:@"/"]) {
@@ -54,6 +57,8 @@ static NSString* m_baseUrlPath = nil;
         NSString* ext = [[path pathExtension] lowercaseString];
         NSString* contentType = nil;
 
+        bool isHTML = [ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]; //[path hasSuffix:@".html"] || [path hasSuffix:@".xhtml"];
+
         if([ext isEqualToString:@"svg"]) {
             contentType = @"image/svg+xml";
         }
@@ -63,16 +68,27 @@ static NSString* m_baseUrlPath = nil;
         else if([ext isEqualToString:@"css"]) {
             contentType = @"text/css";
         }
-        else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
+        else if(isHTML) {
             contentType = @"application/xhtml+xml";
         }
-        
+
+        if (contentType == nil)
+        {
+            ePub3::string s = ePub3::string(path.UTF8String);
+            ePub3::ManifestTable manifest = [m_package sdkPackage]->Manifest();
+            for (auto i = manifest.begin(); i != manifest.end(); i++) {
+                std::shared_ptr<ePub3::ManifestItem> item = i->second;
+                if (item->Href() == s) {
+                    contentType = [NSString stringWithUTF8String: item->MediaType().c_str()];
+                    break;
+                }
+            }
+        }
         
         if (resource == nil) {
             NSLog(@"No resource found! (%@)", path);
         }
         else {
-            bool isHTML = [path hasSuffix:@".html"] || [path hasSuffix:@".xhtml"];
             if (!isHTML) {
                 ePub3::string s = ePub3::string(path.UTF8String);
                 ePub3::ManifestTable manifest = [m_package sdkPackage]->Manifest();
@@ -87,8 +103,31 @@ static NSString* m_baseUrlPath = nil;
                 }
             }
             if (isHTML) {
-                NSData *data = resource.data;
+                NSData *data = [resource readDataFull];
                 if (data != nil) {
+
+                    BOOL ok = NO;
+                    @try
+                    {
+                        NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:data];
+                        //[xmlparser setDelegate:self];
+                        [xmlparser setShouldResolveExternalEntities:NO];
+                        ok = [xmlparser parse];
+                    }
+                    @catch (NSException *ex)
+                    {
+                        NSLog(@"XHTML parse exception: %@", ex);
+                        ok = NO;
+                    }
+
+                    if (ok == NO)
+                    {
+                        //contentType = @"application/xhtml+xml";
+                        contentType = @"text/html";
+
+                        //TODO: resource.contentType = contentType;
+                    }
+
                     NSString* source = [self htmlFromData:data];
                     if (source != nil) {
                         NSString *pattern = @"(<head.*>)";
@@ -142,20 +181,13 @@ static NSString* m_baseUrlPath = nil;
                     }
                 }
             }
-            
-            if (resource.bytesCount < 1024 * 1024) { // 1MB
 
-                // This resource is small enough that we can just fetch the entire thing in memory,
-                // which simplifies access into the byte stream.  Adjust the threshold to taste.
-
-                NSData *data = resource.data;
-                if (data != nil) {
-                    return [[HTTPDataResponse alloc] initWithData:data contentType:contentType];
-                }
-            }
-            else {
-                return [[PackageResourceResponse alloc] initWithResource:resource];
-            }
+            return [[PackageResourceResponse alloc] initWithResource:resource];
+//
+//                NSData *data = resource.data;
+//                if (data != nil) {
+//                    return [[HTTPDataResponse alloc] initWithData:data contentType:contentType];
+//                }
         }
     }
 
@@ -243,7 +275,18 @@ static NSString* m_baseUrlPath = nil;
         else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
             return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"];
         }
-        
+        else
+        {
+            ePub3::string s = ePub3::string(m_resource.relativePath.UTF8String);
+            ePub3::ManifestTable manifest = [m_package sdkPackage]->Manifest();
+            for (auto i = manifest.begin(); i != manifest.end(); i++) {
+                std::shared_ptr<ePub3::ManifestItem> item = i->second;
+                if (item->Href() == s) {
+                    NSString * contentType = [NSString stringWithUTF8String: item->MediaType().c_str()];
+                    return [NSDictionary dictionaryWithObject:contentType forKey:@"Content-Type"];
+                }
+            }
+        }
     }
     
     return [NSDictionary new];
@@ -261,6 +304,7 @@ static NSString* m_baseUrlPath = nil;
 
     if (self = [super init]) {
         m_resource = resource;
+        m_isRangeRequest = NO;
     }
 
     return self;
@@ -268,7 +312,9 @@ static NSString* m_baseUrlPath = nil;
 
 
 - (BOOL)isDone {
-    return m_offset == m_resource.bytesCount;
+    bool isDone = m_offset >= m_resource.bytesCount;
+//printf("is DONE: %d\n", isDone);
+    return isDone;
 }
 
 
@@ -281,7 +327,8 @@ static NSString* m_baseUrlPath = nil;
     NSData *data = nil;
 
     @synchronized ([PackageResourceServer resourceLock]) {
-        data = [m_resource readDataOfLength:length];
+
+        data = [m_resource readDataOfLength:length offset:m_offset isRangeRequest:m_isRangeRequest];
     }
 
     if (data != nil) {
@@ -294,10 +341,7 @@ static NSString* m_baseUrlPath = nil;
 
 - (void)setOffset:(UInt64)offset {
     m_offset = offset;
-
-    @synchronized ([PackageResourceServer resourceLock]) {
-        [m_resource setOffset:offset];
-    }
+    m_isRangeRequest = YES;
 }
 
 

@@ -19,6 +19,7 @@
 #import <ePub3/nav_table.h>
 #import <ePub3/archive.h>
 #import <ePub3/package.h>
+#import <ePub3/manifest.h>
 
 
 #import "LOXPackage.h"
@@ -34,6 +35,7 @@
     //@private std::vector<std::unique_ptr<ePub3::ByteStream>> m_archiveReaderVector;
 }
 
+- (NSString *)findProperty:(NSString *)propName withOptionalPrefix:(NSString *)prefix;
 - (NSString *)findProperty:(NSString *)propName withPrefix:(NSString *)prefix;
 
 - (LOXToc *)getToc;
@@ -120,8 +122,14 @@
 
     ePub3::string s = ePub3::string(relativePath.UTF8String);
 
-    std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(s); //_sdkPackage->BasePath() API changed
+    //ConstManifestItemPtr
+    std::shared_ptr<const ePub3::ManifestItem> manItem = _sdkPackage->ManifestItemAtRelativePath(s);
+    if (manItem == nullptr) {
+        NSLog(@"Relative path '%@' does not have a manifest item!", relativePath);
+        return nil;
+    }
 
+    std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(s);
     if (byteStream == nullptr) {
         NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
         return nil;
@@ -135,6 +143,48 @@
     return resource;
 }
 
+- (void *)getProperByteStream:(NSString *)relativePath currentByteStream:(ePub3::ByteStream *)currentByteStream isRangeRequest:(BOOL)isRangeRequest {
+    if (relativePath == nil || relativePath.length == 0) {
+        return nil;
+    }
+
+    NSRange range = [relativePath rangeOfString:@"#"];
+
+    if (range.location != NSNotFound) {
+        relativePath = [relativePath substringToIndex:range.location];
+    }
+    ePub3::string s = ePub3::string(relativePath.UTF8String);
+
+    ePub3::ConstManifestItemPtr manifestItem = _sdkPackage->ManifestItemAtRelativePath(s);
+    if (manifestItem == nullptr) {
+        NSLog(@"Relative path '%@' does not have a manifest item!", relativePath);
+        return nil;
+    }
+    ePub3::ManifestItemPtr m = std::const_pointer_cast<ePub3::ManifestItem>(manifestItem);
+
+    size_t numFilters = _sdkPackage->GetFilterChainSize(m);
+    ePub3::ByteStream *byteStream = nullptr;
+    ePub3::SeekableByteStream *rawInput = dynamic_cast<ePub3::SeekableByteStream *>(currentByteStream);
+
+    if (numFilters <= 0)
+    {
+        byteStream = currentByteStream; // is actually a SeekableByteStream
+    }
+    else if (numFilters == 1 && isRangeRequest)
+    {
+        byteStream = _sdkPackage->GetFilterChainByteStreamRange(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
+        if (byteStream == nullptr)
+        {
+            byteStream = _sdkPackage->GetFilterChainByteStream(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
+        }
+    }
+    else
+    {
+        byteStream = _sdkPackage->GetFilterChainByteStream(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
+    }
+
+    return byteStream;
+}
 
 - (id)initWithSdkPackage:(ePub3::PackagePtr)sdkPackage {
 
@@ -186,6 +236,17 @@
     }
     
     return self;
+}
+
+
+- (NSString *)findProperty:(NSString *)propName withOptionalPrefix:(NSString *)prefix {
+    NSString *value = [self findProperty:propName withPrefix:prefix];
+
+    if (value.length == 0) {
+        value = [self findProperty:propName withPrefix:@""];
+    }
+
+    return value;
 }
 
 - (NSString *) findProperty:(NSString *)propName withPrefix:(NSString *)prefix

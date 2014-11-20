@@ -13,11 +13,15 @@
 #import <ePub3/archive.h>
 #import <ePub3/utilities/byte_stream.h>
 
+#import <ePub3/filter_chain.h>
+#import <ePub3/filter.h>
+#import <ePub3/filter_chain_byte_stream.h>
+#import <ePub3/filter_chain_byte_stream_range.h>
+
 @interface RDPackageResource() {
-@private ePub3::ByteStream* m_byteStream;
+@private std::unique_ptr<ePub3::ByteStream> m_byteStream;
 @private NSString *m_relativePath;
-
-
+@private BOOL m_hasProperStream;
 @private std::size_t m_bytesCount;
 @private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
 //@private NSData *m_data;
@@ -33,7 +37,11 @@
 @synthesize relativePath = m_relativePath;
 @synthesize package = m_package;
 
-- (NSData *)data {
+- (void *)byteStream {
+    return m_byteStream.get();
+}
+
+- (NSData *)readDataFull {
     if (m_data == nil) {
 
         if (m_bytesCount == 0)
@@ -44,15 +52,23 @@
         {
             NSMutableData *md = [[NSMutableData alloc] initWithCapacity: m_bytesCount];
 
-            while (YES) {
-                std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
-
-                if (count <= 0) {
-                    break;
+                if (!m_hasProperStream)
+                {
+                    ePub3::ByteStream *byteStream = m_byteStream.release();
+                    m_byteStream.reset((ePub3::ByteStream *)[m_package getProperByteStream:m_relativePath currentByteStream:byteStream isRangeRequest:NO]);
+                    m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:m_package path:m_relativePath];
+                    m_hasProperStream = YES;
                 }
 
-                [md appendBytes:m_buffer length:count];
-            }
+                while (YES) {
+                    std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
+
+                    if (count == 0) {
+                        break;
+                    }
+
+                    [md appendBytes:m_buffer length:count];
+                }
 
             m_data = md;
         }
@@ -131,59 +147,155 @@
     return size;
 }
 
-- (NSData *)readDataOfLength:(NSUInteger)length {
+- (NSData *)readDataOfLength:(NSUInteger)length offset:(UInt64)offset isRangeRequest:(BOOL)isRangeRequest {
     if (length == 0)
     {
         return [NSData data];
     }
 
-    NSMutableData *md = [[NSMutableData alloc] initWithCapacity: length];
-    NSUInteger totalRead = 0;
-
-    while (totalRead < length) {
-        NSUInteger thisLength = MIN(sizeof(m_buffer), length - totalRead);
-        std::size_t count = m_byteStream->ReadBytes(m_buffer, thisLength);
-        totalRead += count;
-        [md appendBytes:m_buffer length:count];
-
-        if (count != thisLength) {
-            NSLog(@"Did not read the expected number of bytes! (%lu %d)", count, thisLength);
-            break;
-        }
+    if (!m_hasProperStream)
+    {
+        ePub3::ByteStream *byteStream = m_byteStream.release();
+        m_byteStream.reset((ePub3::ByteStream *)[m_package getProperByteStream:m_relativePath currentByteStream:byteStream isRangeRequest:isRangeRequest]);
+        m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:m_package path:m_relativePath];
+        m_hasProperStream = YES;
     }
 
+    ePub3::FilterChainByteStreamRange *filterStream = dynamic_cast<ePub3::FilterChainByteStreamRange *>(m_byteStream.get());
+    if (filterStream != nullptr) {
+
+        NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
+
+        ePub3::ByteRange range;
+		range.Location(offset);
+		NSUInteger totalRead = 0;
+
+        //NSLog(@"+++++ readDataOfLength: %lu + %lu (%@)", m_offset, length, m_relativePath);
+//printf("+++++ readDataOfLength: %d + %d (%s)\n", m_offset, length, [m_relativePath UTF8String]);
+
+        while (totalRead < length) {
+
+            range.Length(MIN(sizeof(m_buffer), length - totalRead));
+
+    		std::size_t count = filterStream->ReadBytes(m_buffer, sizeof(m_buffer), range);
+
+            if (count <= 0) break;
+
+    		[md appendBytes:m_buffer length:count];
+
+    		totalRead += count;
+//printf("+++++ readDataOfLength SO FAR: %d / %d (%s)\n", totalRead, length, [m_relativePath UTF8String]);
+
+            range.Location(range.Location() + count);
+        }
+
+        if (totalRead != length) {
+            //NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+            //printf("1) Did not read the expected number of bytes! (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+
+            if (totalRead == 0){
+
+//                //CRLF
+//                m_buffer[0] = 0x0D;
+//                m_buffer[1] = 0x0A;
+//                [md appendBytes:m_buffer length:2];
+//                printf("CR LF socket close... \n");
+
+                //return [NSData data];
+            }
+        }
+        else {
+            //NSLog(@"1) Correct: (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+            printf("1) Correct: (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+        }
+
+
+        return md;
+    }
+
+    ePub3::SeekableByteStream *seekableByteStream = dynamic_cast<ePub3::SeekableByteStream *>(m_byteStream.get());
+    if (seekableByteStream != nullptr
+        || (m_bytesCount - m_byteStream->BytesAvailable()) == offset) //not-seek-able-ByteStream does not expose its internal position! m_byteStream->Position()
+    {
+
+        NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
+
+        if (seekableByteStream != nullptr)
+        {
+            seekableByteStream->Seek(offset, std::ios::seekdir::beg);
+        }
+
+        NSUInteger totalRead = 0;
+
+        //NSLog(@"+++++ readDataOfLength: %lu + %lu (%@)", m_offset, length, m_relativePath);
+//printf("+++++ readDataOfLength: %d + %d (%s)\n", m_offset, length, [m_relativePath UTF8String]);
+
+        while (totalRead < length) {
+
+            std::size_t toRead = MIN(sizeof(m_buffer), length - totalRead);
+
+            std::size_t count = m_byteStream->ReadBytes(m_buffer, toRead);
+
+            if (count <= 0) break;
+
+            [md appendBytes:m_buffer length:count];
+
+            totalRead += count;
+//printf("+++++ readDataOfLength SO FAR: %d / %d (%s)\n", totalRead, length, [m_relativePath UTF8String]);
+
+        }
+
+        if (totalRead != length) {
+            //NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+            //printf("1) Did not read the expected number of bytes! (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+
+            if (totalRead == 0){
+
+//                //CRLF
+//                m_buffer[0] = 0x0D;
+//                m_buffer[1] = 0x0A;
+//                [md appendBytes:m_buffer length:2];
+//                printf("CR LF socket close... \n");
+
+                //return [NSData data];
+            }
+        }
+        else {
+            //NSLog(@"1) Correct: (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
+            printf("1) Correct: (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+        }
+
+
+        return md;
+    }
+
+    NSLog(@"readDataOfLength prefetchedData should never happen! %@", m_relativePath);
+
+    NSData *prefetchedData = [self readDataFull]; // Note: ensureProperByteStream was already called above.
+    NSUInteger prefetchedDataLength = [prefetchedData length];
+    NSUInteger adjustedLength = prefetchedDataLength < length ? prefetchedDataLength : length;
+    NSMutableData *md = [[NSMutableData alloc] initWithCapacity:adjustedLength];
+    [md appendBytes:prefetchedData.bytes length:adjustedLength];
     return md;
 }
-
-
-- (void)setOffset:(UInt64)offset {
-    ePub3::SeekableByteStream* seekStream = dynamic_cast<ePub3::SeekableByteStream*>(m_byteStream);
-    ePub3::ByteStream::size_type pos = seekStream->Seek(offset, std::ios::beg);
-
-    if (pos != offset) {
-        NSLog(@"Setting the byte stream offset failed! pos = %lu, offset = %llu", pos, offset);
-    }
-}
-
-
 
 - (void)dealloc {
 
     // calls Close() on ByteStream destruction
     if (m_byteStream != nullptr)
     {
-        delete m_byteStream;
+        //delete m_byteStream;
         m_byteStream = nullptr;
     }
 }
 
 
 - (id)
-	initWithByteStream:(ePub3::ByteStream*)byteStream
+	initWithByteStream:(ePub3::ByteStream *)byteStream
 	relativePath:(NSString *)relativePath
     pack:(LOXPackage *)package
 {
-	if (byteStream == nil
+	if (byteStream == nullptr
             || relativePath == nil || relativePath.length == 0) {
 		return nil;
 	}
@@ -193,8 +305,48 @@
         m_package = package;
         m_relativePath = relativePath;
 
-        m_byteStream = byteStream;
-        m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream pack:package path:m_relativePath];
+        m_byteStream.reset(byteStream);
+        m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:package path:m_relativePath];
+
+        m_hasProperStream = NO;
+
+
+
+/*
+
+
+        NSData * data = [self data];
+
+
+
+//        NSString *fileName = [NSString stringWithFormat:@"%@_%@", [[NSProcessInfo processInfo] globallyUniqueString], m_relativePath];
+//        NSURL *fileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:fileName]];
+
+        NSError *error = nil;
+        NSURL *directoryURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]] isDirectory:YES];
+        [[NSFileManager defaultManager] createDirectoryAtURL:directoryURL withIntermediateDirectories:YES attributes:nil error:&error];
+
+        NSURL *fileURL = [directoryURL URLByAppendingPathComponent:m_relativePath];
+
+        error = nil;
+        [[NSFileManager defaultManager] removeItemAtURL:fileURL error:&error];
+
+        NSString* path = [fileURL path];
+NSLog(@"PATH: %@", path);
+
+        path = [path stringByDeletingLastPathComponent];
+        error = nil;
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
+
+        error = nil;
+        BOOL res = [data writeToURL:fileURL options:NSDataWritingAtomic error:&error];
+        if (res == NO && error != nil)
+            NSLog(@"Write returned error: %@", [error localizedDescription]);
+
+
+*/
+
+
 
         if (m_bytesCount == 0)
         {
