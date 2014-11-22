@@ -8,10 +8,6 @@ echo "Path:"
 echo "${pwd}"
 echo "------"
 
-# TODO iOS
-# JS_FILE="${pwd}/Resources/epubReadingSystem_.js"
-# test -z "${CONTENTS_FOLDER_PATH}" || JS_FILE="${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/epubReadingSystem.js"
-
 JS_FILE="${pwd}/LauncherOSX/ReaderScripts/epubReadingSystem_.js"
 test -z "${CONTENTS_FOLDER_PATH}" || JS_FILE="${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Resources/Scripts/epubReadingSystem.js"
 echo "Javascript output:"
@@ -105,8 +101,6 @@ GitDo "${pwd}" "" "" "OSX"
 
 GitDo "${pwd}" "/" "readium-sdk" "SDK"
 
-# TODO iOS
-# GitDo "${pwd}" "/Resources/" "readium-shared-js" "SHARED_JS"
 GitDo "${pwd}" "/" "readium-shared-js" "SHARED_JS"
 
 
