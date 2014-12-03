@@ -48,12 +48,54 @@
     LOXPackage* _currentPackage;
 }
 
+static BOOL m_ignoreRemainingErrors = NO;
+
 bool LauncherErrorHandler(const ePub3::error_details& err)
 {
     const char * msg = err.message();
     NSLog(@"%s\n", msg);
 
-    return ePub3::DefaultErrorHandler(err);
+
+    if (err.is_spec_error())
+    {
+        switch ( err.severity() )
+        {
+            case ePub3::ViolationSeverity::Critical:
+            case ePub3::ViolationSeverity::Major: {
+
+                if (m_ignoreRemainingErrors != YES)
+                {
+                    NSAlert *alert = [[NSAlert alloc] init];
+                    [alert setMessageText:@"EPUB warning:"];
+                    [alert setInformativeText:[NSString stringWithUTF8String:msg]];
+
+                    [alert addButtonWithTitle:@"Dismiss"];
+                    [alert addButtonWithTitle:@"Ignore all"];
+                    switch ([alert runModal]) {
+                        case NSAlertFirstButtonReturn: {
+                            // Dismiss
+                            break;
+                        }
+                        case NSAlertSecondButtonReturn: {
+                            // Ignore all
+                            m_ignoreRemainingErrors = YES;
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                }
+
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    return true;
+    // never throws an exception
+    //return ePub3::DefaultErrorHandler(err);
 }
 
 +(void)initialize
@@ -110,6 +152,7 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
 
 - (void)cleanup
 {
+    m_ignoreRemainingErrors = NO;
     [_packages removeAllObjects];
     _currentPackage = nil;
 }
