@@ -69,7 +69,7 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
                     [alert setMessageText:@"EPUB warning:"];
                     [alert setInformativeText:[NSString stringWithUTF8String:msg]];
 
-                    [alert addButtonWithTitle:@"Dismiss"];
+                    [alert addButtonWithTitle:@"Ignore"];
                     [alert addButtonWithTitle:@"Ignore all"];
                     switch ([alert runModal]) {
                         case NSAlertFirstButtonReturn: {
