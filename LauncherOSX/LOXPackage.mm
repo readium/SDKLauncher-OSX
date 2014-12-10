@@ -114,8 +114,11 @@
         return nil;
     }
 
+    NSRange range2 = [relativePath rangeOfString:@"?"];
+    if (range2.location != NSNotFound) {
+        relativePath = [relativePath substringToIndex:range2.location];
+    }
     NSRange range = [relativePath rangeOfString:@"#"];
-
     if (range.location != NSNotFound) {
         relativePath = [relativePath substringToIndex:range.location];
     }

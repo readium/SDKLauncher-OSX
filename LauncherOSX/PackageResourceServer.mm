@@ -59,17 +59,11 @@ static NSString* m_baseUrlPath = nil;
 
         bool isHTML = [ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]; //[path hasSuffix:@".html"] || [path hasSuffix:@".xhtml"];
 
-        if([ext isEqualToString:@"svg"]) {
-            contentType = @"image/svg+xml";
-        }
-        else if([ext isEqualToString:@"js"]) {
-            contentType = @"text/javascript";
-        }
-        else if([ext isEqualToString:@"css"]) {
-            contentType = @"text/css";
+        if([ext isEqualToString:@"xml"]) {
+            contentType = @"application/xml"; // FORCE
         }
         else if(isHTML) {
-            contentType = @"application/xhtml+xml";
+            contentType = @"application/xhtml+xml"; // FORCE
         }
 
         if (contentType == nil)
@@ -262,18 +256,12 @@ static NSString* m_baseUrlPath = nil;
     if(m_resource.relativePath) {
     
         NSString* ext = [[m_resource.relativePath pathExtension] lowercaseString];
-        
-        if([ext isEqualToString:@"svg"]) {
-            return [NSDictionary dictionaryWithObject:@"image/svg+xml" forKey:@"Content-Type"];
+
+        if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
+            return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"]; // FORCE
         }
-        else if([ext isEqualToString:@"js"]) {
-            return [NSDictionary dictionaryWithObject:@"text/javascript" forKey:@"Content-Type"];
-        }
-        else if([ext isEqualToString:@"css"]) {
-            return [NSDictionary dictionaryWithObject:@"text/css" forKey:@"Content-Type"];
-        }
-        else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
-            return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"];
+        else if([ext isEqualToString:@"xml"]) {
+            return [NSDictionary dictionaryWithObject:@"application/xml" forKey:@"Content-Type"]; // FORCE
         }
         else
         {

@@ -33,7 +33,62 @@
 #import "PackageResourceServer.h"
 #import "RDPackageResource.h"
 #import <ePub3/utilities/byte_stream.h>
+#import <ePub3/utilities/iri.h>
 
+
+@interface Epub3URLProtocol ()
+@property (nonatomic, strong) NSURLConnection *connection;
++(NSString *)scheme;
+@end
+@implementation Epub3URLProtocol
+
+static NSString* EPUB3 = [NSString stringWithUTF8String:ePub3::IRI::gEPUBScheme.c_str()];
+
++(NSString *)scheme;{
+    return EPUB3;
+}
+
++ (BOOL)canInitWithRequest:(NSURLRequest *)request
+{
+    NSURL* requestURI = [request URL];
+    if(NSOrderedSame == [[requestURI scheme] caseInsensitiveCompare:EPUB3]){
+        return YES;
+    }
+
+    return NO;
+}
++ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request
+{
+    return request;
+}
+- (void)startLoading
+{
+    NSMutableURLRequest *newRequest = [self.request mutableCopy];
+    self.connection = [NSURLConnection connectionWithRequest:newRequest delegate:self];
+}
+- (void)stopLoading
+{
+    [self.connection cancel];
+}
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    [self.client URLProtocol:self didLoadData:data];
+}
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    [self.client URLProtocol:self didFailWithError:error];
+    self.connection = nil;
+}
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageAllowed];
+}
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    [self.client URLProtocolDidFinishLoading:self];
+    self.connection = nil;
+}
+@end
 
 @interface LOXWebViewController ()
 
@@ -133,7 +188,6 @@
     //NSString * prefix2 = [NSString stringWithFormat:@"%@%@", prefix1, folder];
     //[path substringFromIndex: [path rangeOfString:prefix1].location]
 
-
     if (schemeFile != NSOrderedSame && [path hasPrefix:folder]) {
         NSString * str = [[NSString stringWithFormat:@"file://%@", path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
         NSURL *url = [NSURL URLWithString:str];
@@ -144,7 +198,12 @@
         return newRequest;
     }
 
-    if (schemeFile != NSOrderedSame)
+    // ObjectPreprocessor and ContentHandler with epub3:// URI protocol
+    // See [NSURLProtocol registerClass:[Epub3URLProtocol class]];
+    //NSString* EPUB3 = [NSString stringWithUTF8String:ePub3::IRI::gEPUBScheme.c_str()];
+    NSComparisonResult schemeEPUB = [scheme caseInsensitiveCompare: [Epub3URLProtocol scheme]];
+
+    if (schemeFile != NSOrderedSame && schemeEPUB != NSOrderedSame)
     {
         return request;
     }
@@ -154,8 +213,33 @@
         return request;
     }
 
+    if (schemeEPUB == NSOrderedSame)
+    {
+        NSString* BASE = [NSString stringWithUTF8String:_package.sdkPackage->BasePath().c_str()];
+        if (![BASE hasPrefix:@"/"]) {
+            BASE = [NSString stringWithFormat:@"/%@", BASE];
+        }
+        if ([path hasPrefix:BASE])
+        {
+            path = [path substringFromIndex:[BASE length]];
+
+            schemeFile == NSOrderedSame;
+        }
+    }
+
     if ([path hasPrefix:@"/"]) {
         path = [path substringFromIndex:1];
+    }
+
+    NSString *query = request.URL.query;
+    if (query != nil)
+    {
+        path = [NSString stringWithFormat:@"%@?%@", path, query];
+    }
+    NSString *fragment = request.URL.fragment;
+    if (fragment != nil)
+    {
+        path = [NSString stringWithFormat:@"%@#%@", path, fragment];
     }
 
     NSString * str = [[NSString stringWithFormat:@"%@/%@/%@", prefix1, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];

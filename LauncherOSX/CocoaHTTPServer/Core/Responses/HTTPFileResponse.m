@@ -32,6 +32,9 @@ static const int httpLogLevel = HTTP_LOG_LEVEL_WARN; // | HTTP_LOG_FLAG_TRACE;
     else if([ext isEqualToString:@"css"]) {
         return [NSDictionary dictionaryWithObject:@"text/css" forKey:@"Content-Type"];
     }
+    else if([ext isEqualToString:@"xml"]) {
+        return [NSDictionary dictionaryWithObject:@"application/xml" forKey:@"Content-Type"];
+    }
     else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
         return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"];
     }

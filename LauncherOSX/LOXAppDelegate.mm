@@ -37,6 +37,7 @@
 #import "LOXUtil.h"
 #import "LOXMediaOverlay.h"
 #import "LOXMediaOverlayController.h"
+#import "LOXWebViewController.h"
 
 using namespace ePub3;
 
@@ -88,6 +89,8 @@ extern NSString *const LOXPageChangedEvent;
 
 -(void) awakeFromNib
 {
+    [NSURLProtocol registerClass:[Epub3URLProtocol class]];
+
     _epubApi = [[LOXePubSdkApi alloc] init];
 
     self.spineViewController.currentPagesInfo = _currentPagesInfo;
