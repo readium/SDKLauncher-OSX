@@ -106,6 +106,11 @@ static NSString* m_baseUrlPath = nil;
                 NSData *data = [resource readDataFull];
                 if (data != nil) {
 
+			// Can be used to check / debug encoding issues
+			// NSString * dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+			// NSLog(@"XHTML SOURCE: %@", dataStr);
+			// data = [dataStr dataUsingEncoding:NSUTF8StringEncoding];
+			
                     BOOL ok = YES;
                     @try
                     {
@@ -113,6 +118,12 @@ static NSString* m_baseUrlPath = nil;
                         //[xmlparser setDelegate:self];
                         [xmlparser setShouldResolveExternalEntities:NO];
                         ok = [xmlparser parse];
+                        
+                        if (ok == NO)
+                        {
+                        	NSError * error = [xmlparser parserError];
+                        	NSLog(@"XHTML PARSE ERROR: %@", error);
+                        }
                     }
                     @catch (NSException *ex)
                     {
