@@ -106,7 +106,7 @@ static NSString* m_baseUrlPath = nil;
                 NSData *data = [resource readDataFull];
                 if (data != nil) {
 
-                    BOOL ok = NO;
+                    BOOL ok = YES;
                     @try
                     {
                         NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:data];
