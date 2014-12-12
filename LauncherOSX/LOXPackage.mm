@@ -105,7 +105,18 @@
         return nil;
     }
 
-    return [urlAbsolutePath substringFromIndex:NSMaxRange(range)];
+    NSString * relativePath = [urlAbsolutePath substringFromIndex:NSMaxRange(range)];
+
+    NSRange rangeQ = [relativePath rangeOfString:@"?"];
+    if (rangeQ.location != NSNotFound) {
+        relativePath = [relativePath substringToIndex:rangeQ.location];
+    }
+    NSRange rangeH = [relativePath rangeOfString:@"#"];
+    if (rangeH.location != NSNotFound) {
+        relativePath = [relativePath substringToIndex:rangeH.location];
+    }
+
+    return relativePath;
 }
 
 - (RDPackageResource *)resourceAtRelativePath:(NSString *)relativePath {
@@ -114,27 +125,18 @@
         return nil;
     }
 
-    NSRange range2 = [relativePath rangeOfString:@"?"];
-    if (range2.location != NSNotFound) {
-        relativePath = [relativePath substringToIndex:range2.location];
-    }
-    NSRange range = [relativePath rangeOfString:@"#"];
-    if (range.location != NSNotFound) {
-        relativePath = [relativePath substringToIndex:range.location];
-    }
-
     ePub3::string s = ePub3::string(relativePath.UTF8String);
 
     //ConstManifestItemPtr
     std::shared_ptr<const ePub3::ManifestItem> manItem = _sdkPackage->ManifestItemAtRelativePath(s);
     if (manItem == nullptr) {
-        NSLog(@"Relative path '%@' does not have a manifest item!", relativePath);
+        NSLog(@"Relative path '%@' does not have a manifest item! (resourceAtRelativePath)", relativePath);
         //return nil;
     }
 
     std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(s);
     if (byteStream == nullptr) {
-        NSLog(@"Relative path '%@' does not have an archive byte stream!", relativePath);
+        NSLog(@"Relative path '%@' does not have an archive byte stream! (resourceAtRelativePath)", relativePath);
         return nil;
     }
 
@@ -160,7 +162,7 @@
 
     ePub3::ConstManifestItemPtr manifestItem = _sdkPackage->ManifestItemAtRelativePath(s);
     if (manifestItem == nullptr) {
-        NSLog(@"Relative path '%@' does not have a manifest item!", relativePath);
+        NSLog(@"Relative path '%@' does not have a manifest item! (getProperByteStream)", relativePath);
         //return nil;
         return currentByteStream;
     }

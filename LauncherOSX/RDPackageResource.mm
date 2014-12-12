@@ -50,8 +50,6 @@
         }
         else
         {
-            NSMutableData *md = [[NSMutableData alloc] initWithCapacity: m_bytesCount];
-
                 if (!m_hasProperStream)
                 {
                     ePub3::ByteStream *byteStream = m_byteStream.release();
@@ -59,6 +57,8 @@
                     m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:m_package path:m_relativePath];
                     m_hasProperStream = YES;
                 }
+
+                NSMutableData *md = [[NSMutableData alloc] initWithCapacity: m_bytesCount];
 
                 while (YES) {
                     std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));

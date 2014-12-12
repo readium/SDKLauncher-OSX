@@ -54,6 +54,11 @@ static NSString* m_baseUrlPath = nil;
     @synchronized ([PackageResourceServer resourceLock]) {
         RDPackageResource *resource = [m_package resourceAtRelativePath:path];
 
+        if (resource == nil) {
+            NSLog(@"No resource found! (%@)", path);
+            return nil;
+        }
+
         NSString* ext = [[path pathExtension] lowercaseString];
         NSString* contentType = nil;
 
@@ -78,35 +83,39 @@ static NSString* m_baseUrlPath = nil;
                 }
             }
         }
-        
-        if (resource == nil) {
-            NSLog(@"No resource found! (%@)", path);
+
+        if (contentType == nil)
+        {
+            NSLog(@"No contentType?! (%@)", path);
         }
-        else {
-            if (!isHTML) {
-                ePub3::string s = ePub3::string(path.UTF8String);
-                ePub3::ManifestTable manifest = [m_package sdkPackage]->Manifest();
-                for (auto i = manifest.begin(); i != manifest.end(); i++) {
-                    std::shared_ptr<ePub3::ManifestItem> item = i->second;
-                    if (item->Href() == s) {
-                        if (item->MediaType() == "application/xhtml+xml") {
-                            isHTML = true;
-                        }
-                        break;
-                    }
-                }
+
+        if (!isHTML) {
+            if (contentType != nil && (contentType == @"application/xhtml+xml" || contentType == @"text/html")) {
+                isHTML = true;
             }
+        }
+
             if (isHTML) {
                 NSData *data = [resource readDataFull];
                 if (data != nil) {
 
-                    BOOL ok = NO;
+//                    NSString * dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//                    NSLog(@"XHTML SOURCE: %@", dataStr);
+//                    data = [dataStr dataUsingEncoding:NSUTF8StringEncoding];
+
+                    BOOL ok = YES;
                     @try
                     {
                         NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:data];
                         //[xmlparser setDelegate:self];
                         [xmlparser setShouldResolveExternalEntities:NO];
                         ok = [xmlparser parse];
+
+                        if (ok == NO)
+                        {
+                            NSError * error = [xmlparser parserError];
+                            NSLog(@"XHTML PARSE ERROR: %@", error);
+                        }
                     }
                     @catch (NSException *ex)
                     {
@@ -182,7 +191,6 @@ static NSString* m_baseUrlPath = nil;
 //                if (data != nil) {
 //                    return [[HTTPDataResponse alloc] initWithData:data contentType:contentType];
 //                }
-        }
     }
 
     return nil;
