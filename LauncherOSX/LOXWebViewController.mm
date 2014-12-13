@@ -158,6 +158,17 @@
         path = [path substringFromIndex:1];
     }
 
+    NSString *query = request.URL.query;
+    if (query != nil)
+    {
+        path = [NSString stringWithFormat:@"%@?%@", path, query];
+    }
+    NSString *fragment = request.URL.fragment;
+    if (fragment != nil)
+    {
+        path = [NSString stringWithFormat:@"%@#%@", path, fragment];
+    }
+
     NSString * str = [[NSString stringWithFormat:@"%@/%@/%@", prefix1, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:str];
 
