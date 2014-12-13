@@ -161,7 +161,7 @@ static NSString* m_baseUrlPath = nil;
                             NSString *inject_epubReadingSystem2 = @"<script id=\"readium_epubReadingSystem_inject2\" type=\"text/javascript\" src=\"/readium_epubReadingSystem_inject/xxx\"> </script>";
 
                             NSString *inject_mathJax = @"";
-                            if ([source rangeOfString:@"<math"].location != NSNotFound) {
+                            if ([source rangeOfString:@"<math"].location != NSNotFound || [source rangeOfString:@"<m:math"].location != NSNotFound) {
 
                                 //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@/../mathjax/MathJax.js\"> </script>", m_baseUrlPath];
                                 inject_mathJax = @"<script type=\"text/javascript\" src=\"/readium_MathJax.js\"> </script>";
