@@ -141,7 +141,7 @@ static NSString* m_baseUrlPath = nil;
 
                     NSString* source = [self htmlFromData:data];
                     if (source != nil) {
-                        NSString *pattern = @"(<head.*>)";
+                        NSString *pattern = @"(<head[^>]*>)";
                         NSError *error = nil;
                         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:&error];
                         if(error != nil) {
