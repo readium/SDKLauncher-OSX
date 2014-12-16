@@ -22,6 +22,8 @@
 
 @interface PackageResourceResponse : NSObject <HTTPResponse> {
 @private UInt64 m_offset;
+@private UInt64 m_offsetInitial;
+//@private bool m_isDone;
 @private RDPackageResource *m_resource;
 @private  BOOL m_isRangeRequest;
 }

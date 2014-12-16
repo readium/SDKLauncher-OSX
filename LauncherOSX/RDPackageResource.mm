@@ -23,7 +23,8 @@
 @private NSString *m_relativePath;
 @private BOOL m_hasProperStream;
 @private std::size_t m_bytesCount;
-@private UInt8 m_buffer[kSDKLauncherPackageResourceBufferSize];
+@private std::size_t m_bytesCountCheck;
+@private UInt8 m_buffer[READ_CHUNKSIZE];
 //@private NSData *m_data;
 }
 
@@ -34,6 +35,7 @@
 
 //@synthesize byteStream = m_byteStream;
 @synthesize bytesCount = m_bytesCount;
+@synthesize bytesCountCheck = m_bytesCountCheck;
 @synthesize relativePath = m_relativePath;
 @synthesize package = m_package;
 
@@ -50,25 +52,35 @@
         }
         else
         {
-                if (!m_hasProperStream)
-                {
-                    ePub3::ByteStream *byteStream = m_byteStream.release();
-                    m_byteStream.reset((ePub3::ByteStream *)[m_package getProperByteStream:m_relativePath currentByteStream:byteStream isRangeRequest:NO]);
-                    m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:m_package path:m_relativePath];
-                    m_hasProperStream = YES;
+            if (!m_hasProperStream)
+            {
+                ePub3::ByteStream *byteStream = m_byteStream.release();
+                m_byteStream.reset((ePub3::ByteStream *)[m_package getProperByteStream:m_relativePath currentByteStream:byteStream isRangeRequest:NO]);
+                m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:m_package path:m_relativePath];
+                m_hasProperStream = YES;
+            }
+
+            m_bytesCountCheck = 0;
+
+            NSMutableData *md = [[NSMutableData alloc] initWithCapacity: m_bytesCount];
+
+            while (YES) {
+                std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
+
+                if (count == 0) {
+                    break;
                 }
 
-                NSMutableData *md = [[NSMutableData alloc] initWithCapacity: m_bytesCount];
-
-                while (YES) {
-                    std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
-
-                    if (count == 0) {
-                        break;
-                    }
-
-                    [md appendBytes:m_buffer length:count];
+                m_bytesCountCheck += count;
+                [md appendBytes:m_buffer length:count];
                 }
+
+
+            if (m_bytesCount != m_bytesCountCheck)
+            {
+                printf("BYTE COUNT UPDATE (readDataFull): %d -> %d (%s)\n", m_bytesCount, m_bytesCountCheck, [m_relativePath UTF8String]);
+                m_bytesCount = m_bytesCountCheck;
+            }
 
             m_data = md;
         }
@@ -84,67 +96,65 @@
     {
         NSLog(@"BYTESTREAM zero BytesAvailable!");
     }
-    else
-    {
-        return size;
-    }
-
-    //std::unique_ptr<ePub3::ArchiveReader> reader = _sdkPackage->ReaderForRelativePath(s);
-    //reader->read(<#(void*)p#>, <#(size_t)len#>)
-
-    std::shared_ptr<ePub3::Archive> archive = [package sdkPackage]->Archive();
-
-    try
-    {
-        //ZipItemInfo
-        ePub3::ArchiveItemInfo info = archive->InfoAtPath([package sdkPackage]->BasePath() + [relPath UTF8String]);
-        size = info.UncompressedSize();
-    }
-    catch (std::exception& e)
-    {
-        auto msg = e.what();
-        NSLog(@"!!! [ArchiveItemInfo] ZIP file not found (corrupted archive?): %@ (%@)", relPath, [NSString stringWithUTF8String:msg]);
-    }
-    catch (...) {
-        throw;
-    }
-
-    archive = nullptr;
-
-
-
-    std::string s = [relPath UTF8String];
-    std::unique_ptr<ePub3::ArchiveReader> reader = [package sdkPackage]->ReaderForRelativePath(s);
-
-    if (reader == nullptr)
-    {
-        NSLog(@"!!! [ArchiveReader] ZIP file not found (corrupted archive?): %@", relPath);
-    }
-    else
-    {
-        UInt8 buffer[kSDKLauncherPackageResourceBufferSize];
-        std::size_t total = 0;
-        std::size_t count = 0;
-        while ((count = reader->read(buffer, sizeof(buffer))) > 0)
-        {
-            total += count;
-        }
-
-        if (total > 0)
-        {
-            // ByteStream bug??! zip_fread works with ArchiveReader, why not ByteStream?
-            NSLog(@"WTF??!");
-
-            if (total != size)
-            {
-                NSLog(@"Oh dear...");
-            }
-        }
-    }
-
-    reader = nullptr;
 
     return size;
+
+//    //std::unique_ptr<ePub3::ArchiveReader> reader = _sdkPackage->ReaderForRelativePath(s);
+//    //reader->read(<#(void*)p#>, <#(size_t)len#>)
+//
+//    std::shared_ptr<ePub3::Archive> archive = [package sdkPackage]->Archive();
+//
+//    try
+//    {
+//        //ZipItemInfo
+//        ePub3::ArchiveItemInfo info = archive->InfoAtPath([package sdkPackage]->BasePath() + [relPath UTF8String]);
+//        size = info.UncompressedSize();
+//    }
+//    catch (std::exception& e)
+//    {
+//        auto msg = e.what();
+//        NSLog(@"!!! [ArchiveItemInfo] ZIP file not found (corrupted archive?): %@ (%@)", relPath, [NSString stringWithUTF8String:msg]);
+//    }
+//    catch (...) {
+//        throw;
+//    }
+//
+//    archive = nullptr;
+//
+//
+//
+//    std::string s = [relPath UTF8String];
+//    std::unique_ptr<ePub3::ArchiveReader> reader = [package sdkPackage]->ReaderForRelativePath(s);
+//
+//    if (reader == nullptr)
+//    {
+//        NSLog(@"!!! [ArchiveReader] ZIP file not found (corrupted archive?): %@", relPath);
+//    }
+//    else
+//    {
+//        UInt8 buffer[READ_CHUNKSIZE];
+//        std::size_t total = 0;
+//        std::size_t count = 0;
+//        while ((count = reader->read(buffer, sizeof(buffer))) > 0)
+//        {
+//            total += count;
+//        }
+//
+//        if (total > 0)
+//        {
+//            // ByteStream bug??! zip_fread works with ArchiveReader, why not ByteStream?
+//            NSLog(@"WTF??!");
+//
+//            if (total != size)
+//            {
+//                NSLog(@"Oh dear...");
+//            }
+//        }
+//    }
+//
+//    reader = nullptr;
+//
+//    return size;
 }
 
 - (NSData *)readDataOfLength:(NSUInteger)length offset:(UInt64)offset isRangeRequest:(BOOL)isRangeRequest {
@@ -179,15 +189,25 @@
 
     		std::size_t count = filterStream->ReadBytes(m_buffer, sizeof(m_buffer), range);
 
-            if (count <= 0) break;
+            if (count <= 0)  {
+                break;
+            }
 
     		[md appendBytes:m_buffer length:count];
 
+            m_bytesCountCheck += count;
     		totalRead += count;
 //printf("+++++ readDataOfLength SO FAR: %d / %d (%s)\n", totalRead, length, [m_relativePath UTF8String]);
 
             range.Location(range.Location() + count);
         }
+
+//
+//        if (m_bytesCount != m_bytesCountCheck)
+//        {
+//            printf("BYTE COUNT UPDATE (FilterChainByteStreamRange): %d -> %d (%s) %d\n", m_bytesCount, m_bytesCountCheck, [m_relativePath UTF8String], offset);
+//            m_bytesCount = m_bytesCountCheck;
+//        }
 
         if (totalRead != length) {
             //NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
@@ -206,7 +226,7 @@
         }
         else {
             //NSLog(@"1) Correct: (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
-            printf("1) Correct: (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+            printf("2) Korrect: (%d %d / %d %s %d)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String], offset);
         }
 
 
@@ -215,8 +235,11 @@
 
     ePub3::SeekableByteStream *seekableByteStream = dynamic_cast<ePub3::SeekableByteStream *>(m_byteStream.get());
     if (seekableByteStream != nullptr
-        || (m_bytesCount - m_byteStream->BytesAvailable()) == offset) //not-seek-able-ByteStream does not expose its internal position! m_byteStream->Position()
+        || true)
     {
+        //ASSERT (m_bytesCount - m_byteStream->BytesAvailable()) == offset
+        // (does not work because underlying raw byte stream may not map 1-1 to output ranges)
+        // ... we assume that this is part of a series of contiguous subsequent buffer requests from the HTTP chunking.
 
         NSMutableData *md = [[NSMutableData alloc] initWithCapacity:length];
 
@@ -236,10 +259,21 @@
 
             std::size_t count = m_byteStream->ReadBytes(m_buffer, toRead);
 
-            if (count <= 0) break;
+            if (count <= 0) {
+
+
+                if (m_bytesCount != m_bytesCountCheck)
+                {
+                    printf("BYTE COUNT UPDATE: %d -> %d (%s) %d\n", m_bytesCount, m_bytesCountCheck, [m_relativePath UTF8String], offset);
+                    m_bytesCount = m_bytesCountCheck;
+                }
+
+                break;
+            }
 
             [md appendBytes:m_buffer length:count];
 
+            m_bytesCountCheck += count;
             totalRead += count;
 //printf("+++++ readDataOfLength SO FAR: %d / %d (%s)\n", totalRead, length, [m_relativePath UTF8String]);
 
@@ -247,7 +281,7 @@
 
         if (totalRead != length) {
             //NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
-            //printf("1) Did not read the expected number of bytes! (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+            printf("BYTE Partial: (%d %d / %d %s %d)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String], offset);
 
             if (totalRead == 0){
 
@@ -262,7 +296,7 @@
         }
         else {
             //NSLog(@"1) Correct: (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
-            printf("1) Correct: (%d %d / %d %s)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String]);
+            printf("BYTE Correct: (%d %d / %d %s %d)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String], offset);
         }
 
 
@@ -307,6 +341,7 @@
 
         m_byteStream.reset(byteStream);
         m_bytesCount = [RDPackageResource bytesAvailable:m_byteStream.get() pack:package path:m_relativePath];
+        m_bytesCountCheck = 0;
 
         m_hasProperStream = NO;
 
