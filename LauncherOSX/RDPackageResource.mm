@@ -78,7 +78,7 @@
 
             if (m_bytesCount != m_bytesCountCheck)
             {
-                printf("BYTE COUNT UPDATE (readDataFull): %d -> %d (%s)\n", m_bytesCount, m_bytesCountCheck, [m_relativePath UTF8String]);
+// printf("BYTE COUNT UPDATE (readDataFull): %d -> %d (%s)\n", m_bytesCount, m_bytesCountCheck, [m_relativePath UTF8String]);
                 m_bytesCount = m_bytesCountCheck;
             }
 
@@ -226,7 +226,7 @@
         }
         else {
             //NSLog(@"1) Correct: (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
-            printf("2) Korrect: (%d %d / %d %s %d)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String], offset);
+// printf("2) Korrect: (%d %d / %d %s %d)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String], offset);
         }
 
 
@@ -264,7 +264,7 @@
 
                 if (m_bytesCount != m_bytesCountCheck)
                 {
-                    printf("BYTE COUNT UPDATE: %d -> %d (%s) %d\n", m_bytesCount, m_bytesCountCheck, [m_relativePath UTF8String], offset);
+// printf("BYTE COUNT UPDATE: %d -> %d (%s) %d\n", m_bytesCount, m_bytesCountCheck, [m_relativePath UTF8String], offset);
                     m_bytesCount = m_bytesCountCheck;
                 }
 
@@ -281,7 +281,7 @@
 
         if (totalRead != length) {
             //NSLog(@"1) Did not read the expected number of bytes! (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
-            printf("BYTE Partial: (%d %d / %d %s %d)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String], offset);
+// printf("BYTE Partial: (%d %d / %d %s %d)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String], offset);
 
             if (totalRead == 0){
 
@@ -296,7 +296,7 @@
         }
         else {
             //NSLog(@"1) Correct: (%lu %lu / %lu %@)", totalRead, length, m_bytesCount, m_relativePath);
-            printf("BYTE Correct: (%d %d / %d %s %d)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String], offset);
+// printf("BYTE Correct: (%d %d / %d %s %d)\n", totalRead, length, m_bytesCount, [m_relativePath UTF8String], offset);
         }
 
 
