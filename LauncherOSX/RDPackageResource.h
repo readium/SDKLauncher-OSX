@@ -11,7 +11,7 @@
 #import <ePub3/utilities/byte_stream.h>
 
 // Same as HTTPConnection.m (to avoid unnecessary intermediary buffer iterations)
-#define READ_CHUNKSIZE  (1024 * 50)
+#define READ_CHUNKSIZE  (1024 * 512)
 
 @class RDPackageResource;
 @class LOXPackage;
