@@ -10,7 +10,8 @@
 #import <Foundation/Foundation.h>
 #import <ePub3/utilities/byte_stream.h>
 
-#define kSDKLauncherPackageResourceBufferSize 4096
+// Same as HTTPConnection.m (to avoid unnecessary intermediary buffer iterations)
+#define READ_CHUNKSIZE  (1024 * 512)
 
 @class RDPackageResource;
 @class LOXPackage;
@@ -23,6 +24,7 @@
 
 //@property (nonatomic, readonly) ePub3::ByteStream* byteStream;
 @property (nonatomic, readonly) std::size_t bytesCount;
+@property (nonatomic, readonly) std::size_t bytesCountCheck;
 
 @property (nonatomic, readonly) LOXPackage *package;
 

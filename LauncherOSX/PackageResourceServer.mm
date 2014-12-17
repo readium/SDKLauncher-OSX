@@ -33,11 +33,6 @@ static NSString* m_baseUrlPath = nil;
         return nil;
     }
 
-    // See:
-    // ConstManifestItemPtr PackageBase::ManifestItemAtRelativePath(const string& path) const
-    // which compares with non-escaped source (OPF original manifest>item@src attribute value)
-    //path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-
 //
 //    if (path != nil && [path hasPrefix:@"/"]) {
 //        path = [path substringFromIndex:1];
@@ -54,22 +49,21 @@ static NSString* m_baseUrlPath = nil;
     @synchronized ([PackageResourceServer resourceLock]) {
         RDPackageResource *resource = [m_package resourceAtRelativePath:path];
 
+        if (resource == nil) {
+            NSLog(@"No resource found! (%@)", path);
+            return nil;
+        }
+
         NSString* ext = [[path pathExtension] lowercaseString];
         NSString* contentType = nil;
 
         bool isHTML = [ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]; //[path hasSuffix:@".html"] || [path hasSuffix:@".xhtml"];
 
-        if([ext isEqualToString:@"svg"]) {
-            contentType = @"image/svg+xml";
-        }
-        else if([ext isEqualToString:@"js"]) {
-            contentType = @"text/javascript";
-        }
-        else if([ext isEqualToString:@"css"]) {
-            contentType = @"text/css";
+        if([ext isEqualToString:@"xml"]) {
+            contentType = @"application/xml"; // FORCE
         }
         else if(isHTML) {
-            contentType = @"application/xhtml+xml";
+            contentType = @"application/xhtml+xml"; // FORCE
         }
 
         if (contentType == nil)
@@ -84,122 +78,120 @@ static NSString* m_baseUrlPath = nil;
                 }
             }
         }
-        
-        if (resource == nil) {
-            NSLog(@"No resource found! (%@)", path);
+
+        if (contentType == nil)
+        {
+            NSLog(@"No contentType?! (%@)", path);
         }
-        else {
-            if (!isHTML) {
-                ePub3::string s = ePub3::string(path.UTF8String);
-                ePub3::ManifestTable manifest = [m_package sdkPackage]->Manifest();
-                for (auto i = manifest.begin(); i != manifest.end(); i++) {
-                    std::shared_ptr<ePub3::ManifestItem> item = i->second;
-                    if (item->Href() == s) {
-                        if (item->MediaType() == "application/xhtml+xml") {
-                            isHTML = true;
-                        }
-                        break;
-                    }
-                }
+
+        if (!isHTML) {
+            if (contentType != nil && (contentType == @"application/xhtml+xml" || contentType == @"text/html")) {
+                isHTML = true;
             }
-            if (isHTML) {
-                NSData *data = [resource readDataFull];
-                if (data != nil) {
+        }
 
-			// Can be used to check / debug encoding issues
-			// NSString * dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-			// NSLog(@"XHTML SOURCE: %@", dataStr);
-			// data = [dataStr dataUsingEncoding:NSUTF8StringEncoding];
-			
-                    BOOL ok = YES;
-                    @try
-                    {
-                        NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:data];
-                        //[xmlparser setDelegate:self];
-                        [xmlparser setShouldResolveExternalEntities:NO];
-                        ok = [xmlparser parse];
-                        
-                        if (ok == NO)
-                        {
-                        	NSError * error = [xmlparser parserError];
-                        	NSLog(@"XHTML PARSE ERROR: %@", error);
-                        }
-                    }
-                    @catch (NSException *ex)
-                    {
-                        NSLog(@"XHTML parse exception: %@", ex);
-                        ok = NO;
-                    }
-
-                    if (ok == NO)
-                    {
-                        //contentType = @"application/xhtml+xml";
-                        contentType = @"text/html";
-
-                        //TODO: resource.contentType = contentType;
-                    }
-
-                    NSString* source = [self htmlFromData:data];
-                    if (source != nil) {
-                        NSString *pattern = @"(<head[^>]*>)";
-                        NSError *error = nil;
-                        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:&error];
-                        if(error != nil) {
-                            NSLog(@"RegEx error: %@", error);
-                        } else {
-                            //NSString *filePath = [[NSBundle mainBundle] pathForResource:@"epubReadingSystem_inject" ofType:@"js" inDirectory:@"Scripts"];
-                            //NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
-                            //NSString *inject_epubReadingSystem = [NSString stringWithFormat:@"<script type=\"text/javascript\"></script>", code];
-
-                            //NSString *inject_epubReadingSystem1 = [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@/../epubReadingSystem_inject.js\"></script>", m_baseUrlPath];
-                            
-                            // Installs "hook" function so that top-level window (application) can later inject the window.navigator.epubReadingSystem into this HTML document's iframe
-                            NSString *inject_epubReadingSystem1 = [NSString stringWithFormat:@"<script id=\"readium_epubReadingSystem_inject1\" type=\"text/javascript\">\n//<![CDATA[\n%@\n//]]>\n</script>",
-                            @"window.readium_set_epubReadingSystem = function (obj) {\
-                                \nwindow.navigator.epubReadingSystem = obj;\
-                                \nwindow.readium_set_epubReadingSystem = undefined;\
-                                \nvar el1 = document.getElementById(\"readium_epubReadingSystem_inject1\");\
-                                \nif (el1 && el1.parentNode) { el1.parentNode.removeChild(el1); }\
-                                \nvar el2 = document.getElementById(\"readium_epubReadingSystem_inject2\");\
-                                \nif (el2 && el2.parentNode) { el2.parentNode.removeChild(el2); }\
-                                \n};"];
-
-                            // Fake script, generates HTTP request => triggers the push of window.navigator.epubReadingSystem into this HTML document's iframe (see LOXWebViewController.mm where the "readium_epubReadingSystem_inject" UIWebView URI query is handled)
-                            NSString *inject_epubReadingSystem2 = @"<script id=\"readium_epubReadingSystem_inject2\" type=\"text/javascript\" src=\"/readium_epubReadingSystem_inject/xxx\"> </script>";
-
-                            NSString *inject_mathJax = @"";
-                            if ([source rangeOfString:@"<math"].location != NSNotFound) {
-
-                                //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@/../mathjax/MathJax.js\"> </script>", m_baseUrlPath];
-                                inject_mathJax = @"<script type=\"text/javascript\" src=\"/readium_MathJax.js\"> </script>";
-
-                                //NSString *filePath = [[NSBundle mainBundle] pathForResource:@"MathJax" ofType:@"js" inDirectory:@"Scripts/mathjax"];
-                                //NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
-                                //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\">\n//<![CDATA[\n%@\n//]]>\n</script>", code];
-                                //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\">\n\n%@\n\n</script>", code];
-                                //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\">\n<![CDATA[\n%@\n]]>\n</script>", code];
-                            }
-                            
-                            NSString *newSource = [regex stringByReplacingMatchesInString:source options:0 range:NSMakeRange(0, [source length]) withTemplate:
-                            [NSString stringWithFormat:@"%@\n%@\n%@\n%@", @"$1", inject_epubReadingSystem1, inject_epubReadingSystem2, inject_mathJax]];
-                            if (newSource != nil && newSource.length > 0) {
-                               NSData * newData = [newSource dataUsingEncoding:NSUTF8StringEncoding];
-                               if (newData != nil) {
-                                   return [[HTTPDataResponse alloc] initWithData:newData contentType:contentType];
-                               }
-                            }
-                        }
-                    }
-                }
+        if (isHTML) {
+            NSString * FALLBACK_HTML = @"<?xml version=\"1.0\" encoding=\"UTF-8\"?><html xmlns=\"http://www.w3.org/1999/xhtml\"><head><title>HTML READ ERROR</title></head><body>ERROR READING HTML BYTES!</body></html>";
+            NSData *data = [resource readDataFull];
+            if (data == nil || data.length == 0)
+            {
+                data = [FALLBACK_HTML dataUsingEncoding:NSUTF8StringEncoding];
             }
 
-            return [[PackageResourceResponse alloc] initWithResource:resource];
+            BOOL ok = YES;
+            @try
+            {
+                NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:data];
+                //[xmlparser setDelegate:self];
+                [xmlparser setShouldResolveExternalEntities:NO];
+                ok = [xmlparser parse];
+
+                if (ok == NO)
+                {
+                    NSError * error = [xmlparser parserError];
+                    NSLog(@"XHTML PARSE ERROR: %@", error);
+                }
+            }
+            @catch (NSException *ex)
+            {
+                NSLog(@"XHTML parse exception: %@", ex);
+                ok = NO;
+            }
+
+            if (ok == NO)
+            {
+                // Can be used to check / debug encoding issues
+                NSString * dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                NSLog(@"XHTML SOURCE: %@", dataStr);
+                
+                //contentType = @"application/xhtml+xml";
+                contentType = @"text/html";
+
+                //TODO: resource.contentType = contentType;
+            }
+
+            NSString* source = [self htmlFromData:data];
+            if (source == nil || source.length == 0)
+            {
+                source = FALLBACK_HTML;
+            }
+
+            NSString *pattern = @"(<head[^>]*>)";
+            NSError *error = nil;
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:&error];
+            if(error != nil) {
+                NSLog(@"RegEx error: %@", error);
+            } else {
+                //NSString *filePath = [[NSBundle mainBundle] pathForResource:@"epubReadingSystem_inject" ofType:@"js" inDirectory:@"Scripts"];
+                //NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+                //NSString *inject_epubReadingSystem = [NSString stringWithFormat:@"<script type=\"text/javascript\"></script>", code];
+
+                //NSString *inject_epubReadingSystem1 = [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@/../epubReadingSystem_inject.js\"></script>", m_baseUrlPath];
+
+                // Installs "hook" function so that top-level window (application) can later inject the window.navigator.epubReadingSystem into this HTML document's iframe
+                NSString *inject_epubReadingSystem1 = [NSString stringWithFormat:@"<script id=\"readium_epubReadingSystem_inject1\" type=\"text/javascript\">\n//<![CDATA[\n%@\n//]]>\n</script>",
+                @"window.readium_set_epubReadingSystem = function (obj) {\
+                    \nwindow.navigator.epubReadingSystem = obj;\
+                    \nwindow.readium_set_epubReadingSystem = undefined;\
+                    \nvar el1 = document.getElementById(\"readium_epubReadingSystem_inject1\");\
+                    \nif (el1 && el1.parentNode) { el1.parentNode.removeChild(el1); }\
+                    \nvar el2 = document.getElementById(\"readium_epubReadingSystem_inject2\");\
+                    \nif (el2 && el2.parentNode) { el2.parentNode.removeChild(el2); }\
+                    \n};"];
+
+                // Fake script, generates HTTP request => triggers the push of window.navigator.epubReadingSystem into this HTML document's iframe (see LOXWebViewController.mm where the "readium_epubReadingSystem_inject" UIWebView URI query is handled)
+                NSString *inject_epubReadingSystem2 = @"<script id=\"readium_epubReadingSystem_inject2\" type=\"text/javascript\" src=\"/readium_epubReadingSystem_inject/xxx\"> </script>";
+
+                NSString *inject_mathJax = @"";
+                if ([source rangeOfString:@"<math"].location != NSNotFound || [source rangeOfString:@"<m:math"].location != NSNotFound) {
+
+                    //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\" src=\"%@/../mathjax/MathJax.js\"> </script>", m_baseUrlPath];
+                    inject_mathJax = @"<script type=\"text/javascript\" src=\"/readium_MathJax.js\"> </script>";
+
+                    //NSString *filePath = [[NSBundle mainBundle] pathForResource:@"MathJax" ofType:@"js" inDirectory:@"Scripts/mathjax"];
+                    //NSString *code = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+                    //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\">\n//<![CDATA[\n%@\n//]]>\n</script>", code];
+                    //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\">\n\n%@\n\n</script>", code];
+                    //inject_mathJax = [NSString stringWithFormat:@"<script type=\"text/javascript\">\n<![CDATA[\n%@\n]]>\n</script>", code];
+                }
+
+                NSString *newSource = [regex stringByReplacingMatchesInString:source options:0 range:NSMakeRange(0, [source length]) withTemplate:
+                [NSString stringWithFormat:@"%@\n%@\n%@\n%@", @"$1", inject_epubReadingSystem1, inject_epubReadingSystem2, inject_mathJax]];
+                if (newSource != nil && newSource.length > 0) {
+                   NSData * newData = [newSource dataUsingEncoding:NSUTF8StringEncoding];
+                   if (newData != nil) {
+                       return [[HTTPDataResponse alloc] initWithData:newData contentType:contentType];
+                   }
+                }
+            }
+        }
+
+        return [[PackageResourceResponse alloc] initWithResource:resource];
 //
 //                NSData *data = resource.data;
 //                if (data != nil) {
 //                    return [[HTTPDataResponse alloc] initWithData:data contentType:contentType];
 //                }
-        }
     }
 
     return nil;
@@ -273,18 +265,12 @@ static NSString* m_baseUrlPath = nil;
     if(m_resource.relativePath) {
     
         NSString* ext = [[m_resource.relativePath pathExtension] lowercaseString];
-        
-        if([ext isEqualToString:@"svg"]) {
-            return [NSDictionary dictionaryWithObject:@"image/svg+xml" forKey:@"Content-Type"];
+
+        if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
+            return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"]; // FORCE
         }
-        else if([ext isEqualToString:@"js"]) {
-            return [NSDictionary dictionaryWithObject:@"text/javascript" forKey:@"Content-Type"];
-        }
-        else if([ext isEqualToString:@"css"]) {
-            return [NSDictionary dictionaryWithObject:@"text/css" forKey:@"Content-Type"];
-        }
-        else if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
-            return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"];
+        else if([ext isEqualToString:@"xml"]) {
+            return [NSDictionary dictionaryWithObject:@"application/xml" forKey:@"Content-Type"]; // FORCE
         }
         else
         {
@@ -303,7 +289,14 @@ static NSString* m_baseUrlPath = nil;
     return [NSDictionary new];
 }
 
+//- (BOOL)isChunked
+//{
+//    return YES; // we do not know the content length in advance
+//}
+
 - (UInt64)contentLength {
+// printf("contentLength: %d (%s)\n", m_resource.bytesCount, [m_resource.relativePath UTF8String]);
+
     return m_resource.bytesCount;
 }
 
@@ -323,8 +316,13 @@ static NSString* m_baseUrlPath = nil;
 
 
 - (BOOL)isDone {
-    bool isDone = m_offset >= m_resource.bytesCount;
-//printf("is DONE: %d\n", isDone);
+
+    bool isDone = !m_isRangeRequest
+            ? (m_offset >= m_resource.bytesCount)
+            : (m_offset >= (m_offsetInitial + m_resource.bytesCountCheck));
+
+//printf("is DONE: %d (%s)\n", isDone, [m_resource.relativePath UTF8String]);
+
     return isDone;
 }
 
@@ -337,13 +335,26 @@ static NSString* m_baseUrlPath = nil;
 - (NSData *)readDataOfLength:(NSUInteger)length {
     NSData *data = nil;
 
+//printf("readDataOfLength 1 %s (%d)\n", [m_resource.relativePath UTF8String], length);
     @synchronized ([PackageResourceServer resourceLock]) {
 
+//printf("readDataOfLength %s (%d)\n", [m_resource.relativePath UTF8String], length);
         data = [m_resource readDataOfLength:length offset:m_offset isRangeRequest:m_isRangeRequest];
     }
 
-    if (data != nil) {
+    if (data != nil)
+    {
         m_offset += data.length;
+    }
+
+    if (data == nil || data.length == 0)
+    {
+        printf("readDataOfLength NO DATA  %s (%d)\n", [m_resource.relativePath UTF8String], length);
+    }
+
+    if (data == nil)
+    {
+        data = [NSData data];
     }
 
     return data;
@@ -351,7 +362,9 @@ static NSString* m_baseUrlPath = nil;
 
 
 - (void)setOffset:(UInt64)offset {
+//printf("setOffset: %d (%s)\n", offset, [m_resource.relativePath UTF8String]);
     m_offset = offset;
+    m_offsetInitial = offset;
     m_isRangeRequest = YES;
 }
 
@@ -390,8 +403,8 @@ static NSString* m_baseUrlPath = nil;
 
         m_resourceLock = [[NSObject alloc] init];
 
-//        NSString * port = [NSString stringWithFormat:@"%d", kSDKLauncherPackageResourceServerPort];
-//        NSString * address = [@"localhost:" stringByAppendingString:port];
+// NSString * port = [NSString stringWithFormat:@"%d", kSDKLauncherPackageResourceServerPort];
+// NSString * address = [@"localhost:" stringByAppendingString:port];
         NSString * address = @"localhost";
         NSURL * url = [NSURL fileURLWithPath: [@"file:///" stringByAppendingString:[m_package packageUUID]]];
 
