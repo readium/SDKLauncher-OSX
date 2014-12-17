@@ -33,11 +33,6 @@ static NSString* m_baseUrlPath = nil;
         return nil;
     }
 
-    // See:
-    // ConstManifestItemPtr PackageBase::ManifestItemAtRelativePath(const string& path) const
-    // which compares with non-escaped source (OPF original manifest>item@src attribute value)
-    //path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-
 //
 //    if (path != nil && [path hasPrefix:@"/"]) {
 //        path = [path substringFromIndex:1];
@@ -300,7 +295,7 @@ static NSString* m_baseUrlPath = nil;
 //}
 
 - (UInt64)contentLength {
-    printf("contentLength: %d (%s)\n", m_resource.bytesCount, [m_resource.relativePath UTF8String]);
+// printf("contentLength: %d (%s)\n", m_resource.bytesCount, [m_resource.relativePath UTF8String]);
 
     return m_resource.bytesCount;
 }
@@ -314,7 +309,6 @@ static NSString* m_baseUrlPath = nil;
     if (self = [super init]) {
         m_resource = resource;
         m_isRangeRequest = NO;
-        //m_isDone = false;
     }
 
     return self;
@@ -327,7 +321,7 @@ static NSString* m_baseUrlPath = nil;
             ? (m_offset >= m_resource.bytesCount)
             : (m_offset >= (m_offsetInitial + m_resource.bytesCountCheck));
 
-printf("is DONE: %d (%s)\n", isDone, [m_resource.relativePath UTF8String]);
+//printf("is DONE: %d (%s)\n", isDone, [m_resource.relativePath UTF8String]);
 
     return isDone;
 }
@@ -341,21 +335,21 @@ printf("is DONE: %d (%s)\n", isDone, [m_resource.relativePath UTF8String]);
 - (NSData *)readDataOfLength:(NSUInteger)length {
     NSData *data = nil;
 
-    //printf("readDataOfLength 1 %s (%d)\n", [m_resource.relativePath UTF8String], length);
+//printf("readDataOfLength 1 %s (%d)\n", [m_resource.relativePath UTF8String], length);
     @synchronized ([PackageResourceServer resourceLock]) {
 
-        printf("readDataOfLength %s (%d)\n", [m_resource.relativePath UTF8String], length);
+//printf("readDataOfLength %s (%d)\n", [m_resource.relativePath UTF8String], length);
         data = [m_resource readDataOfLength:length offset:m_offset isRangeRequest:m_isRangeRequest];
     }
 
-    if (data != nil) {
+    if (data != nil)
+    {
         m_offset += data.length;
     }
 
     if (data == nil || data.length == 0)
     {
         printf("readDataOfLength NO DATA  %s (%d)\n", [m_resource.relativePath UTF8String], length);
-        //m_isDone = true;
     }
 
     if (data == nil)
@@ -368,7 +362,7 @@ printf("is DONE: %d (%s)\n", isDone, [m_resource.relativePath UTF8String]);
 
 
 - (void)setOffset:(UInt64)offset {
-    printf("setOffset: %d (%s)\n", offset, [m_resource.relativePath UTF8String]);
+//printf("setOffset: %d (%s)\n", offset, [m_resource.relativePath UTF8String]);
     m_offset = offset;
     m_offsetInitial = offset;
     m_isRangeRequest = YES;
@@ -409,8 +403,8 @@ printf("is DONE: %d (%s)\n", isDone, [m_resource.relativePath UTF8String]);
 
         m_resourceLock = [[NSObject alloc] init];
 
-//        NSString * port = [NSString stringWithFormat:@"%d", kSDKLauncherPackageResourceServerPort];
-//        NSString * address = [@"localhost:" stringByAppendingString:port];
+// NSString * port = [NSString stringWithFormat:@"%d", kSDKLauncherPackageResourceServerPort];
+// NSString * address = [@"localhost:" stringByAppendingString:port];
         NSString * address = @"localhost";
         NSURL * url = [NSURL fileURLWithPath: [@"file:///" stringByAppendingString:[m_package packageUUID]]];
 
