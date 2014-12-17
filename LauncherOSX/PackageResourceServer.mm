@@ -115,10 +115,6 @@ static NSString* m_baseUrlPath = nil;
                 {
                     NSError * error = [xmlparser parserError];
                     NSLog(@"XHTML PARSE ERROR: %@", error);
-
-                    // Can be used to check / debug encoding issues
-                    NSString * dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                    NSLog(@"XHTML SOURCE: %@", dataStr);
                 }
             }
             @catch (NSException *ex)
@@ -129,6 +125,10 @@ static NSString* m_baseUrlPath = nil;
 
             if (ok == NO)
             {
+                // Can be used to check / debug encoding issues
+                NSString * dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                NSLog(@"XHTML SOURCE: %@", dataStr);
+                
                 //contentType = @"application/xhtml+xml";
                 contentType = @"text/html";
 
