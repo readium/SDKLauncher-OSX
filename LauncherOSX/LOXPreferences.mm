@@ -1,10 +1,29 @@
 //
 // Created by Boris Schneiderman on 2013-07-16.
-// Copyright (c) 2013 Boris Schneiderman. All rights reserved.
 //
-// To change the template use AppCode | Preferences | File Templates.
-//
-
+//  Copyright (c) 2014 Readium Foundation and/or its licensees. All rights reserved.
+//  
+//  Redistribution and use in source and binary forms, with or without modification, 
+//  are permitted provided that the following conditions are met:
+//  1. Redistributions of source code must retain the above copyright notice, this 
+//  list of conditions and the following disclaimer.
+//  2. Redistributions in binary form must reproduce the above copyright notice, 
+//  this list of conditions and the following disclaimer in the documentation and/or 
+//  other materials provided with the distribution.
+//  3. Neither the name of the organization nor the names of its contributors may be 
+//  used to endorse or promote products derived from this software without specific 
+//  prior written permission.
+//  
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+//  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+//  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+//  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+//  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+//  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
+//  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+//  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+//  OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #import "LOXPreferences.h"
 
@@ -37,7 +56,6 @@
     if(self) {
 
         self.fontSize = [NSNumber numberWithInt:100];
-        self.isSyntheticSpread = [NSNumber numberWithBool:YES];
         self.mediaOverlaysSkipSkippables = [NSNumber numberWithBool:NO];
         self.mediaOverlaysEscapeEscapables = [NSNumber numberWithBool:YES];
         self.mediaOverlaysSkippables = [NSString stringWithUTF8String:""];
@@ -46,14 +64,14 @@
         self.columnGap = [NSNumber numberWithInt:20];
         self.mediaOverlaysRate = [NSNumber numberWithInt:1];
         self.mediaOverlaysVolume = [NSNumber numberWithInt:100];
-        self.isScrollDoc = [NSNumber numberWithBool:NO];
-        self.isScrollContinuous = [NSNumber numberWithBool:NO];
+        
+        self.syntheticSpread = @"auto";
+        self.scroll = @"auto";
 
         _doNotUpdateView = NO;
 
         _observableProperties = [NSArray arrayWithObjects:
                 NSStringFromSelector(@selector(fontSize)),
-                        NSStringFromSelector(@selector(isSyntheticSpread)),
                         NSStringFromSelector(@selector(columnGap)),
                         NSStringFromSelector(@selector(mediaOverlaysSkipSkippables)),
                         NSStringFromSelector(@selector(mediaOverlaysEscapeEscapables)),
@@ -62,8 +80,9 @@
                         NSStringFromSelector(@selector(mediaOverlaysEnableClick)),
                         NSStringFromSelector(@selector(mediaOverlaysRate)),
                         NSStringFromSelector(@selector(mediaOverlaysVolume)),
-                        NSStringFromSelector(@selector(isScrollDoc)),
-                        NSStringFromSelector(@selector(isScrollContinuous)),
+                                 
+                        NSStringFromSelector(@selector(scroll)),
+                        NSStringFromSelector(@selector(syntheticSpread)),
                         nil];
     }
 
@@ -108,8 +127,9 @@
 -(NSDictionary *) toDictionary
 {
     return @{
+            @"enableGPUHardwareAccelerationCSS3D": [NSNumber numberWithBool:NO],
+
             NSStringFromSelector(@selector(fontSize)): self.fontSize,
-            NSStringFromSelector(@selector(isSyntheticSpread)): self.isSyntheticSpread,
             NSStringFromSelector(@selector(mediaOverlaysSkipSkippables)): self.mediaOverlaysSkipSkippables,
             NSStringFromSelector(@selector(mediaOverlaysEscapeEscapables)): self.mediaOverlaysEscapeEscapables,
             NSStringFromSelector(@selector(mediaOverlaysSkippables)): self.mediaOverlaysSkippables,
@@ -118,8 +138,11 @@
             NSStringFromSelector(@selector(mediaOverlaysRate)): self.mediaOverlaysRate,
             NSStringFromSelector(@selector(mediaOverlaysVolume)): self.mediaOverlaysVolume,
             NSStringFromSelector(@selector(columnGap)): self.columnGap,
-            NSStringFromSelector(@selector(isScrollDoc)): self.isScrollDoc,
-            NSStringFromSelector(@selector(isScrollContinuous)): self.isScrollContinuous,
+            
+            NSStringFromSelector(@selector(syntheticSpread)): self.syntheticSpread,
+            NSStringFromSelector(@selector(scroll)): self.scroll,
+
+            
             NSStringFromSelector(@selector(doNotUpdateView)): [NSNumber numberWithBool:_doNotUpdateView]
     };
 }

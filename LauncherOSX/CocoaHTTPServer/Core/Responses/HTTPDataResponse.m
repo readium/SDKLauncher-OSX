@@ -12,16 +12,34 @@ static const int httpLogLevel = HTTP_LOG_LEVEL_OFF; // | HTTP_LOG_FLAG_TRACE;
 
 @implementation HTTPDataResponse
 
+- (NSDictionary *)httpHeaders {
+
+    if(contentType) {
+        return [NSDictionary dictionaryWithObject:contentType forKey:@"Content-Type"];
+    }
+    
+    return [NSDictionary new];
+}
+
+
 - (id)initWithData:(NSData *)dataParam
 {
-	if((self = [super init]))
+    return [self initWithData:dataParam contentType:nil];
+}
+
+- (id)initWithData:(NSData *)dataParam contentType:(NSString *)contentTypeParam
+{
+    if((self = [super init]))
 	{
 		HTTPLogTrace();
 		
 		offset = 0;
 		data = dataParam;
+        contentType = contentTypeParam;
 	}
+    
 	return self;
+
 }
 
 - (void)dealloc
