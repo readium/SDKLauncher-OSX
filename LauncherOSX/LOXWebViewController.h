@@ -48,6 +48,10 @@
 @class WebView;
 @class PackageResourceServer;
 
+@interface Epub3URLProtocol : NSURLProtocol
+
+@end
+
 @interface LOXWebViewController : NSObject<LOXSpineViewControllerDelegate> {
 
 @private

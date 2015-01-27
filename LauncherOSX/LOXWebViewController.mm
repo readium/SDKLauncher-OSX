@@ -42,7 +42,124 @@
 #import "PackageResourceServer.h"
 #import "RDPackageResource.h"
 #import <ePub3/utilities/byte_stream.h>
+#import <ePub3/utilities/iri.h>
 
+
+@interface Epub3URLProtocol () //<NSURLConnectionDataDelegate>
+//@property (nonatomic, strong) NSURLConnection *connection;
++(NSString *)scheme;
+@end
+@implementation Epub3URLProtocol
+
+static NSString* EPUB3 = [NSString stringWithUTF8String:ePub3::IRI::gEPUBScheme.c_str()];
+
++(NSString *)scheme;{
+    return EPUB3;
+}
+//
+//- (id)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client {
+//
+//    if ((self = [super initWithRequest:request cachedResponse:cachedResponse client:client])) {
+//
+//    }
+//
+//    return self;
+//}
+//- (void)dealloc {
+//
+//    if (self.connection != nil)
+//    {
+//        self.connection.cancel;
+//    }
+//}
+
++ (BOOL)canInitWithRequest:(NSURLRequest *)request
+{
+    NSURL* requestURI = [request URL];
+    if (requestURI == nil)
+    {
+        return NO;
+    }
+    if (NSOrderedSame == [[requestURI scheme] caseInsensitiveCompare:EPUB3])
+    {
+        if ([NSURLProtocol propertyForKey:@"Epub3URLProtocol_Handled" inRequest:request])
+        {
+            return NO;
+        }
+
+        return YES;
+    }
+
+    return NO;
+}
+
++ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request
+{
+    return request;
+}
+
+- (void)startLoading
+{
+    NSMutableURLRequest *newRequest = [self.request mutableCopy];
+
+    [NSURLProtocol setProperty:@YES forKey:@"Epub3URLProtocol_Handled" inRequest:newRequest];
+
+    NSString * str = [NSURLProtocol propertyForKey:@"URLSTR" inRequest:newRequest];
+    NSURL *url = [NSURL URLWithString:[str stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    [newRequest setURL: url];
+
+    NSURL* originalURL = [self.request URL];
+
+    NSURLResponse *response = [[NSURLResponse alloc] initWithURL:originalURL MIMEType:nil expectedContentLength:0 textEncodingName:nil];
+    [self.client URLProtocol:self wasRedirectedToRequest:newRequest redirectResponse:response];
+    [self.client URLProtocolDidFinishLoading:self];
+
+    //self.connection = [NSURLConnection connectionWithRequest:newRequest delegate:self];
+}
+
++ (BOOL)requestIsCacheEquivalent:(NSURLRequest *)a toRequest:(NSURLRequest *)b {
+    return [super requestIsCacheEquivalent:a toRequest:b];
+}
+
+- (void)stopLoading
+{
+//    if (self.connection != nil)
+//    {
+//        [self.connection cancel];
+//    }
+//    self.connection = nil;
+}
+
+//-(NSURLRequest *)connection:(NSURLConnection *)connection
+//            willSendRequest:(NSURLRequest *)request
+//           redirectResponse:(NSURLResponse *)redirectResponse
+//
+//{
+//    NSURLRequest *newRequest = request;
+//    if (redirectResponse) {
+//        newRequest = nil;
+//    }
+//    return newRequest;
+//}
+//- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+//{
+//    [self.client URLProtocol:self didLoadData:data];
+//}
+//- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+//{
+//    [self.client URLProtocol:self didFailWithError:error];
+//    self.connection = nil;
+//}
+//- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+//{
+//    [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+//}
+//- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+//{
+//    [self.client URLProtocolDidFinishLoading:self];
+//    self.connection = nil;
+//}
+@end
 
 @interface LOXWebViewController ()
 
@@ -112,8 +229,8 @@
     NSString * math = @"/readium_MathJax.js";
     if ([path hasPrefix:math]) {
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"MathJax" ofType:@"js" inDirectory:@"Scripts/mathjax"];
-        NSString * str = [[NSString stringWithFormat:@"file://%@", filePath] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
-        NSURL *url = [NSURL URLWithString:str];
+        NSString * str = [NSString stringWithFormat:@"file://%@", filePath];
+        NSURL *url = [NSURL URLWithString: [str stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 
         NSMutableURLRequest *newRequest = [request mutableCopy];
         [newRequest setURL: url];
@@ -124,8 +241,8 @@
     NSString * annotationsCSS = @"/readium_Annotations.css";
     if ([path hasPrefix:annotationsCSS]) {
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"annotations" ofType:@"css" inDirectory:@"Scripts"];
-        NSString * str = [[NSString stringWithFormat:@"file://%@", filePath] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
-        NSURL *url = [NSURL URLWithString:str];
+        NSString * str = [NSString stringWithFormat:@"file://%@", filePath];
+        NSURL *url = [NSURL URLWithString: [str stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 
         NSMutableURLRequest *newRequest = [request mutableCopy];
         [newRequest setURL: url];
@@ -142,10 +259,9 @@
     //NSString * prefix2 = [NSString stringWithFormat:@"%@%@", prefix1, folder];
     //[path substringFromIndex: [path rangeOfString:prefix1].location]
 
-
     if (schemeFile != NSOrderedSame && [path hasPrefix:folder]) {
-        NSString * str = [[NSString stringWithFormat:@"file://%@", path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
-        NSURL *url = [NSURL URLWithString:str];
+        NSString * str = [NSString stringWithFormat:@"file://%@", path];
+        NSURL *url = [NSURL URLWithString: [str stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 
         NSMutableURLRequest *newRequest = [request mutableCopy];
         [newRequest setURL: url];
@@ -153,7 +269,12 @@
         return newRequest;
     }
 
-    if (schemeFile != NSOrderedSame)
+    // ObjectPreprocessor and ContentHandler with epub3:// URI protocol
+    // See [NSURLProtocol registerClass:[Epub3URLProtocol class]];
+    //NSString* EPUB3 = [NSString stringWithUTF8String:ePub3::IRI::gEPUBScheme.c_str()];
+    NSComparisonResult schemeEPUB = [scheme caseInsensitiveCompare: [Epub3URLProtocol scheme]];
+
+    if (schemeFile != NSOrderedSame && schemeEPUB != NSOrderedSame)
     {
         return request;
     }
@@ -161,6 +282,20 @@
     if (_package == nil)
     {
         return request;
+    }
+
+    if (schemeEPUB == NSOrderedSame)
+    {
+        NSString* BASE = [NSString stringWithUTF8String:_package.sdkPackage->BasePath().c_str()];
+        if (![BASE hasPrefix:@"/"]) {
+            BASE = [NSString stringWithFormat:@"/%@", BASE];
+        }
+        if ([path hasPrefix:BASE])
+        {
+            path = [path substringFromIndex:[BASE length]];
+        }
+
+        //prefix1 = [NSString stringWithFormat:@"%@://", [Epub3URLProtocol scheme]];
     }
 
     if ([path hasPrefix:@"/"]) {
@@ -178,12 +313,16 @@
         path = [NSString stringWithFormat:@"%@#%@", path, fragment];
     }
 
-    NSString * str = [[NSString stringWithFormat:@"%@/%@/%@", prefix1, _package.packageUUID, path] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
-    NSURL *url = [NSURL URLWithString:str];
+    NSString * str = [NSString stringWithFormat:@"%@/%@/%@", prefix1, _package.packageUUID, path];
 
+    if (schemeEPUB == NSOrderedSame) {
+        [NSURLProtocol setProperty:[NSString stringWithString:str] forKey:@"URLSTR" inRequest:request];
+        return request;
+    }
+
+    NSURL *url = [NSURL URLWithString: [str stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     NSMutableURLRequest *newRequest = [request mutableCopy];
     [newRequest setURL: url];
-
     return newRequest;
 }
 
