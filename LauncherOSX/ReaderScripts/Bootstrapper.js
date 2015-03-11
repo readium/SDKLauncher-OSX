@@ -11,12 +11,17 @@
 //  used to endorse or promote products derived from this software without specific 
 //  prior written permission.
 
-define(['eventEmitter', 'URIjs', 'epubCfi'], function (EventEmitter, URI, epubCfi) {
+define(['eventEmitter', 'URIjs', 'epubCfi', 'epub-renderer/globals'], function (EventEmitter, URI, epubCfi, Globals) {
     //expose required modules for sharedJS consumption.
     window.URI = URI;
 
     EventEmitter.prototype.trigger = EventEmitter.prototype.emit;
     window.EventEmitter = EventEmitter;
+    
+    window.ReadiumSDK = Globals;
+
+    //we need global access to the reader object for automation test being able to call it's APIs
+    Globals.reader = this.reader;
 
 
     //polyfill to support Safari 6

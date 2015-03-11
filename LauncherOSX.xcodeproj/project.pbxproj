@@ -8,21 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
-		83766D441A0E9C53008077E1 /* epubReadingSystem.js in Resources */ = {isa = PBXBuildFile; fileRef = 83766D431A0E9C53008077E1 /* epubReadingSystem.js */; };
 		83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83766D431A0E9C53008077E1 /* epubReadingSystem.js */; };
 		83A68A3C1993D7D100DED991 /* mathjax in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83A68A3B1993D7D100DED991 /* mathjax */; };
 		83EBB4A119F566310083E8F1 /* annotations.css in CopyFiles */ = {isa = PBXBuildFile; fileRef = A250DB706A1422DFE8EF2706 /* annotations.css */; };
-		83F4B2C21AB099FE00501428 /* require_config.js in Resources */ = {isa = PBXBuildFile; fileRef = 83F4B2BD1AB099FE00501428 /* require_config.js */; };
-		83F4B2C31AB099FE00501428 /* Bootstrapper.js in Resources */ = {isa = PBXBuildFile; fileRef = 83F4B2BE1AB099FE00501428 /* Bootstrapper.js */; };
-		83F4B2C41AB099FE00501428 /* eventemitter3.js in Resources */ = {isa = PBXBuildFile; fileRef = 83F4B2BF1AB099FE00501428 /* eventemitter3.js */; };
-		83F4B2C51AB099FE00501428 /* domReady.js in Resources */ = {isa = PBXBuildFile; fileRef = 83F4B2C01AB099FE00501428 /* domReady.js */; };
-		83F4B2C61AB099FE00501428 /* require.js in Resources */ = {isa = PBXBuildFile; fileRef = 83F4B2C11AB099FE00501428 /* require.js */; };
 		83F4B2C91AB09B4100501428 /* require_config.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2BD1AB099FE00501428 /* require_config.js */; };
 		83F4B2CA1AB09B4100501428 /* Bootstrapper.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2BE1AB099FE00501428 /* Bootstrapper.js */; };
 		83F4B2CB1AB09B4100501428 /* eventemitter3.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2BF1AB099FE00501428 /* eventemitter3.js */; };
 		83F4B2CC1AB09B4100501428 /* domReady.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2C01AB099FE00501428 /* domReady.js */; };
 		83F4B2CD1AB09B4100501428 /* require.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2C11AB099FE00501428 /* require.js */; };
-		83F4B2D01AB09C2400501428 /* URIjs in Resources */ = {isa = PBXBuildFile; fileRef = 83F4B2CF1AB09C2400501428 /* URIjs */; };
 		83F4B2D11AB09C3100501428 /* URIjs in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2CF1AB09C2400501428 /* URIjs */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
 		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
@@ -788,26 +781,19 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83F4B2C21AB099FE00501428 /* require_config.js in Resources */,
 				8597D61C16824655000FAAAF /* InfoPlist.strings in Resources */,
 				8597D62216824655000FAAAF /* Credits.rtf in Resources */,
-				83766D441A0E9C53008077E1 /* epubReadingSystem.js in Resources */,
 				8597D62816824656000FAAAF /* MainMenu.xib in Resources */,
 				856354F716DE7C3A009DA283 /* BookmarkDlg.xib in Resources */,
 				552FC46616F39AB5000E73BA /* icon.icns in Resources */,
 				85C2219F1795C607004B8E1E /* PreferencesDlg.xib in Resources */,
 				AD8C8A2A8F33046528CAC333 /* sample_styles.css in Resources */,
 				AD8C83FC6397F6AECC59F1FF /* ico_rate.png in Resources */,
-				83F4B2D01AB09C2400501428 /* URIjs in Resources */,
 				AD8C880A9CBF3B579B85F659 /* ico_tts.png in Resources */,
 				851FFCFE17DCFBF90090BA3C /* green_dot_big.png in Resources */,
 				A250DE64B96BCDF9916905E4 /* About.txt in Resources */,
 				A250D3231482DF2070916DB8 /* README.txt in Resources */,
 				A250D31BB36C682AF2D37B16 /* About.txt in Resources */,
-				83F4B2C31AB099FE00501428 /* Bootstrapper.js in Resources */,
-				83F4B2C61AB099FE00501428 /* require.js in Resources */,
-				83F4B2C41AB099FE00501428 /* eventemitter3.js in Resources */,
-				83F4B2C51AB099FE00501428 /* domReady.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
