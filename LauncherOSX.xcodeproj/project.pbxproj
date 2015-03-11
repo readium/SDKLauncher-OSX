@@ -22,6 +22,8 @@
 		83F4B2CB1AB09B4100501428 /* eventemitter3.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2BF1AB099FE00501428 /* eventemitter3.js */; };
 		83F4B2CC1AB09B4100501428 /* domReady.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2C01AB099FE00501428 /* domReady.js */; };
 		83F4B2CD1AB09B4100501428 /* require.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2C11AB099FE00501428 /* require.js */; };
+		83F4B2D01AB09C2400501428 /* URIjs in Resources */ = {isa = PBXBuildFile; fileRef = 83F4B2CF1AB09C2400501428 /* URIjs */; };
+		83F4B2D11AB09C3100501428 /* URIjs in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2CF1AB09C2400501428 /* URIjs */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
 		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
 		850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9416A6320200619C3C /* LOXSpineViewController.mm */; };
@@ -144,6 +146,7 @@
 			dstPath = Scripts;
 			dstSubfolderSpec = 7;
 			files = (
+				83F4B2D11AB09C3100501428 /* URIjs in CopyFiles */,
 				83F4B2C91AB09B4100501428 /* require_config.js in CopyFiles */,
 				83F4B2CA1AB09B4100501428 /* Bootstrapper.js in CopyFiles */,
 				83F4B2CB1AB09B4100501428 /* eventemitter3.js in CopyFiles */,
@@ -183,6 +186,7 @@
 		83F4B2BF1AB099FE00501428 /* eventemitter3.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = eventemitter3.js; path = LauncherOSX/ReaderScripts/eventemitter3.js; sourceTree = "<group>"; };
 		83F4B2C01AB099FE00501428 /* domReady.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = domReady.js; path = LauncherOSX/ReaderScripts/domReady.js; sourceTree = "<group>"; };
 		83F4B2C11AB099FE00501428 /* require.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = require.js; path = LauncherOSX/ReaderScripts/require.js; sourceTree = "<group>"; };
+		83F4B2CF1AB09C2400501428 /* URIjs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = URIjs; path = LauncherOSX/ReaderScripts/URIjs; sourceTree = "<group>"; };
 		850B1A5A16A61FB900619C3C /* ePub3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = ePub3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		850B1A8C16A631E800619C3C /* LOXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXUtil.h; sourceTree = "<group>"; };
 		850B1A8D16A631E800619C3C /* LOXUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXUtil.mm; sourceTree = "<group>"; };
@@ -374,6 +378,7 @@
 		8561A1E4178B6EB8007D15D3 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				83F4B2CF1AB09C2400501428 /* URIjs */,
 				83F4B2BD1AB099FE00501428 /* require_config.js */,
 				83F4B2BE1AB099FE00501428 /* Bootstrapper.js */,
 				83F4B2BF1AB099FE00501428 /* eventemitter3.js */,
@@ -793,6 +798,7 @@
 				85C2219F1795C607004B8E1E /* PreferencesDlg.xib in Resources */,
 				AD8C8A2A8F33046528CAC333 /* sample_styles.css in Resources */,
 				AD8C83FC6397F6AECC59F1FF /* ico_rate.png in Resources */,
+				83F4B2D01AB09C2400501428 /* URIjs in Resources */,
 				AD8C880A9CBF3B579B85F659 /* ico_tts.png in Resources */,
 				851FFCFE17DCFBF90090BA3C /* green_dot_big.png in Resources */,
 				A250DE64B96BCDF9916905E4 /* About.txt in Resources */,
