@@ -21,6 +21,8 @@ require.config({
     
     paths: {
 
+        text: 'text',
+        
 		jquery: 'lib/jquery',
         
         underscore: 'lib/underscore.min',
@@ -39,6 +41,9 @@ require.config({
         "rangy-cssclassapplier" : 'lib/rangy/rangy-cssclassapplier',
         "rangy-position" : 'lib/rangy/rangy-position',
         
+        epubReadingSystem: 'epubReadingSystem.js',
+        HostAppFeedback: 'host_app_feedback.js',
+        
         Bootstrapper: 'Bootstrapper'
     },
 
@@ -55,7 +60,7 @@ require.config({
         },
         {
             name: 'URIjs',
-            location: 'lib/URIjs',
+            location: 'URIjs',
             main: 'URI'
         }
     ],

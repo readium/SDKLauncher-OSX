@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
 		83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83766D431A0E9C53008077E1 /* epubReadingSystem.js */; };
+		838E747B1AB0B1B300D34005 /* init.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 838E74771AB0B1AB00D34005 /* init.js */; };
+		838E74801AB0B46E00D34005 /* text.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 838E747E1AB0B45F00D34005 /* text.js */; };
 		83A68A3C1993D7D100DED991 /* mathjax in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83A68A3B1993D7D100DED991 /* mathjax */; };
 		83EBB4A119F566310083E8F1 /* annotations.css in CopyFiles */ = {isa = PBXBuildFile; fileRef = A250DB706A1422DFE8EF2706 /* annotations.css */; };
 		83F4B2C91AB09B4100501428 /* require_config.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2BD1AB099FE00501428 /* require_config.js */; };
@@ -139,6 +141,8 @@
 			dstPath = Scripts;
 			dstSubfolderSpec = 7;
 			files = (
+				838E74801AB0B46E00D34005 /* text.js in CopyFiles */,
+				838E747B1AB0B1B300D34005 /* init.js in CopyFiles */,
 				83F4B2D11AB09C3100501428 /* URIjs in CopyFiles */,
 				83F4B2C91AB09B4100501428 /* require_config.js in CopyFiles */,
 				83F4B2CA1AB09B4100501428 /* Bootstrapper.js in CopyFiles */,
@@ -172,6 +176,8 @@
 		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		558E562716EF859800FCF273 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "readium-sdk/Platform/Apple/ePub3.xcodeproj"; sourceTree = "<group>"; };
 		83766D431A0E9C53008077E1 /* epubReadingSystem.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = epubReadingSystem.js; path = LauncherOSX/ReaderScripts/epubReadingSystem.js; sourceTree = "<group>"; };
+		838E74771AB0B1AB00D34005 /* init.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = init.js; path = LauncherOSX/ReaderScripts/init.js; sourceTree = "<group>"; };
+		838E747E1AB0B45F00D34005 /* text.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = text.js; path = LauncherOSX/ReaderScripts/text.js; sourceTree = "<group>"; };
 		83A68A341993D5F400DED991 /* mathjax */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mathjax; path = LauncherOSX/ReaderScripts/mathjax; sourceTree = "<group>"; };
 		83A68A3B1993D7D100DED991 /* mathjax */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mathjax; path = LauncherOSX/ReaderScripts/mathjax; sourceTree = "<group>"; };
 		83F4B2BD1AB099FE00501428 /* require_config.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = require_config.js; path = LauncherOSX/ReaderScripts/require_config.js; sourceTree = "<group>"; };
@@ -371,6 +377,8 @@
 		8561A1E4178B6EB8007D15D3 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				838E747E1AB0B45F00D34005 /* text.js */,
+				838E74771AB0B1AB00D34005 /* init.js */,
 				83F4B2CF1AB09C2400501428 /* URIjs */,
 				83F4B2BD1AB099FE00501428 /* require_config.js */,
 				83F4B2BE1AB099FE00501428 /* Bootstrapper.js */,

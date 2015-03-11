@@ -12,6 +12,7 @@
 //  prior written permission.
 
 define(['eventEmitter', 'URIjs', 'epubCfi', 'epub-renderer/globals'], function (EventEmitter, URI, epubCfi, Globals) {
+    console.debug("Bootstraperrr");
     //expose required modules for sharedJS consumption.
     window.URI = URI;
 
@@ -19,10 +20,6 @@ define(['eventEmitter', 'URIjs', 'epubCfi', 'epub-renderer/globals'], function (
     window.EventEmitter = EventEmitter;
     
     window.ReadiumSDK = Globals;
-
-    //we need global access to the reader object for automation test being able to call it's APIs
-    Globals.reader = this.reader;
-
 
     //polyfill to support Safari 6
     if ('URL' in window === false) {
