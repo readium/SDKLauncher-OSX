@@ -17,6 +17,11 @@
 		83F4B2C41AB099FE00501428 /* eventemitter3.js in Resources */ = {isa = PBXBuildFile; fileRef = 83F4B2BF1AB099FE00501428 /* eventemitter3.js */; };
 		83F4B2C51AB099FE00501428 /* domReady.js in Resources */ = {isa = PBXBuildFile; fileRef = 83F4B2C01AB099FE00501428 /* domReady.js */; };
 		83F4B2C61AB099FE00501428 /* require.js in Resources */ = {isa = PBXBuildFile; fileRef = 83F4B2C11AB099FE00501428 /* require.js */; };
+		83F4B2C91AB09B4100501428 /* require_config.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2BD1AB099FE00501428 /* require_config.js */; };
+		83F4B2CA1AB09B4100501428 /* Bootstrapper.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2BE1AB099FE00501428 /* Bootstrapper.js */; };
+		83F4B2CB1AB09B4100501428 /* eventemitter3.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2BF1AB099FE00501428 /* eventemitter3.js */; };
+		83F4B2CC1AB09B4100501428 /* domReady.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2C01AB099FE00501428 /* domReady.js */; };
+		83F4B2CD1AB09B4100501428 /* require.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F4B2C11AB099FE00501428 /* require.js */; };
 		850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 850B1A5A16A61FB900619C3C /* ePub3.dylib */; };
 		850B1A9016A631E800619C3C /* LOXUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A8D16A631E800619C3C /* LOXUtil.mm */; };
 		850B1A9716A6320200619C3C /* LOXSpineViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 850B1A9416A6320200619C3C /* LOXSpineViewController.mm */; };
@@ -139,6 +144,11 @@
 			dstPath = Scripts;
 			dstSubfolderSpec = 7;
 			files = (
+				83F4B2C91AB09B4100501428 /* require_config.js in CopyFiles */,
+				83F4B2CA1AB09B4100501428 /* Bootstrapper.js in CopyFiles */,
+				83F4B2CB1AB09B4100501428 /* eventemitter3.js in CopyFiles */,
+				83F4B2CC1AB09B4100501428 /* domReady.js in CopyFiles */,
+				83F4B2CD1AB09B4100501428 /* require.js in CopyFiles */,
 				83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */,
 				83EBB4A119F566310083E8F1 /* annotations.css in CopyFiles */,
 				83A68A3C1993D7D100DED991 /* mathjax in CopyFiles */,
