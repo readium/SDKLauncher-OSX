@@ -1,5 +1,3 @@
-console.debug("epubReadingSystem");
-
 ReadiumSDK.READIUM_OSX_sha = '';
 ReadiumSDK.READIUM_OSX_tag = '';
 ReadiumSDK.READIUM_OSX_clean = '';

@@ -26,10 +26,59 @@
 -->
 <html>
     <head>
-        <script data-main="init.js" src="./require.js" type="text/javascript"></script>
-        <script src="require_config.js" type="text/javascript"></script>
+        
+        <script type="text/javascript">
+            if (!window["ReadiumSDK"]) {
+                window.ReadiumSDK = {};
+            }
+        </script>
+        <script type="text/javascript" src="epubReadingSystem.js"> </script>
+        
+        
+        
+        
+        
+        
+        <!-- script type="text/javascript" src="readium-shared-js_all.js"> </script -->
+        
+        
+        
+        
+        <script type="text/javascript" src="RequireJS.js"> </script>
+        
+        
+        <!-- ============================= -->
+        <!-- Demonstrates usage of the "bundles" RequireJS directive -->
+        <!-- script type="text/javascript" src="readium-external-libs.js"> </script -->
+        <script type="text/javascript">
+            requirejs.config({
+                             paths: {
+                             'readium-external-libs': "readium-external-libs"
+                             },
+                             bundles: {
+                             
+                             // See: build-config/readium-external-libs.js
+                             'readium-external-libs': [
+                                                       'jquery', 'underscore', 'backbone',
+                                                       'URIjs', 'punycode', 'SecondLevelDomains', 'IPv6',
+                                                       'jquerySizes', 'domReady', 'eventEmitter', 'console_shim',
+                                                       'rangy', 'rangy-core', 'rangy-textrange', 'rangy-highlighter', 'rangy-cssclassapplier', 'rangy-position'
+                                                       ]
+                             }
+                             });
+            </script>
+        <!-- ============================= -->
+        
+        <script type="text/javascript" src="readium-shared-js.js"> </script>
+        
+        <script type="text/javascript" src="readium-plugin-example.js"> </script>
+        
+        <script type="text/javascript" src="readium-plugin-annotations.js"> </script>
 
-        <link rel="stylesheet" type="text/css" href="static/sdk.css" />
+        
+        <script type="text/javascript" src="host_app_feedback.js"> </script>
+        
+        <link rel="stylesheet" type="text/css" href="sdk.css" />
     </head>
     <body>
         <div id="viewport"></div>
