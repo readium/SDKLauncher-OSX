@@ -26,7 +26,7 @@
 //  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 //  OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
+require(["globalsSetup", "readium-plugin-annotations"], function () {
 require(['views/reader_view'], function(ReaderView)
 {
 
@@ -186,4 +186,5 @@ require(['views/reader_view'], function(ReaderView)
         //Globals.emit(Globals.Events.READER_INITIALIZED, ReadiumSDK.reader);
         ReadiumSDK.emit(ReadiumSDK.Events.READER_INITIALIZED, ReadiumSDK.reader);
     });
+});
 });
