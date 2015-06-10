@@ -3,39 +3,33 @@
 //  Created by Boris Schneiderman.
 //
 //  Copyright (c) 2014 Readium Foundation and/or its licensees. All rights reserved.
-//  
-//  Redistribution and use in source and binary forms, with or without modification, 
+//
+//  Redistribution and use in source and binary forms, with or without modification,
 //  are permitted provided that the following conditions are met:
-//  1. Redistributions of source code must retain the above copyright notice, this 
+//  1. Redistributions of source code must retain the above copyright notice, this
 //  list of conditions and the following disclaimer.
-//  2. Redistributions in binary form must reproduce the above copyright notice, 
-//  this list of conditions and the following disclaimer in the documentation and/or 
+//  2. Redistributions in binary form must reproduce the above copyright notice,
+//  this list of conditions and the following disclaimer in the documentation and/or
 //  other materials provided with the distribution.
-//  3. Neither the name of the organization nor the names of its contributors may be 
-//  used to endorse or promote products derived from this software without specific 
+//  3. Neither the name of the organization nor the names of its contributors may be
+//  used to endorse or promote products derived from this software without specific
 //  prior written permission.
-//  
-//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
-//  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-//  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-//  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-//  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
-//  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
-//  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
-//  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+//
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+//  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+//  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+//  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+//  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+//  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+//  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 //  OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require(["globalsSetup", "readium-plugin-annotations"], function () {
-require(['views/reader_view'], function(ReaderView)
+require(["readium_shared_js/globalsSetup"], function ()
 {
-
-    // ------- Comment above and uncomment below to demonstrate on-demand init/registration of plugin
-    //require(['views/reader_view', 'readium-plugin-example'], function (ReaderView, examplePluginConfig) {
-    //examplePluginConfig.borderColor = "blue";
-    //examplePluginConfig.backgroundColor = "cyan";
-    // -------
-
+require(['readium_shared_js/views/reader_view'], function (ReaderView)
+{
     ReadiumSDK.HostAppFeedback = function()
     {
 
@@ -68,6 +62,12 @@ require(['views/reader_view'], function(ReaderView)
             repo1.sha = ReadiumSDK.READIUM_OSX_sha;
             repo1.tag = ReadiumSDK.READIUM_OSX_tag;
             repo1.clean = ReadiumSDK.READIUM_OSX_clean;
+
+            repo1.version = ReadiumSDK.READIUM_OSX_version;
+            repo1.branch = ReadiumSDK.READIUM_OSX_branch;
+            repo1.release = ReadiumSDK.READIUM_OSX_release;
+            repo1.timestamp = ReadiumSDK.READIUM_OSX_timestamp;
+
             repo1.url = "https://github.com/readium/" + repo1.name + "/tree/" + repo1.sha;
             window.navigator.epubReadingSystem.readium.buildInfo.gitRepositories.push(repo1);
 
@@ -76,6 +76,12 @@ require(['views/reader_view'], function(ReaderView)
             repo2.sha = ReadiumSDK.READIUM_SDK_sha;
             repo2.tag = ReadiumSDK.READIUM_SDK_tag;
             repo2.clean = ReadiumSDK.READIUM_SDK_clean;
+
+            repo2.version = ReadiumSDK.READIUM_SDK_version;
+            repo2.branch = ReadiumSDK.READIUM_SDK_branch;
+            repo2.release = ReadiumSDK.READIUM_SDK_release;
+            repo2.timestamp = ReadiumSDK.READIUM_SDK_timestamp;
+
             repo2.url = "https://github.com/readium/" + repo2.name + "/tree/" + repo2.sha;
             window.navigator.epubReadingSystem.readium.buildInfo.gitRepositories.push(repo2);
 
@@ -84,6 +90,12 @@ require(['views/reader_view'], function(ReaderView)
             repo3.sha = ReadiumSDK.READIUM_SHARED_JS_sha;
             repo3.tag = ReadiumSDK.READIUM_SHARED_JS_tag;
             repo3.clean = ReadiumSDK.READIUM_SHARED_JS_clean;
+
+            repo3.version = ReadiumSDK.READIUM_SHARED_JS_version;
+            repo3.branch = ReadiumSDK.READIUM_SHARED_JS_branch;
+            repo3.release = ReadiumSDK.READIUM_SHARED_JS_release;
+            repo3.timestamp = ReadiumSDK.READIUM_SHARED_JS_timestamp;
+
             repo3.url = "https://github.com/readium/" + repo3.name + "/tree/" + repo3.sha;
             window.navigator.epubReadingSystem.readium.buildInfo.gitRepositories.push(repo3);
 
@@ -163,18 +175,13 @@ require(['views/reader_view'], function(ReaderView)
         annotationCSSUrl: '/readium_Annotations.css' //prefix + '/css/annotations.css'
     };
 
-    ReadiumSDK.on(ReadiumSDK.Events.PLUGINS_LOADED, function()
+    ReadiumSDK.on(ReadiumSDK.Events.PLUGINS_LOADED, function(reader)
     {
         // readium built-in (should have been require()'d outside this scope)
-        console.log(ReadiumSDK.reader.plugins.annotations);
-
-        ReadiumSDK.reader.plugins.annotations.initialize(
-        {
-            annotationCSSUrl: opts.annotationCSSUrl
-        });
+        console.log(reader.plugins.annotations);
 
         // external (require()'d via Dependency Injection, see examplePluginConfig function parameter passed above)
-        console.log(ReadiumSDK.reader.plugins.example);
+        console.log(reader.plugins.example);
     });
 
     $(document).ready(function()
