@@ -87,6 +87,21 @@
     {
         return request;
     }
+    
+    if ([path hasSuffix:@".map"]) {
+    NSString* bundlePath = [[[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"] stringByDeletingLastPathComponent];
+    NSString* slashPath = [NSString stringWithFormat:@"%@", [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    if ([slashPath hasPrefix:bundlePath]) {
+        
+        NSString * str = [[NSString stringWithFormat:@"file://%@", slashPath] stringByAddingPercentEscapesUsingEncoding : NSUTF8StringEncoding];
+        NSURL *url = [NSURL URLWithString:str];
+        
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [newRequest setURL: url];
+        
+        return newRequest;
+    }
+    }
 
     // Fake script request, immediately invoked after epubReadingSystem hook is in place,
     // => push the global window.navigator.epubReadingSystem into the iframe(s)
@@ -132,7 +147,7 @@
 
         return newRequest;
     }
-
+    
     NSComparisonResult schemeFile = [scheme caseInsensitiveCompare: @"file"];
 
     NSString * folder = [_baseUrlPath stringByDeletingLastPathComponent];
@@ -211,6 +226,10 @@
 
     NSString* readerFileName = @"reader_RequireJS-multiple-bundles";
     //NSString* readerFileName = @"reader_RequireJS-single-bundle";
+    
+    
+    // The "no optimize" RequireJS option means that the entire "readium-shared-js" folder must be copied in to the OSX app bundle's "scripts" folder! (including "node_modules" subfolder, which is populated when invoking the "npm run prepare" build command) There is therefore some significant filesystem / size overhead, but the benefits are significant too: no need for the WebView to fetch sourcemaps, and to attempt to un-mangle the obfuscated Javascript during debugging.
+    // However, the recommended development-time pattern is to invoke "npm run build" in order to refresh the "build-output" folder, with the RJS_UGLY environment variable set to "false" or "no". This way, the RequireJS single/multiple bundle(s) will be in readable uncompressed form.
     //NSString* readerFileName = @"reader_RequireJS-no-optimize";
     
     NSString* path = [[NSBundle mainBundle] pathForResource:readerFileName ofType:@"html" inDirectory:@"Scripts"];
