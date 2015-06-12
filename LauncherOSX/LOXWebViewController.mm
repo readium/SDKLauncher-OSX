@@ -209,7 +209,11 @@
 
     //NSURL *url = [[NSBundle mainBundle] URLForResource:@"reader.html" withExtension:nil];
 
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"];
+    NSString* readerFileName = @"reader_RequireJS-multiple-bundles";
+    //NSString* readerFileName = @"reader_RequireJS-single-bundle";
+    //NSString* readerFileName = @"reader_RequireJS-no-optimize";
+    
+    NSString* path = [[NSBundle mainBundle] pathForResource:readerFileName ofType:@"html" inDirectory:@"Scripts"];
 
     //_baseUrlPath = [path stringByDeletingLastPathComponent];
     _baseUrlPath = path;
