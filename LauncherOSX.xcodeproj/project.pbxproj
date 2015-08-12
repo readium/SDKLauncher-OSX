@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
 		83412B311AC98D660074111F /* readium-external-libs.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */; };
-		83412B321AC98D660074111F /* readium-plugin-annotations.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B281AC98D530074111F /* readium-plugin-annotations.js.bundles.js */; };
 		83412B341AC98D660074111F /* readium-shared-js.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */; };
 		83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83766D431A0E9C53008077E1 /* epubReadingSystem.js */; };
 		83D7BD091ABA114000F541DF /* sdk.css in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83D7BCF51ABA110300F541DF /* sdk.css */; };
@@ -21,15 +20,12 @@
 		83F7B64F1B2ACB5D00DFF6B6 /* reader_RequireJS-single-bundle.html in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F7B6491B2ACB5200DFF6B6 /* reader_RequireJS-single-bundle.html */; };
 		83F7B67B1B2AD72800DFF6B6 /* readium-cfi-js.js.map in Sources */ = {isa = PBXBuildFile; fileRef = 83F7B66F1B2AD72800DFF6B6 /* readium-cfi-js.js.map */; };
 		83F7B67D1B2AD72800DFF6B6 /* readium-external-libs.js.map in Sources */ = {isa = PBXBuildFile; fileRef = 83F7B6711B2AD72800DFF6B6 /* readium-external-libs.js.map */; };
-		83F7B67F1B2AD72800DFF6B6 /* readium-plugin-annotations.js.map in Sources */ = {isa = PBXBuildFile; fileRef = 83F7B6731B2AD72800DFF6B6 /* readium-plugin-annotations.js.map */; };
 		83F7B6811B2AD72800DFF6B6 /* readium-shared-js.js.map in Sources */ = {isa = PBXBuildFile; fileRef = 83F7B6751B2AD72800DFF6B6 /* readium-shared-js.js.map */; };
 		83F7B6851B2AD72800DFF6B6 /* readium-shared-js_all.js.map in Sources */ = {isa = PBXBuildFile; fileRef = 83F7B6791B2AD72800DFF6B6 /* readium-shared-js_all.js.map */; };
 		83F7B6861B2AD75200DFF6B6 /* readium-cfi-js.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F7B66E1B2AD72800DFF6B6 /* readium-cfi-js.js */; };
 		83F7B6871B2AD75200DFF6B6 /* readium-cfi-js.js.map in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F7B66F1B2AD72800DFF6B6 /* readium-cfi-js.js.map */; };
 		83F7B6881B2AD75200DFF6B6 /* readium-external-libs.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F7B6701B2AD72800DFF6B6 /* readium-external-libs.js */; };
 		83F7B6891B2AD75200DFF6B6 /* readium-external-libs.js.map in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F7B6711B2AD72800DFF6B6 /* readium-external-libs.js.map */; };
-		83F7B68A1B2AD75200DFF6B6 /* readium-plugin-annotations.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F7B6721B2AD72800DFF6B6 /* readium-plugin-annotations.js */; };
-		83F7B68B1B2AD75200DFF6B6 /* readium-plugin-annotations.js.map in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F7B6731B2AD72800DFF6B6 /* readium-plugin-annotations.js.map */; };
 		83F7B68C1B2AD75200DFF6B6 /* readium-shared-js.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F7B6741B2AD72800DFF6B6 /* readium-shared-js.js */; };
 		83F7B68D1B2AD75200DFF6B6 /* readium-shared-js.js.map in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F7B6751B2AD72800DFF6B6 /* readium-shared-js.js.map */; };
 		83F7B68E1B2AD75200DFF6B6 /* RequireJS.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83F7B6761B2AD72800DFF6B6 /* RequireJS.js */; };
@@ -155,8 +151,6 @@
 				83F7B6871B2AD75200DFF6B6 /* readium-cfi-js.js.map in CopyFiles */,
 				83F7B6881B2AD75200DFF6B6 /* readium-external-libs.js in CopyFiles */,
 				83F7B6891B2AD75200DFF6B6 /* readium-external-libs.js.map in CopyFiles */,
-				83F7B68A1B2AD75200DFF6B6 /* readium-plugin-annotations.js in CopyFiles */,
-				83F7B68B1B2AD75200DFF6B6 /* readium-plugin-annotations.js.map in CopyFiles */,
 				83F7B68C1B2AD75200DFF6B6 /* readium-shared-js.js in CopyFiles */,
 				83F7B68D1B2AD75200DFF6B6 /* readium-shared-js.js.map in CopyFiles */,
 				83F7B68E1B2AD75200DFF6B6 /* RequireJS.js in CopyFiles */,
@@ -169,7 +163,6 @@
 				83F7B6451B2ACB0600DFF6B6 /* readium-shared-js_all.js.bundles.js in CopyFiles */,
 				83F7B63D1B2ACADA00DFF6B6 /* readium-cfi-js.js.bundles.js in CopyFiles */,
 				83412B311AC98D660074111F /* readium-external-libs.js.bundles.js in CopyFiles */,
-				83412B321AC98D660074111F /* readium-plugin-annotations.js.bundles.js in CopyFiles */,
 				83412B341AC98D660074111F /* readium-shared-js.js.bundles.js in CopyFiles */,
 				83D7BD091ABA114000F541DF /* sdk.css in CopyFiles */,
 				83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */,
@@ -194,7 +187,6 @@
 		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		558E562716EF859800FCF273 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "readium-sdk/Platform/Apple/ePub3.xcodeproj"; sourceTree = "<group>"; };
 		83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-external-libs.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-external-libs.js.bundles.js"; sourceTree = "<group>"; };
-		83412B281AC98D530074111F /* readium-plugin-annotations.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-plugin-annotations.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-annotations.js.bundles.js"; sourceTree = "<group>"; };
 		83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-shared-js.js.bundles.js"; sourceTree = "<group>"; };
 		83766D431A0E9C53008077E1 /* epubReadingSystem.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = epubReadingSystem.js; path = LauncherOSX/ReaderScripts/epubReadingSystem.js; sourceTree = "<group>"; };
 		83D7BCF51ABA110300F541DF /* sdk.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = sdk.css; path = "readium-shared-js/build-output/css/sdk.css"; sourceTree = "<group>"; };
@@ -209,8 +201,6 @@
 		83F7B66F1B2AD72800DFF6B6 /* readium-cfi-js.js.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = "readium-cfi-js.js.map"; path = "readium-shared-js/build-output/_multiple-bundles/readium-cfi-js.js.map"; sourceTree = "<group>"; };
 		83F7B6701B2AD72800DFF6B6 /* readium-external-libs.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-external-libs.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-external-libs.js"; sourceTree = "<group>"; };
 		83F7B6711B2AD72800DFF6B6 /* readium-external-libs.js.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = "readium-external-libs.js.map"; path = "readium-shared-js/build-output/_multiple-bundles/readium-external-libs.js.map"; sourceTree = "<group>"; };
-		83F7B6721B2AD72800DFF6B6 /* readium-plugin-annotations.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-plugin-annotations.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-annotations.js"; sourceTree = "<group>"; };
-		83F7B6731B2AD72800DFF6B6 /* readium-plugin-annotations.js.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = "readium-plugin-annotations.js.map"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-annotations.js.map"; sourceTree = "<group>"; };
 		83F7B6741B2AD72800DFF6B6 /* readium-shared-js.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-shared-js.js"; sourceTree = "<group>"; };
 		83F7B6751B2AD72800DFF6B6 /* readium-shared-js.js.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = "readium-shared-js.js.map"; path = "readium-shared-js/build-output/_multiple-bundles/readium-shared-js.js.map"; sourceTree = "<group>"; };
 		83F7B6761B2AD72800DFF6B6 /* RequireJS.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = RequireJS.js; path = "readium-shared-js/build-output/_multiple-bundles/RequireJS.js"; sourceTree = "<group>"; };
@@ -407,8 +397,6 @@
 				83F7B66F1B2AD72800DFF6B6 /* readium-cfi-js.js.map */,
 				83F7B6701B2AD72800DFF6B6 /* readium-external-libs.js */,
 				83F7B6711B2AD72800DFF6B6 /* readium-external-libs.js.map */,
-				83F7B6721B2AD72800DFF6B6 /* readium-plugin-annotations.js */,
-				83F7B6731B2AD72800DFF6B6 /* readium-plugin-annotations.js.map */,
 				83F7B6741B2AD72800DFF6B6 /* readium-shared-js.js */,
 				83F7B6751B2AD72800DFF6B6 /* readium-shared-js.js.map */,
 				83F7B6761B2AD72800DFF6B6 /* RequireJS.js */,
@@ -422,7 +410,6 @@
 				83F7B63F1B2ACAF300DFF6B6 /* readium-shared-js_all.js.bundles.js */,
 				83F7B63B1B2ACACC00DFF6B6 /* readium-cfi-js.js.bundles.js */,
 				83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */,
-				83412B281AC98D530074111F /* readium-plugin-annotations.js.bundles.js */,
 				83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */,
 				83D7BCF51ABA110300F541DF /* sdk.css */,
 				83766D431A0E9C53008077E1 /* epubReadingSystem.js */,
@@ -896,7 +883,6 @@
 				A250D831FA7429B9F2B36F2B /* MultipartFormDataParser.m in Sources */,
 				A250DCEB5E33A00751B3669B /* MultipartMessageHeaderField.m in Sources */,
 				83F7B6851B2AD72800DFF6B6 /* readium-shared-js_all.js.map in Sources */,
-				83F7B67F1B2AD72800DFF6B6 /* readium-plugin-annotations.js.map in Sources */,
 				A250D6DBF44801C3D1A7CF6E /* HTTPDataResponse.m in Sources */,
 				A250D446BA1276B0384939B5 /* HTTPFileResponse.m in Sources */,
 				A250D3038EB41AB2226C2DF8 /* HTTPErrorResponse.m in Sources */,
