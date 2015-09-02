@@ -65,7 +65,19 @@ static NSString* m_baseUrlPath = nil;
     {
         return nil;
     }
-
+    
+    if ([path hasSuffix:@".map"]) {
+    NSString* bundlePath = [[[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"] stringByDeletingLastPathComponent];
+    NSString* slashPath = [NSString stringWithFormat:@"/%@", [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    if ([slashPath hasPrefix:bundlePath]) {
+        
+        NSData * newData = [NSData dataWithContentsOfFile:slashPath];
+        if (newData != nil) {
+            return [[HTTPDataResponse alloc] initWithData:newData contentType:@"application/json"];
+        }
+    }
+    }
+    
     // Synchronize using a process-level lock to guard against multiple threads accessing a
     // resource byte stream, which may lead to instability.
 

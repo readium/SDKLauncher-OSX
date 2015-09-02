@@ -146,6 +146,7 @@
     std::unique_ptr<ePub3::ByteStream> byteStream = _sdkPackage->ReadStreamForRelativePath(s);
     if (byteStream == nullptr) {
         NSLog(@"Relative path '%@' does not have an archive byte stream! (resourceAtRelativePath)", relativePath);
+        
         return nil;
     }
 
