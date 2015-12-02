@@ -145,13 +145,6 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
 
      _container = ePub3::Container::OpenContainer([file UTF8String]);
 
-    // Added by DRM inside, H.S. Lee on 2015-04-23
-    // Without the checking validity of the container pointer, app. could be crashed.
-    if(_container == nullptr) {
-        return nil;
-    }
-    ////////
-
     [self readPackages];
 
     if([_packages count] > 0) {
@@ -163,15 +156,11 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
 
 - (void)readPackages
 {
-    // Modified by DRM inside, H.S. Lee on 2015-04-23
-    // Without the checking validity of the container pointer, app. could be crashed.
-    if(_container != nullptr) {
-        auto packages = _container->Packages();
+    auto packages = _container->Packages();
 
-        for (auto package = packages.begin(); package != packages.end(); ++package) {
+    for (auto package = packages.begin(); package != packages.end(); ++package) {
 
-            [_packages addObject:[[LOXPackage alloc] initWithSdkPackage:*package]];
-        }
+        [_packages addObject:[[LOXPackage alloc] initWithSdkPackage:*package]];
     }
 }
 
