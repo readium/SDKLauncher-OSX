@@ -198,11 +198,7 @@ extern NSString *const LOXPageChangedEvent;
 
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
-    [self openDocumentWithPath:filename];
-
-    // Modified by DRM inside, C.H Yu on 2015-04-23
-    // To handle behavior of the 'cancel' button of the passphrase input dialog
-    return TRUE;
+    return [self openDocumentWithPath:filename];
 }
 
 
