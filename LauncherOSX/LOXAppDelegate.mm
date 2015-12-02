@@ -198,7 +198,11 @@ extern NSString *const LOXPageChangedEvent;
 
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
-    return [self openDocumentWithPath:filename];
+    [self openDocumentWithPath:filename];
+
+    // Modified by DRM inside, C.H Yu on 2015-04-23
+    // To handle behavior of the 'cancel' button of the passowrd input dialog
+    return TRUE;
 }
 
 
@@ -270,6 +274,28 @@ extern NSString *const LOXPageChangedEvent;
 - (IBAction)showPreferences:(id)sender
 {
     [self.preferencesController showPreferences:_userData.preferences];
+}
+
+// Added by DRM inside, H.S. Lee on 2015-04-23
+// To handle checking user rights for the 'print' action
+- (IBAction)OpenPrint:(id)sender {
+    
+    if (_epubApi!=nullptr &&[_epubApi checkActionPrint]) {
+        NSArray *array = [[_window contentView] subviews];
+        NSArray *arrayS = [array[2] subviews];
+        NSArray *arrayW = [arrayS[1] subviews];
+        
+        NSPrintInfo *printInfo = [NSPrintInfo sharedPrintInfo];
+        NSPrintOperation * printOperation = [[[arrayW[0] mainFrame] frameView] printOperationWithPrintInfo:printInfo];
+        [printOperation runOperation];
+    }
+    else
+    {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setMessageText:@"Print action has no permission"];
+        [alert addButtonWithTitle:@"Ok"];
+        [alert runModal];
+    }
 }
 
 @end
