@@ -199,7 +199,7 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
     }
     else
     {
-        return false;
+        return true;
     }
     
 }
