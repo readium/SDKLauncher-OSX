@@ -39,6 +39,7 @@
 #import "LOXSpineItem.h"
 #import "LOXPackage.h"
 
+
 #import "LOXAppDelegate.h"
 #import <ePub3/user_action.h>
 #import "drmInitialize.h"
@@ -186,6 +187,7 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
     [_packages removeAllObjects];
     _currentPackage = nil;
 }
+
 
 // Added by DRM inside, H.S. Lee on 2015-04-23
 // To handle checking user rights for the 'print' action
