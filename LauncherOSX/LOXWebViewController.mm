@@ -88,7 +88,7 @@
         return request;
     }
     
-    if ([path hasSuffix:@""]) {
+    if ([path hasSuffix:@".map"]) {
     NSString* bundlePath = [[[NSBundle mainBundle] pathForResource:@"host_app_feedback" ofType:@"js" inDirectory:@"Scripts"] stringByDeletingLastPathComponent];
     NSString* slashPath = [NSString stringWithFormat:@"%@", [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     if ([slashPath hasPrefix:bundlePath]) {
