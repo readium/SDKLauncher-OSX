@@ -47,6 +47,9 @@
 #import "LOXMediaOverlay.h"
 #import "LOXMediaOverlayController.h"
 
+#import "RDLCPService.h"
+#import <lcp/apple/lcp.h>
+
 using namespace ePub3;
 
 //FOUNDATION_EXPORT
@@ -95,9 +98,26 @@ extern NSString *const LOXPageChangedEvent;
     return self;
 }
 
+
+//- (void)containerRegisterContentFilters
+//{
+//    [[RDLCPService sharedService] registerContentFilter];
+//}
+
 -(void) awakeFromNib
 {
     _epubApi = [[LOXePubSdkApi alloc] init];
+    
+    [[RDLCPService sharedService] registerContentFilter];
+
+//    if ([self respondsToSelector:@selector(containerRegisterContentFilters:)]) {
+//        [self containerRegisterContentFilters];
+//    }
+//    
+//    //Content Modules for each DRM library, if any, should be registered in the function.
+//    if ([self respondsToSelector:@selector(containerRegisterContentModules:)]) {
+//        [self containerRegisterContentModules];
+//    }
 
     self.spineViewController.currentPagesInfo = _currentPagesInfo;
     self.webViewController.currentPagesInfo = _currentPagesInfo;
@@ -141,42 +161,59 @@ extern NSString *const LOXPageChangedEvent;
     [self openDocumentWithPath:path];
 }
 
-- (bool)openDocumentWithPath:(NSString *)path
+- (bool)openDocumentWithPath:(NSString *)path //error:(NSError **)error
 {
-    try {
+    if ([_epubApi canOpenFile:path]) { // EPUB
+        
+        try {
 
-        _package = [_epubApi openFile:path];
+            _package = [_epubApi openFile:path];
 
-        if(!_package) {
-            return NO;
+            if(!_package) {
+                return NO;
+            }
+            
+            NSError *error;
+            if (![self loadLCPLicense:&error])
+                return NO;
+            
+            if (self.license && !self.license.isDecrypted) {
+                [self decryptLCPLicense];
+            }
+            
+            [self.tocViewController setPackage: _package];
+            [self.spineViewController setPackage:_package];
+
+            _currentBook = [self findOrCreateBookForCurrentPackageWithPath:path];
+            _currentBook.dateOpened = [NSDate date];
+            [self.bookmarksController setBook:_currentBook];
+
+            [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:path]];
+
+            [self.window setTitle:[path lastPathComponent]];
+
+            [self.webViewController openPackage:_package onPage:_currentBook.lastOpenPage];
+
+            return YES;
         }
-
-        [self.tocViewController setPackage: _package];
-        [self.spineViewController setPackage:_package];
-
-        _currentBook = [self findOrCreateBookForCurrentPackageWithPath:path];
-        _currentBook.dateOpened = [NSDate date];
-        [self.bookmarksController setBook:_currentBook];
-
-        [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:path]];
-
-        [self.window setTitle:[path lastPathComponent]];
-
-        [self.webViewController openPackage:_package onPage:_currentBook.lastOpenPage];
-
-        return YES;
+        catch (NSException *e) {
+            [LOXUtil reportError:[e reason]];
+        }
+        catch (std::exception& e) {
+            
+            auto msg = e.what();
+            
+            std::cout << msg << std::endl;
+            
+            [LOXUtil reportError:[NSString stringWithUTF8String:msg]];
+        }
+        catch (...) {
+            [LOXUtil reportError:@"unknown exceprion"];
+        }
+    } else { // LCPL
+        
     }
-    catch (NSException *e) {
-        [LOXUtil reportError:[e reason]];
-    }
-    catch (std::exception& e) {
-        auto msg = e.what();
-        [LOXUtil reportError:[NSString stringWithUTF8String:msg]];
-    }
-    catch (...) {
-        [LOXUtil reportError:@"unknown exceprion"];
-    }
-
+    
     return NO;
 
 }
@@ -208,8 +245,8 @@ extern NSString *const LOXPageChangedEvent;
 {
     NSOpenPanel *dlg = [NSOpenPanel openPanel];
 
-    NSArray *fileTypesArray = [NSArray arrayWithObjects:@"epub", nil];
-
+    NSArray *fileTypesArray = [_epubApi supportedFileExtensions]; //[NSArray arrayWithObjects:@"epub", @"lcpl", nil];
+    
     [dlg setCanChooseFiles:YES];
     [dlg setAllowedFileTypes:fileTypesArray];
     [dlg setAllowsMultipleSelection:FALSE];
@@ -217,7 +254,8 @@ extern NSString *const LOXPageChangedEvent;
     if ([dlg runModal] == NSOKButton) {
         NSURL *url = [dlg URL];
 
-        return [url path];
+        NSString* p = [url path];
+        return p;
     }
 
     return nil;
@@ -270,6 +308,37 @@ extern NSString *const LOXPageChangedEvent;
 - (IBAction)showPreferences:(id)sender
 {
     [self.preferencesController showPreferences:_userData.preferences];
+}
+
+
+- (BOOL)loadLCPLicense:(NSError **)error
+{
+    NSString *licenseJSON = [_epubApi contentsOfFileAtPath:@"META-INF/license.lcpl" encoding:NSUTF8StringEncoding];
+    if (licenseJSON) {
+        _license = [[RDLCPService sharedService] openLicense:licenseJSON error:error];
+        return (_license != nil);
+    }
+    
+    return YES;
+}
+
+
+
+
+- (void)decryptLCPLicense {
+    
+    NSString *lcpPass = [_epubApi presentAlertWithInput:@"LCP passphrase" inputDefaultText:@"LCP passphrase" message:@"Please enter LCP %@", @"passphrase"];
+
+    if (lcpPass != nil) {
+        NSError *error;
+        BOOL decrypted = [[RDLCPService sharedService] decryptLicense:self.license passphrase:lcpPass error:&error];
+        if (!decrypted) {
+            if (error.code != LCPErrorDecryptionLicenseEncrypted && error.code != LCPErrorDecryptionUserPassphraseNotValid) {
+                [_epubApi presentAlertWithTitle:@"LCP Error" message:@"%@ (%d)", error.domain, error.code];
+            }
+            [self decryptLCPLicense];
+        }
+    }
 }
 
 @end

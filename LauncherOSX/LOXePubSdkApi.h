@@ -45,10 +45,40 @@ namespace ePub3 {
 
 }
 
-
-
 +(void)initialize;
 
 - (LOXPackage *)openFile:(NSString *)file;
+
+- (void)presentAlertWithTitle:(NSString *)title message:(NSString *)message, ...;
+- (NSString*)presentAlertWithInput:(NSString *)title inputDefaultText:(NSString *)inputDefaultText message:(NSString *)message, ...;
+
+/**
+ * File extensions supported by the launcher.
+ */
+@property (nonatomic, readonly) NSArray *supportedFileExtensions;
+
+/**
+ * Returns whether the given file path has a valid format extension.
+ */
+- (BOOL)isValidFile:(NSString *)path;
+
+/**
+ * Returns whether the given file can be opened by Readium.
+ */
+- (BOOL)canOpenFile:(NSString *)path;
+
+
+/**
+ * Returns whether the given file exists in the container's archive.
+ */
+- (BOOL)fileExistsAtPath:(NSString *)relativePath;
+
+
+/**
+ * Read the content of the file at the relative path in the container's archive.
+ * If no file is found, returns nil.
+ */
+- (NSString *)contentsOfFileAtPath:(NSString *)relativePath encoding:(NSStringEncoding)encoding;
+
 
 @end

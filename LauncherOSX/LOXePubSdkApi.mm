@@ -166,9 +166,115 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
     _currentPackage = nil;
 }
 
+- (BOOL)isValidFile:(NSString *)path
+{
+    return [self.supportedFileExtensions containsObject:path.pathExtension.lowercaseString];
+}
 
+- (BOOL)canOpenFile:(NSString *)path
+{
+    return [path.pathExtension.lowercaseString isEqual:@"epub"];
+}
 
+- (NSArray *)supportedFileExtensions
+{
+//    NSArray *fileTypesArray = [NSArray arrayWithObjects:@"epub", @"lcpl", nil];
+    
+    NSArray *fileTypesArray =  @[@"epub", @"lcpl"];
+    
+//    NSString *strings[2];
+//    strings[0] = @"epub";
+//    strings[1] = @"lcpl";
+//    NSArray *fileTypesArray = [NSArray arrayWithObjects:strings count:2];
+    
+    return fileTypesArray;
+}
 
+- (void)presentAlertWithTitle:(NSString *)title message:(NSString *)message, ... {
+    va_list args;
+    va_start(args, message);
+    message = [[NSString alloc] initWithFormat:message arguments:args];
+    va_end(args);
+    
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:title];
+    [alert setInformativeText:message];
+    
+    [alert addButtonWithTitle:@"OK"];
+    // [alert addButtonWithTitle:@"SECOND"];
+    
+    switch ([alert runModal]) {
+        case NSAlertFirstButtonReturn: {
+            // OK
+            break;
+        }
+        case NSAlertSecondButtonReturn: {
+            // SECOND
+            break;
+        }
+        default:
+            break;
+    }
+}
 
+- (NSString*)presentAlertWithInput:(NSString *)title inputDefaultText:(NSString *)inputDefaultText message:(NSString *)message, ... {
+    
+    va_list args;
+    va_start(args, message);
+    message = [[NSString alloc] initWithFormat:message arguments:args];
+    va_end(args);
+    
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:title];
+    [alert setInformativeText:message];
+    
+    NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 200, 24)];
+    [input setStringValue:inputDefaultText];
+    
+    [alert setAccessoryView:input];
+    
+    [alert addButtonWithTitle:@"OK"];
+    [alert addButtonWithTitle:@"CANCEL"];
+
+    switch ([alert runModal]) {
+        case NSAlertFirstButtonReturn: {
+            // OK
+            
+            [input validateEditing];
+            return [input stringValue];
+
+            break;
+        }
+        case NSAlertSecondButtonReturn: {
+            // SECOND
+            
+            break;
+        }
+        default:
+            break;
+    }
+    
+    return nil;
+}
+
+- (BOOL)fileExistsAtPath:(NSString *)relativePath {
+    return _container->FileExistsAtPath([relativePath UTF8String]);
+}
+
+- (NSString *)contentsOfFileAtPath:(NSString *)relativePath encoding:(NSStringEncoding)encoding {
+    if (![self fileExistsAtPath:relativePath])
+        return nil;
+    
+    std::unique_ptr<ePub3::ByteStream> stream = _container->ReadStreamAtPath([relativePath UTF8String]);
+    if (stream == nullptr)
+        return nil;
+    
+    void *buffer = nullptr;
+    size_t length = stream->ReadAllBytes(&buffer);
+    std::string nativeContent((char *)buffer, length);
+    free (buffer);
+    
+    return [NSString stringWithCString:nativeContent.c_str() encoding:encoding];
+}
 
 @end

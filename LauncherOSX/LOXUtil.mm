@@ -40,6 +40,8 @@
 
 +(void)reportError:(NSString *)error
 {
+    if (error == nil) return;
+    
     NSLog(@"%@", error);
 
     NSAlert *alert = [[NSAlert alloc] init];

@@ -43,6 +43,8 @@
 @class LOXMediaOverlay;
 @class LOXMediaOverlayController;
 
+@class LCPLicense;
+
 //events
 NSString *const LOXPageChangedEvent = @"PageChangedEvent";
 NSString *const LOXMediaOverlayStatusChangedEvent = @"LOXMediaOverlayStatusChangedEvent";
@@ -68,6 +70,12 @@ NSString *const LOXMediaOverlayTTSStopEvent = @"LOXMediaOverlayTTSStopEvent";
 
 @property (nonatomic, readonly) LOXCurrentPagesInfo *currentPagesInfo;
 
+/**
+ * License instance, if the container is protected using LCP.
+ */
+@property (nonatomic, readonly) LCPLicense *license;
+
+
 - (IBAction)openDocument:(id)sender;
 - (IBAction)showPreferences:(id)sender;
 
@@ -80,6 +88,5 @@ NSString *const LOXMediaOverlayTTSStopEvent = @"LOXMediaOverlayTTSStopEvent";
 - (void)openContentUrl:(NSString *)contentRef fromSourceFileUrl:(NSString *)sourceRef;
 
 - (void)onReaderInitialized;
-
 
 @end
