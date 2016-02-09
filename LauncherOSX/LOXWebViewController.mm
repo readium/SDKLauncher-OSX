@@ -224,8 +224,8 @@
 
     //NSURL *url = [[NSBundle mainBundle] URLForResource:@"reader.html" withExtension:nil];
 
-    NSString* readerFileName = @"reader_RequireJS-multiple-bundles";
-    //NSString* readerFileName = @"reader_RequireJS-single-bundle";
+    //NSString* readerFileName = @"reader_RequireJS-multiple-bundles";
+    NSString* readerFileName = @"reader_RequireJS-single-bundle";
     
     
     // The "no optimize" RequireJS option means that the entire "readium-shared-js" folder must be copied in to the OSX app bundle's "scripts" folder! (including "node_modules" subfolder, which is populated when invoking the "npm run prepare" build command) There is therefore some significant filesystem / size overhead, but the benefits are significant too: no need for the WebView to fetch sourcemaps, and to attempt to un-mangle the obfuscated Javascript during debugging.

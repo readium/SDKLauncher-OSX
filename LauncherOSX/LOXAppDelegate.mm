@@ -55,8 +55,7 @@ using namespace ePub3;
 //FOUNDATION_EXPORT
 extern NSString *const LOXPageChangedEvent;
 
-@interface LOXAppDelegate ()
-
+@interface LOXAppDelegate () <LCPAcquisitionDelegate>
 
 - (NSString *)selectFile;
 
@@ -210,12 +209,23 @@ extern NSString *const LOXPageChangedEvent;
         catch (...) {
             [LOXUtil reportError:@"unknown exceprion"];
         }
-    } else { // LCPL
+    } else if ([path.pathExtension.lowercaseString isEqual:@"lcpl"]) { // LCPL => acquire EPUB (download)
         
+        BOOL success = NO;
+        NSError *error;
+        success = [self acquirePublicationWithLicense:path error:&error];
+        
+        NSString *message = error ? [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code] : nil;
+        if (success) {
+            NSString *title = @"LCP EPUB acquisition in progress...";
+            [_epubApi presentAlertWithTitle:title message:message];
+        } else {
+            NSString *title = @"LCP EPUB acquisition failure";
+            [_epubApi presentAlertWithTitle:title message:message];
+        }
     }
     
     return NO;
-
 }
 
 - (LOXBook *)findOrCreateBookForCurrentPackageWithPath:(NSString *)path
@@ -340,5 +350,81 @@ extern NSString *const LOXPageChangedEvent;
         }
     }
 }
+//////////////////////////////////////////////////////////////////////
+#pragma mark - LCP Acquisition
+
+- (BOOL)acquirePublicationWithLicense:(NSString *)licensePath error:(NSError **)error {
+//    RDLCPService *lcp = [RDLCPService sharedService];
+//    NSString *licenseJSON = [NSString stringWithContentsOfFile:licensePath encoding:NSUTF8StringEncoding error:NULL];
+//    
+//    LCPLicense *license = [lcp openLicense:licenseJSON error:error];
+//    if (!license)
+//        return NO;
+//    
+//    NSString *fileName = [NSString stringWithFormat:@"%@_%@", [[NSProcessInfo processInfo] globallyUniqueString], @"lcp.epub"];
+//    NSURL *downloadFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:fileName]];
+//    
+//    LCPAcquisition *acquisition = [lcp createAcquisition:license publicationPath:downloadFileURL.path error:error];
+//    if (!acquisition)
+//        return NO;
+//    
+//    m_lcpAcquisitions[licensePath] = acquisition;
+//    [acquisition startWithDelegate:self];
+    
+    return YES;
+}
+//
+//- (NSString *)pathForAcquisition:(LCPAcquisition *)acquisition
+//{
+//    return [[m_lcpAcquisitions allKeysForObject:acquisition] firstObject];
+//}
+//
+//- (void)endAcquisition:(LCPAcquisition *)acquisition
+//{
+//    NSString *path = [self pathForAcquisition:acquisition];
+//    [self setCellProgress:0 forPath:path];
+//    [m_lcpAcquisitions removeObjectForKey:path];
+//}
+//
+//- (void)lcpAcquisitionDidCancel:(LCPAcquisition *)acquisition
+//{
+//    [self endAcquisition:acquisition];
+//}
+//
+//- (void)lcpAcquisition:(LCPAcquisition *)acquisition didProgress:(float)progress
+//{
+//    NSString *path = [self pathForAcquisition:acquisition];
+//    [self setCellProgress:progress forPath:path];
+//}
+//
+//- (void)lcpAcquisition:(LCPAcquisition *)acquisition didEnd:(BOOL)success error:(NSError *)error
+//{
+//    if (!success) {
+//        [self presentAlertWithTitle:@"Cannot Download Publication" message:@"%@ (%d)", error.domain, error.code];
+//        [self endAcquisition:acquisition];
+//        return;
+//    }
+//    
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//        if (success) {
+//            // move the downloaded publication to the Documents/ folder, using
+//            // the suggested filename if any
+//            NSString *licensePath = [self pathForAcquisition:acquisition];
+//            NSString *filename = (acquisition.suggestedFilename.length > 0) ? acquisition.suggestedFilename : [licensePath lastPathComponent];
+//            filename = [NSString stringWithFormat:@"%@.epub", [filename stringByDeletingPathExtension]];
+//            
+//            NSURL *documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+//            NSString *destinationPath = [[documentsURL URLByAppendingPathComponent:filename] path];
+//            
+//            [[NSFileManager defaultManager] moveItemAtPath:acquisition.publicationPath toPath:destinationPath error:NULL];
+//            
+//            [[NSFileManager defaultManager] removeItemAtPath:licensePath error:NULL];
+//        }
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self endAcquisition:acquisition];
+//        });
+//    });
+//}
 
 @end

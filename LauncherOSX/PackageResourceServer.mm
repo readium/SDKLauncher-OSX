@@ -98,9 +98,9 @@ static NSString* m_baseUrlPath = nil;
         if([ext isEqualToString:@"xml"]) {
             contentType = @"application/xml"; // FORCE
         }
-        else if(isHTML) {
-            contentType = @"application/xhtml+xml"; // FORCE
-        }
+//        else if(isHTML) {
+//            contentType = @"application/xhtml+xml"; // FORCE
+//        }
 
         if (contentType == nil)
         {
@@ -133,38 +133,51 @@ static NSString* m_baseUrlPath = nil;
             {
                 data = [FALLBACK_HTML dataUsingEncoding:NSUTF8StringEncoding];
             }
+            
+            if (contentType != nil && (contentType == @"application/xhtml+xml")) {
+                BOOL ok = YES;
+                @try
+                {
+                    NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:data];
+                    //[xmlparser setDelegate:self];
+                    [xmlparser setShouldResolveExternalEntities:NO];
+                    ok = [xmlparser parse];
 
-            BOOL ok = YES;
-            @try
-            {
-                NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:data];
-                //[xmlparser setDelegate:self];
-                [xmlparser setShouldResolveExternalEntities:NO];
-                ok = [xmlparser parse];
+                    if (ok == NO)
+                    {
+                        NSError * error = [xmlparser parserError];
+                        NSLog(@"XHTML PARSE ERROR: %@", error);
+                    }
+                }
+                @catch (NSException *ex)
+                {
+                    NSLog(@"XHTML parse exception: %@", ex);
+                    ok = NO;
+                }
 
                 if (ok == NO)
                 {
-                    NSError * error = [xmlparser parserError];
-                    NSLog(@"XHTML PARSE ERROR: %@", error);
+                    // Can be used to check / debug encoding issues
+                    NSString * dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                    NSLog(@"XHTML SOURCE: %@", dataStr);
+                    
+                    //contentType = @"application/xhtml+xml";
+                    contentType = @"text/html";
+
+                    //TODO: resource.contentType = contentType;
                 }
             }
-            @catch (NSException *ex)
-            {
-                NSLog(@"XHTML parse exception: %@", ex);
-                ok = NO;
-            }
 
-            if (ok == NO)
-            {
-                // Can be used to check / debug encoding issues
-                NSString * dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                NSLog(@"XHTML SOURCE: %@", dataStr);
-                
-                //contentType = @"application/xhtml+xml";
-                contentType = @"text/html";
-
-                //TODO: resource.contentType = contentType;
-            }
+            
+// Can be used to check / debug encoding issues
+//            if (isHTML) {
+//
+//                NSString * dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//                NSLog(@"XHTML SOURCE: %@", dataStr);
+//                
+//                return [[HTTPDataResponse alloc] initWithData:data contentType:contentType];
+//            }
+            
 
             NSString* source = [self htmlFromData:data];
             if (source == nil || source.length == 0)
@@ -301,11 +314,12 @@ static NSString* m_baseUrlPath = nil;
     if(m_resource.relativePath) {
     
         NSString* ext = [[m_resource.relativePath pathExtension] lowercaseString];
-
-        if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
-            return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"]; // FORCE
-        }
-        else if([ext isEqualToString:@"xml"]) {
+//
+//        if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
+//            return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"]; // FORCE
+//        }
+//        else
+        if([ext isEqualToString:@"xml"]) {
             return [NSDictionary dictionaryWithObject:@"application/xml" forKey:@"Content-Type"]; // FORCE
         }
         else
