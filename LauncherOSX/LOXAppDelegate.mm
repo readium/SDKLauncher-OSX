@@ -76,6 +76,8 @@ extern NSString *const LOXPageChangedEvent;
     LOXUserData *_userData;
     LOXBook*_currentBook;
     LOXPackage *_package;
+    
+    NSString* _currentLCPLicensePath;
 }
 
 @synthesize currentPagesInfo = _currentPagesInfo;
@@ -215,12 +217,18 @@ extern NSString *const LOXPageChangedEvent;
         NSError *error;
         success = [self acquirePublicationWithLicense:path error:&error];
         
-        NSString *message = error ? [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code] : nil;
+        
         if (success) {
             NSString *title = @"LCP EPUB acquisition in progress...";
+            
+            NSString *message = @"Wait...";
+            
             [_epubApi presentAlertWithTitle:title message:message];
         } else {
             NSString *title = @"LCP EPUB acquisition failure";
+            
+            NSString *message = (error != nil) ? [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code] : @"UNKNOWN ERROR";
+            
             [_epubApi presentAlertWithTitle:title message:message];
         }
     }
@@ -354,63 +362,77 @@ extern NSString *const LOXPageChangedEvent;
 #pragma mark - LCP Acquisition
 
 - (BOOL)acquirePublicationWithLicense:(NSString *)licensePath error:(NSError **)error {
-//    RDLCPService *lcp = [RDLCPService sharedService];
-//    NSString *licenseJSON = [NSString stringWithContentsOfFile:licensePath encoding:NSUTF8StringEncoding error:NULL];
-//    
-//    LCPLicense *license = [lcp openLicense:licenseJSON error:error];
-//    if (!license)
-//        return NO;
-//    
-//    NSString *fileName = [NSString stringWithFormat:@"%@_%@", [[NSProcessInfo processInfo] globallyUniqueString], @"lcp.epub"];
-//    NSURL *downloadFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:fileName]];
-//    
-//    LCPAcquisition *acquisition = [lcp createAcquisition:license publicationPath:downloadFileURL.path error:error];
-//    if (!acquisition)
-//        return NO;
-//    
-//    m_lcpAcquisitions[licensePath] = acquisition;
-//    [acquisition startWithDelegate:self];
+    RDLCPService *lcp = [RDLCPService sharedService];
+    NSString *licenseJSON = [NSString stringWithContentsOfFile:licensePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    LCPLicense *license = [lcp openLicense:licenseJSON error:error];
+    if (!license)
+        return NO;
+    
+    NSString *fileName = [NSString stringWithFormat:@"%@_%@", [[NSProcessInfo processInfo] globallyUniqueString], @"lcp.epub"];
+    NSURL *downloadFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:fileName]];
+    
+    LCPAcquisition *acquisition = [lcp createAcquisition:license publicationPath:downloadFileURL.path error:error];
+    if (!acquisition)
+        return NO;
+    
+    _currentLCPLicensePath = licensePath;
+    
+    [acquisition startWithDelegate:self];
     
     return YES;
 }
-//
-//- (NSString *)pathForAcquisition:(LCPAcquisition *)acquisition
-//{
-//    return [[m_lcpAcquisitions allKeysForObject:acquisition] firstObject];
-//}
-//
-//- (void)endAcquisition:(LCPAcquisition *)acquisition
-//{
-//    NSString *path = [self pathForAcquisition:acquisition];
-//    [self setCellProgress:0 forPath:path];
-//    [m_lcpAcquisitions removeObjectForKey:path];
-//}
-//
-//- (void)lcpAcquisitionDidCancel:(LCPAcquisition *)acquisition
-//{
-//    [self endAcquisition:acquisition];
-//}
-//
-//- (void)lcpAcquisition:(LCPAcquisition *)acquisition didProgress:(float)progress
-//{
-//    NSString *path = [self pathForAcquisition:acquisition];
-//    [self setCellProgress:progress forPath:path];
-//}
-//
-//- (void)lcpAcquisition:(LCPAcquisition *)acquisition didEnd:(BOOL)success error:(NSError *)error
-//{
-//    if (!success) {
-//        [self presentAlertWithTitle:@"Cannot Download Publication" message:@"%@ (%d)", error.domain, error.code];
-//        [self endAcquisition:acquisition];
-//        return;
-//    }
+
+
+- (void)endAcquisition:(LCPAcquisition *)acquisition
+{
+    NSLog([NSString stringWithFormat:@"LCP EPUB acquisition end [%@]=> [%@]", _currentLCPLicensePath, acquisition.publicationPath]);
+    _currentLCPLicensePath = nil;
+}
+
+- (void)lcpAcquisitionDidCancel:(LCPAcquisition *)acquisition
+{
+    [self endAcquisition:acquisition];
+}
+
+- (void)lcpAcquisition:(LCPAcquisition *)acquisition didProgress:(float)progress
+{
+    NSLog([NSString stringWithFormat:@"LCP EPUB acquisition progress: %f percent [%@]=> [%@]", progress * 100.0, _currentLCPLicensePath, acquisition.publicationPath]);
+}
+
+- (void)lcpAcquisition:(LCPAcquisition *)acquisition didEnd:(BOOL)success error:(NSError *)error
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        if (!success) {
+            [_epubApi presentAlertWithTitle:@"LCP EPUB acquisition failed" message:@"%@ (%d) [%@]=> [%@]", error.domain, error.code, _currentLCPLicensePath, acquisition.publicationPath];
+            
+            [self endAcquisition:acquisition];
+            
+            return;
+        }
+        
+        NSString *title = @"LCP EPUB acquisition finished";
+        
+        NSString *message = [NSString stringWithFormat:@"EPUB: [%@] => [%@]", _currentLCPLicensePath, acquisition.publicationPath];
+        
+        [_epubApi presentAlertWithTitle:title message:message];
+        
+        [self endAcquisition:acquisition];
+        
+        NSString* pathToOpen = acquisition.publicationPath;
+        
+        [self openDocumentWithPath:pathToOpen];
+    });
+    
+    
 //    
 //    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 //        if (success) {
 //            // move the downloaded publication to the Documents/ folder, using
 //            // the suggested filename if any
-//            NSString *licensePath = [self pathForAcquisition:acquisition];
-//            NSString *filename = (acquisition.suggestedFilename.length > 0) ? acquisition.suggestedFilename : [licensePath lastPathComponent];
+//            
+//            NSString *filename = (acquisition.suggestedFilename.length > 0) ? acquisition.suggestedFilename : [_currentLCPAcquisitionPath lastPathComponent];
 //            filename = [NSString stringWithFormat:@"%@.epub", [filename stringByDeletingPathExtension]];
 //            
 //            NSURL *documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
@@ -418,13 +440,10 @@ extern NSString *const LOXPageChangedEvent;
 //            
 //            [[NSFileManager defaultManager] moveItemAtPath:acquisition.publicationPath toPath:destinationPath error:NULL];
 //            
-//            [[NSFileManager defaultManager] removeItemAtPath:licensePath error:NULL];
+//            [[NSFileManager defaultManager] removeItemAtPath:_currentLCPAcquisitionPath error:NULL];
 //        }
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self endAcquisition:acquisition];
-//        });
+//   
 //    });
-//}
+}
 
 @end

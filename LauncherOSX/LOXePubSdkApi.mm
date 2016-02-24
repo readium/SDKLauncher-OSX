@@ -53,7 +53,7 @@
     NSMutableArray *_packages;
 
     ePub3::ContainerPtr _container;
-
+    
     LOXPackage* _currentPackage;
 }
 
