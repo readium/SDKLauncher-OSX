@@ -210,7 +210,7 @@
 /* Begin PBXFileReference section */
 		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		558E562716EF859800FCF273 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "readium-sdk/Platform/Apple/ePub3.xcodeproj"; sourceTree = "<group>"; };
-		833881CA1C5FC3B7003400CD /* LCP Client.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "LCP Client.xcodeproj"; path = "mantano-lcp-client/platform/apple/LCP Client.xcodeproj"; sourceTree = "<group>"; };
+		833881CA1C5FC3B7003400CD /* LCP Client.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "LCP Client.xcodeproj"; path = "readium-lcp-client/platform/apple/LCP Client.xcodeproj"; sourceTree = "<group>"; };
 		833882C81C5FC8CC003400CD /* RDLCPService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLCPService.h; sourceTree = "<group>"; };
 		833882C91C5FC8CC003400CD /* RDLCPService.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RDLCPService.mm; sourceTree = "<group>"; };
 		833882CB1C5FC8FC003400CD /* LCP Root Certificate.crt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "LCP Root Certificate.crt"; path = "Resources/LCP Root Certificate.crt"; sourceTree = "<group>"; };
@@ -1104,12 +1104,12 @@
 				HEADER_SEARCH_PATHS = (
 					"${SRCROOT}/readium-sdk/Platform/Apple/include",
 					/usr/include/libxml2,
-					"${SRCROOT}/mantano-lcp-client/include",
+					"${SRCROOT}/readium-lcp-client/include",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/** \"${PROJECT_DIR}/mantano-lcp-client\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/** \"${PROJECT_DIR}/readium-lcp-client\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1126,12 +1126,12 @@
 				HEADER_SEARCH_PATHS = (
 					"${SRCROOT}/readium-sdk/Platform/Apple/include",
 					/usr/include/libxml2,
-					"${SRCROOT}/mantano-lcp-client/include",
+					"${SRCROOT}/readium-lcp-client/include",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/** \"${PROJECT_DIR}/mantano-lcp-client\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/** \"${PROJECT_DIR}/readium-lcp-client\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
