@@ -18,6 +18,6 @@
 + (instancetype)sharedService;
 
 // To be called by the RDContainerDelegate implementation
-- (void)registerContentFilter:(lcp::ICredentialHandler *) credentialHandler;
+- (void)registerContentModule:(lcp::ICredentialHandler *) credentialHandler;
 
 @end

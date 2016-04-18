@@ -96,6 +96,8 @@ extern NSString *const LOXPageChangedEvent;
     LOXPackage *_package;
     
     NSString* _currentLCPLicensePath;
+    NSString* _currentOpenChosenPath;
+    bool _executionFlowExceptionBypass;
 }
 
 @synthesize currentPagesInfo = _currentPagesInfo;
@@ -130,7 +132,7 @@ extern NSString *const LOXPageChangedEvent;
     
     lcp::ICredentialHandler * credentialHandler = new LcpCredentialHandler(self);
     
-    [[RDLCPService sharedService] registerContentFilter:credentialHandler];
+    [[RDLCPService sharedService] registerContentModule:credentialHandler];
 
 //    if ([self respondsToSelector:@selector(containerRegisterContentFilters:)]) {
 //        [self containerRegisterContentFilters];
@@ -180,6 +182,8 @@ extern NSString *const LOXPageChangedEvent;
         return;
     }
 
+    _currentOpenChosenPath = path;
+    
     [self openDocumentWithPath:path];
 }
 
@@ -194,14 +198,15 @@ extern NSString *const LOXPageChangedEvent;
             if(!_package) {
                 return NO;
             }
-            
-            NSError *error;
-            if (![self loadLCPLicense:&error])
-                return NO;
-            
-            if (self.license && !self.license.isDecrypted) {
-                [self decryptLCPLicense];
-            }
+
+// NOW WITH CONTENT MODULE
+//            NSError *error;
+//            if (![self loadLCPLicense:&error])
+//                return NO;
+//            
+//            if (self.license && !self.license.isDecrypted) {
+//                [self decryptLCPLicense];
+//            }
             
             [self.tocViewController setPackage: _package];
             [self.spineViewController setPackage:_package];
@@ -223,11 +228,16 @@ extern NSString *const LOXPageChangedEvent;
         }
         catch (std::exception& e) {
             
-            auto msg = e.what();
-            
-            std::cout << msg << std::endl;
-            
-            [LOXUtil reportError:[NSString stringWithUTF8String:msg]];
+            if (_executionFlowExceptionBypass) {
+                _executionFlowExceptionBypass = false;
+            }
+            else {
+                auto msg = e.what();
+                
+                std::cout << msg << std::endl;
+                
+                [LOXUtil reportError:[NSString stringWithUTF8String:msg]];
+            }
         }
         catch (...) {
             [LOXUtil reportError:@"unknown exceprion"];
@@ -369,6 +379,8 @@ extern NSString *const LOXPageChangedEvent;
 
 - (void)decryptLCPLicense {
     
+    _executionFlowExceptionBypass = true;
+    
     NSString *lcpPass = [_epubApi presentAlertWithInput:@"LCP passphrase" inputDefaultText:@"LCP passphrase" message:@"Please enter LCP %@", @"passphrase"];
 
     if (lcpPass != nil) {
@@ -379,6 +391,10 @@ extern NSString *const LOXPageChangedEvent;
                 [_epubApi presentAlertWithTitle:@"LCP Error" message:@"%@ (%d)", error.domain, error.code];
             }
             [self decryptLCPLicense];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+               [self openDocumentWithPath:_currentOpenChosenPath];
+            });
         }
     }
 }
@@ -444,9 +460,9 @@ extern NSString *const LOXPageChangedEvent;
         
         [self endAcquisition:acquisition];
         
-        NSString* pathToOpen = acquisition.publicationPath;
+        _currentOpenChosenPath = acquisition.publicationPath;
         
-        [self openDocumentWithPath:pathToOpen];
+        [self openDocumentWithPath:_currentOpenChosenPath];
     });
     
     
