@@ -10,11 +10,14 @@
 
 #import <lcp/apple/lcp.h>
 
+//#import <lcp/LcpContentFilter.h>
+#import <lcp/LcpContentModule.h>
+
 @interface RDLCPService : LCPService
 
 + (instancetype)sharedService;
 
 // To be called by the RDContainerDelegate implementation
-- (void)registerContentFilter;
+- (void)registerContentFilter:(lcp::ICredentialHandler *) credentialHandler;
 
 @end

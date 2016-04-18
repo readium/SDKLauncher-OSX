@@ -50,7 +50,25 @@
 #import "RDLCPService.h"
 #import <lcp/apple/lcp.h>
 
+#import <lcp/LcpContentModule.h>
+
 using namespace ePub3;
+
+class LcpCredentialHandler : public lcp::ICredentialHandler
+{
+private:
+    LOXAppDelegate* _self;
+public:
+    LcpCredentialHandler(LOXAppDelegate* self) {
+        _self = self;
+    }
+    
+    void decrypt(lcp::ILicense *license) {
+        LCPLicense* lcpLicense = [[LCPLicense alloc] initWithLicense:license];
+        [_self decrypt:lcpLicense];
+    }
+};
+
 
 //FOUNDATION_EXPORT
 extern NSString *const LOXPageChangedEvent;
@@ -109,7 +127,10 @@ extern NSString *const LOXPageChangedEvent;
 {
     _epubApi = [[LOXePubSdkApi alloc] init];
     
-    [[RDLCPService sharedService] registerContentFilter];
+    
+    lcp::ICredentialHandler * credentialHandler = new LcpCredentialHandler(self);
+    
+    [[RDLCPService sharedService] registerContentFilter:credentialHandler];
 
 //    if ([self respondsToSelector:@selector(containerRegisterContentFilters:)]) {
 //        [self containerRegisterContentFilters];
@@ -340,7 +361,10 @@ extern NSString *const LOXPageChangedEvent;
     return YES;
 }
 
-
+- (void)decrypt:(LCPLicense*)lcpLicense {
+    _license = lcpLicense;
+    [self decryptLCPLicense];
+}
 
 
 - (void)decryptLCPLicense {

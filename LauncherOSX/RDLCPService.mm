@@ -5,8 +5,6 @@
 
 #import "RDLCPService.h"
 
-#import <lcp/LcpContentFilter.h>
-
 @implementation RDLCPService
 
 + (instancetype)sharedService {
@@ -35,8 +33,8 @@
     return rootCertificate;
 }
 
-- (void)registerContentFilter {
-    lcp::LcpContentFilter::Register(self.nativeService);
+- (void)registerContentFilter:(lcp::ICredentialHandler *) credentialHandler {
+    lcp::LcpContentModule::Register(self.nativeService, credentialHandler);
 }
 
 @end
