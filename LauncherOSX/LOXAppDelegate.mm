@@ -183,7 +183,6 @@ extern NSString *const LOXPageChangedEvent;
     }
 
     _currentOpenChosenPath = path;
-    
     [self openDocumentWithPath:path];
 }
 
@@ -284,6 +283,7 @@ extern NSString *const LOXPageChangedEvent;
 
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
+    _currentOpenChosenPath = filename;
     return [self openDocumentWithPath:filename];
 }
 
