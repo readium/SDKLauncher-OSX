@@ -8,10 +8,10 @@
 //  launcher's root certificate, located in Resources/LCP Root Certificate.crt
 //
 
-#import <lcp/apple/lcp.h>
+#import <platform/apple/src/lcp.h>
 
-//#import <lcp/LcpContentFilter.h>
-#import <lcp/LcpContentModule.h>
+//#import <LcpContentFilter.h>
+#import <LcpContentModule.h>
 
 @interface RDLCPService : LCPService
 

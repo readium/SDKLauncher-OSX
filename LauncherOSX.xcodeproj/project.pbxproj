@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
-		833882C41C5FC7B5003400CD /* libLCP Client (OSX).a in Frameworks */ = {isa = PBXBuildFile; fileRef = 833882C31C5FC7B5003400CD /* libLCP Client (OSX).a */; };
-		833882CA1C5FC8CC003400CD /* RDLCPService.mm in Sources */ = {isa = PBXBuildFile; fileRef = 833882C91C5FC8CC003400CD /* RDLCPService.mm */; };
-		833882CC1C5FC8FC003400CD /* LCP Root Certificate.crt in Resources */ = {isa = PBXBuildFile; fileRef = 833882CB1C5FC8FC003400CD /* LCP Root Certificate.crt */; };
 		5998CC401CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5998CC3F1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m */; };
 		5998CC451CD4E38400BDAF46 /* RDPackageResourceDataResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 5998CC441CD4E38400BDAF46 /* RDPackageResourceDataResponse.m */; };
+		833882C41C5FC7B5003400CD /* libLCP-client-OSX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 833882C31C5FC7B5003400CD /* libLCP-client-OSX.a */; };
+		833882CA1C5FC8CC003400CD /* RDLCPService.mm in Sources */ = {isa = PBXBuildFile; fileRef = 833882C91C5FC8CC003400CD /* RDLCPService.mm */; };
+		833882CC1C5FC8FC003400CD /* LCP Root Certificate.crt in Resources */ = {isa = PBXBuildFile; fileRef = 833882CB1C5FC8FC003400CD /* LCP Root Certificate.crt */; };
 		83412B311AC98D660074111F /* readium-external-libs.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */; };
 		83412B341AC98D660074111F /* readium-shared-js.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */; };
 		83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83766D431A0E9C53008077E1 /* epubReadingSystem.js */; };
@@ -212,14 +212,14 @@
 /* Begin PBXFileReference section */
 		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		558E562716EF859800FCF273 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "readium-sdk/Platform/Apple/ePub3.xcodeproj"; sourceTree = "<group>"; };
-		833881CA1C5FC3B7003400CD /* LCP Client.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "LCP Client.xcodeproj"; path = "readium-lcp-client/platform/apple/LCP Client.xcodeproj"; sourceTree = "<group>"; };
-		833882C81C5FC8CC003400CD /* RDLCPService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLCPService.h; sourceTree = "<group>"; };
-		833882C91C5FC8CC003400CD /* RDLCPService.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RDLCPService.mm; sourceTree = "<group>"; };
-		833882CB1C5FC8FC003400CD /* LCP Root Certificate.crt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "LCP Root Certificate.crt"; path = "Resources/LCP Root Certificate.crt"; sourceTree = "<group>"; };
 		5998CC3E1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RDDateAsString.h"; sourceTree = "<group>"; };
 		5998CC3F1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RDDateAsString.m"; sourceTree = "<group>"; };
 		5998CC431CD4E38400BDAF46 /* RDPackageResourceDataResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDPackageResourceDataResponse.h; sourceTree = "<group>"; };
 		5998CC441CD4E38400BDAF46 /* RDPackageResourceDataResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDPackageResourceDataResponse.m; sourceTree = "<group>"; };
+		833881CA1C5FC3B7003400CD /* LCP Client.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "LCP Client.xcodeproj"; path = "readium-lcp-client/platform/apple/LCP Client.xcodeproj"; sourceTree = "<group>"; };
+		833882C81C5FC8CC003400CD /* RDLCPService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLCPService.h; sourceTree = "<group>"; };
+		833882C91C5FC8CC003400CD /* RDLCPService.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RDLCPService.mm; sourceTree = "<group>"; };
+		833882CB1C5FC8FC003400CD /* LCP Root Certificate.crt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "LCP Root Certificate.crt"; path = "Resources/LCP Root Certificate.crt"; sourceTree = "<group>"; };
 		83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-external-libs.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-external-libs.js.bundles.js"; sourceTree = "<group>"; };
 		83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-shared-js.js.bundles.js"; sourceTree = "<group>"; };
 		83766D431A0E9C53008077E1 /* epubReadingSystem.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = epubReadingSystem.js; path = LauncherOSX/ReaderScripts/epubReadingSystem.js; sourceTree = "<group>"; };
@@ -389,7 +389,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				833882C41C5FC7B5003400CD /* libLCP Client (OSX).a in Frameworks */,
+				833882C41C5FC7B5003400CD /* libLCP-client-OSX.a in Frameworks */,
 				850B1A5B16A61FB900619C3C /* ePub3.dylib in Frameworks */,
 				855CFEE8169DFA3E00AD311E /* libz.dylib in Frameworks */,
 				855CFDB61696200B00AD311E /* WebKit.framework in Frameworks */,
@@ -430,7 +430,7 @@
 			isa = PBXGroup;
 			children = (
 				833881D31C5FC3B7003400CD /* libLCP-client-iOS.a */,
-				833882C31C5FC7B5003400CD /* libLCP Client (OSX).a */,
+				833882C31C5FC7B5003400CD /* libLCP-client-OSX.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -875,10 +875,10 @@
 			remoteRef = 833881D21C5FC3B7003400CD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		833882C31C5FC7B5003400CD /* libLCP Client (OSX).a */ = {
+		833882C31C5FC7B5003400CD /* libLCP-client-OSX.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libLCP Client (OSX).a";
+			path = "libLCP-client-OSX.a";
 			remoteRef = 833882C21C5FC7B5003400CD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1116,12 +1116,14 @@
 				HEADER_SEARCH_PATHS = (
 					"${SRCROOT}/readium-sdk/Platform/Apple/include",
 					/usr/include/libxml2,
-					"${SRCROOT}/readium-lcp-client/include",
+					"${SRCROOT}/readium-lcp-client",
+					"${SRCROOT}/readium-lcp-client/src/lcp-content-filter/public/",
+					"${SRCROOT}/readium-lcp-client/src/lcp-client-lib/public/",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/** \"${PROJECT_DIR}/readium-lcp-client\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1138,12 +1140,14 @@
 				HEADER_SEARCH_PATHS = (
 					"${SRCROOT}/readium-sdk/Platform/Apple/include",
 					/usr/include/libxml2,
-					"${SRCROOT}/readium-lcp-client/include",
+					"${SRCROOT}/readium-lcp-client",
+					"${SRCROOT}/readium-lcp-client/src/lcp-content-filter/public/",
+					"${SRCROOT}/readium-lcp-client/src/lcp-client-lib/public/",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/** \"${PROJECT_DIR}/readium-lcp-client\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

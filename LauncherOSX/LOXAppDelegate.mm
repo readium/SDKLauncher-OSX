@@ -48,9 +48,9 @@
 #import "LOXMediaOverlayController.h"
 
 #import "RDLCPService.h"
-#import <lcp/apple/lcp.h>
+#import <platform/apple/src/lcp.h>
 
-#import <lcp/LcpContentModule.h>
+#import <LcpContentModule.h>
 
 using namespace ePub3;
 
