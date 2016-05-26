@@ -225,7 +225,7 @@ extern NSString *const LOXPageChangedEvent;
         catch (NSException *e) {
             [LOXUtil reportError:[e reason]];
         }
-        catch (std::exception& e) {
+        catch (std::exception& e) { // includes ePub3::ContentModuleException
             
             if (_executionFlowExceptionBypass) {
                 _executionFlowExceptionBypass = false;
