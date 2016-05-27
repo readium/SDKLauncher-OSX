@@ -52,6 +52,8 @@
 
 #import <LcpContentModule.h>
 
+#include <ePub3/content_module_exception.h>
+
 using namespace ePub3;
 
 class LcpCredentialHandler : public lcp::ICredentialHandler
@@ -97,7 +99,6 @@ extern NSString *const LOXPageChangedEvent;
     
     NSString* _currentLCPLicensePath;
     NSString* _currentOpenChosenPath;
-    bool _executionFlowExceptionBypass;
 }
 
 @synthesize currentPagesInfo = _currentPagesInfo;
@@ -225,18 +226,16 @@ extern NSString *const LOXPageChangedEvent;
         catch (NSException *e) {
             [LOXUtil reportError:[e reason]];
         }
+        catch (ePub3::ContentModuleExceptionDecryptFlow& e) {
+            // NoOP
+        }
         catch (std::exception& e) { // includes ePub3::ContentModuleException
             
-            if (_executionFlowExceptionBypass) {
-                _executionFlowExceptionBypass = false;
-            }
-            else {
-                auto msg = e.what();
-                
-                std::cout << msg << std::endl;
-                
-                [LOXUtil reportError:[NSString stringWithUTF8String:msg]];
-            }
+            auto msg = e.what();
+            
+            std::cout << msg << std::endl;
+            
+            [LOXUtil reportError:[NSString stringWithUTF8String:msg]];
         }
         catch (...) {
             [LOXUtil reportError:@"unknown exceprion"];
@@ -378,8 +377,6 @@ extern NSString *const LOXPageChangedEvent;
 
 
 - (void)decryptLCPLicense {
-    
-    _executionFlowExceptionBypass = true;
     
     NSString *lcpPass = [_epubApi presentAlertWithInput:@"LCP passphrase" inputDefaultText:@"LCP passphrase" message:@"Please enter LCP %@", @"passphrase"];
 
