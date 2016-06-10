@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
+		5998CC401CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5998CC3F1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m */; };
+		5998CC451CD4E38400BDAF46 /* RDPackageResourceDataResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 5998CC441CD4E38400BDAF46 /* RDPackageResourceDataResponse.m */; };
 		83412B311AC98D660074111F /* readium-external-libs.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */; };
 		83412B341AC98D660074111F /* readium-shared-js.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */; };
 		83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83766D431A0E9C53008077E1 /* epubReadingSystem.js */; };
@@ -186,6 +188,10 @@
 /* Begin PBXFileReference section */
 		552FC46516F39AB5000E73BA /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		558E562716EF859800FCF273 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "readium-sdk/Platform/Apple/ePub3.xcodeproj"; sourceTree = "<group>"; };
+		5998CC3E1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RDDateAsString.h"; sourceTree = "<group>"; };
+		5998CC3F1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RDDateAsString.m"; sourceTree = "<group>"; };
+		5998CC431CD4E38400BDAF46 /* RDPackageResourceDataResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDPackageResourceDataResponse.h; sourceTree = "<group>"; };
+		5998CC441CD4E38400BDAF46 /* RDPackageResourceDataResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDPackageResourceDataResponse.m; sourceTree = "<group>"; };
 		83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-external-libs.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-external-libs.js.bundles.js"; sourceTree = "<group>"; };
 		83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-shared-js.js.bundles.js"; sourceTree = "<group>"; };
 		83766D431A0E9C53008077E1 /* epubReadingSystem.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = epubReadingSystem.js; path = LauncherOSX/ReaderScripts/epubReadingSystem.js; sourceTree = "<group>"; };
@@ -513,6 +519,10 @@
 		A250D23B175D03DBBBCD0E09 /* AssetData */ = {
 			isa = PBXGroup;
 			children = (
+				5998CC431CD4E38400BDAF46 /* RDPackageResourceDataResponse.h */,
+				5998CC441CD4E38400BDAF46 /* RDPackageResourceDataResponse.m */,
+				5998CC3E1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.h */,
+				5998CC3F1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m */,
 				A250D4C9D6CACD35912BAF87 /* PackageResourceServer.h */,
 				A250DD60BF5DB25EC732A173 /* PackageResourceServer.mm */,
 				A250DB0DD4746DF18C3F2E02 /* RDPackageResource.h */,
@@ -902,6 +912,7 @@
 				A250DBBAE4D1A71F94E7290A /* DispatchQueueLogFormatter.m in Sources */,
 				83F7B67B1B2AD72800DFF6B6 /* readium-cfi-js.js.map in Sources */,
 				A250DA45DF0ACCA38ED50DB0 /* DDASLLogger.m in Sources */,
+				5998CC451CD4E38400BDAF46 /* RDPackageResourceDataResponse.m in Sources */,
 				83F7B6811B2AD72800DFF6B6 /* readium-shared-js.js.map in Sources */,
 				A250D1E2A3BFDE4B6603C02F /* DDTTYLogger.m in Sources */,
 				A250DBE5055F6CDD04051D05 /* DDFileLogger.m in Sources */,
@@ -909,6 +920,7 @@
 				A250D68A29723F304FF5A543 /* GCDAsyncSocket.m in Sources */,
 				AD8C844CC4BC879DBC059A12 /* LOXBookmark.mm in Sources */,
 				AD8C876EC2AB74129A5C39B4 /* LOXBook.mm in Sources */,
+				5998CC401CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m in Sources */,
 				AD8C8764B6F6057D08B07744 /* LOXUserData.mm in Sources */,
 				AD8C808F484D84E55FCCDF93 /* LOXTocEntry.m in Sources */,
 				AD8C8EFDC93A1A1F1B7B9509 /* LOXToc.mm in Sources */,

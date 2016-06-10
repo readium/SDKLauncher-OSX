@@ -36,11 +36,15 @@
 #import "HTTPDataResponse.h"
 #import "LOXPackage.h"
 #import "RDPackageResource.h"
+#import "RDPackageResourceDataResponse.h"
+#import "NSDate+RDDateAsString.h"
 
 static id m_resourceLock = nil;
 
 static LOXPackage *m_package = nil;
 static NSString* m_baseUrlPath = nil;
+
+NSString * const kCacheControlHTTPHeader = @"no-transform,public,max-age=3000,s-maxage=9000";
 
 
 @implementation PackageResourceConnection
@@ -66,17 +70,18 @@ static NSString* m_baseUrlPath = nil;
         return nil;
     }
     
-    if ([path hasSuffix:@".map"]) {
-    NSString* bundlePath = [[[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"] stringByDeletingLastPathComponent];
-    NSString* slashPath = [NSString stringWithFormat:@"/%@", [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    if ([slashPath hasPrefix:bundlePath]) {
-        
-        NSData * newData = [NSData dataWithContentsOfFile:slashPath];
-        if (newData != nil) {
-            return [[HTTPDataResponse alloc] initWithData:newData contentType:@"application/json"];
-        }
-    }
-    }
+//    SEE LOX WEBVIEW CONTROLLER mm
+//    if ([path hasSuffix:@".map"]) {
+//    NSString* bundlePath = [[[NSBundle mainBundle] pathForResource:@"reader" ofType:@"html" inDirectory:@"Scripts"] stringByDeletingLastPathComponent];
+//    NSString* slashPath = [NSString stringWithFormat:@"/%@", [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+//    if ([slashPath hasPrefix:bundlePath]) {
+//        
+//        NSData * newData = [NSData dataWithContentsOfFile:slashPath];
+//        if (newData != nil) {
+//            return [[HTTPDataResponse alloc] initWithData:newData contentType:@"application/json"];
+//        }
+//    }
+//    }
     
     // Synchronize using a process-level lock to guard against multiple threads accessing a
     // resource byte stream, which may lead to instability.
@@ -215,7 +220,7 @@ static NSString* m_baseUrlPath = nil;
                 if (newSource != nil && newSource.length > 0) {
                    NSData * newData = [newSource dataUsingEncoding:NSUTF8StringEncoding];
                    if (newData != nil) {
-                       return [[HTTPDataResponse alloc] initWithData:newData contentType:contentType];
+                       return [[RDPackageResourceDataResponse alloc] initWithData:newData contentType:contentType];
                    }
                 }
             }
@@ -293,19 +298,29 @@ static NSString* m_baseUrlPath = nil;
 
 @end
 
+
 @implementation PackageResourceResponse
 
 - (NSDictionary *)httpHeaders {
     
+    NSDate *now = [NSDate date];
+    NSString *nowStr = [now dateAsString];
+    NSString *expStr = [[now dateByAddingTimeInterval:60*60*24*10] dateAsString];
+    NSMutableDictionary *headers = [NSMutableDictionary
+                                    dictionaryWithObjectsAndKeys:
+                                    kCacheControlHTTPHeader, @"Cache-Control",
+                                    nowStr, @"Last-Modified",
+                                    expStr, @"Expires", nil];
+
     if(m_resource.relativePath) {
     
         NSString* ext = [[m_resource.relativePath pathExtension] lowercaseString];
 
         if([ext isEqualToString:@"xhtml"] || [ext isEqualToString:@"html"]) {
-            return [NSDictionary dictionaryWithObject:@"application/xhtml+xml" forKey:@"Content-Type"]; // FORCE
+            [headers setObject:@"application/xhtml+xml" forKey:@"Content-Type"]; // FORCE
         }
         else if([ext isEqualToString:@"xml"]) {
-            return [NSDictionary dictionaryWithObject:@"application/xml" forKey:@"Content-Type"]; // FORCE
+            [headers setObject:@"application/xml" forKey:@"Content-Type"]; // FORCE
         }
         else
         {
@@ -315,13 +330,14 @@ static NSString* m_baseUrlPath = nil;
                 std::shared_ptr<ePub3::ManifestItem> item = i->second;
                 if (item->Href() == s) {
                     NSString * contentType = [NSString stringWithUTF8String: item->MediaType().c_str()];
-                    return [NSDictionary dictionaryWithObject:contentType forKey:@"Content-Type"];
+                    [headers setObject:contentType forKey:@"Content-Type"];
+                    break;
                 }
             }
         }
     }
     
-    return [NSDictionary new];
+    return headers;
 }
 
 //- (BOOL)isChunked

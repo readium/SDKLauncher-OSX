@@ -1,5 +1,8 @@
-<!--
 //
+//  RDPackageResourceDataResponse.m
+//  SDKLauncher-iOS
+//
+//  Created by Oliver Eikemeier on 04.04.14.
 //  Copyright (c) 2014 Readium Foundation and/or its licensees. All rights reserved.
 //  
 //  Redistribution and use in source and binary forms, with or without modification, 
@@ -23,46 +26,29 @@
 //  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
 //  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 //  OF THE POSSIBILITY OF SUCH DAMAGE.
--->
-<html>
-    <head>
-<meta charset="UTF-8">
-        <script type="text/javascript">
-            if (!window["ReadiumSDK"]) {
-                window.ReadiumSDK = {};
-            }
-        </script>
-        <script type="text/javascript" src="epubReadingSystem.js"> </script>
-        
-        
-        <script type="text/javascript" src="RequireJS.js"> </script>
 
+#import "RDPackageResourceDataResponse.h"
+#import "NSDate+RDDateAsString.h"
 
-        
-        
-        <script type="text/javascript">
-        requirejs.config({
-            baseUrl: '.'
-        });
-        </script>
+NSString * const kDataCacheControlHTTPHeader = @"no-transform,public,max-age=3000,s-maxage=9000";
 
-        <script type="text/javascript" src="./readium-external-libs.js.bundles.js"> </script>
+@implementation RDPackageResourceDataResponse
 
-        <script type="text/javascript" src="./readium-shared-js.js.bundles.js"> </script>
-
-        <script type="text/javascript" src="./readium-plugin-example.js.bundles.js"> </script>
-
-        <script type="text/javascript" src="./readium-plugin-annotations.js.bundles.js"> </script>
-        
-        
-        
-        
-        
-        <script type="text/javascript" src="host_app_feedback.js"> </script>
-        
-        <link rel="stylesheet" type="text/css" href="sdk.css" />
-    </head>
-    <body>
-        <div id="viewport"></div>
-     </body>
-</html>
+- (NSDictionary *)httpHeaders {
+    NSDate *now = [NSDate date];
+    NSString *nowStr = [now dateAsString];
+    NSString *expStr = [[now dateByAddingTimeInterval:60*60*24*10] dateAsString];
+	if (contentType) {
+		return @{@"Content-Type": contentType,
+                 @"Cache-Control": kDataCacheControlHTTPHeader,
+                 @"Last-Modified": nowStr,
+                 @"Expires": expStr};
+	}
+	else {
+		return @{@"Cache-Control": kDataCacheControlHTTPHeader,
+                 @"Last-Modified": nowStr,
+                 @"Expires": expStr};
+	}
+}
+ 
+@end
