@@ -71,11 +71,27 @@ public:
     }
 };
 
+class LcpStatusDocumentHandler : public lcp::IStatusDocumentHandler
+{
+private:
+    LOXAppDelegate* _self;
+public:
+    LcpStatusDocumentHandler(LOXAppDelegate* self) {
+        _self = self;
+    }
+    
+    void process(lcp::ILicense *license) {
+        //TODO
+    }
+};
 
 //FOUNDATION_EXPORT
 extern NSString *const LOXPageChangedEvent;
 
-@interface LOXAppDelegate () <LCPAcquisitionDelegate>
+@interface LOXAppDelegate ()
+#if ENABLE_NET_PROVIDER
+<LCPAcquisitionDelegate>
+#endif //ENABLE_NET_PROVIDER
 
 - (NSString *)selectFile;
 
@@ -132,8 +148,9 @@ extern NSString *const LOXPageChangedEvent;
     
     
     lcp::ICredentialHandler * credentialHandler = new LcpCredentialHandler(self);
+    lcp::IStatusDocumentHandler * statusDocumentHandler = new LcpStatusDocumentHandler(self);
     
-    [[RDLCPService sharedService] registerContentModule:credentialHandler];
+    [[RDLCPService sharedService] registerContentModule:credentialHandler statusDocumentHandler:statusDocumentHandler];
 
 //    if ([self respondsToSelector:@selector(containerRegisterContentFilters:)]) {
 //        [self containerRegisterContentFilters];
@@ -409,18 +426,19 @@ extern NSString *const LOXPageChangedEvent;
     NSString *fileName = [NSString stringWithFormat:@"%@_%@", [[NSProcessInfo processInfo] globallyUniqueString], @"lcp.epub"];
     NSURL *downloadFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:fileName]];
     
+#if ENABLE_NET_PROVIDER
     LCPAcquisition *acquisition = [lcp createAcquisition:license publicationPath:downloadFileURL.path error:error];
     if (!acquisition)
         return NO;
-    
+#endif //ENABLE_NET_PROVIDER
     _currentLCPLicensePath = licensePath;
-    
+#if ENABLE_NET_PROVIDER
     [acquisition startWithDelegate:self];
-    
+#endif //ENABLE_NET_PROVIDER
     return YES;
 }
 
-
+#if ENABLE_NET_PROVIDER
 - (void)endAcquisition:(LCPAcquisition *)acquisition
 {
     NSLog([NSString stringWithFormat:@"LCP EPUB acquisition end [%@]=> [%@]", _currentLCPLicensePath, acquisition.publicationPath]);
@@ -462,7 +480,6 @@ extern NSString *const LOXPageChangedEvent;
         [self openDocumentWithPath:_currentOpenChosenPath];
     });
     
-    
 //    
 //    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 //        if (success) {
@@ -482,5 +499,7 @@ extern NSString *const LOXPageChangedEvent;
 //   
 //    });
 }
+
+#endif //ENABLE_NET_PROVIDER
 
 @end

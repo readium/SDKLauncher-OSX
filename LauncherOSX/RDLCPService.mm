@@ -33,8 +33,8 @@
     return rootCertificate;
 }
 
-- (void)registerContentModule:(lcp::ICredentialHandler *) credentialHandler {
-    lcp::LcpContentModule::Register(self.nativeService, credentialHandler);
+- (void)registerContentModule:(lcp::ICredentialHandler *) credentialHandler statusDocumentHandler:(lcp::IStatusDocumentHandler *)statusDocumentHandler {
+    lcp::LcpContentModule::Register(self.nativeService, credentialHandler, statusDocumentHandler);
 }
 
 @end
