@@ -97,6 +97,8 @@ extern NSString *const LOXPageChangedEvent;
 @interface LOXAppDelegate ()
 #if ENABLE_NET_PROVIDER
 <LCPAcquisitionDelegate>
+#else
+<NSURLSessionDataDelegate>
 #endif //ENABLE_NET_PROVIDER
 
 - (NSString *)selectFile;
@@ -106,6 +108,8 @@ extern NSString *const LOXPageChangedEvent;
 - (void)onPageChanged:(id)onPageChanged;
 
 - (bool)openDocumentWithPath:(NSString *)path;
+
+@property (strong, nonatomic) NSURLSession *session;
 
 @end
 
@@ -134,7 +138,10 @@ extern NSString *const LOXPageChangedEvent;
 {
     self = [super init];
     if (self) {
-
+        
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+        _session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
+        
         _currentPagesInfo = [[LOXCurrentPagesInfo alloc] init];
         _userData = [[LOXUserData alloc] init];
     }
@@ -391,7 +398,7 @@ extern NSString *const LOXPageChangedEvent;
 //{
 //    NSString *licenseJSON = [_epubApi contentsOfFileAtPath:@"META-INF/license.lcpl" encoding:NSUTF8StringEncoding];
 //    if (licenseJSON) {
-//        _license = [[RDLCPService sharedService] openLicense:licenseJSON error:error];
+//        _license = [[RDLCPService sharedService] openLicense:"@@ licenseJSON:licenseJSON error:error];
 //        return (_license != nil);
 //    }
 //    
@@ -427,24 +434,51 @@ extern NSString *const LOXPageChangedEvent;
 #pragma mark - LCP Acquisition
 
 - (BOOL)acquirePublicationWithLicense:(NSString *)licensePath error:(NSError **)error {
+    
+    // Note: licensePath == _currentOpenChosenPath
+    
     RDLCPService *lcp = [RDLCPService sharedService];
+    
     NSString *licenseJSON = [NSString stringWithContentsOfFile:licensePath encoding:NSUTF8StringEncoding error:NULL];
     
-    LCPLicense *license = [lcp openLicense:licensePath licenseJSON:licenseJSON error:error];
+    LCPLicense *license = [lcp openLicense:@"" licenseJSON:licenseJSON error:error];
     if (!license)
         return NO;
-    
-    NSString *fileName = [NSString stringWithFormat:@"%@_%@", [[NSProcessInfo processInfo] globallyUniqueString], @"lcp.epub"];
-    NSURL *downloadFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:fileName]];
-    
+
 #if ENABLE_NET_PROVIDER
+    
+    //    NSString *fileName = [NSString stringWithFormat:@"%@_%@", [[NSProcessInfo processInfo] globallyUniqueString], @"lcp.epub"];
+    //    NSURL *downloadFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:fileName]];
+    
+//    NSString *folderPath = [licensePath stringByDeletingLastPathComponent];
+//    NSString *fileName = [folderPath stringByAppendingPathComponent:xxx];
+    
+    NSString *fileName = [NSString stringWithFormat:@"%@%@", licensePath, @".epub"];
+    
+    NSURL *downloadFileURL = [NSURL fileURLWithPath:fileName];
+    
+    
     LCPAcquisition *acquisition = [lcp createAcquisition:license publicationPath:downloadFileURL.path error:error];
     if (!acquisition)
         return NO;
 #endif //ENABLE_NET_PROVIDER
-    _currentLCPLicensePath = licensePath;
+    
+    _currentLCPLicensePath = licensePath; //_currentOpenChosenPath
+    
 #if ENABLE_NET_PROVIDER
     [acquisition startWithDelegate:self];
+#else
+    
+    //_currentOpenChosenPath
+    //_currentLCPLicensePath
+    NSURL *sourceUrl = [NSURL URLWithString:license.linkPublication];
+    
+    NSURLSessionDataTask *task = [self.session dataTaskWithURL:sourceUrl];
+//        id identifier = @(task.taskIdentifier);
+//        self.requests[identifier] = [NSValue valueWithPointer:request];
+//        self.callbacks[identifier] = [NSValue valueWithPointer:callback];
+        [task resume];
+    
 #endif //ENABLE_NET_PROVIDER
     return YES;
 }
@@ -509,6 +543,90 @@ extern NSString *const LOXPageChangedEvent;
 //        }
 //   
 //    });
+}
+
+#else
+
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
+{
+    NSString *filename = response.suggestedFilename;
+    if (false && // better to name file to match LCPL
+        filename.length > 0) {
+
+        NSString *folderPath = [_currentLCPLicensePath stringByDeletingLastPathComponent];
+        _currentOpenChosenPath = [folderPath stringByAppendingPathComponent:filename];
+//       _currentOpenChosenPath = [NSString stringWithFormat:@"%@%@%@", _currentLCPLicensePath, @"_", filename];
+    } else {
+        _currentOpenChosenPath = [NSString stringWithFormat:@"%@%@", _currentLCPLicensePath, @".epub"];
+    }
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:_currentOpenChosenPath]) {
+        [[NSFileManager defaultManager] removeItemAtPath:_currentOpenChosenPath error:NULL];
+    }
+    
+    completionHandler(NSURLSessionResponseAllow);
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)task didReceiveData:(NSData *)data
+{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:_currentOpenChosenPath]) {
+        [data writeToFile:_currentOpenChosenPath atomically:YES];
+    } else {
+        // TODO: keep handle alive to avoid lots of open/close
+        NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:_currentOpenChosenPath];
+        [fileHandle seekToEndOfFile];
+        [fileHandle writeData:data];
+        [fileHandle closeFile];
+    }
+    
+    float progress = -1;
+    float received = task.countOfBytesReceived;
+    float expected = task.countOfBytesExpectedToReceive;
+    if (expected > 0) {
+        progress = received / expected;
+    }
+    
+    
+    NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition progress: %f percent [%@]=> [%@]", progress * 100.0, _currentLCPLicensePath, _currentOpenChosenPath]);
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
+{
+    NSInteger code = [(NSHTTPURLResponse *)task.response statusCode];
+    
+    if (error) {
+        
+        NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition error [%@]=> [%@] (%li)", _currentLCPLicensePath, _currentOpenChosenPath, code]);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_epubApi presentAlertWithTitle:@"LCP EPUB acquisition failed" message:@"%@ (%d)(%li) [%@]=> [%@]", error.domain, error.code, code, _currentLCPLicensePath, _currentOpenChosenPath];
+            
+            _currentLCPLicensePath = nil;
+            _currentOpenChosenPath = nil;
+            
+        });
+    } else {
+        
+        NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition end [%@]=> [%@] (%li)", _currentLCPLicensePath, _currentOpenChosenPath, code]);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            NSString *licenseContents = [NSString stringWithContentsOfFile:_currentLCPLicensePath encoding:NSUTF8StringEncoding error:NULL];
+            
+            [[RDLCPService sharedService] injectLicense:_currentOpenChosenPath licenseJSON:licenseContents];
+            
+            NSString *title = @"LCP EPUB acquisition finished";
+            
+            NSString *message = [NSString stringWithFormat:@"EPUB: [%@] => [%@]", _currentLCPLicensePath, _currentOpenChosenPath];
+            
+            [_epubApi presentAlertWithTitle:title message:message];
+            
+            _currentLCPLicensePath = nil;
+            
+            [self openDocumentWithPath:_currentOpenChosenPath];
+        });
+    }
 }
 
 #endif //ENABLE_NET_PROVIDER
