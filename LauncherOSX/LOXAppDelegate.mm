@@ -81,7 +81,13 @@ public:
     }
     
     void process(lcp::ILicense *license) {
-        //TODO
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //license->setStatusDocumentProcessingFlag(false);
+            //return;
+            
+            [_self openDocumentWithCurrentPath];
+        });
     }
 };
 
@@ -202,6 +208,11 @@ extern NSString *const LOXPageChangedEvent;
 
     _currentOpenChosenPath = path;
     [self openDocumentWithPath:path];
+}
+
+- (bool)openDocumentWithCurrentPath
+{
+    return [self openDocumentWithPath:_currentOpenChosenPath];
 }
 
 - (bool)openDocumentWithPath:(NSString *)path //error:(NSError **)error
@@ -374,18 +385,18 @@ extern NSString *const LOXPageChangedEvent;
 {
     [self.preferencesController showPreferences:_userData.preferences];
 }
-
-
-- (BOOL)loadLCPLicense:(NSError **)error
-{
-    NSString *licenseJSON = [_epubApi contentsOfFileAtPath:@"META-INF/license.lcpl" encoding:NSUTF8StringEncoding];
-    if (licenseJSON) {
-        _license = [[RDLCPService sharedService] openLicense:licenseJSON error:error];
-        return (_license != nil);
-    }
-    
-    return YES;
-}
+//
+//
+//- (BOOL)loadLCPLicense:(NSError **)error
+//{
+//    NSString *licenseJSON = [_epubApi contentsOfFileAtPath:@"META-INF/license.lcpl" encoding:NSUTF8StringEncoding];
+//    if (licenseJSON) {
+//        _license = [[RDLCPService sharedService] openLicense:licenseJSON error:error];
+//        return (_license != nil);
+//    }
+//    
+//    return YES;
+//}
 
 - (void)decrypt:(LCPLicense*)lcpLicense {
     _license = lcpLicense;
@@ -419,7 +430,7 @@ extern NSString *const LOXPageChangedEvent;
     RDLCPService *lcp = [RDLCPService sharedService];
     NSString *licenseJSON = [NSString stringWithContentsOfFile:licensePath encoding:NSUTF8StringEncoding error:NULL];
     
-    LCPLicense *license = [lcp openLicense:licenseJSON error:error];
+    LCPLicense *license = [lcp openLicense:licensePath licenseJSON:licenseJSON error:error];
     if (!license)
         return NO;
     
