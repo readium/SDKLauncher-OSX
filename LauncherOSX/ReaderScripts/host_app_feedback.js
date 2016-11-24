@@ -36,15 +36,15 @@ require(['readium_shared_js/views/reader_view'], function (ReaderView)
         {
         console.log("reader_view READY");
         
-//        require(['readium_plugin_annotations'], function (annotations)
+//        require(['readium_plugin_highlights'], function (highlights)
 //                {
 //                
-//                console.log(annotations);
+//                console.log(highlights);
 //                
 //                console.log(ReadiumSDK);
 //                console.log(ReadiumSDK.reader);
 //                console.log(ReadiumSDK.reader.plugins);
-////                console.log(ReadiumSDK.reader.plugins.annotations);
+////                console.log(ReadiumSDK.reader.plugins.highlights);
 //
 //                });
         
