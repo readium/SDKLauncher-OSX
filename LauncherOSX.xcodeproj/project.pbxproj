@@ -13,6 +13,9 @@
 		833882C41C5FC7B5003400CD /* libLCP-client-OSX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 833882C31C5FC7B5003400CD /* libLCP-client-OSX.a */; };
 		833882CA1C5FC8CC003400CD /* RDLCPService.mm in Sources */ = {isa = PBXBuildFile; fileRef = 833882C91C5FC8CC003400CD /* RDLCPService.mm */; };
 		833882CC1C5FC8FC003400CD /* LCP Root Certificate.crt in Resources */ = {isa = PBXBuildFile; fileRef = 833882CB1C5FC8FC003400CD /* LCP Root Certificate.crt */; };
+		83380EFA1DE6CA94003F692F /* readium-plugin-highlights.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83380EF31DE6CA7D003F692F /* readium-plugin-highlights.js */; };
+		83380EFB1DE6CA94003F692F /* readium-plugin-highlights.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83380EF41DE6CA7D003F692F /* readium-plugin-highlights.js.bundles.js */; };
+		83380EFC1DE6CA94003F692F /* readium-plugin-highlights.js.map in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83380EF51DE6CA7D003F692F /* readium-plugin-highlights.js.map */; };
 		83412B311AC98D660074111F /* readium-external-libs.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */; };
 		83412B341AC98D660074111F /* readium-shared-js.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */; };
 		83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83766D431A0E9C53008077E1 /* epubReadingSystem.js */; };
@@ -173,6 +176,9 @@
 			dstPath = Scripts;
 			dstSubfolderSpec = 7;
 			files = (
+				83380EFA1DE6CA94003F692F /* readium-plugin-highlights.js in CopyFiles */,
+				83380EFB1DE6CA94003F692F /* readium-plugin-highlights.js.bundles.js in CopyFiles */,
+				83380EFC1DE6CA94003F692F /* readium-plugin-highlights.js.map in CopyFiles */,
 				83F7B6861B2AD75200DFF6B6 /* readium-cfi-js.js in CopyFiles */,
 				83F7B6871B2AD75200DFF6B6 /* readium-cfi-js.js.map in CopyFiles */,
 				83F7B6881B2AD75200DFF6B6 /* readium-external-libs.js in CopyFiles */,
@@ -220,6 +226,9 @@
 		833882C81C5FC8CC003400CD /* RDLCPService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLCPService.h; sourceTree = "<group>"; };
 		833882C91C5FC8CC003400CD /* RDLCPService.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RDLCPService.mm; sourceTree = "<group>"; };
 		833882CB1C5FC8FC003400CD /* LCP Root Certificate.crt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "LCP Root Certificate.crt"; path = "Resources/LCP Root Certificate.crt"; sourceTree = "<group>"; };
+		83380EF31DE6CA7D003F692F /* readium-plugin-highlights.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-plugin-highlights.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-highlights.js"; sourceTree = "<group>"; };
+		83380EF41DE6CA7D003F692F /* readium-plugin-highlights.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-plugin-highlights.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-highlights.js.bundles.js"; sourceTree = "<group>"; };
+		83380EF51DE6CA7D003F692F /* readium-plugin-highlights.js.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = "readium-plugin-highlights.js.map"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-highlights.js.map"; sourceTree = "<group>"; };
 		83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-external-libs.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-external-libs.js.bundles.js"; sourceTree = "<group>"; };
 		83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-shared-js.js.bundles.js"; sourceTree = "<group>"; };
 		83766D431A0E9C53008077E1 /* epubReadingSystem.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = epubReadingSystem.js; path = LauncherOSX/ReaderScripts/epubReadingSystem.js; sourceTree = "<group>"; };
@@ -447,6 +456,9 @@
 		8561A1E4178B6EB8007D15D3 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				83380EF31DE6CA7D003F692F /* readium-plugin-highlights.js */,
+				83380EF41DE6CA7D003F692F /* readium-plugin-highlights.js.bundles.js */,
+				83380EF51DE6CA7D003F692F /* readium-plugin-highlights.js.map */,
 				83F7B66E1B2AD72800DFF6B6 /* readium-cfi-js.js */,
 				83F7B66F1B2AD72800DFF6B6 /* readium-cfi-js.js.map */,
 				83F7B6701B2AD72800DFF6B6 /* readium-external-libs.js */,
@@ -1082,7 +1094,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -1109,15 +1121,15 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -1140,7 +1152,7 @@
 					"${SRCROOT}/readium-lcp-client/src/lcp-client-lib/public/",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.readium-sdk.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/**";
@@ -1165,7 +1177,7 @@
 					"${SRCROOT}/readium-lcp-client/src/lcp-client-lib/public/",
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.readium-sdk.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/**";
