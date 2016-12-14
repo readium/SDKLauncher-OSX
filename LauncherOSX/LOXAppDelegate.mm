@@ -606,6 +606,17 @@ extern NSString *const LOXPageChangedEvent;
             _currentOpenChosenPath = nil;
             
         });
+    } else if (code < 200 || code >= 300) {
+        
+        NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition error [%@]=> [%@] (%li)", _currentLCPLicensePath, _currentOpenChosenPath, code]);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_epubApi presentAlertWithTitle:@"LCP EPUB acquisition failed" message:@"(%li) [%@]=> [%@]", code, _currentLCPLicensePath, _currentOpenChosenPath];
+            
+            _currentLCPLicensePath = nil;
+            _currentOpenChosenPath = nil;
+            
+        });
     } else {
         
         NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition end [%@]=> [%@] (%li)", _currentLCPLicensePath, _currentOpenChosenPath, code]);
