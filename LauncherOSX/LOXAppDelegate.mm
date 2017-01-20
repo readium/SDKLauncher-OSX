@@ -95,11 +95,11 @@ public:
 extern NSString *const LOXPageChangedEvent;
 
 @interface LOXAppDelegate ()
-#if ENABLE_NET_PROVIDER
+#if ENABLE_NET_PROVIDER_ACQUISITION
 <LCPAcquisitionDelegate>
 #else
 <NSURLSessionDataDelegate>
-#endif //ENABLE_NET_PROVIDER
+#endif //ENABLE_NET_PROVIDER_ACQUISITION
 
 - (NSString *)selectFile;
 
@@ -445,7 +445,7 @@ extern NSString *const LOXPageChangedEvent;
     if (!license)
         return NO;
 
-#if ENABLE_NET_PROVIDER
+#if ENABLE_NET_PROVIDER_ACQUISITION
     
     //    NSString *fileName = [NSString stringWithFormat:@"%@_%@", [[NSProcessInfo processInfo] globallyUniqueString], @"lcp.epub"];
     //    NSURL *downloadFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:fileName]];
@@ -461,11 +461,11 @@ extern NSString *const LOXPageChangedEvent;
     LCPAcquisition *acquisition = [lcp createAcquisition:license publicationPath:downloadFileURL.path error:error];
     if (!acquisition)
         return NO;
-#endif //ENABLE_NET_PROVIDER
+#endif //ENABLE_NET_PROVIDER_ACQUISITION
     
     _currentLCPLicensePath = licensePath; //_currentOpenChosenPath
     
-#if ENABLE_NET_PROVIDER
+#if ENABLE_NET_PROVIDER_ACQUISITION
     [acquisition startWithDelegate:self];
 #else
     
@@ -479,11 +479,11 @@ extern NSString *const LOXPageChangedEvent;
 //        self.callbacks[identifier] = [NSValue valueWithPointer:callback];
         [task resume];
     
-#endif //ENABLE_NET_PROVIDER
+#endif //ENABLE_NET_PROVIDER_ACQUISITION
     return YES;
 }
 
-#if ENABLE_NET_PROVIDER
+#if ENABLE_NET_PROVIDER_ACQUISITION
 - (void)endAcquisition:(LCPAcquisition *)acquisition
 {
     NSLog([NSString stringWithFormat:@"LCP EPUB acquisition end [%@]=> [%@]", _currentLCPLicensePath, acquisition.publicationPath]);
@@ -640,6 +640,6 @@ extern NSString *const LOXPageChangedEvent;
     }
 }
 
-#endif //ENABLE_NET_PROVIDER
+#endif //ENABLE_NET_PROVIDER_ACQUISITION
 
 @end
