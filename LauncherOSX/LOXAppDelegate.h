@@ -91,4 +91,6 @@ NSString *const LOXMediaOverlayTTSStopEvent = @"LOXMediaOverlayTTSStopEvent";
 
 - (void)decrypt:(LCPLicense*)lcpLicense;
 
+- (bool)openDocumentWithCurrentPath;
+
 @end
