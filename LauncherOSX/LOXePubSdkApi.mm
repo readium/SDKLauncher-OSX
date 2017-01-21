@@ -190,7 +190,7 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
     return fileTypesArray;
 }
 
-- (void)presentAlertWithTitle:(NSString *)title message:(NSString *)message, ... {
+- (NSAlert *)presentAlertWithTitle:(NSString *)title message:(NSString *)message, ... {
     va_list args;
     va_start(args, message);
     message = [[NSString alloc] initWithFormat:message arguments:args];
@@ -215,6 +215,8 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
         default:
             break;
     }
+    
+    return alert;
 }
 
 - (NSString*)presentAlertWithInput:(NSString *)title inputDefaultText:(NSString *)inputDefaultText message:(NSString *)message, ... {

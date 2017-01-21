@@ -49,7 +49,7 @@ namespace ePub3 {
 
 - (LOXPackage *)openFile:(NSString *)file;
 
-- (void)presentAlertWithTitle:(NSString *)title message:(NSString *)message, ...;
+- (NSAlert *)presentAlertWithTitle:(NSString *)title message:(NSString *)message, ...;
 - (NSString*)presentAlertWithInput:(NSString *)title inputDefaultText:(NSString *)inputDefaultText message:(NSString *)message, ...;
 
 /**

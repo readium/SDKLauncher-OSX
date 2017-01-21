@@ -70,6 +70,8 @@ NSString *const LOXMediaOverlayTTSStopEvent = @"LOXMediaOverlayTTSStopEvent";
 
 @property (nonatomic, readonly) LOXCurrentPagesInfo *currentPagesInfo;
 
+@property (nonatomic, readonly) NSString *currentOpenChosenPath;
+
 /**
  * License instance, if the container is protected using LCP.
  */
@@ -92,5 +94,7 @@ NSString *const LOXMediaOverlayTTSStopEvent = @"LOXMediaOverlayTTSStopEvent";
 - (void)decrypt:(LCPLicense*)lcpLicense;
 
 - (bool)openDocumentWithCurrentPath;
+
+- (void)launchStatusDocumentProcessing:(LCPLicense*)lcpLicense;
 
 @end

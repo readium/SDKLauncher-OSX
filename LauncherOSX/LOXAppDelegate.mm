@@ -48,7 +48,10 @@
 #import "LOXMediaOverlayController.h"
 
 #import "RDLCPService.h"
+
 #import <platform/apple/src/lcp.h>
+
+#import "LCPStatusDocumentProcessing_DeviceIdManager.h"
 
 #import <LcpContentModule.h>
 
@@ -83,10 +86,9 @@ public:
     void process(lcp::ILicense *license) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            //license->setStatusDocumentProcessingFlag(false);
-            //return;
             
-            [_self openDocumentWithCurrentPath];
+            LCPLicense* lcpLicense = [[LCPLicense alloc] initWithLicense:license];
+            [_self launchStatusDocumentProcessing:lcpLicense];
         });
     }
 };
@@ -96,9 +98,9 @@ extern NSString *const LOXPageChangedEvent;
 
 @interface LOXAppDelegate ()
 #if ENABLE_NET_PROVIDER_ACQUISITION
-<LCPAcquisitionDelegate>
+<StatusDocumentProcessingListener, LCPAcquisitionDelegate>
 #else
-<NSURLSessionDataDelegate>
+<StatusDocumentProcessingListener, NSURLSessionDataDelegate>
 #endif //ENABLE_NET_PROVIDER_ACQUISITION
 
 - (NSString *)selectFile;
@@ -109,7 +111,9 @@ extern NSString *const LOXPageChangedEvent;
 
 - (bool)openDocumentWithPath:(NSString *)path;
 
-@property (strong, nonatomic) NSURLSession *session;
+- (void)onStatusDocumentProcessingComplete_:(NSObject*)nope;
+
+//@property (strong, nonatomic) NSURLSession *session;
 
 @end
 
@@ -125,9 +129,15 @@ extern NSString *const LOXPageChangedEvent;
     
     NSString* _currentLCPLicensePath;
     NSString* _currentOpenChosenPath;
+    
+    LCPStatusDocumentProcessing * _statusDocumentProcessing;
+    NSAlert * _alertStatusDocumentProcessing;
 }
 
 @synthesize currentPagesInfo = _currentPagesInfo;
+//@synthesize currentOpenChosenPath = _currentOpenChosenPath;
+
+NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
 
 - (LOXPreferences *)getPreferences
 {
@@ -138,10 +148,6 @@ extern NSString *const LOXPageChangedEvent;
 {
     self = [super init];
     if (self) {
-        
-        NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-        _session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
-        
         _currentPagesInfo = [[LOXCurrentPagesInfo alloc] init];
         _userData = [[LOXUserData alloc] init];
     }
@@ -285,7 +291,7 @@ extern NSString *const LOXPageChangedEvent;
         if (success) {
             NSString *title = @"LCP EPUB acquisition in progress...";
             
-            NSString *message = @"Wait...";
+            NSString *message = @"(close this dialog when download is finished)";
             
             [_epubApi presentAlertWithTitle:title message:message];
         } else {
@@ -473,7 +479,11 @@ extern NSString *const LOXPageChangedEvent;
     //_currentLCPLicensePath
     NSURL *sourceUrl = [NSURL URLWithString:license.linkPublication];
     
-    NSURLSessionDataTask *task = [self.session dataTaskWithURL:sourceUrl];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSession * session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil]; //[NSOperationQueue mainQueue] // [[NSThread currentThread] isMainThread]
+    
+    NSURLSessionDataTask *task = [session dataTaskWithURL:sourceUrl];
+    task.taskDescription = TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD;
 //        id identifier = @(task.taskIdentifier);
 //        self.requests[identifier] = [NSValue valueWithPointer:request];
 //        self.callbacks[identifier] = [NSValue valueWithPointer:callback];
@@ -550,6 +560,10 @@ extern NSString *const LOXPageChangedEvent;
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
 {
+    if (![dataTask.taskDescription isEqualToString:TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD]) {
+        return;
+    }
+    
     NSString *filename = response.suggestedFilename;
     if (false && // better to name file to match LCPL
         filename.length > 0) {
@@ -570,6 +584,10 @@ extern NSString *const LOXPageChangedEvent;
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)task didReceiveData:(NSData *)data
 {
+    if (![task.taskDescription isEqualToString:TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD]) {
+        return;
+    }
+    
     if (![[NSFileManager defaultManager] fileExistsAtPath:_currentOpenChosenPath]) {
         [data writeToFile:_currentOpenChosenPath atomically:YES];
     } else {
@@ -593,13 +611,20 @@ extern NSString *const LOXPageChangedEvent;
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
+    if (![task.taskDescription isEqualToString:TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD]) {
+        return;
+    }
+    
     NSInteger code = [(NSHTTPURLResponse *)task.response statusCode];
     
     if (error) {
         
         NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition error [%@]=> [%@] (%li)", _currentLCPLicensePath, _currentOpenChosenPath, code]);
         
+        [NSApp abortModal];
+        
         dispatch_async(dispatch_get_main_queue(), ^{
+            
             [_epubApi presentAlertWithTitle:@"LCP EPUB acquisition failed" message:@"%@ (%d)(%li) [%@]=> [%@]", error.domain, error.code, code, _currentLCPLicensePath, _currentOpenChosenPath];
             
             _currentLCPLicensePath = nil;
@@ -610,7 +635,10 @@ extern NSString *const LOXPageChangedEvent;
         
         NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition error [%@]=> [%@] (%li)", _currentLCPLicensePath, _currentOpenChosenPath, code]);
         
+        [NSApp abortModal];
+        
         dispatch_async(dispatch_get_main_queue(), ^{
+            
             [_epubApi presentAlertWithTitle:@"LCP EPUB acquisition failed" message:@"(%li) [%@]=> [%@]", code, _currentLCPLicensePath, _currentOpenChosenPath];
             
             _currentLCPLicensePath = nil;
@@ -641,5 +669,92 @@ extern NSString *const LOXPageChangedEvent;
 }
 
 #endif //ENABLE_NET_PROVIDER_ACQUISITION
+
+
+- (void)launchStatusDocumentProcessing:(LCPLicense*)lcpLicense
+{
+    if (_statusDocumentProcessing != nil) {
+        [_statusDocumentProcessing cancel];
+        _statusDocumentProcessing = nil;
+    }
+    
+    LCPStatusDocumentProcessing_DeviceIdManager* deviceIdManager = [[LCPStatusDocumentProcessing_DeviceIdManager alloc] init];
+    
+    _statusDocumentProcessing = [[LCPStatusDocumentProcessing alloc] init_:[RDLCPService sharedService] path:_currentOpenChosenPath license:lcpLicense deviceIdManager:deviceIdManager];
+    
+    [_statusDocumentProcessing start:self];
+    
+if (_alertStatusDocumentProcessing != nil) {
+    
+    [NSApp abortModal];
+    
+    //        [_alertStatusDocumentProcessing.window orderOut:self];
+    //        [_alertStatusDocumentProcessing.window close];
+    
+}
+    
+    NSString *title = @"LCP LSD processing ...";
+    NSString *message = [NSString stringWithFormat:@"EPUB: [%@]", _currentOpenChosenPath];
+    //_alertStatusDocumentProcessing = [_epubApi presentAlertWithTitle:title message:message];
+    
+    _alertStatusDocumentProcessing = [[NSAlert alloc] init];
+    [_alertStatusDocumentProcessing setMessageText:title];
+    [_alertStatusDocumentProcessing setInformativeText:message];
+    
+    [_alertStatusDocumentProcessing addButtonWithTitle:@"CLOSE"];
+    // [alert addButtonWithTitle:@"SECOND"];
+//    
+//    [_alertStatusDocumentProcessing beginWithCompletionHandler:^(NSInteger result) {
+//       
+//    }];
+    switch ([_alertStatusDocumentProcessing runModal]) {
+        case NSAlertFirstButtonReturn: {
+            // CANCEL
+            
+            if (_statusDocumentProcessing != nil) {
+                [_statusDocumentProcessing cancel];
+                _statusDocumentProcessing = nil;
+            }
+            
+            break;
+        }
+        case NSAlertSecondButtonReturn: {
+            // SECOND
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+- (void)onStatusDocumentProcessingComplete:(LCPStatusDocumentProcessing*)lsdProcessing
+{
+    if (_statusDocumentProcessing == nil) return;
+    _statusDocumentProcessing = nil;
+    
+    if ([lsdProcessing wasCancelled]) return;
+    
+    [self performSelectorOnMainThread:@selector(onStatusDocumentProcessingComplete_:) withObject:nil waitUntilDone:NO];
+//    
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        
+//    });
+}
+
+- (void)onStatusDocumentProcessingComplete_:(NSObject*)nope
+{
+    if (_alertStatusDocumentProcessing != nil) {
+        
+        [NSApp abortModal];
+        
+//        [_alertStatusDocumentProcessing.window orderOut:self];
+//        [_alertStatusDocumentProcessing.window close];
+        
+        _alertStatusDocumentProcessing = nil;
+    }
+    
+    [self openDocumentWithCurrentPath];
+}
+
 
 @end
