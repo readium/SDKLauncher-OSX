@@ -10,6 +10,9 @@
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
 		5998CC401CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5998CC3F1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m */; };
 		5998CC451CD4E38400BDAF46 /* RDPackageResourceDataResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 5998CC441CD4E38400BDAF46 /* RDPackageResourceDataResponse.m */; };
+		83380EFA1DE6CA94003F692F /* readium-plugin-highlights.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83380EF31DE6CA7D003F692F /* readium-plugin-highlights.js */; };
+		83380EFB1DE6CA94003F692F /* readium-plugin-highlights.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83380EF41DE6CA7D003F692F /* readium-plugin-highlights.js.bundles.js */; };
+		83380EFC1DE6CA94003F692F /* readium-plugin-highlights.js.map in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83380EF51DE6CA7D003F692F /* readium-plugin-highlights.js.map */; };
 		83412B311AC98D660074111F /* readium-external-libs.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */; };
 		83412B341AC98D660074111F /* readium-shared-js.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */; };
 		83766D471A0E9C77008077E1 /* epubReadingSystem.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83766D431A0E9C53008077E1 /* epubReadingSystem.js */; };
@@ -44,7 +47,7 @@
 		855CFEE8169DFA3E00AD311E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 855CFEE7169DFA3D00AD311E /* libz.dylib */; };
 		856354F716DE7C3A009DA283 /* BookmarkDlg.xib in Resources */ = {isa = PBXBuildFile; fileRef = 856354F616DE7C3A009DA283 /* BookmarkDlg.xib */; };
 		856354FA16DEB3AF009DA283 /* LOXBookmarkEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 856354F916DEB3AF009DA283 /* LOXBookmarkEditController.m */; };
-		85739532172AE0280071B66C /* ePub3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 558E562E16EF859800FCF273 /* ePub3.dylib */; };
+		85739532172AE0280071B66C /* ePub3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 558E562E16EF859800FCF273 /* ePub3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		8578F14A16D4095F003914EB /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8578F14816D4095F003914EB /* Model.xcdatamodeld */; };
 		8597D61216824655000FAAAF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8597D61116824655000FAAAF /* Cocoa.framework */; };
 		8597D61C16824655000FAAAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8597D61A16824655000FAAAF /* InfoPlist.strings */; };
@@ -149,6 +152,9 @@
 			dstPath = Scripts;
 			dstSubfolderSpec = 7;
 			files = (
+				83380EFA1DE6CA94003F692F /* readium-plugin-highlights.js in CopyFiles */,
+				83380EFB1DE6CA94003F692F /* readium-plugin-highlights.js.bundles.js in CopyFiles */,
+				83380EFC1DE6CA94003F692F /* readium-plugin-highlights.js.map in CopyFiles */,
 				83F7B6861B2AD75200DFF6B6 /* readium-cfi-js.js in CopyFiles */,
 				83F7B6871B2AD75200DFF6B6 /* readium-cfi-js.js.map in CopyFiles */,
 				83F7B6881B2AD75200DFF6B6 /* readium-external-libs.js in CopyFiles */,
@@ -192,6 +198,9 @@
 		5998CC3F1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RDDateAsString.m"; sourceTree = "<group>"; };
 		5998CC431CD4E38400BDAF46 /* RDPackageResourceDataResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDPackageResourceDataResponse.h; sourceTree = "<group>"; };
 		5998CC441CD4E38400BDAF46 /* RDPackageResourceDataResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDPackageResourceDataResponse.m; sourceTree = "<group>"; };
+		83380EF31DE6CA7D003F692F /* readium-plugin-highlights.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-plugin-highlights.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-highlights.js"; sourceTree = "<group>"; };
+		83380EF41DE6CA7D003F692F /* readium-plugin-highlights.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-plugin-highlights.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-highlights.js.bundles.js"; sourceTree = "<group>"; };
+		83380EF51DE6CA7D003F692F /* readium-plugin-highlights.js.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = "readium-plugin-highlights.js.map"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-highlights.js.map"; sourceTree = "<group>"; };
 		83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-external-libs.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-external-libs.js.bundles.js"; sourceTree = "<group>"; };
 		83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-shared-js.js.bundles.js"; sourceTree = "<group>"; };
 		83766D431A0E9C53008077E1 /* epubReadingSystem.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = epubReadingSystem.js; path = LauncherOSX/ReaderScripts/epubReadingSystem.js; sourceTree = "<group>"; };
@@ -399,6 +408,9 @@
 		8561A1E4178B6EB8007D15D3 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				83380EF31DE6CA7D003F692F /* readium-plugin-highlights.js */,
+				83380EF41DE6CA7D003F692F /* readium-plugin-highlights.js.bundles.js */,
+				83380EF51DE6CA7D003F692F /* readium-plugin-highlights.js.map */,
 				83F7B66E1B2AD72800DFF6B6 /* readium-cfi-js.js */,
 				83F7B66F1B2AD72800DFF6B6 /* readium-cfi-js.js.map */,
 				83F7B6701B2AD72800DFF6B6 /* readium-external-libs.js */,
@@ -765,7 +777,7 @@
 		8597D60416824655000FAAAF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Boris Schneiderman";
 			};
 			buildConfigurationList = 8597D60716824655000FAAAF /* Build configuration list for PBXProject "LauncherOSX" */;
@@ -978,16 +990,25 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -998,8 +1019,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -1009,22 +1031,31 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -1042,7 +1073,8 @@
 					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.readium-sdk.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/**";
 				WRAPPER_EXTENSION = app;
@@ -1061,7 +1093,8 @@
 					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "LauncherOSX/LauncherOSX-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.readium-sdk.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/readium-sdk/Platform/Apple\"/**";
 				WRAPPER_EXTENSION = app;

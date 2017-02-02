@@ -36,15 +36,15 @@ require(['readium_shared_js/views/reader_view'], function (ReaderView)
         {
         console.log("reader_view READY");
         
-//        require(['readium_plugin_annotations'], function (annotations)
+//        require(['readium_plugin_highlights'], function (highlights)
 //                {
 //                
-//                console.log(annotations);
+//                console.log(highlights);
 //                
 //                console.log(ReadiumSDK);
 //                console.log(ReadiumSDK.reader);
 //                console.log(ReadiumSDK.reader.plugins);
-////                console.log(ReadiumSDK.reader.plugins.annotations);
+////                console.log(ReadiumSDK.reader.plugins.highlights);
 //
 //                });
         
@@ -196,16 +196,16 @@ require(['readium_shared_js/views/reader_view'], function (ReaderView)
     ReadiumSDK.on(ReadiumSDK.Events.PLUGINS_LOADED, function(reader)
                   {
                   // readium built-in (should have been require()'d outside this scope)
-                  console.log(reader.plugins.annotations);
-                  if (reader.plugins.annotations) {
-                    reader.plugins.annotations.initialize({annotationCSSUrl: opts.annotationCSSUrl});
-                    reader.plugins.annotations.on("annotationClicked", function(type, idref, cfi, id) {
+                  console.log(reader.plugins.highlights);
+                  if (reader.plugins.highlights) {
+                    reader.plugins.highlights.initialize({annotationCSSUrl: opts.annotationCSSUrl});
+                    reader.plugins.highlights.on("annotationClicked", function(type, idref, cfi, id) {
                                                     console.log("ANNOTATION CLICK: " + id);
-                                                    reader.plugins.annotations.removeHighlight(id);
+                                                    reader.plugins.highlights.removeHighlight(id);
                                                     });
-                    reader.plugins.annotations.on("textSelectionEvent", function() {
+                    reader.plugins.highlights.on("textSelectionEvent", function() {
                                                     console.log("ANNOTATION SELECT");
-                                                    reader.plugins.annotations.addSelectionHighlight(Math.floor((Math.random()*1000000)), "highlight");
+                                                    reader.plugins.highlights.addSelectionHighlight(Math.floor((Math.random()*1000000)), "highlight");
                                                     });
                   }
                   
