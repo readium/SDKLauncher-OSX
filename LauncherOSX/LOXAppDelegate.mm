@@ -220,7 +220,12 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
     }
 
     _currentOpenChosenPath = path;
-    [self openDocumentWithPath:path];
+    
+    [self performSelectorOnMainThread:@selector(openDocumentWithPath:) withObject:path waitUntilDone:NO];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//    [self openDocumentWithPath:path];
+//        });
+
 }
 
 - (bool)openDocumentWithCurrentPath
@@ -289,11 +294,9 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
         
         
         if (success) {
-            NSString *title = @"LCP EPUB acquisition in progress...";
+
+            [self performSelectorOnMainThread:@selector(alertModal_downloadInProgress:) withObject:nil waitUntilDone:NO];
             
-            NSString *message = @"(close this dialog when download is finished)";
-            
-            [_epubApi presentAlertWithTitle:title message:message];
         } else {
             NSString *title = @"LCP EPUB acquisition failure";
             
@@ -304,6 +307,42 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
     }
     
     return NO;
+}
+
+- (void)alertModal_downloadInProgress:(NSObject*)obj {
+    
+    //dispatch_async(dispatch_get_main_queue(), ^{
+        
+        NSString *title = @"LCP EPUB acquisition in progress...";
+        
+        NSString *message = @"(close this dialog when download is finished)";
+        
+        //[_epubApi presentAlertWithTitle:title message:message];
+        
+        NSAlert *downloadAlert = [[NSAlert alloc] init];
+        [downloadAlert setMessageText:title];
+        [downloadAlert setInformativeText:message];
+        
+        [downloadAlert addButtonWithTitle:@"OK"];
+        // [downloadAlert addButtonWithTitle:@"SECOND"];
+        //
+        //    [downloadAlert beginWithCompletionHandler:^(NSInteger result) {
+        //
+        //    }];
+        switch ([downloadAlert runModal]) {
+            case NSAlertFirstButtonReturn: {
+                // OK
+                break;
+            }
+            case NSAlertSecondButtonReturn: {
+                // SECOND
+                break;
+            }
+            default:
+                break;
+        }
+        
+    //});
 }
 
 - (LOXBook *)findOrCreateBookForCurrentPackageWithPath:(NSString *)path
@@ -616,6 +655,10 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
     NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition progress: %f percent [%@]=> [%@]", progress * 100.0, _currentLCPLicensePath, _currentOpenChosenPath]);
 }
 
+- (void)abortModal:(NSObject*)nope {
+    [NSApp abortModal];
+}
+
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
     if (![task.taskDescription isEqualToString:TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD]) {
@@ -628,8 +671,8 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
         
         NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition error [%@]=> [%@] (%li)", _currentLCPLicensePath, _currentOpenChosenPath, code]);
         
-        [NSApp abortModal];
-        
+        [self performSelectorOnMainThread:@selector(abortModal:) withObject:nil waitUntilDone:NO];
+
         dispatch_async(dispatch_get_main_queue(), ^{
             
             [_epubApi presentAlertWithTitle:@"LCP EPUB acquisition failed" message:@"%@ (%d)(%li) [%@]=> [%@]", error.domain, error.code, code, _currentLCPLicensePath, _currentOpenChosenPath];
@@ -642,7 +685,7 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
         
         NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition error [%@]=> [%@] (%li)", _currentLCPLicensePath, _currentOpenChosenPath, code]);
         
-        [NSApp abortModal];
+        [self performSelectorOnMainThread:@selector(abortModal:) withObject:nil waitUntilDone:NO];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             
@@ -655,7 +698,9 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
     } else {
         
         NSLog(@"%@", [NSString stringWithFormat:@"LCP EPUB acquisition end [%@]=> [%@] (%li)", _currentLCPLicensePath, _currentOpenChosenPath, code]);
-        
+
+        [self performSelectorOnMainThread:@selector(abortModal:) withObject:nil waitUntilDone:NO];
+
         dispatch_async(dispatch_get_main_queue(), ^{
             
             NSString *licenseContents = [NSString stringWithContentsOfFile:_currentLCPLicensePath encoding:NSUTF8StringEncoding error:NULL];
@@ -687,13 +732,13 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
     
     LCPStatusDocumentProcessing_DeviceIdManager* deviceIdManager = [[LCPStatusDocumentProcessing_DeviceIdManager alloc] init];
     
-    _statusDocumentProcessing = [[LCPStatusDocumentProcessing alloc] init_:[RDLCPService sharedService] path:_currentOpenChosenPath license:lcpLicense deviceIdManager:deviceIdManager];
+    _statusDocumentProcessing = [[LCPStatusDocumentProcessing alloc] init_:[RDLCPService sharedService] epubPath:_currentOpenChosenPath license:lcpLicense deviceIdManager:deviceIdManager];
     
     [_statusDocumentProcessing start:self];
     
 if (_alertStatusDocumentProcessing != nil) {
     
-    [NSApp abortModal];
+    [self performSelectorOnMainThread:@selector(abortModal:) withObject:nil waitUntilDone:NO];
     
     //        [_alertStatusDocumentProcessing.window orderOut:self];
     //        [_alertStatusDocumentProcessing.window close];
@@ -752,7 +797,8 @@ if (_alertStatusDocumentProcessing != nil) {
 {
     if (_alertStatusDocumentProcessing != nil) {
         
-        [NSApp abortModal];
+        [self performSelectorOnMainThread:@selector(abortModal:) withObject:nil waitUntilDone:NO];
+//        [NSApp abortModal];
         
 //        [_alertStatusDocumentProcessing.window orderOut:self];
 //        [_alertStatusDocumentProcessing.window close];
