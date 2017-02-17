@@ -530,8 +530,15 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
         
         [self endAcquisition:acquisition];
         
-        _currentOpenChosenPath = acquisition.publicationPath;
+//        _currentOpenChosenPath = acquisition.publicationPath;
+        _currentOpenChosenPath = [NSString stringWithFormat:@"%@%@", _currentLCPLicensePath, @".epub"];
+       
+       if ([[NSFileManager defaultManager] fileExistsAtPath:_currentOpenChosenPath]) {
+           [[NSFileManager defaultManager] removeItemAtPath:_currentOpenChosenPath error:NULL];
+       }
         
+        [[NSFileManager defaultManager] moveItemAtPath:acquisition.publicationPath toPath:_currentOpenChosenPath error:NULL];
+
         [self openDocumentWithPath:_currentOpenChosenPath];
     });
     
