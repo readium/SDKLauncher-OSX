@@ -730,7 +730,7 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
         _statusDocumentProcessing = nil;
     }
     
-    LCPStatusDocumentProcessing_DeviceIdManager* deviceIdManager = [[LCPStatusDocumentProcessing_DeviceIdManager alloc] init];
+    LCPStatusDocumentProcessing_DeviceIdManager* deviceIdManager = [[LCPStatusDocumentProcessing_DeviceIdManager alloc] init_:@"APPLE DEVICE"];
     
     _statusDocumentProcessing = [[LCPStatusDocumentProcessing alloc] init_:[RDLCPService sharedService] epubPath:_currentOpenChosenPath license:lcpLicense deviceIdManager:deviceIdManager];
     
@@ -781,10 +781,14 @@ if (_alertStatusDocumentProcessing != nil) {
 
 - (void)onStatusDocumentProcessingComplete:(LCPStatusDocumentProcessing*)lsdProcessing
 {
-    if (_statusDocumentProcessing == nil) return;
+    if (_statusDocumentProcessing == nil) {
+        return;
+    }
     _statusDocumentProcessing = nil;
     
-    if ([lsdProcessing wasCancelled]) return;
+    if ([lsdProcessing wasCancelled]) {
+        return;
+    }
     
     [self performSelectorOnMainThread:@selector(onStatusDocumentProcessingComplete_:) withObject:nil waitUntilDone:NO];
 //    
@@ -806,7 +810,11 @@ if (_alertStatusDocumentProcessing != nil) {
         _alertStatusDocumentProcessing = nil;
     }
     
-    [self openDocumentWithCurrentPath];
+    [self performSelectorOnMainThread:@selector(openDocumentWithPath:) withObject:_currentOpenChosenPath waitUntilDone:NO];
+    //        dispatch_async(dispatch_get_main_queue(), ^{
+    //    [self openDocumentWithPath:_currentOpenChosenPath];
+    //        });
+    //[self openDocumentWithCurrentPath];
 }
 
 

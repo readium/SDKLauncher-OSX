@@ -32,15 +32,23 @@ using namespace lcp;
 
 @end
 
-@implementation LCPStatusDocumentProcessing_DeviceIdManager
+@implementation LCPStatusDocumentProcessing_DeviceIdManager {
+@private
+    NSString* m_deviceName;
+}
 
-- (instancetype)init
+- (instancetype)init_:(NSString*)deviceName
 {
     self = [super init];
     if (self) {
+        m_deviceName = deviceName;
     }
     
     return self;
+}
+
+- (NSString*)getDeviceNAME {
+    return m_deviceName;
 }
 
 - (NSString*)getDeviceID {
