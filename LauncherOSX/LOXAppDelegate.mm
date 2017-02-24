@@ -111,7 +111,7 @@ extern NSString *const LOXPageChangedEvent;
 
 - (bool)openDocumentWithPath:(NSString *)path;
 
-- (void)onStatusDocumentProcessingComplete_:(NSObject*)nope;
+- (void)onStatusDocumentProcessingComplete_:(LCPStatusDocumentProcessing*)lsd;
 
 //@property (strong, nonatomic) NSURLSession *session;
 
@@ -779,25 +779,25 @@ if (_alertStatusDocumentProcessing != nil) {
     }
 }
 
-- (void)onStatusDocumentProcessingComplete:(LCPStatusDocumentProcessing*)lsdProcessing
+- (void)onStatusDocumentProcessingComplete:(LCPStatusDocumentProcessing*)lsd
 {
     if (_statusDocumentProcessing == nil) {
         return;
     }
     _statusDocumentProcessing = nil;
     
-    if ([lsdProcessing wasCancelled]) {
+    if ([lsd wasCancelled]) {
         return;
     }
     
-    [self performSelectorOnMainThread:@selector(onStatusDocumentProcessingComplete_:) withObject:nil waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(onStatusDocumentProcessingComplete_:) withObject:lsd waitUntilDone:NO];
 //    
 //    dispatch_async(dispatch_get_main_queue(), ^{
 //        
 //    });
 }
 
-- (void)onStatusDocumentProcessingComplete_:(NSObject*)nope
+- (void)onStatusDocumentProcessingComplete_:(LCPStatusDocumentProcessing*)lsd
 {
     if (_alertStatusDocumentProcessing != nil) {
         
@@ -810,11 +810,136 @@ if (_alertStatusDocumentProcessing != nil) {
         _alertStatusDocumentProcessing = nil;
     }
     
-    [self performSelectorOnMainThread:@selector(openDocumentWithPath:) withObject:_currentOpenChosenPath waitUntilDone:NO];
+    // Note that when the license is updated (injected) inside the EPUB archive,
+    // the LCPL file has a different canonical form, and therefore the user passphrase
+    // is asked again (even though it probably is exactly the same).
+    // This is because the passphrase is cached in secure storage based on unique keys
+    // for each LCPL file, based on their canonical form (serialised JSON syntax).
+    if ([lsd hasLicenseUpdatePending]) {
+        
+        [self performSelectorOnMainThread:@selector(openDocumentWithPath:) withObject:_currentOpenChosenPath waitUntilDone:NO];
+        
+        return;
+    }
+    
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+    
+    // The renew + return LSD interactions are invoked here for demonstration purposes only.
+    // A real-word app would probably expose the return link in a very different fashion,
+    // and may even not necessarily expose the return / renew interactions at the app level (to the end-user),
+    // instead: via an intermediary online service / web page, controlled by the content provider.
+    
+    [self checkLink_RENEW:lsd doneCallback_checkLink_RENEW:^(bool done_checkLink_RENEW){
+        
+        if (done_checkLink_RENEW) {
+            [self performSelectorOnMainThread:@selector(openDocumentWithPath:) withObject:_currentOpenChosenPath waitUntilDone:NO];
+            
+            return;
+        }
+        
+        [self checkLink_RETURN:lsd doneCallback_checkLink_RETURN:^(bool done_checkLink_RETURN){
+            
+            [self performSelectorOnMainThread:@selector(openDocumentWithPath:) withObject:_currentOpenChosenPath waitUntilDone:NO];
+        }];
+    }];
+        
+    });
+    
+    
     //        dispatch_async(dispatch_get_main_queue(), ^{
     //    [self openDocumentWithPath:_currentOpenChosenPath];
     //        });
     //[self openDocumentWithCurrentPath];
+}
+
+-(void)checkLink_RENEW:(LCPStatusDocumentProcessing*)lsd doneCallback_checkLink_RENEW:(DoneCallback)doneCallback_checkLink_RENEW //void(^)(bool)
+{
+    if (![lsd isActive]) {
+        doneCallback_checkLink_RENEW(false);
+        return;
+    }
+    
+    if (![lsd hasRenewLink]) {
+        doneCallback_checkLink_RENEW(false);
+        return;
+    }
+    
+    
+    NSString *title = @"LSD renew?";
+    
+    NSString *message = @"Renew LCP license?";
+    
+    //[_epubApi presentAlertWithTitle:title message:message];
+    
+    NSAlert *renewAlert = [[NSAlert alloc] init];
+    [renewAlert setMessageText:title];
+    [renewAlert setInformativeText:message];
+    
+    [renewAlert addButtonWithTitle:@"Yes"];
+    [renewAlert addButtonWithTitle:@"No"];
+    
+    //    [renewAlert beginWithCompletionHandler:^(NSInteger result) {
+    //
+    //    }];
+    switch ([renewAlert runModal]) {
+        case NSAlertFirstButtonReturn: {
+            // Yes
+            [lsd doRenew:doneCallback_checkLink_RENEW];
+            break;
+        }
+        case NSAlertSecondButtonReturn: {
+            // No
+            doneCallback_checkLink_RENEW(false);
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+-(void)checkLink_RETURN:(LCPStatusDocumentProcessing*)lsd doneCallback_checkLink_RETURN:(DoneCallback)doneCallback_checkLink_RETURN //void(^)(bool)
+{
+    if (![lsd isActive]) {
+        doneCallback_checkLink_RETURN(false);
+        return;
+    }
+    
+    if (![lsd hasReturnLink]) {
+        doneCallback_checkLink_RETURN(false);
+        return;
+    }
+    
+    NSString *title = @"LSD return?";
+    
+    NSString *message = @"Return LCP license?";
+    
+    //[_epubApi presentAlertWithTitle:title message:message];
+    
+    NSAlert *renewAlert = [[NSAlert alloc] init];
+    [renewAlert setMessageText:title];
+    [renewAlert setInformativeText:message];
+    
+    [renewAlert addButtonWithTitle:@"Yes"];
+    [renewAlert addButtonWithTitle:@"No"];
+    
+    //    [renewAlert beginWithCompletionHandler:^(NSInteger result) {
+    //
+    //    }];
+    switch ([renewAlert runModal]) {
+        case NSAlertFirstButtonReturn: {
+            // Yes
+            [lsd doReturn:doneCallback_checkLink_RETURN];
+            break;
+        }
+        case NSAlertSecondButtonReturn: {
+            // No
+            doneCallback_checkLink_RETURN(false);
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 
