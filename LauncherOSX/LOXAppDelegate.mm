@@ -815,7 +815,8 @@ if (_alertStatusDocumentProcessing != nil) {
     // is asked again (even though it probably is exactly the same).
     // This is because the passphrase is cached in secure storage based on unique keys
     // for each LCPL file, based on their canonical form (serialised JSON syntax).
-    if ([lsd hasLicenseUpdatePending]) {
+    if (![lsd isInitialized] || // e.g. LSD server network timeout
+        [lsd hasLicenseUpdatePending]) {
         
         [self performSelectorOnMainThread:@selector(openDocumentWithPath:) withObject:_currentOpenChosenPath waitUntilDone:NO];
         
