@@ -113,6 +113,10 @@ extern NSString *const LOXPageChangedEvent;
 
 - (void)onStatusDocumentProcessingComplete_:(LCPStatusDocumentProcessing*)lsd;
 
+
+-(void)fetchAndDisplayEpubInfo:(NSString*)path;
+-(void)displayEpubInfo:(ContainerPtr)containerPtr;
+
 //@property (strong, nonatomic) NSURLSession *session;
 
 @end
@@ -219,6 +223,8 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
         return;
     }
 
+    [self fetchAndDisplayEpubInfo:path];
+    
     _currentOpenChosenPath = path;
     
     [self performSelectorOnMainThread:@selector(openDocumentWithPath:) withObject:path waitUntilDone:NO];
@@ -228,9 +234,99 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
 
 }
 
-- (bool)openDocumentWithCurrentPath
+
+-(void)fetchAndDisplayEpubInfo:(NSString*)path
 {
-    return [self openDocumentWithPath:_currentOpenChosenPath];
+    if ([_epubApi canOpenFile:path]) { // EPUB
+        
+        try {
+            ContainerPtr containerPtr = Container::OpenContainerForContentModule([path UTF8String], true);
+            [self displayEpubInfo:containerPtr];
+        }
+        catch (NSException *e) {
+            // NoOP
+        }
+        catch (ePub3::ContentModuleExceptionDecryptFlow& e) { // should never occur, because call to OpenContainerForContentModule(), not OpenContainer()
+            
+            // NoOP
+        }
+        catch (std::exception& e) { // includes ePub3::ContentModuleException
+            // NoOP
+        }
+        catch (...) {
+            // NoOP
+        }
+    }
+}
+
+-(void)displayEpubInfo:(ContainerPtr)containerPtr
+{
+    PackagePtr packagePtr = containerPtr->DefaultPackage();
+    if (packagePtr != nullptr) {
+        
+        // Safe access, never encrypted
+        ePub3::string title = packagePtr->FullTitle(false);
+        NSString *alertTitle = @"EPUB title";
+        NSString *alertMessage = [NSString stringWithUTF8String:title.c_str()];
+        [_epubApi presentAlertWithTitle:alertTitle message:alertMessage];
+        
+        // Guaranteed safe access in LCP
+        //... but we check for EncryptionInfo just in case
+        // (other DRM schemes may not guarantee clear / plaintext cover image)
+        ManifestItemPtr coverImageManifestItemPtr = packagePtr->CoverManifestItem();
+        if (coverImageManifestItemPtr != nullptr) {
+            ePub3::string coverImagePath = coverImageManifestItemPtr->AbsolutePath();
+
+            if (coverImageManifestItemPtr->GetEncryptionInfo() == nullptr) {
+
+                unique_ptr<ByteStream> byteStream = coverImageManifestItemPtr->Reader();
+                if (byteStream != nullptr && byteStream.get() != nullptr) {
+                    size_t toRead = byteStream->BytesAvailable();
+                    
+                    uint8_t *buffer = nullptr;
+                    size_t didRead = byteStream->ReadAllBytes((void **) &buffer);
+                    
+                    byteStream->Close();
+                    
+                    if (toRead != didRead) {
+                        bool breakpoint = true;
+                    }
+                    
+                    if (buffer != nullptr && didRead > 0) {
+                        NSData *data = [NSData dataWithBytes:buffer length:didRead];
+                        NSImage *img = [[NSImage alloc] initWithData:data];
+                        
+                        
+                        NSAlert *alert = [[NSAlert alloc] init];
+                        [alert setMessageText:@"EPUB cover image"];
+                        [alert setInformativeText:[NSString stringWithUTF8String:coverImagePath.c_str()]];
+                        [alert setIcon:img];
+                        
+                        [alert addButtonWithTitle:@"OK"];
+                        // [alert addButtonWithTitle:@"SECOND"];
+                        
+                        switch ([alert runModal]) {
+                            case NSAlertFirstButtonReturn: {
+                                // OK
+                                break;
+                            }
+                            case NSAlertSecondButtonReturn: {
+                                // SECOND
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                        
+                    }
+                }
+            } else {
+                NSString *alertTitle = @"EPUB cover image (encrypted)";
+                NSString *alertMessage = [NSString stringWithUTF8String:coverImagePath.c_str()];
+                [_epubApi presentAlertWithTitle:alertTitle message:alertMessage];
+            }
+        }
+    }
 }
 
 - (bool)openDocumentWithPath:(NSString *)path //error:(NSError **)error
@@ -362,6 +458,8 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
 
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
+    [self fetchAndDisplayEpubInfo:filename];
+    
     _currentOpenChosenPath = filename;
     return [self openDocumentWithPath:filename];
 }
@@ -578,6 +676,8 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
         
         [[NSFileManager defaultManager] moveItemAtPath:acquisition.publicationPath toPath:_currentOpenChosenPath error:NULL];
 
+        [self fetchAndDisplayEpubInfo:_currentOpenChosenPath];
+        
         [self openDocumentWithPath:_currentOpenChosenPath];
     });
     
@@ -714,6 +814,8 @@ NSString* TASK_DESCRIPTION_LCP_EPUB_DOWNLOAD = @"LCP_EPUB_DOWNLOAD";
             [_epubApi presentAlertWithTitle:title message:message];
             
             _currentLCPLicensePath = nil;
+            
+            [self fetchAndDisplayEpubInfo:_currentOpenChosenPath];
             
             [self openDocumentWithPath:_currentOpenChosenPath];
         });
