@@ -10,9 +10,6 @@
 		552FC46616F39AB5000E73BA /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 552FC46516F39AB5000E73BA /* icon.icns */; };
 		5998CC401CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5998CC3F1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m */; };
 		5998CC451CD4E38400BDAF46 /* RDPackageResourceDataResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 5998CC441CD4E38400BDAF46 /* RDPackageResourceDataResponse.m */; };
-		83380EFA1DE6CA94003F692F /* readium-plugin-highlights.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83380EF31DE6CA7D003F692F /* readium-plugin-highlights.js */; };
-		83380EFB1DE6CA94003F692F /* readium-plugin-highlights.js.bundles.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83380EF41DE6CA7D003F692F /* readium-plugin-highlights.js.bundles.js */; };
-		83380EFC1DE6CA94003F692F /* readium-plugin-highlights.js.map in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83380EF51DE6CA7D003F692F /* readium-plugin-highlights.js.map */; };
 		833882C41C5FC7B5003400CD /* libLCP-client-OSX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 833882C31C5FC7B5003400CD /* libLCP-client-OSX.a */; };
 		833882CA1C5FC8CC003400CD /* RDLCPService.mm in Sources */ = {isa = PBXBuildFile; fileRef = 833882C91C5FC8CC003400CD /* RDLCPService.mm */; };
 		833882CC1C5FC8FC003400CD /* LCP Root Certificate.crt in Resources */ = {isa = PBXBuildFile; fileRef = 833882CB1C5FC8FC003400CD /* LCP Root Certificate.crt */; };
@@ -177,9 +174,6 @@
 			dstPath = Scripts;
 			dstSubfolderSpec = 7;
 			files = (
-				83380EFA1DE6CA94003F692F /* readium-plugin-highlights.js in CopyFiles */,
-				83380EFB1DE6CA94003F692F /* readium-plugin-highlights.js.bundles.js in CopyFiles */,
-				83380EFC1DE6CA94003F692F /* readium-plugin-highlights.js.map in CopyFiles */,
 				83F7B6861B2AD75200DFF6B6 /* readium-cfi-js.js in CopyFiles */,
 				83F7B6871B2AD75200DFF6B6 /* readium-cfi-js.js.map in CopyFiles */,
 				83F7B6881B2AD75200DFF6B6 /* readium-external-libs.js in CopyFiles */,
