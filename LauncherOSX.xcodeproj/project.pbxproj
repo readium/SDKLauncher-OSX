@@ -192,9 +192,6 @@
 		5998CC3F1CD4E0CF00BDAF46 /* NSDate+RDDateAsString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RDDateAsString.m"; sourceTree = "<group>"; };
 		5998CC431CD4E38400BDAF46 /* RDPackageResourceDataResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDPackageResourceDataResponse.h; sourceTree = "<group>"; };
 		5998CC441CD4E38400BDAF46 /* RDPackageResourceDataResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDPackageResourceDataResponse.m; sourceTree = "<group>"; };
-		83380EF31DE6CA7D003F692F /* readium-plugin-highlights.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-plugin-highlights.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-highlights.js"; sourceTree = "<group>"; };
-		83380EF41DE6CA7D003F692F /* readium-plugin-highlights.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-plugin-highlights.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-highlights.js.bundles.js"; sourceTree = "<group>"; };
-		83380EF51DE6CA7D003F692F /* readium-plugin-highlights.js.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = "readium-plugin-highlights.js.map"; path = "readium-shared-js/build-output/_multiple-bundles/readium-plugin-highlights.js.map"; sourceTree = "<group>"; };
 		83412B271AC98D530074111F /* readium-external-libs.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-external-libs.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-external-libs.js.bundles.js"; sourceTree = "<group>"; };
 		83412B2A1AC98D530074111F /* readium-shared-js.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js.js.bundles.js"; path = "readium-shared-js/build-output/_multiple-bundles/readium-shared-js.js.bundles.js"; sourceTree = "<group>"; };
 		83766D431A0E9C53008077E1 /* epubReadingSystem.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = epubReadingSystem.js; path = LauncherOSX/ReaderScripts/epubReadingSystem.js; sourceTree = "<group>"; };
@@ -402,9 +399,6 @@
 		8561A1E4178B6EB8007D15D3 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
-				83380EF31DE6CA7D003F692F /* readium-plugin-highlights.js */,
-				83380EF41DE6CA7D003F692F /* readium-plugin-highlights.js.bundles.js */,
-				83380EF51DE6CA7D003F692F /* readium-plugin-highlights.js.map */,
 				83F7B66E1B2AD72800DFF6B6 /* readium-cfi-js.js */,
 				83F7B66F1B2AD72800DFF6B6 /* readium-cfi-js.js.map */,
 				83F7B6701B2AD72800DFF6B6 /* readium-external-libs.js */,
