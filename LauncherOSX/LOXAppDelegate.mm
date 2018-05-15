@@ -272,4 +272,26 @@ extern NSString *const LOXPageChangedEvent;
     [self.preferencesController showPreferences:_userData.preferences];
 }
 
+// Added by DRM inside, H.S. Lee on 2015-04-23
+// To handle checking user rights for the 'print' action
+- (IBAction)OpenPrint:(id)sender {
+    
+    if (_epubApi!=nullptr &&[_epubApi checkActionPrint]) {
+        NSArray *array = [[_window contentView] subviews];
+        NSArray *arrayS = [array[2] subviews];
+        NSArray *arrayW = [arrayS[1] subviews];
+        
+        NSPrintInfo *printInfo = [NSPrintInfo sharedPrintInfo];
+        NSPrintOperation * printOperation = [[[arrayW[0] mainFrame] frameView] printOperationWithPrintInfo:printInfo];
+        [printOperation runOperation];
+    }
+    else
+    {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setMessageText:@"Print action has no permission"];
+        [alert addButtonWithTitle:@"Ok"];
+        [alert runModal];
+    }
+}
+
 @end

@@ -40,6 +40,9 @@
 #import "LOXPackage.h"
 
 
+#import "LOXAppDelegate.h"
+#import <ePub3/user_action.h>
+#import "drmInitialize.h"
 
 @interface LOXePubSdkApi ()
 
@@ -114,6 +117,14 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
 
     ePub3::InitializeSdk();
     ePub3::PopulateFilterManager();
+    
+    // If launcher wants to include DRM feature,
+    // READIUM_DRM=1 should be defined in the preporessor macros section
+    // in the project configuration
+#ifdef _READIUM_DRM_
+    [[[DrmInitialize alloc] init] initialize];
+#endif
+    
 }
 
 - (id)init
@@ -167,6 +178,22 @@ bool LauncherErrorHandler(const ePub3::error_details& err)
 }
 
 
+// Added by DRM inside, H.S. Lee on 2015-04-23
+// To handle checking user rights for the 'print' action
+- (bool) checkActionPrint
+{
+    if(_container->Creator() != nullptr)
+    {
+        ePub3::async_result<bool> result = _container->Creator()->ApproveUserAction(ePub3::UserAction(ePub3::ConstManifestItemPtr(nullptr), ePub3::CFI(), ePub3::ActionType::Print));
+        
+        return result.get();
+    }
+    else
+    {
+        return true;
+    }
+    
+}
 
 
 

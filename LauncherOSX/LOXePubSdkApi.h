@@ -51,4 +51,8 @@ namespace ePub3 {
 
 - (LOXPackage *)openFile:(NSString *)file;
 
+// Added by DRM inside, H.S. Lee on 2015-04-23
+// To handle checking user rights for the 'print' action
+- (bool) checkActionPrint;
+
 @end

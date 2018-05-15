@@ -354,6 +354,7 @@
 		AD8C8F410069609045A3F696 /* LOXSampleStylesProvider.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXSampleStylesProvider.mm; sourceTree = "<group>"; };
 		AD8C8FBED8EFF09E6381C68F /* LOXBookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOXBookmarksController.h; sourceTree = "<group>"; };
 		AD8C8FEC6F5BC3C8D400A388 /* LOXCurrentPagesInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LOXCurrentPagesInfo.mm; sourceTree = "<group>"; };
+		FFE961B91C0E81FA00FA2A5C /* drmInitialize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = drmInitialize.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -692,6 +693,7 @@
 		AD8C8C165CD8EBCC0E30AE2F /* ePubSdkApi */ = {
 			isa = PBXGroup;
 			children = (
+				FFE961B91C0E81FA00FA2A5C /* drmInitialize.h */,
 				855CFE49169B912300AD311E /* LOXePubSdkApi.h */,
 				855CFE4A169B912300AD311E /* LOXePubSdkApi.mm */,
 			);
